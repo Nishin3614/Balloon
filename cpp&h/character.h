@@ -1,0 +1,200 @@
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+// キャラクター処理 [character.h]
+// Author : KOKI NISHIYAMA
+//
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#ifndef _CHARACTER_H_
+#define _CHARACTER_H_
+
+#define _CRT_SECURE_NO_WARNINGS
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// インクルードファイル
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#include "scene.h"
+#include "model.h"
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 前方宣言
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class CExtrusion;
+class CMeshobit;
+class CCollision;
+class CStencilshadow;
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 構造体
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// クラス
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class CCharacter : public CScene
+{
+public:
+	/* 列挙型 */
+	// ステータス
+	typedef enum
+	{
+		STATE_NORMAL = 0,
+	} STATE;
+	// 基本モーションタイプ
+	typedef enum
+	{
+		MOTIONTYPE_NEUTRAL = 0,		// 待機モーション
+		MOTIONTYPE_MOVE,			// 移動モーション
+		MOTIONTYPE_DAMAGEACTION,	// ダメージモーション
+		MOTIONTYPE_DOWNACTION,		// ダウンモーション
+		MOTIONTYPE_STANDUP,			// 起き上がるモーション
+		MOTIONTYPE_MAX
+	} MOTIONTYPE;
+	// キャラクター
+	typedef enum
+	{
+		CHARACTER_PLAYER = 0,
+		CHARACTER_SOLIDER,
+		CHARACTER_MAX
+	} CHARACTER;
+	/* 構造体 */
+	/* 関数 */
+	CCharacter();
+	~CCharacter();
+	void Init(void);
+	void Uninit(void);
+	void Update(void);
+	void Draw(void);
+	// キャラクターが死んだとき
+	virtual void Die(void) = 0;
+
+
+	// 必要に応じた動作 //
+	// 設定 //
+	// 位置
+	void SetPos(D3DXVECTOR3 const &pos)				{ m_pos = pos; };			
+	// 移動量
+	void SetMove(D3DXVECTOR3 const &move)			{ m_move = move; };
+	// 回転
+	void SetRot(D3DXVECTOR3 const &rot)				{ m_rot = rot; };
+	// 取得 //
+	// 位置
+	D3DXVECTOR3 &GetPos(void)						{ return m_pos; };
+	// 移動量
+	D3DXVECTOR3 &GetMove(void)						{ return m_move; };
+	// 回転
+	D3DXVECTOR3 &GetRot(void)						{ return m_rot; };
+	// 親と子の回転量
+	D3DXVECTOR3 *GetPartsRot(int const nModelID);
+	// 親と子の位置
+	D3DXVECTOR3 * GetPartsPos(int const nModelID);
+	// 親と子の行列
+	D3DXMATRIX *GetMatrix(int const nModelID);	
+	// 状態
+	STATE GetState(void) const						{ return m_State; };
+	// キャラクター
+	CHARACTER	GetCharacter(void) const			{ return m_character; };
+	// 床の高さ
+	bool GetFloorHeight(void);
+	// モーションのフレーム情報取得処理
+	int GetMaxFrame(
+		CHARACTER character,					// キャラクター
+		int nMotionID,							// モーションID
+		int nNowKeyCnt = -1						// 現在のキーカウント
+	);												
+	// カメラ追尾しているID
+	static int GetCameraCharacter(void);
+	// ロード・アンロード
+	static void Load(
+		CHARACTER const character,		// キャラクター
+		int const nMaxMotion,			// 最大モーション
+		const char * file_name			// ファイル名
+		);
+	// ステータス情報
+	static HRESULT LoadStatus(void);
+	static void UnLoad(
+		CHARACTER const character,		// キャラクター
+		int const nMaxkey				// 最大キー
+		);	
+#ifdef _DEBUG
+	void Debug(void);
+#endif // _DEBUG
+	CCollision * GetCollision(void) { return m_pCharacterCollision; };
+protected:
+	/* 関数 */
+	// 設定 //
+	// キャラクター
+	void SetCharacter(CHARACTER const character)	{ m_character = character; };
+	// モーション設定
+	void SetMotion(int const nMotiontype);
+	// 強制モーション設定
+	void ComplusionSetMotion(int const nMotiontype);
+		
+	void FagGravity(void);						// 重力
+	// 目標回転量設定
+	void SetRotDest(D3DXVECTOR3 const &rotDest)		{ m_rotLast = rotDest; };	
+	// 設定 //
+	// 現在のモーション
+	int GetMotion(void) const						{ return m_nMotiontype; };
+	// 過去のモーション
+	int GetOldMotion(void) const					{ return m_nMotiontypeOld; };
+	// キーカウント
+	int GetKeyInfoCnt(void) const					{ return m_keyinfoCnt; };
+	// 目標回転量取得
+	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };	
+
+	// モーションカメラの更新
+	void MotionCamera(void);							
+	/* 変数 */
+	static int	m_nCameraCharacter;						// キャラクターに追尾するID
+	// 仮
+	STATE m_State;										// 現状のステータス
+	int	m_nCntState;									// カウントステータス
+private:
+	/* 関数 */
+	void Update_Normal(void);							// 通常時の更新
+	void NextKeyMotion(void);							// 次のモーション
+	void Move(void);									// 移動
+	void Motion(void);									// モーション
+	void ModelUpdate(void);								// モデルの更新
+	void TrackCamera(void);								// カメラ追尾
+	void Limit(void);									// 制限区域
+	void Motion_Effect(void);							// モーションエフェクト		
+	void Motion_Obit(void);								// モーション軌跡
+	/* 変数 */
+	/* 構造体のスタティックにする */
+	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報
+	static vector<int>				m_modelId[CHARACTER_MAX];		// モデル番号
+	static CModel_info				*m_model_info[CHARACTER_MAX];	// モデル情報
+	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];	// キャラクターのサイズ
+	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
+	static int						m_NumParts[CHARACTER_MAX];		// 動かすモデル数
+	CMeshobit						*m_pMeshobit;					// 軌跡
+	CModel 							*m_pModel;						// モデル
+	CHARACTER						m_character;					// キャラクター
+	D3DXMATRIX						m_mtxWorld;						// 行列
+	D3DXVECTOR3						m_pos;							// 位置
+	D3DXVECTOR3						m_posold;						// 前の位置
+	D3DXVECTOR3						m_move;							// 移動量
+	D3DXVECTOR3						m_rot;							// 現在回転量
+	D3DXVECTOR3						m_rotLast;						// 向きたい方向
+	D3DXVECTOR3						m_rotbetween;					// 回転の差分
+	D3DXVECTOR3						m_size;							// キャラクターのサイズ
+	int								m_nMotiontype;					// モーションタイプ
+	int								m_nMotiontypeOld;				// 前回のモーションタイプ
+	int								m_nMaxMotion;					// 最大モーション数
+	int								m_keyinfoCnt;					// キー情報のカウント
+	int								m_nFrame;						// フレームカウント
+	int								m_nMotionFrame;					// 一つのモーションのカウント
+	int								m_nIdAttackKey;					// 攻撃用のキーID
+	int								m_nIDWho;						// 敵か味方か
+	float							m_fLength;						// 攻撃の当たり範囲
+	float							m_fAlpha;						// アルファ値
+	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
+	CExtrusion						*m_pExtrusion;					// 押し出し
+	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
+	vector<unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
+	vector<unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
+	CStencilshadow * m_pStencilshadow;	// ステンシルシャドウ
+};
+
+#endif

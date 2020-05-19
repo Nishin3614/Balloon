@@ -1,0 +1,132 @@
+//-----------------------------------------------------------------------------
+//
+// メッシュスフィア処理 [meshsphere.h]
+// Author : Nishiyama Koki
+//
+//-----------------------------------------------------------------------------
+#ifndef _MESHSPHERE_H_
+#define _MESHSPHERE_H_
+
+#define _CRT_SECURE_NO_WARNINGS
+
+//-----------------------------------------------------------------------------
+// インクルードファイル
+//-----------------------------------------------------------------------------
+#include "scene.h"
+
+//-----------------------------------------------------------------------------
+// マクロ定義
+//-----------------------------------------------------------------------------
+#define RADIUS_SIZE		(45.0f)
+#define SEPARATE		(15)
+
+//-----------------------------------------------------------------------------
+// クラス定義
+//-----------------------------------------------------------------------------
+class CMeshsphere :public CScene
+{
+public:
+	/* 列挙型 */
+	typedef enum
+	{
+		TEXTYPE_WORLD = 0,
+		TEXTYPE_STAR,
+		TEXTYPE_MAX
+	} TEXTYPE;
+	/* 構造体 */
+	typedef struct MESHSPHERE
+	{
+		MESHSPHERE()
+		{
+			pos = D3DVECTOR3_ZERO;
+			rot = D3DVECTOR3_ZERO;
+			col = D3DXCOLOR_INI;
+			fRadius = 0;
+			fRot = 0;
+			fRot2 = 0;
+			nHeightBlock = 0;
+			nWidthBlock = 0;
+			nMaxVtx = 0;
+			nMaxIndex = 0;
+			nMaxPolygon = 0;
+			nMaxFrame = 0;
+			nCntFrame = 0;
+			bUse = true;
+			Textype = TEXTYPE_WORLD;
+			pVtxBuffMeshSphere = NULL;
+			pIdxBuffMeshSphere = NULL;
+		}
+		D3DXVECTOR3		pos;								// 座標
+		D3DXVECTOR3		rot;								// 回転
+		D3DXCOLOR		col;								// 色
+		D3DXMATRIX		mtxWorldMeshSphere;					// ワールドマトリックス
+		float			fRadius;							// 半径
+		float			fRot;								// 各頂点の角度
+		float			fRot2;								// 各頂点の角度
+		int				nHeightBlock;						// 高さの分割数
+		int				nWidthBlock;						// 横の頂点の個数
+		int				nMaxVtx;							// 頂点の個数
+		int				nMaxIndex;							// インデックスの個数
+		int				nMaxPolygon;						// ポリゴンの枚数
+		int				nMaxFrame;							// 最大フレーム数
+		int				nCntFrame;							// フレーム数
+		bool			bUse;								// 使用状態
+		TEXTYPE			Textype;							//  テクスチャータイプ
+		LPDIRECT3DVERTEXBUFFER9	pVtxBuffMeshSphere;			// 頂点バッファへのポインタ
+		LPDIRECT3DINDEXBUFFER9	pIdxBuffMeshSphere;			// インデックスバッファへのポインタ
+	}	MESHSPHERE;
+	/* 関数 */
+	CMeshsphere();
+	~CMeshsphere();
+	// 作成処理(シーン管理)
+	static CMeshsphere *Create(
+		D3DXVECTOR3 const &pos,
+		float const &fRadius,
+		int const &nWidthBlock = 10,
+		int const &nHeightBlock = 10,
+		D3DXCOLOR const &col = D3DXCOLOR_INI,
+		TEXTYPE	const &textype = TEXTYPE_WORLD,
+		int const &nMaxFrame = 0
+	);
+	// 作成処理(個人管理)
+	static CMeshsphere * Create_Self(
+		D3DXVECTOR3 const &pos,
+		float const &fRadius,
+		int const &nWidthBlock = 10,
+		int const &nHeightBlock = 10,
+		D3DXCOLOR const &col = D3DXCOLOR_INI,
+		TEXTYPE	const &textype = TEXTYPE_WORLD,
+		int const &nMaxFrame = 0
+	);
+	void Init(void);	// 初期化処理
+	void Uninit(void);	// 終了処理
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画処理
+#ifdef _DEBUG
+	void Debug(void);
+#endif // _DEBUG
+
+	static HRESULT Load(void);	// 読み込み
+	static void Unload(void);	// 破棄
+	// 設定 //
+	// 位置設定
+	void SetPosition(D3DXVECTOR3 const &pos);
+	// 半径設定
+	void SetRadius(float const &fRadius);
+	// 使用状態設定
+	void SetUse(bool const &bUse) { m_MeshSphere.bUse = bUse; };
+	// 設定
+	void Set(
+		D3DXVECTOR3 const & pos,
+		int const & nMaxFrame,
+		bool const & bUse
+	);
+private:
+	/* 関数 */
+	void FrameDelete(void);	// 時間によって消える
+	/* 変数 */
+	static int m_nTexId[TEXTYPE_MAX];	// テクスチャーID
+	MESHSPHERE	m_MeshSphere;			// 球構造体
+};
+
+#endif
