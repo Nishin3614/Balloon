@@ -18,6 +18,7 @@
 #include "scene_X.h"
 #include "scene_three.h"
 #include "player.h"
+#include "solider.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -88,6 +89,13 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_PLAYER)
 		{
 			CPlayer::Create(m_vec_char[map][nCntMap].pos,
+				m_vec_char[map][nCntMap].rot
+			);
+		}
+		// •ºŽm
+		else if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_SOLIDER)
+		{
+				CSolider::Create(m_vec_char[map][nCntMap].pos,
 				m_vec_char[map][nCntMap].rot
 			);
 		}

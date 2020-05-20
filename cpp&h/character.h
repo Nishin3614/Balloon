@@ -22,6 +22,7 @@ class CExtrusion;
 class CMeshobit;
 class CCollision;
 class CStencilshadow;
+class CBalloon;
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 構造体
@@ -118,7 +119,7 @@ public:
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
-	CCollision * GetCollision(void) { return m_pCharacterCollision; };
+	CCollision * GetCollision(void) { return m_pCharacterCollision.get(); };
 protected:
 	/* 関数 */
 	// 設定 //
@@ -190,11 +191,11 @@ private:
 	float							m_fLength;						// 攻撃の当たり範囲
 	float							m_fAlpha;						// アルファ値
 	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
-	CExtrusion						*m_pExtrusion;					// 押し出し
-	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
+	unique_ptr<CCollision>			m_pCharacterCollision;			// キャラクターの当たり判定
 	vector<unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	vector<unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
-	CStencilshadow * m_pStencilshadow;	// ステンシルシャドウ
+	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
+	CBalloon						* m_pBalloon;					// 風船
 };
 
 #endif

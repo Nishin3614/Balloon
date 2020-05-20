@@ -22,7 +22,7 @@ SCRIPT
 		COOPERATION
 			# êFïœâª
 			COL
-				CHANGECOL = 1.0 1.0 1.0 0.5
+				CHANGECOL = 1.0 1.0 1.0 1.0
 				TIMESWITCH = 5
 				TIMECHANGE = 60
 			END_COL

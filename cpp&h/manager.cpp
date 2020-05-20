@@ -249,8 +249,6 @@ void CManager::SetMode(MODE const mode)
 		// ƒQ[ƒ€
 	case MODE_GAME:
 		m_game->Uninit();
-		// ƒQ[ƒ€BGM
-		m_sound->StopSound(CSound::LABEL_BGM_GAME);
 		break;
 	default:
 		break;
@@ -264,8 +262,6 @@ void CManager::SetMode(MODE const mode)
 		// ƒQ[ƒ€
 	case MODE_GAME:
 		m_game->Init();
-		// ƒQ[ƒ€BGM
-		m_sound->PlaySound(CSound::LABEL_BGM_GAME);
 		break;
 	default:
 		break;

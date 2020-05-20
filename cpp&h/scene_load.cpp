@@ -23,6 +23,7 @@
 #include "collision.h"
 #include "camera.h"
 #include "player.h"
+#include "solider.h"
 #include "circleshadow.h"
 #include "time.h"
 #include "fade.h"
@@ -138,6 +139,11 @@ void CScene_load::LoadAll(void)
 	if(!CPlayer::Load()== S_OK)
 	{
 		CCalculation::Messanger("ƒvƒŒƒCƒ„[“Ç‚İæ‚è¸”s");
+	}
+	// •ºm
+	if (!CSolider::Load() == S_OK)
+	{
+		CCalculation::Messanger("•ºm“Ç‚İæ‚è¸”s");
 	}
 	// ‰~Œ`ƒVƒƒƒhƒE
 	if (!CCircleshadow::Load() == S_OK)

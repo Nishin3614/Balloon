@@ -8,7 +8,7 @@ SCRIPT
 	#==============================================================================
 	# [0]
 	#==============================================================================
-	SET
+	SET PRESENTS
 		# ----------[基本設定]---------- #
 		POS = 640.0 250.0 0.0
 		COL = 1.0 1.0 1.0 1.0
@@ -18,5 +18,36 @@ SCRIPT
 		LAST_TEX = 1.0 1.0
 		TEXTYPE = 40
 		OFFSET = 0
+		# ----------[フェードイン]---------- #
+		FADE_IN
+			# フェード開始時間
+			STARTFADETIME = 0
+			# 色指定
+			FADE_COL
+				BEGIN_COL = 1.0 1.0 1.0 0.5
+				END_COL = 1.0 1.0 1.0 1.0
+				MAXFRAME = 184
+			END_FADE_COL
+			# 位置指定
+			FADE_POS
+				BEGIN_POS = -188.3 0.0 0.0
+				END_POS = 640.0 250.0 0.0
+				MAXFRAME = 101
+			END_FADE_POS
+		END_FADE_IN
+		# ----------[強調]---------- #
+		COOPERATION
+			# 色変化
+			COL
+				CHANGECOL = 1.0 1.0 1.0 0.0
+				TIMESWITCH = 0
+				TIMECHANGE = 60
+			END_COL
+			# 拡大率
+			SCAL
+				CHANGESCAL = 1.5
+				TIMECHANGE = 50
+			END_SCAL
+		END_COOPERATION
 	END_SET
 END_SCRIPT

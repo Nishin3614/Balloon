@@ -20,6 +20,7 @@
 #include "columncollision.h"
 #include "circleshadow.h"
 #include "stencilshadow.h"
+#include "balloon.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -148,12 +149,6 @@ void CCharacter::Init()
 		)));
 	}
 
-	// 押し出し生成
-	m_pExtrusion = CExtrusion::Create(
-		&m_pos,
-		20.0f
-	);
-	m_pExtrusion->SetUse(true);
 	// 攻撃当たり判定設定
 	for (int nCntAttackCollision = 0; nCntAttackCollision < (signed)m_modelAll[m_character]->v_AttackCollision.size(); nCntAttackCollision++)
 	{
@@ -200,7 +195,7 @@ void CCharacter::Init()
 	// キャラクター当たり判定設定
 	if (m_modelAll[m_character]->pCharacterCollision != NULL)
 	{
-		m_pCharacterCollision = CRectCollision::Create(
+		m_pCharacterCollision = CRectCollision::Create_Self(
 			m_modelAll[m_character]->pCharacterCollision->Offset,
 			m_pos + m_modelAll[m_character]->pCharacterCollision->RectInfo->size
 		);
@@ -208,17 +203,15 @@ void CCharacter::Init()
 	// シャドウon
 	if (CIRCLESHADOW == true)
 	{
-		/*
-		// 円形シャドウの生成
-		m_pCircleShadow = CCircleshadow::Create(
-			m_pos,
-			D3DXVECTOR3(100.0f, 0.0f, 100.0f));
-			*/
 		D3DXVECTOR3 pos = m_pos;
 		pos.y = 0;
 		// ステンシルシャドウの生成
 		m_pStencilshadow = CStencilshadow::Create(m_pos, D3DXVECTOR3(10.0f, 10000.0f, 10.0f));
 	}
+
+	// 風船生成
+	m_pBalloon = CBalloon::Create(m_pos, D3DVECTOR3_ONE);
+	m_pBalloon->SetParentMtx(&m_mtxWorld);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -232,14 +225,9 @@ void CCharacter::Uninit(void)
 		delete[] m_pModel;
 		m_pModel = NULL;
 	}
-	if (m_pExtrusion != NULL)
-	{
-		m_pExtrusion->Release();
-		m_pExtrusion = NULL;
-	}
 	if (m_pCharacterCollision != NULL)
 	{
-		m_pCharacterCollision->Release();
+		m_pCharacterCollision->Uninit();
 		m_pCharacterCollision = NULL;
 	}
 	for (int nCntMotionObit = 0; nCntMotionObit < (signed)m_vec_pMeshObit.size(); nCntMotionObit++)
@@ -264,22 +252,34 @@ void CCharacter::Update(void)
 	// 通常時の更新処理
 	Update_Normal();
 	Limit();
-	// 当たり判定
-	m_pExtrusion->CircleCollision();
 	// 判定
 	CCharacter * pCharacter;
 	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_CHARACTER); nCntLayer++)
 	{
+		// キャラクター情報取得
 		pCharacter = (CCharacter *)CScene::GetScene(LAYER_CHARACTER, nCntLayer);
-		if (pCharacter == NULL)
-		{
-			continue;
-		}
-		else if (pCharacter == this)
-		{
-			continue;
-		}
-		m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision());
+		// キャラクター情報が入っていない場合
+		// ->ループスキップ
+		if (pCharacter == NULL) continue;
+		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
+		// ->ループスキップ
+		else if (pCharacter == this) continue;
+		// キャラクター同士当たっていないなら
+		// ->ループスキップ
+		else if (!m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision())) continue;
+		// キャラクター同士当たっている
+		// ->バウンド処理
+		D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
+		D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
+		diffpos = pCharacter->m_pos - m_pos;
+		// 相手から見てプレイヤーがいる角度
+		rot.y = (atan2f(diffpos.x, diffpos.z));
+		m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
+		m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+
+		// 直すこと
+		// まだ当たった後の判定をとっただけ
+
 	}
 	// ステンシルシャドウの位置設定
 	if (m_pStencilshadow != NULL)
