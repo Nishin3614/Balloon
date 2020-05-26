@@ -11,13 +11,17 @@
 #include "scene.h"
 #include "game.h"
 #include "fade.h"
+#include "title.h"
+#include "tutorial.h"
+#include "result.h"
+#include "ranking.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
 // マクロ関数
 //
 // ----------------------------------------------------------------------------------------------------
-#define STARTMODE (MODE_GAME)
+#define STARTMODE (MODE_TITLE)
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -31,8 +35,12 @@ CMouse * CManager::m_mouse = NULL;						// マウス
 CKeyConfig * CManager::m_keyconfig = NULL;				// キー詳細
 CSound * CManager::m_sound = NULL;						// サウンド
 CFade * CManager::m_fade = NULL;						// フェード
+CTitle * CManager::m_title = NULL;						// タイトル
+CTutorial * CManager::m_tutorial = NULL;				// チュートリアル
 CGame * CManager::m_game = NULL;						// ゲーム
-CManager::MODE CManager::m_mode = CManager::MODE_GAME;	// モード
+CResult * CManager::m_result = NULL;					// リザルト
+CRanking * CManager::m_ranking = NULL;					// ランキング
+CManager::MODE CManager::m_mode = CManager::MODE_TITLE;	// モード
 bool CManager::m_bWire = false;							// ワイヤー
 
 // ----------------------------------------------------------------------------------------------------
@@ -70,8 +78,16 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	// レンダリングの生成
 	m_renderer = new CRenderer;
 	/* 画面 */
+	// タイトルの生成
+	m_title = new CTitle;
+	// チュートリアルの生成
+	m_tutorial = new CTutorial;
 	// ゲームの生成
 	m_game = new CGame;
+	// リザルトの生成
+	m_result = new CResult;
+	// リザルトの生成
+	m_ranking = new CRanking;
 	// モードの設定
 	m_mode = STARTMODE;
 
@@ -178,12 +194,40 @@ void CManager::Uninit(void)
 		delete m_fade;
 		m_fade = NULL;
 	}
+	// タイトル
+	if (m_title != NULL)
+	{
+		m_title->Uninit();
+		delete m_title;
+		m_title = NULL;
+	}
+	// チュートリアル
+	if (m_tutorial != NULL)
+	{
+		m_tutorial->Uninit();
+		delete m_tutorial;
+		m_tutorial = NULL;
+	}
 	// ゲーム
 	if (m_game != NULL)
 	{
 		m_game->Uninit();
 		delete m_game;
 		m_game = NULL;
+	}
+	// リザルト
+	if (m_result != NULL)
+	{
+		m_result->Uninit();
+		delete m_result;
+		m_result = NULL;
+	}
+	// リザルト
+	if (m_ranking != NULL)
+	{
+		m_ranking->Uninit();
+		delete m_ranking;
+		m_ranking = NULL;
 	}
 }
 
@@ -215,9 +259,25 @@ void CManager::Update(void)
 	// 前のモード終了
 	switch (m_mode)
 	{
+		// タイトル
+	case MODE_TITLE:
+		m_title->Update();
+		break;
+		// チュートリアル
+	case MODE_TUTORIAL:
+		m_tutorial->Update();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Update();
+		break;
+		// リザルト
+	case MODE_RESULT:
+		m_result->Update();
+		break;
+		// ランキング
+	case MODE_RANKING:
+		m_ranking->Update();
 		break;
 	default:
 		break;
@@ -246,9 +306,25 @@ void CManager::SetMode(MODE const mode)
 	// 前のモード終了
 	switch (m_mode)
 	{
+		// タイトル
+	case MODE_TITLE:
+		m_title->Uninit();
+		break;
+		// チュートリアル
+	case MODE_TUTORIAL:
+		m_tutorial->Uninit();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Uninit();
+		break;
+		// リザルト
+	case MODE_RESULT:
+		m_result->Uninit();
+		break;
+		// ランキング
+	case MODE_RANKING:
+		m_ranking->Uninit();
 		break;
 	default:
 		break;
@@ -256,12 +332,28 @@ void CManager::SetMode(MODE const mode)
 
 	m_mode = mode;	// 現在のモードを代入
 
-	// 現在のモード初期化
+					// 現在のモード初期化
 	switch (mode)
 	{
+		// タイトル
+	case MODE_TITLE:
+		m_title->Init();
+		break;
+		// チュートリアル
+	case MODE_TUTORIAL:
+		m_tutorial->Init();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Init();
+		break;
+		// リザルト
+	case MODE_RESULT:
+		m_result->Init();
+		break;
+		// ランキング
+	case MODE_RANKING:
+		m_ranking->Init();
 		break;
 	default:
 		break;
