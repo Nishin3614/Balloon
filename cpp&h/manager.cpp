@@ -13,6 +13,7 @@
 #include "fade.h"
 #include "title.h"
 #include "tutorial.h"
+#include "result.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -36,12 +37,13 @@ CFade * CManager::m_fade = NULL;						// フェード
 CTitle * CManager::m_title = NULL;						// タイトル
 CTutorial * CManager::m_tutorial = NULL;				// チュートリアル
 CGame * CManager::m_game = NULL;						// ゲーム
+CResult * CManager::m_result = NULL;					// リザルト
 CManager::MODE CManager::m_mode = CManager::MODE_TITLE;	// モード
 bool CManager::m_bWire = false;							// ワイヤー
 
-														// ----------------------------------------------------------------------------------------------------
-														// コンストラクタ
-														// ----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
+// コンストラクタ
+// ----------------------------------------------------------------------------------------------------
 CManager::CManager()
 {
 }
@@ -80,6 +82,8 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	m_tutorial = new CTutorial;
 	// ゲームの生成
 	m_game = new CGame;
+	// リザルトの生成
+	m_result = new CResult;
 	// モードの設定
 	m_mode = STARTMODE;
 
@@ -207,6 +211,13 @@ void CManager::Uninit(void)
 		delete m_game;
 		m_game = NULL;
 	}
+	// リザルト
+	if (m_result != NULL)
+	{
+		m_result->Uninit();
+		delete m_result;
+		m_result = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -249,6 +260,10 @@ void CManager::Update(void)
 	case MODE_GAME:
 		m_game->Update();
 		break;
+		// リザルト
+	case MODE_RESULT:
+		m_result->Update();
+		break;
 	default:
 		break;
 	}
@@ -288,6 +303,10 @@ void CManager::SetMode(MODE const mode)
 	case MODE_GAME:
 		m_game->Uninit();
 		break;
+		// リザルト
+	case MODE_RESULT:
+		m_result->Uninit();
+		break;
 	default:
 		break;
 	}
@@ -308,6 +327,10 @@ void CManager::SetMode(MODE const mode)
 		// ゲーム
 	case MODE_GAME:
 		m_game->Init();
+		break;
+		// リザルト
+	case MODE_RESULT:
+		m_result->Init();
 		break;
 	default:
 		break;

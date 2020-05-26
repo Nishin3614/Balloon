@@ -49,6 +49,7 @@ class CFade;		// 画面遷移
 class CGame;		// ゲーム
 class CTitle;		// タイトル
 class CTutorial;	// チュートリアル
+class CResult;		// リザルト
 
 // ------------------------------------------
 //
@@ -65,6 +66,7 @@ public:
 		MODE_TITLE = 0,
 		MODE_TUTORIAL,
 		MODE_GAME,
+		MODE_RESULT,
 		MODE_MAX
 	} MODE;
 	/* 関数 */
@@ -102,6 +104,7 @@ private:
 	static CTitle * m_title;				// タイトル
 	static CTutorial * m_tutorial;			// チュートリアル
 	static CGame * m_game;					// ゲーム
+	static CResult * m_result;				// リザルト
 
 	static MODE m_mode;						// モード
 	static bool	m_bWire;					// ワイヤーモード
