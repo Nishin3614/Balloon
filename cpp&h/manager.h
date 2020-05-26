@@ -50,6 +50,7 @@ class CGame;		// ゲーム
 class CTitle;		// タイトル
 class CTutorial;	// チュートリアル
 class CResult;		// リザルト
+class CRanking;		// ランキング
 
 // ------------------------------------------
 //
@@ -67,6 +68,7 @@ public:
 		MODE_TUTORIAL,
 		MODE_GAME,
 		MODE_RESULT,
+		MODE_RANKING,
 		MODE_MAX
 	} MODE;
 	/* 関数 */
@@ -105,6 +107,7 @@ private:
 	static CTutorial * m_tutorial;			// チュートリアル
 	static CGame * m_game;					// ゲーム
 	static CResult * m_result;				// リザルト
+	static CRanking * m_ranking;			// ランキング
 
 	static MODE m_mode;						// モード
 	static bool	m_bWire;					// ワイヤーモード

@@ -1,11 +1,11 @@
 //=============================================================================
 //
-// チュートリアルの処理 [tutorial.h]
+// ランキングの処理 [ranking.h]
 // Author : Ryouma Inoue
 //
 //=============================================================================
-#ifndef _TUTORIAL_H_
-#define _TUTORIAL_H_
+#ifndef _RANKING_H_
+#define _RANKING_H_
 
 #include "main.h"
 
@@ -13,22 +13,23 @@
 // 前方宣言	( ポインタだけなら使える )
 //=============================================================================
 
+
 //=============================================================================
 // 管理クラス
 //=============================================================================
-class CTutorial
+class CRanking
 {
 public:
 
-	CTutorial();													// コンストラクタ
-	~CTutorial();													// デストラクタ
+	CRanking();													// コンストラクタ
+	~CRanking();													// デストラクタ
 
 	HRESULT Init();												// 初期化
 	void	Uninit(void);										// 終了
 	void	Update(void);										// 更新
 	void	Draw(void);											// 描画
 
-	static  CTutorial		*Create(void);						// チュートリアルの生成
+	static  CRanking		*Create(void);						// ランキングの生成
 
 private:
 };
