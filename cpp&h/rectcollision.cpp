@@ -76,7 +76,8 @@ bool CRectCollision::Judg(CColumnShape * const ColumnShape)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CRectCollision *CRectCollision::Create(
 	D3DXVECTOR3 const offset,
-	D3DXVECTOR3 const size
+	D3DXVECTOR3 const size,
+	OBJTYPE const &obj
 )
 {
 	// 変数宣言
@@ -85,6 +86,7 @@ CRectCollision *CRectCollision::Create(
 	pRectCollision = new CRectCollision();
 	// 矩形の設定
 	pRectCollision->m_pRectShape = CRectShape::Create(offset,size);
+	pRectCollision->SetObjectID(obj);												// オブジェクト番号設定
 	// シーン管理設定
 	pRectCollision->ManageSetting(CScene::LAYER_COLLISION);
 	// 初期化処理
@@ -94,16 +96,19 @@ CRectCollision *CRectCollision::Create(
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
+// ※返り値はstd::moveで受け取ること
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	D3DXVECTOR3 const offset,
-	D3DXVECTOR3 const size
+	D3DXVECTOR3 const size,
+	OBJTYPE const &obj
 )
 {
 	// 変数宣言
 	unique_ptr<CRectCollision> pRectCollision(new CRectCollision);
 	// 矩形の設定
 	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size));
+	pRectCollision->SetObjectID(obj);												// オブジェクト番号設定
 	// 初期化処理
 	pRectCollision->Init();
 	return pRectCollision;

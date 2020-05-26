@@ -78,7 +78,7 @@ void CGame::Init(void)
 	// 3Dマップ生成
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
 	// プレイヤー
-	CPlayer::Create(D3DXVECTOR3(0.0f,0.0f,0.0f));
+	CPlayer::Create(D3DXVECTOR3(0.0f,0.0f,200.0f));
 	// ポーズの生成
 	m_pause = new CPause();
 	// ポーズの初期化

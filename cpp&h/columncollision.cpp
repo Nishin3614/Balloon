@@ -70,7 +70,8 @@ CColumnCollision *CColumnCollision::Create(
 	D3DXVECTOR3 const offset,
 	D3DXVECTOR3 const &pos,
 	float const &fRadius,
-	float const &fVertical
+	float const &fVertical,
+	OBJTYPE const &obj
 )
 {
 	// 変数宣言
@@ -80,6 +81,7 @@ CColumnCollision *CColumnCollision::Create(
 	// 円柱の設定
 	pColumnCollision->m_pColumnShape = CColumnShape::Create(offset,pos,fRadius,fVertical);
 	pColumnCollision->m_pColumnShape->SetPos(pos);
+	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
 	// シーン管理設定
 	pColumnCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pColumnCollision;
@@ -92,7 +94,8 @@ unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 	D3DXVECTOR3 const offset,
 	D3DXVECTOR3 const &pos,
 	float const &fRadius,
-	float const &fVertical
+	float const &fVertical,
+	OBJTYPE const &obj
 )
 {
 	// 変数宣言
@@ -100,5 +103,6 @@ unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 	// 円柱の設定
 	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset,pos,fRadius, fVertical));
 	pColumnCollision->m_pColumnShape->SetPos(pos);
+	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
 	return pColumnCollision;
 }

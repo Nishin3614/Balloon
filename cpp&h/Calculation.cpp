@@ -719,7 +719,7 @@ void CCalculation::Messanger(
 	// •Ï”éŒ¾
 	MessageBox(hWnd, cMessa, "ŒxI", MB_ICONWARNING);
 	// ƒQ[ƒ€I—¹‚Ìİ’è
-	SetDestWind(true);
+	//SetDestWind(true);
 }
 
 // ----------------------------------------------------------------------------------------------------

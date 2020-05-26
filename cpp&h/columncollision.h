@@ -79,14 +79,16 @@ public:
 		D3DXVECTOR3 const offset,
 		D3DXVECTOR3 const &pos,
 		float const &fRadius,
-		float const &fVertical
+		float const &fVertical,
+		OBJTYPE const &obj = OBJTYPE_ACTOR
 	);
 	// çÏê¨èàóù(å¬êlä«óù)
 	static unique_ptr<CColumnCollision> Create_Self(
 		D3DXVECTOR3 const offset,
 		D3DXVECTOR3 const &pos,
 		float const &fRadius,
-		float const &fVertical
+		float const &fVertical,
+		OBJTYPE const &obj = OBJTYPE_ACTOR
 	);
 
 protected:

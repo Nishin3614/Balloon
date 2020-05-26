@@ -37,6 +37,9 @@
 CCollision::CCollision() : CScene::CScene()
 {
 	// 初期化
+	m_bCollision = false;
+	m_nMyObjectId = 0;
+	m_nOponentId = -1;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,47 +66,101 @@ bool CCollision::SelectShape(CShape * const shape)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::CollisionDetection(CCollision * collision)
 {
+	// 変数宣言	
+	bool bJudg = false;	// 当たり判定状態
 	// クラス型比較 //
 	// 矩形クラス
 	if (collision->GetShape()->GetType() == CShape::SHAPETYPE_RECT)
 	{
-		return Judg((CRectShape*)collision->GetShape());
+		bJudg = Judg((CRectShape*)collision->GetShape());
 	}
 	// 球クラス
 	else if (collision->GetShape()->GetType() == CShape::SHAPETYPE_SPHERE)
 	{
-		return Judg((CSphereShape*)collision->GetShape());
+		bJudg = Judg((CSphereShape*)collision->GetShape());
 	}
 	// 円柱クラス
 	else if (collision->GetShape()->GetType() == CShape::SHAPETYPE_COLUMN)
 	{
-		return Judg((CColumnShape*)collision->GetShape());
+		bJudg = Judg((CColumnShape*)collision->GetShape());
 	}
-
-	return false;
+	// 判定がtrueなら
+	// ->情報を保存
+	if (bJudg ==  true)
+	{
+		// 相手の当たり判定状態をtrueへ
+		collision->m_bCollision = true;
+		// 相手の番号を代入
+		collision->m_nOponentId = m_nMyObjectId;
+	}
+	// 当たり判定状態を返す
+	return bJudg;
 }
 
-/*
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 当たり判定(管理している全体)
+// 当たり判定(指定オブジェクト)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CCollision::COllisionDetection(void)
+bool CCollision::CollisionDetection(OBJTYPE const & obj)
 {
 	// 変数宣言
-	CCollision * pCollision;
+	CCollision * pCollision;	// 当たり判定情報
+	bool bCollision = false;	// 当たり判定状態
 	// 処理
 	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_COLLISION); nCntLayer++)
 	{
 		// 当たり判定取得
 		pCollision = (CCollision *)CScene::GetScene(LAYER_COLLISION, nCntLayer);
-		if (pCollision == NULL)
-		{
-			continue;
-		}
-		this->SelectShape(pCollision->GetShape());
+		// 当たり判定のNULLチェック
+		// ->ループスキップ
+		if (pCollision == NULL) continue;
+		// 自分の当たり判定と取得した当たり判定が同じなら
+		// ->ループスキップ
+		else if (pCollision == this) continue;
+		// 指定したオブジェクトではないなら
+		// ->ループスキップ
+		else if (pCollision->m_nMyObjectId != obj) continue;
+		// 当たり判定をtrueにする
+		bCollision |= this->CollisionDetection(pCollision);
 	}
+	// 当たり判定状態を返す
+	return bCollision;
 }
-*/
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たり判定(管理している全体)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bool CCollision::CollisionDetection(void)
+{
+	// 変数宣言
+	CCollision * pCollision;	// 当たり判定情報
+	bool bCollision = false;	// 当たり判定状態
+	// 処理
+	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_COLLISION); nCntLayer++)
+	{
+		// 当たり判定取得
+		pCollision = (CCollision *)CScene::GetScene(LAYER_COLLISION, nCntLayer);
+		// 当たり判定のNULLチェック
+		// ->ループスキップ
+		if (pCollision == NULL) continue;
+		// 自分の当たり判定と取得した当たり判定が同じなら
+		// ->ループスキップ
+		else if (pCollision == this) continue;
+		// 当たり判定をtrueにする
+		bCollision |= this->CollisionDetection(pCollision);
+	}
+	// 当たり判定状態を返す
+	return bCollision;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たり判定状態の強制falseへ
+// 当たった後の行動が起こった時に判定をfalseにする
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCollision::SetCollision(void)
+{
+	m_bCollision = false;
+	m_nOponentId = -1;
+}
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 矩形と矩形の判定

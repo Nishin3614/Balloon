@@ -74,6 +74,8 @@ CCharacter::CCharacter() : CScene::CScene()
 	m_fAlpha = 1.0f;								// アルファ値
 	m_bMotionCamera = false;						// モーションカメラの切り替え
 	m_pStencilshadow = NULL;						// ステンシルシャドウ
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -195,10 +197,10 @@ void CCharacter::Init()
 	// キャラクター当たり判定設定
 	if (m_modelAll[m_character]->pCharacterCollision != NULL)
 	{
-		m_pCharacterCollision = CRectCollision::Create_Self(
+		m_pCharacterCollision = std::move(CRectCollision::Create_Self(
 			m_modelAll[m_character]->pCharacterCollision->Offset,
 			m_pos + m_modelAll[m_character]->pCharacterCollision->RectInfo->size
-		);
+		));
 	}
 	// シャドウon
 	if (CIRCLESHADOW == true)
@@ -210,8 +212,7 @@ void CCharacter::Init()
 	}
 
 	// 風船生成
-	m_pBalloon = CBalloon::Create(m_pos, D3DVECTOR3_ONE);
-	m_pBalloon->SetParentMtx(&m_mtxWorld);
+	m_pBalloon = CBalloon::Create(m_pos, D3DVECTOR3_ONE,&m_mtxWorld);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -264,19 +265,30 @@ void CCharacter::Update(void)
 		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
 		// ->ループスキップ
 		else if (pCharacter == this) continue;
-		// キャラクター同士当たっていないなら
+		// キャラクター同士当たっているなら
+		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
+		{
+			// キャラクター同士当たっている
+			// ->バウンド処理
+			D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
+			D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
+			diffpos = pCharacter->m_pos - m_pos;
+			// 相手から見てプレイヤーがいる角度
+			rot.y = (atan2f(diffpos.x, diffpos.z));
+			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
+			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+		}
+		// 相手キャラクターの風船がNULLなら
 		// ->ループスキップ
-		else if (!m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision())) continue;
-		// キャラクター同士当たっている
-		// ->バウンド処理
-		D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
-		D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
-		diffpos = pCharacter->m_pos - m_pos;
-		// 相手から見てプレイヤーがいる角度
-		rot.y = (atan2f(diffpos.x, diffpos.z));
-		m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
-		m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+		if (pCharacter->m_pBalloon->GetSceneX(0) == NULL) continue;
+		// 相手キャラクターの風船のモデルがNULLなら
+		// ->ループスキップ
+		else if (pCharacter->m_pBalloon->GetSceneX(0)->GetCollision() == NULL) continue;
+		// 自キャラクターと相手のキャラクターの風船の判定
+		else if (m_pCharacterCollision->CollisionDetection(pCharacter->m_pBalloon->GetSceneX(0)->GetCollision()))
+		{
 
+		}
 		// 直すこと
 		// まだ当たった後の判定をとっただけ
 

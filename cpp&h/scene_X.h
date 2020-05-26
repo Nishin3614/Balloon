@@ -104,11 +104,22 @@ public:
 	void SetShadowMap(bool const &bShadow) { m_bShadowMap = bShadow; };			// モデル番号
 	void SetCollision(void);													// 当たり判定
 	void SetParentMtx(D3DXMATRIX * ParentMax) { m_pParentMtx = ParentMax; };	// 親マトリックスの設定
+	// 当たり判定設定
+	// 0:矩形、1:球、2:円柱
+	void SetCollision(
+		int const &nShapeType,
+		int const &obj
+	);									// 当たり判定設定
+
 	// 取得
 	CScene_X::MODEL_LOAD * GetModel(int const & nModelId);						// モデル情報取得
 	D3DXVECTOR3 &GetPos(void) { return m_pos; };								// 位置
 	D3DXVECTOR3 &GetRot(void) { return m_rot; };								// 回転
 	D3DXMATRIX &GetMatrix(void) { return m_mtxWorld; };							// マトリックス情報
+	// 当たり判定状態取得
+	bool const GetbCollision(void);													// 当たり判定状態
+	// 当たり判定の情報を取得
+	CCollision * GetCollision(void);
 	static MODEL_LOAD * GetModelLoad(int const &nModelId);						// モデル情報取得
 protected:
 private:
@@ -127,7 +138,7 @@ private:
 	float			m_fShadowAlpha;						// 影のα値
 	CScene_THREE *	m_pShadow;							// まる影
 	CExtrusion		*m_pExtrusion;						// 押し出し
-
+	CCollision		*m_Collision;						// 当たり判定
 };
 
 #endif

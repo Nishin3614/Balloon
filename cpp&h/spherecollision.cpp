@@ -69,7 +69,8 @@ bool CSphereCollision::Judg(CColumnShape * const ColumnShape)
 CSphereCollision *CSphereCollision::Create(
 	D3DXVECTOR3 const offset,
 	D3DXVECTOR3 const &pos,
-	float const &fRadius
+	float const &fRadius,
+	OBJTYPE const &obj
 )
 {
 	// 変数宣言
@@ -77,8 +78,9 @@ CSphereCollision *CSphereCollision::Create(
 	// メモリ確保
 	pSphereCollision = new CSphereCollision();
 	// 球の設定
-	pSphereCollision->m_pSphereShape = CSphereShape::Create(offset,pos,fRadius);
-	pSphereCollision->m_pSphereShape->SetPos(pos);
+	pSphereCollision->m_pSphereShape = CSphereShape::Create(offset,pos,fRadius);	// 球の形を生成
+	pSphereCollision->m_pSphereShape->SetPos(pos);									// 位置情報設定
+	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
 	// シーン管理設定
 	pSphereCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pSphereCollision;
@@ -90,13 +92,15 @@ CSphereCollision *CSphereCollision::Create(
 unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 	D3DXVECTOR3 const offset,
 	D3DXVECTOR3 const &pos,
-	float const &fRadius
+	float const &fRadius,
+	OBJTYPE const &obj
 )
 {
 	// 変数宣言
 	unique_ptr<CSphereCollision> pSphereCollision(new CSphereCollision);
 	// 球の設定
-	pSphereCollision->m_pSphereShape = CSphereShape::Create(offset,pos,fRadius);
-	pSphereCollision->m_pSphereShape->SetPos(pos);
+	pSphereCollision->m_pSphereShape = CSphereShape::Create(offset, pos, fRadius);	// 球の形を生成
+	pSphereCollision->m_pSphereShape->SetPos(pos);									// 位置情報設定
+	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
 	return pSphereCollision;
 }

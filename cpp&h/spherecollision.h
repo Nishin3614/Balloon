@@ -78,13 +78,15 @@ public:
 	static CSphereCollision *Create(
 		D3DXVECTOR3 const offset,
 		D3DXVECTOR3 const &pos,
-		float const &fRadius
+		float const &fRadius,
+		OBJTYPE const &obj = OBJTYPE_ACTOR
 	);
 	// ì¬ˆ—(ŒÂlŠÇ—)
 	static unique_ptr<CSphereCollision> Create_Self(
 		D3DXVECTOR3 const offset,
 		D3DXVECTOR3 const &pos,
-		float const &fRadius
+		float const &fRadius,
+		OBJTYPE const &obj = OBJTYPE_ACTOR
 	);
 
 protected:
