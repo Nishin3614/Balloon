@@ -11,13 +11,14 @@
 #include "scene.h"
 #include "game.h"
 #include "fade.h"
+#include "title.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
 // マクロ関数
 //
 // ----------------------------------------------------------------------------------------------------
-#define STARTMODE (MODE_GAME)
+#define STARTMODE (MODE_TITLE)
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -31,13 +32,14 @@ CMouse * CManager::m_mouse = NULL;						// マウス
 CKeyConfig * CManager::m_keyconfig = NULL;				// キー詳細
 CSound * CManager::m_sound = NULL;						// サウンド
 CFade * CManager::m_fade = NULL;						// フェード
+CTitle * CManager::m_title = NULL;						// タイトル
 CGame * CManager::m_game = NULL;						// ゲーム
-CManager::MODE CManager::m_mode = CManager::MODE_GAME;	// モード
+CManager::MODE CManager::m_mode = CManager::MODE_TITLE;	// モード
 bool CManager::m_bWire = false;							// ワイヤー
 
-// ----------------------------------------------------------------------------------------------------
-// コンストラクタ
-// ----------------------------------------------------------------------------------------------------
+														// ----------------------------------------------------------------------------------------------------
+														// コンストラクタ
+														// ----------------------------------------------------------------------------------------------------
 CManager::CManager()
 {
 }
@@ -70,6 +72,8 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	// レンダリングの生成
 	m_renderer = new CRenderer;
 	/* 画面 */
+	// タイトルの生成
+	m_title = new CTitle;
 	// ゲームの生成
 	m_game = new CGame;
 	// モードの設定
@@ -178,6 +182,13 @@ void CManager::Uninit(void)
 		delete m_fade;
 		m_fade = NULL;
 	}
+	// タイトル
+	if (m_title != NULL)
+	{
+		m_title->Uninit();
+		delete m_title;
+		m_title = NULL;
+	}
 	// ゲーム
 	if (m_game != NULL)
 	{
@@ -215,6 +226,10 @@ void CManager::Update(void)
 	// 前のモード終了
 	switch (m_mode)
 	{
+		// タイトル
+	case MODE_TITLE:
+		m_title->Update();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Update();
@@ -246,6 +261,10 @@ void CManager::SetMode(MODE const mode)
 	// 前のモード終了
 	switch (m_mode)
 	{
+		// タイトル
+	case MODE_TITLE:
+		m_title->Uninit();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Uninit();
@@ -256,9 +275,13 @@ void CManager::SetMode(MODE const mode)
 
 	m_mode = mode;	// 現在のモードを代入
 
-	// 現在のモード初期化
+					// 現在のモード初期化
 	switch (mode)
 	{
+		// タイトル
+	case MODE_TITLE:
+		m_title->Init();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Init();
