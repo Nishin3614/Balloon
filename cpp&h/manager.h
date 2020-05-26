@@ -47,6 +47,7 @@
 // ------------------------------------------
 class CFade;		// 画面遷移
 class CGame;		// ゲーム
+class CTitle;
 
 // ------------------------------------------
 //
@@ -60,7 +61,8 @@ public:
 	// モード
 	typedef enum
 	{
-		MODE_GAME = 0,
+		MODE_TITLE = 0,
+		MODE_GAME,
 		MODE_MAX
 	} MODE;
 	/* 関数 */
@@ -71,30 +73,31 @@ public:
 	void Update(void);
 	void Draw(void);
 	static void SetMode(MODE const mode);								// モード設定
-	static CRenderer * GetRenderer(void)	{ return m_renderer; };		// レンダリングの取得
-	static CKeyboard * GetKeyboard(void)	{ return m_keyboard; };		// キーボードの取得
-	static CJoypad * GetJoy(void)			{ return m_joypad; };		// ジョイパッドの取得
-	static CMouse * GetMouse(void)			{ return m_mouse; };		// マウスの取得
-	static CKeyConfig * GetKeyConfig(void)	{ return m_keyconfig; };	// キー詳細の取得
-	static CSound * GetSound(void)			{ return m_sound; };		// サウンドの取得
-	static CFade * GetFade(void)			{ return m_fade; };			// 画面遷移の取得
-	static CGame * GetGame(void)			{ return m_game; };			// ゲームの取得
-	static MODE GetMode(void)				{ return m_mode; };			// モードの取得
+	static CRenderer * GetRenderer(void) { return m_renderer; };		// レンダリングの取得
+	static CKeyboard * GetKeyboard(void) { return m_keyboard; };		// キーボードの取得
+	static CJoypad * GetJoy(void) { return m_joypad; };		// ジョイパッドの取得
+	static CMouse * GetMouse(void) { return m_mouse; };		// マウスの取得
+	static CKeyConfig * GetKeyConfig(void) { return m_keyconfig; };	// キー詳細の取得
+	static CSound * GetSound(void) { return m_sound; };		// サウンドの取得
+	static CFade * GetFade(void) { return m_fade; };			// 画面遷移の取得
+	static CGame * GetGame(void) { return m_game; };			// ゲームの取得
+	static MODE GetMode(void) { return m_mode; };			// モードの取得
 protected:
 
 private:
 	// ゲームに欠かせないもの
 	static CRenderer * m_renderer;			// レンダリング
 	static CSound * m_sound;				// サウンド
-	
-	// 入力デバイス
+
+											// 入力デバイス
 	static CKeyboard * m_keyboard;			// キーボード
 	static CJoypad * m_joypad;				// ジョイパッド
 	static CMouse * m_mouse;				// マウス
 	static CKeyConfig * m_keyconfig;		// キー詳細
 
-	// 画面
+											// 画面
 	static CFade * m_fade;					// 画面遷移
+	static CTitle * m_title;				// タイトル
 	static CGame * m_game;					// ゲーム
 
 	static MODE m_mode;						// モード
