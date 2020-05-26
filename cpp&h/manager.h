@@ -47,7 +47,8 @@
 // ------------------------------------------
 class CFade;		// 画面遷移
 class CGame;		// ゲーム
-class CTitle;
+class CTitle;		// タイトル
+class CTutorial;	// チュートリアル
 
 // ------------------------------------------
 //
@@ -62,6 +63,7 @@ public:
 	typedef enum
 	{
 		MODE_TITLE = 0,
+		MODE_TUTORIAL,
 		MODE_GAME,
 		MODE_MAX
 	} MODE;
@@ -98,6 +100,7 @@ private:
 											// 画面
 	static CFade * m_fade;					// 画面遷移
 	static CTitle * m_title;				// タイトル
+	static CTutorial * m_tutorial;			// チュートリアル
 	static CGame * m_game;					// ゲーム
 
 	static MODE m_mode;						// モード

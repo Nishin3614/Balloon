@@ -1,10 +1,10 @@
 //=============================================================================
 //
-// タイトルの処理 [title.cpp]
+// チュートリアルの処理 [tutorial.cpp]
 // Author : Ryouma Inoue
 //
 //=============================================================================
-#include "title.h"			// インクルードファイル
+#include "tutorial.h"			// インクルードファイル
 #include "fade.h"
 #include "renderer.h"
 #include "sound.h"
@@ -17,7 +17,7 @@
 // コンストラクタ
 //
 //=============================================================================
-CTitle::CTitle()
+CTutorial::CTutorial()
 {
 }
 
@@ -26,7 +26,7 @@ CTitle::CTitle()
 // デストラクタ
 //
 //=============================================================================
-CTitle::~CTitle()
+CTutorial::~CTutorial()
 {
 
 }
@@ -36,7 +36,7 @@ CTitle::~CTitle()
 // 初期化処理
 //
 //=============================================================================
-HRESULT CTitle::Init()
+HRESULT CTutorial::Init()
 {
 
 	// 初期化
@@ -48,7 +48,7 @@ HRESULT CTitle::Init()
 // 終了処理
 //
 //=============================================================================
-void CTitle::Uninit(void)
+void CTutorial::Uninit(void)
 {
 	// 全ての開放
 	CScene::ReleaseAll();
@@ -59,8 +59,8 @@ void CTitle::Uninit(void)
 // 更新処理
 //
 //=============================================================================
-void CTitle::Update(void)
-{	
+void CTutorial::Update(void)
+{
 	CFade *pFade = CManager::GetFade();
 
 	// フェードしていないとき
@@ -73,7 +73,7 @@ void CTitle::Update(void)
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// チュートリアルへ
-				pFade->SetFade(CManager::MODE_TUTORIAL);
+				pFade->SetFade(CManager::MODE_GAME);
 			}
 		}
 	}
@@ -84,8 +84,8 @@ void CTitle::Update(void)
 // 描画処理
 //
 //=============================================================================
-void CTitle::Draw(void)
-{	
+void CTutorial::Draw(void)
+{
 
 }
 
@@ -94,16 +94,16 @@ void CTitle::Draw(void)
 // タイトルの生成
 //
 //=============================================================================
-CTitle * CTitle::Create(void)
+CTutorial * CTutorial::Create(void)
 {
 	// 変数
-	CTitle *pTitle;
+	CTutorial *pTutorial;
 
 	// メモリの確保
-	pTitle = new CTitle;
+	pTutorial = new CTutorial;
 
 	// 初期化
-	pTitle->Init();
+	pTutorial->Init();
 
-	return pTitle;
+	return pTutorial;
 }
