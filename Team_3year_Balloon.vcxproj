@@ -210,6 +210,7 @@
     <ClCompile Include="cpp&amp;h\player.cpp" />
     <ClCompile Include="cpp&amp;h\rectcollision.cpp" />
     <ClCompile Include="cpp&amp;h\renderer.cpp" />
+    <ClCompile Include="cpp&amp;h\result.cpp" />
     <ClCompile Include="cpp&amp;h\scene.cpp" />
     <ClCompile Include="cpp&amp;h\scene_load.cpp" />
     <ClCompile Include="cpp&amp;h\scene_three.cpp" />
@@ -223,6 +224,7 @@
     <ClCompile Include="cpp&amp;h\stencilshadow.cpp" />
     <ClCompile Include="cpp&amp;h\texture_manager.cpp" />
     <ClCompile Include="cpp&amp;h\title.cpp" />
+    <ClCompile Include="cpp&amp;h\tutorial.cpp" />
     <ClCompile Include="cpp&amp;h\ui.cpp" />
     <ClCompile Include="cpp&amp;h\ui_group.cpp" />
   </ItemGroup>
@@ -279,6 +281,7 @@
     <ClInclude Include="cpp&amp;h\player.h" />
     <ClInclude Include="cpp&amp;h\rectcollision.h" />
     <ClInclude Include="cpp&amp;h\renderer.h" />
+    <ClInclude Include="cpp&amp;h\result.h" />
     <ClInclude Include="cpp&amp;h\scene.h" />
     <ClInclude Include="cpp&amp;h\scene_load.h" />
     <ClInclude Include="cpp&amp;h\scene_three.h" />
@@ -292,6 +295,7 @@
     <ClInclude Include="cpp&amp;h\stencilshadow.h" />
     <ClInclude Include="cpp&amp;h\texture_manager.h" />
     <ClInclude Include="cpp&amp;h\title.h" />
+    <ClInclude Include="cpp&amp;h\tutorial.h" />
     <ClInclude Include="cpp&amp;h\ui.h" />
     <ClInclude Include="cpp&amp;h\ui_group.h" />
   </ItemGroup>

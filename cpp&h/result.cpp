@@ -1,10 +1,10 @@
 //=============================================================================
 //
-// タイトルの処理 [title.cpp]
+// リザルトの処理 [result.cpp]
 // Author : Ryouma Inoue
 //
 //=============================================================================
-#include "title.h"			// インクルードファイル
+#include "result.h"			// インクルードファイル
 #include "fade.h"
 #include "renderer.h"
 #include "sound.h"
@@ -17,7 +17,7 @@
 // コンストラクタ
 //
 //=============================================================================
-CTitle::CTitle()
+CResult::CResult()
 {
 }
 
@@ -26,7 +26,7 @@ CTitle::CTitle()
 // デストラクタ
 //
 //=============================================================================
-CTitle::~CTitle()
+CResult::~CResult()
 {
 
 }
@@ -36,7 +36,7 @@ CTitle::~CTitle()
 // 初期化処理
 //
 //=============================================================================
-HRESULT CTitle::Init()
+HRESULT CResult::Init()
 {
 
 	// 初期化
@@ -48,7 +48,7 @@ HRESULT CTitle::Init()
 // 終了処理
 //
 //=============================================================================
-void CTitle::Uninit(void)
+void CResult::Uninit(void)
 {
 	// 全ての開放
 	CScene::ReleaseAll();
@@ -59,8 +59,8 @@ void CTitle::Uninit(void)
 // 更新処理
 //
 //=============================================================================
-void CTitle::Update(void)
-{	
+void CResult::Update(void)
+{
 	CFade *pFade = CManager::GetFade();
 
 	// フェードしていないとき
@@ -84,8 +84,8 @@ void CTitle::Update(void)
 // 描画処理
 //
 //=============================================================================
-void CTitle::Draw(void)
-{	
+void CResult::Draw(void)
+{
 
 }
 
@@ -94,16 +94,16 @@ void CTitle::Draw(void)
 // タイトルの生成
 //
 //=============================================================================
-CTitle * CTitle::Create(void)
+CResult * CResult::Create(void)
 {
 	// 変数
-	CTitle *pTitle;
+	CResult *pResult;
 
 	// メモリの確保
-	pTitle = new CTitle;
+	pResult = new CResult;
 
 	// 初期化
-	pTitle->Init();
+	pResult->Init();
 
-	return pTitle;
+	return pResult;
 }

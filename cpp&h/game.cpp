@@ -127,6 +127,23 @@ void CGame::Update(void)
 			PauseState();
 		}
 	}
+
+	CFade *pFade = CManager::GetFade();
+
+	// フェードしていないとき
+	if (pFade->GetFade() == CFade::FADE_NONE)
+	{
+		// ゲームへ遷移
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
+		{
+
+			if (pFade->GetFade() == CFade::FADE_NONE)
+			{
+				// チュートリアルへ
+				pFade->SetFade(CManager::MODE_TUTORIAL);
+			}
+		}
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

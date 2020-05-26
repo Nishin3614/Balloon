@@ -1,11 +1,11 @@
 //=============================================================================
 //
-// タイトルの処理 [title.h]
+// リザルトの処理 [result.h]
 // Author : Ryouma Inoue
 //
 //=============================================================================
-#ifndef _TITLE_H_
-#define _TITLE_H_
+#ifndef _RESULT_H_
+#define _RESULT_H_
 
 #include "main.h"
 
@@ -17,19 +17,19 @@
 //=============================================================================
 // 管理クラス
 //=============================================================================
-class CTitle
+class CResult
 {
 public:
 
-	CTitle();													// コンストラクタ
-	~CTitle();													// デストラクタ
+	CResult();													// コンストラクタ
+	~CResult();													// デストラクタ
 
 	HRESULT Init();												// 初期化
 	void	Uninit(void);										// 終了
 	void	Update(void);										// 更新
 	void	Draw(void);											// 描画
 
-	static  CTitle		*Create(void);							// タイトルの生成
+	static  CResult		*Create(void);							// タイトルの生成
 
 private:
 };
