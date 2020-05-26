@@ -14,6 +14,7 @@
 #include "title.h"
 #include "tutorial.h"
 #include "result.h"
+#include "ranking.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -38,6 +39,7 @@ CTitle * CManager::m_title = NULL;						// タイトル
 CTutorial * CManager::m_tutorial = NULL;				// チュートリアル
 CGame * CManager::m_game = NULL;						// ゲーム
 CResult * CManager::m_result = NULL;					// リザルト
+CRanking * CManager::m_ranking = NULL;					// ランキング
 CManager::MODE CManager::m_mode = CManager::MODE_TITLE;	// モード
 bool CManager::m_bWire = false;							// ワイヤー
 
@@ -84,6 +86,8 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	m_game = new CGame;
 	// リザルトの生成
 	m_result = new CResult;
+	// リザルトの生成
+	m_ranking = new CRanking;
 	// モードの設定
 	m_mode = STARTMODE;
 
@@ -218,6 +222,13 @@ void CManager::Uninit(void)
 		delete m_result;
 		m_result = NULL;
 	}
+	// リザルト
+	if (m_ranking != NULL)
+	{
+		m_ranking->Uninit();
+		delete m_ranking;
+		m_ranking = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -264,6 +275,10 @@ void CManager::Update(void)
 	case MODE_RESULT:
 		m_result->Update();
 		break;
+		// ランキング
+	case MODE_RANKING:
+		m_ranking->Update();
+		break;
 	default:
 		break;
 	}
@@ -307,6 +322,10 @@ void CManager::SetMode(MODE const mode)
 	case MODE_RESULT:
 		m_result->Uninit();
 		break;
+		// ランキング
+	case MODE_RANKING:
+		m_ranking->Uninit();
+		break;
 	default:
 		break;
 	}
@@ -331,6 +350,10 @@ void CManager::SetMode(MODE const mode)
 		// リザルト
 	case MODE_RESULT:
 		m_result->Init();
+		break;
+		// ランキング
+	case MODE_RANKING:
+		m_ranking->Init();
 		break;
 	default:
 		break;

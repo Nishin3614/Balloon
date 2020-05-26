@@ -1,10 +1,10 @@
 //=============================================================================
 //
-// リザルトの処理 [result.cpp]
+// ランキングの処理 [ranking.cpp]
 // Author : Ryouma Inoue
 //
 //=============================================================================
-#include "result.h"			// インクルードファイル
+#include "ranking.h"			// インクルードファイル
 #include "fade.h"
 #include "renderer.h"
 #include "sound.h"
@@ -17,7 +17,7 @@
 // コンストラクタ
 //
 //=============================================================================
-CResult::CResult()
+CRanking::CRanking()
 {
 }
 
@@ -26,7 +26,7 @@ CResult::CResult()
 // デストラクタ
 //
 //=============================================================================
-CResult::~CResult()
+CRanking::~CRanking()
 {
 
 }
@@ -36,7 +36,7 @@ CResult::~CResult()
 // 初期化処理
 //
 //=============================================================================
-HRESULT CResult::Init()
+HRESULT CRanking::Init()
 {
 
 	// 初期化
@@ -48,7 +48,7 @@ HRESULT CResult::Init()
 // 終了処理
 //
 //=============================================================================
-void CResult::Uninit(void)
+void CRanking::Uninit(void)
 {
 	// 全ての開放
 	CScene::ReleaseAll();
@@ -59,7 +59,7 @@ void CResult::Uninit(void)
 // 更新処理
 //
 //=============================================================================
-void CResult::Update(void)
+void CRanking::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
 
@@ -72,8 +72,8 @@ void CResult::Update(void)
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
-				// ランキングへ
-				pFade->SetFade(CManager::MODE_RANKING);
+				// タイトルへ
+				pFade->SetFade(CManager::MODE_TITLE);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ void CResult::Update(void)
 // 描画処理
 //
 //=============================================================================
-void CResult::Draw(void)
+void CRanking::Draw(void)
 {
 
 }
@@ -94,16 +94,16 @@ void CResult::Draw(void)
 // タイトルの生成
 //
 //=============================================================================
-CResult * CResult::Create(void)
+CRanking * CRanking::Create(void)
 {
 	// 変数
-	CResult *pResult;
+	CRanking *pRanking;
 
 	// メモリの確保
-	pResult = new CResult;
+	pRanking = new CRanking;
 
 	// 初期化
-	pResult->Init();
+	pRanking->Init();
 
-	return pResult;
+	return pRanking;
 }

@@ -29,7 +29,7 @@ public:
 	void	Update(void);										// 更新
 	void	Draw(void);											// 描画
 
-	static  CResult		*Create(void);							// タイトルの生成
+	static  CResult		*Create(void);							// リザルトの生成
 
 private:
 };

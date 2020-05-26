@@ -139,8 +139,8 @@ void CGame::Update(void)
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
-				// チュートリアルへ
-				pFade->SetFade(CManager::MODE_TUTORIAL);
+				// リザルトへ
+				pFade->SetFade(CManager::MODE_RESULT);
 			}
 		}
 	}
