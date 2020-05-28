@@ -16,18 +16,38 @@ SCRIPT
 		ROT = 0.0
 		FIRST_TEX = 0.0 0.0
 		LAST_TEX = 1.0 1.0
-		TEXTYPE = 43
+		TEXTYPE = 59
 		OFFSET = 0
 		# ----------[フェードイン]---------- #
 		FADE_IN
 			# フェード開始時間
 			STARTFADETIME = 0
+			# 位置指定
+			FADE_POS
+				BEGIN_POS = -249.6 0.0 0.0
+				END_POS = 640.0 300.0 0.0
+				MAXFRAME = 51
+			END_FADE_POS
+		END_FADE_IN
+		# ----------[フェードアウト]---------- #
+		FADE_OUT
+			# フェード開始時間
+			STARTFADETIME = 195
 			# 色指定
 			FADE_COL
-				BEGIN_COL = 1.0 1.0 1.0 0.0
-				END_COL = 1.0 1.0 1.0 1.0
-				MAXFRAME = 30
+				BEGIN_COL = 1.0 1.0 1.0 1.0
+				END_COL = 1.0 1.0 1.0 0.0
+				MAXFRAME = 29
 			END_FADE_COL
-		END_FADE_IN
+		END_FADE_OUT
+		# ----------[強調]---------- #
+		COOPERATION
+			# 色変化
+			COL
+				CHANGECOL = 1.0 1.0 1.0 0.0
+				TIMESWITCH = 42
+				TIMECHANGE = 42
+			END_COL
+		END_COOPERATION
 	END_SET
 END_SCRIPT

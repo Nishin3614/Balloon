@@ -58,6 +58,22 @@ public:
 		CHARACTER_MAX
 	} CHARACTER;
 	/* 構造体 */
+	// ステータス情報
+	typedef struct STATUS
+	{
+		/* 関数 */
+		// 初期化
+		STATUS()
+		{
+			nMaxLife = 0;				// 最大HP
+			nMaxMP = 0;					// 最大MP
+			nMaxScore = 0;				// スコア
+		}
+		/* 変数 */
+		int			nMaxLife;		// 最大HP
+		int			nMaxMP;			// 最大MP
+		int			nMaxScore;		// 最大スコア
+	} STATUS, *PSTATUS;
 	/* 関数 */
 	CCharacter();
 	~CCharacter();
@@ -67,7 +83,6 @@ public:
 	void Draw(void);
 	// キャラクターが死んだとき
 	virtual void Die(void) = 0;
-
 
 	// 必要に応じた動作 //
 	// 設定 //
@@ -94,6 +109,11 @@ public:
 	STATE GetState(void) const						{ return m_State; };
 	// キャラクター
 	CHARACTER	GetCharacter(void) const			{ return m_character; };
+	// ステータス(キャラクターのクラスを基底クラスに持っているクラス)
+	STATUS &GetStatus(void) { return m_sStatus[m_character]; };
+	// ステータス(キャラクター別)
+	// 引数:キャラクター番号
+	static STATUS &GetStatus(CHARACTER const &character) { return m_sStatus[character]; };
 	// 床の高さ
 	bool GetFloorHeight(void);
 	// モーションのフレーム情報取得処理
@@ -169,6 +189,7 @@ private:
 	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];	// キャラクターのサイズ
 	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
 	static int						m_NumParts[CHARACTER_MAX];		// 動かすモデル数
+	static STATUS					m_sStatus[CHARACTER_MAX];		// キャラクターすべてのスタータス情報
 	CMeshobit						*m_pMeshobit;					// 軌跡
 	CModel 							*m_pModel;						// モデル
 	CHARACTER						m_character;					// キャラクター

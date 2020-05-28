@@ -64,8 +64,6 @@ void CGame::Init(void)
 {
 	// カメラのタイプ設定
 	CManager::GetRenderer()->GetCamera()->SetType(CCamera::TYPE_FOLLOW);
-	// 変数宣言
-	vector<CUi::UI_LOAD> vec_UiLoad = CUi::GetUi(CUi::UITYPE_GAMEUI_NUMBER);
 	/* 初期化 */
 	// 状態
 	m_state = STATE_NORMAL;

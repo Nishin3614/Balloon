@@ -251,6 +251,11 @@ void CPlayer::Move(void)
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * PLAYER_KEYMOVE;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * PLAYER_KEYMOVE;
 	}
+	// ’ˆ‚É•‚‚­
+	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_JUMP))
+	{
+		move.y += 5.0f;
+	}
 	// ˆÚ“®ó‘Ô‚È‚ç
 	if (bMove == true)
 	{

@@ -21,7 +21,7 @@
 // マクロ関数
 //
 // ----------------------------------------------------------------------------------------------------
-#define STARTMODE (MODE_TITLE)
+#define STARTMODE (MODE_GAME)
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -40,7 +40,7 @@ CTutorial * CManager::m_tutorial = NULL;				// チュートリアル
 CGame * CManager::m_game = NULL;						// ゲーム
 CResult * CManager::m_result = NULL;					// リザルト
 CRanking * CManager::m_ranking = NULL;					// ランキング
-CManager::MODE CManager::m_mode = CManager::MODE_TITLE;	// モード
+CManager::MODE CManager::m_mode = CManager::MODE_GAME;	// モード
 bool CManager::m_bWire = false;							// ワイヤー
 
 // ----------------------------------------------------------------------------------------------------

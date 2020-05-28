@@ -42,6 +42,7 @@ MODEL_ALL	*CCharacter::m_modelAll[CHARACTER_MAX] = {};		// モデル全体の情報
 CModel_info	*CCharacter::m_model_info[CHARACTER_MAX] = {};		// モデル情報
 vector<int>	CCharacter::m_modelId[CHARACTER_MAX];				// モデル番号
 D3DXVECTOR3	CCharacter::m_CharacterSize[CHARACTER_MAX] = {};	// キャラクターのサイズ
+CCharacter::STATUS CCharacter::m_sStatus[CHARACTER_MAX] = {};	// キャラクターすべてのスタータス情報
 int			CCharacter::m_NumParts[CHARACTER_MAX] = {};			// 動かすモデル数
 int			CCharacter::m_NumModel[CHARACTER_MAX] = {};			// 最大モデル数
 int			CCharacter::m_nCameraCharacter = 0;					// キャラクターに追尾するID
@@ -361,12 +362,12 @@ void CCharacter::Move(void)
 	m_rot.z = CCalculation::Rot_One_Limit(m_rot.z);
 	
 	// 移動
-	m_move.y -= 1;
-	m_pos.y += m_move.y;
+	m_move.y -= 0.1f;
 	if (m_nMotiontype != MOTIONTYPE_STANDUP)
 	{
 		m_pos.x += m_move.x;
 		m_pos.z += m_move.z;
+		m_pos.y += m_move.y;
 	}
 	// 当たり判定の更新
 	m_pCharacterCollision->GetShape()->PassPos(m_pos);
@@ -805,6 +806,42 @@ void CCharacter::Load(
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 HRESULT CCharacter::LoadStatus(void)
 {
+	// 変数宣言
+	vector<vector<string>> vsvec_Contens;	// ファイルの中身格納用
+											// ファイルの中身を取得する
+	vsvec_Contens = CCalculation::FileContens(CHARACTER_STATUS_FILE, ',');
+	// 行ごとに回す
+	for (int nCntLine = 0; nCntLine < (signed)vsvec_Contens.size(); nCntLine++)
+	{
+		// キャラクターが上限を超えていたら抜ける
+		if (nCntLine >= CHARACTER_MAX)
+		{
+			break;
+		}
+		// 項目ごとに回す
+		for (int nCntItem = 0; nCntItem < (signed)vsvec_Contens.at(nCntLine).size(); nCntItem++)
+		{
+			switch (nCntItem)
+			{
+				// HP
+			case 0:
+				m_sStatus[nCntLine].nMaxLife = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// MP
+			case 1:
+				m_sStatus[nCntLine].nMaxMP = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// スコア
+			case 2:
+				m_sStatus[nCntLine].nMaxScore = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	// vectorの多重配列開放
+	vector<vector<string>>().swap(vsvec_Contens);
 	return S_OK;
 }
 
