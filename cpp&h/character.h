@@ -39,6 +39,8 @@ public:
 	typedef enum
 	{
 		STATE_NORMAL = 0,
+		STATE_DIE,
+		STATE_MAX
 	} STATE;
 	// 基本モーションタイプ
 	typedef enum
@@ -65,14 +67,14 @@ public:
 		// 初期化
 		STATUS()
 		{
-			nMaxLife = 0;				// 最大HP
-			nMaxMP = 0;					// 最大MP
-			nMaxScore = 0;				// スコア
+			nMaxBalloon = 0;			// 最大HP
+			nMaxInertia = 0;			// 慣性力
+			nMaxJump = 0;				// ジャンプ力
 		}
 		/* 変数 */
-		int			nMaxLife;		// 最大HP
-		int			nMaxMP;			// 最大MP
-		int			nMaxScore;		// 最大スコア
+		int			nMaxBalloon;	// 最大HP
+		int			nMaxInertia;	// 慣性力
+		int			nMaxJump;		// ジャンプ力
 	} STATUS, *PSTATUS;
 	/* 関数 */
 	CCharacter();
@@ -82,8 +84,9 @@ public:
 	void Update(void);
 	void Draw(void);
 	// キャラクターが死んだとき
-	virtual void Die(void) = 0;
-
+	virtual void Die(void);
+	// 風船生成
+	void BalloonCreate(void);
 	// 必要に応じた動作 //
 	// 設定 //
 	// 位置
@@ -166,12 +169,15 @@ protected:
 	// モーションカメラの更新
 	void MotionCamera(void);							
 	/* 変数 */
-	static int	m_nCameraCharacter;						// キャラクターに追尾するID
+	static int						m_nCameraCharacter;	// キャラクターに追尾するID
 	// 仮
-	STATE m_State;										// 現状のステータス
-	int	m_nCntState;									// カウントステータス
+	STATE							m_State;			// 現状のステータス
+	int								m_nCntState;		// カウントステータス
+
 private:
 	/* 関数 */
+	void Collision(void);								// それぞれの当たり判定
+	void BalloonCollision(CBalloon * pBalloon);			// 風船との当たり判定
 	void Update_Normal(void);							// 通常時の更新
 	void NextKeyMotion(void);							// 次のモーション
 	void Move(void);									// 移動
@@ -216,7 +222,7 @@ private:
 	vector<unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	vector<unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
 	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
-	CBalloon						* m_pBalloon;					// 風船
+	CBalloon						* m_pBalloon;					// 風船情報
 };
 
 #endif

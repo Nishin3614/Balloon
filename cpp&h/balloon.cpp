@@ -35,7 +35,18 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon::CBalloon() : CScene::CScene()
 {
-	m_nBalloon = 2;
+	// 初期化
+	m_nPopBalloon = 2;
+	m_nBringBalloon = 0;
+	m_mtx = NULL;
+	// 初期設定
+	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	{
+		// モデル生成
+		m_apSceneX[nCntBalloon] = NULL;
+		// 位置情報の初期化
+		m_aPos[nCntBalloon] = D3DVECTOR3_ZERO;
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -50,18 +61,24 @@ CBalloon::~CBalloon()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::Init(void)
 {
-	// モデル生成
-	m_apSceneX[0] = CScene_X::Create_Self(
-		D3DXVECTOR3(50.0f, 50.0f, 0.0f),
-		D3DVECTOR3_ZERO,
-		4
-	);
-	// 当たり判定設定(球)
-	m_apSceneX[0]->SetCollision(
-		CShape::SHAPETYPE_SPHERE,
-		CCollision::OBJTYPE_BALLOON
-	);
-
+	// 風船の初期位置設定
+	m_aPos[0] = D3DXVECTOR3(50.0f, 50.0f, 0.0f);
+	m_aPos[1] = D3DXVECTOR3(-50.0f, 50.0f, 0.0f);
+	// 初期設定
+	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	{
+		// モデル生成
+		m_apSceneX[nCntBalloon] = CScene_X::Create_Self(
+			m_aPos[nCntBalloon],
+			D3DVECTOR3_ZERO,
+			4
+		);
+		// 当たり判定設定(球)
+		m_apSceneX[nCntBalloon]->SetCollision(
+			CShape::SHAPETYPE_SPHERE,
+			CCollision::OBJTYPE_BALLOON
+		);
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,14 +111,8 @@ void CBalloon::Update(void)
 		if (m_apSceneX[nCntBalloon] == NULL) continue;
 		// 更新
 		m_apSceneX[nCntBalloon]->Update();
-		// 当たり判定状態がtrueなら
-		// ->開放
-		if (m_apSceneX[nCntBalloon]->GetbCollision())
-		{
-			m_apSceneX[nCntBalloon]->Uninit();
-			delete m_apSceneX[nCntBalloon];
-			m_apSceneX[nCntBalloon] = NULL;
-		}
+		// 風船が割れる処理
+		BreakBalloon(nCntBalloon);
 	}
 }
 
@@ -135,6 +146,8 @@ void CBalloon::Debug(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::SetMatrix(D3DXMATRIX * mtx)
 {
+	// 行列情報のポインターをコピーする
+	m_mtx = mtx;
 	// シーンXの親行列情報設定処理
 	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
 	{
@@ -142,7 +155,46 @@ void CBalloon::SetMatrix(D3DXMATRIX * mtx)
 		// ->ループスキップ
 		if (m_apSceneX[nCntBalloon] == NULL) continue;
 		// 親行列の設定
-		m_apSceneX[nCntBalloon]->SetParentMtx(mtx);
+		m_apSceneX[nCntBalloon]->SetParentMtx(m_mtx);
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船を生成処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon::CreateBalloon(void)
+{
+	// 風船生成処理
+	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	{
+		// シーンXのNULLチェック
+		// ->ループスキップ
+		if (m_apSceneX[nCntBalloon] != NULL) continue;
+		// モデル生成
+		m_apSceneX[nCntBalloon] = CScene_X::Create_Self(
+			m_aPos[nCntBalloon],
+			D3DVECTOR3_ZERO,
+			4
+		);
+		// 当たり判定設定(球)
+		m_apSceneX[nCntBalloon]->SetCollision(
+			CShape::SHAPETYPE_SPHERE,
+			CCollision::OBJTYPE_BALLOON
+		);
+		// 親行列の設定
+		m_apSceneX[nCntBalloon]->SetParentMtx(m_mtx);
+		// 持っている風船の個数を減らす
+		m_nBringBalloon--;
+		// 出現している風船の個数を増やす
+		m_nPopBalloon++;
+		// エフェクトを用意するならここ
+
+
+
+
+		// 生成処理が終了したら
+		// ->関数を抜ける
+		break;
 	}
 }
 
@@ -168,8 +220,6 @@ CScene_X * CBalloon::GetSceneX(int const & nBalloon)
 // 作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon * CBalloon::Create(
-	D3DXVECTOR3 const &pos,						// 位置
-	D3DXVECTOR3 const &rot,						// 回転
 	D3DXMATRIX *mtx								// 行列
 )
 {
@@ -200,4 +250,19 @@ HRESULT CBalloon::Load(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::UnLoad(void)
 {
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船が割れる処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon::BreakBalloon(int const &nCntBalloon)
+{
+	// 当たり判定状態がtrueなら
+	// ->開放
+	if (m_apSceneX[nCntBalloon]->GetbCollision())
+	{
+		m_apSceneX[nCntBalloon]->Uninit();
+		delete m_apSceneX[nCntBalloon];
+		m_apSceneX[nCntBalloon] = NULL;
+	}
 }

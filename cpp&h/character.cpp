@@ -31,7 +31,7 @@
 #define CHARACTER_G (0.5f)														// 重力
 #define CHARACTER_RESISTANCE (0.5f)												// 抵抗力
 #define CHARACTER_STATUS_FILE ("data/LOAD/STATUS/status_manager_Character.csv")	// ファイル名
-#define CIRCLESHADOW (true)	// 円形のシャドウにするかしないか
+#define CIRCLESHADOW (true)														// 円形のシャドウにするかしないか
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -213,7 +213,10 @@ void CCharacter::Init()
 	}
 
 	// 風船生成
-	m_pBalloon = CBalloon::Create(m_pos, D3DVECTOR3_ONE,&m_mtxWorld);
+	m_pBalloon = CBalloon::Create(&m_mtxWorld);
+	// ステータスの反映 //
+	// 初期風船を持っている個数
+	m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -253,7 +256,26 @@ void CCharacter::Update(void)
 	TrackCamera();
 	// 通常時の更新処理
 	Update_Normal();
+	// 区域制限
 	Limit();
+	// 当たり判定処理
+	Collision();
+	// ステンシルシャドウの位置設定
+	if (m_pStencilshadow != NULL)
+	{
+		// 位置取得
+		D3DXVECTOR3 pos = m_pos;
+		pos.y = -1000.0f;
+		// ステンシルシャドウの位置設定
+		m_pStencilshadow->SetPos(pos);
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// それぞれの当たり判定処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::Collision(void)
+{
 	// 判定
 	CCharacter * pCharacter;
 	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_CHARACTER); nCntLayer++)
@@ -266,7 +288,7 @@ void CCharacter::Update(void)
 		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
 		// ->ループスキップ
 		else if (pCharacter == this) continue;
-		// キャラクター同士当たっているなら
+		// キャラクター同士の当たり判定処理
 		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
 		{
 			// キャラクター同士当たっている
@@ -279,30 +301,37 @@ void CCharacter::Update(void)
 			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
 		}
+		// キャラクターと風船の当たり判定処理
+		BalloonCollision(pCharacter->m_pBalloon);
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船との当たり判定処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::BalloonCollision(
+	CBalloon * pBalloon	// 風船の情報
+)
+{
+	// キャラクターと風船の当たり判定処理
+	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	{
 		// 相手キャラクターの風船がNULLなら
-		// ->ループスキップ
-		if (pCharacter->m_pBalloon->GetSceneX(0) == NULL) continue;
+		// ->関数を抜ける
+		if (pBalloon->GetSceneX(nCntBalloon) == NULL) continue;
 		// 相手キャラクターの風船のモデルがNULLなら
-		// ->ループスキップ
-		else if (pCharacter->m_pBalloon->GetSceneX(0)->GetCollision() == NULL) continue;
+		// ->関数を抜ける
+		else if (pBalloon->GetSceneX(nCntBalloon)->GetCollision() == NULL) continue;
 		// 自キャラクターと相手のキャラクターの風船の判定
-		else if (m_pCharacterCollision->CollisionDetection(pCharacter->m_pBalloon->GetSceneX(0)->GetCollision()))
+		else if (m_pCharacterCollision->CollisionDetection(
+			pBalloon->GetSceneX(nCntBalloon)->GetCollision()))
 		{
 
 		}
-		// 直すこと
-		// まだ当たった後の判定をとっただけ
+	}
+	// 直すこと
+	// まだ当たった後の判定をとっただけ
 
-	}
-	// ステンシルシャドウの位置設定
-	if (m_pStencilshadow != NULL)
-	{
-		// 位置取得
-		D3DXVECTOR3 pos = m_pos;
-		pos.y = -1000.0f;
-		// ステンシルシャドウの位置設定
-		m_pStencilshadow->SetPos(pos);
-	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -627,6 +656,34 @@ void CCharacter::Draw(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 死んだときの処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::Die(void)
+{
+	D3DXVECTOR3 ParticlePos;		// パーティクルが出る位置
+	// パーティクルの位置(体の位置)
+	ParticlePos = D3DXVECTOR3(
+		CCharacter::GetMatrix(1)->_41,
+		CCharacter::GetMatrix(1)->_42,
+		CCharacter::GetMatrix(1)->_43
+	);
+	// パーティクル生成
+	C3DParticle::Create(
+		C3DParticle::OFFSET_ID_CROSSLINE,
+		ParticlePos
+	);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船を生成する処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::BalloonCreate(void)
+{
+	// 風船を生成する処理
+	m_pBalloon->CreateBalloon();
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // フィールドの高さを算出
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCharacter::GetFloorHeight(void)
@@ -808,7 +865,7 @@ HRESULT CCharacter::LoadStatus(void)
 {
 	// 変数宣言
 	vector<vector<string>> vsvec_Contens;	// ファイルの中身格納用
-											// ファイルの中身を取得する
+	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(CHARACTER_STATUS_FILE, ',');
 	// 行ごとに回す
 	for (int nCntLine = 0; nCntLine < (signed)vsvec_Contens.size(); nCntLine++)
@@ -823,17 +880,17 @@ HRESULT CCharacter::LoadStatus(void)
 		{
 			switch (nCntItem)
 			{
-				// HP
+				// 風船の個数
 			case 0:
-				m_sStatus[nCntLine].nMaxLife = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				m_sStatus[nCntLine].nMaxBalloon = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
-				// MP
+				// 慣性力
 			case 1:
-				m_sStatus[nCntLine].nMaxMP = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				m_sStatus[nCntLine].nMaxInertia = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
-				// スコア
+				// ジャンプ力
 			case 2:
-				m_sStatus[nCntLine].nMaxScore = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				m_sStatus[nCntLine].nMaxJump = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
 			default:
 				break;

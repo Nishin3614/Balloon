@@ -51,7 +51,7 @@ void CKeyConfig::Init(void)
 	m_nKeyboardId[CONFIG_CAMERALEFT] = DIK_LEFT;
 	m_nKeyboardId[CONFIG_CAMERARIGHT] = DIK_RIGHT;
 	m_nKeyboardId[CONFIG_JUMP] = DIK_SPACE;
-	m_nKeyboardId[CONFIG_ATTACK] = DIK_RETURN;
+	m_nKeyboardId[CONFIG_BALLOONCREATE] = DIK_RETURN;
 	m_nKeyboardId[CONFIG_TRICK1] = DIK_U;
 	m_nKeyboardId[CONFIG_TRICK2] = DIK_I;
 	// ジョイパッドIDの設定
@@ -67,7 +67,7 @@ void CKeyConfig::Init(void)
 	m_JoypadId[CONFIG_CAMERALEFT] = CJoypad::KEY_LEFT;
 	m_JoypadId[CONFIG_CAMERARIGHT] = CJoypad::KEY_RIGHT;
 	m_JoypadId[CONFIG_JUMP] = CJoypad::KEY_A;
-	m_JoypadId[CONFIG_ATTACK] = CJoypad::KEY_B;
+	m_JoypadId[CONFIG_BALLOONCREATE] = CJoypad::KEY_B;
 	m_JoypadId[CONFIG_TRICK1] = CJoypad::KEY_LEFT_1;
 	m_JoypadId[CONFIG_TRICK2] = CJoypad::KEY_RIGHT_1;
 }

@@ -50,14 +50,24 @@ public:
 #endif // _DEBUG
 	// 行列情報設定
 	void SetMatrix(D3DXMATRIX * mtx);			// 行列情報設定
+	// 風船の初期個数を代入
+	void SetBiginBalloon(int const &nBringBalloon) { m_nBringBalloon = nBringBalloon; };
+	// 風船を持てる個数を変化させる(上昇・現状)
+	void SetBringBalloon(int const &nBringBalloon) { m_nBringBalloon += nBringBalloon; };
+	// 出現している風船の個数を変化させる(上昇・減少)
+	void SetPopBalloon(int const &nPopBalloon = 1) { m_nPopBalloon += nPopBalloon; };
+	// 風船を生成
+	void CreateBalloon(void);
 	// シーンX情報取得
 	CScene_X * GetSceneX(int const &nBalloon);	// シーンXの情報取得
+	// 風船を持っている個数を取得
+	int const &GetBringBalloon(void) { return m_nBringBalloon; };
+	// 風船を出現している個数を取得
+	int const &GetPopBalloon(void) { return m_nPopBalloon; };
 	// 生成
 	static CBalloon * Create(
-		D3DXVECTOR3 const &pos,						// 位置
-		D3DXVECTOR3 const &rot,						// 回転
-		D3DXMATRIX *mtx								// 行列
-	);					// 作成
+		D3DXMATRIX *mtx							// 行列
+	);
 	// リソース情報読み込む設定
 	static HRESULT Load(void);					// リソース情報読み込む設定
 	// 読み込んだリソース情報を開放する
@@ -65,10 +75,13 @@ public:
 protected:
 private:
 	/* 関数 */
+	void BreakBalloon(int const &nCntBalloon);	// 風船が割れる処理
 	/* 変数 */
-	CCircleshadow * m_pCircleShadow;			// 円形シャドウ
 	CScene_X *m_apSceneX[BALLOON_MAX];			// シーンXモデル情報
-	int m_nBalloon;								// 風船の個数
-};
+	D3DXVECTOR3 m_aPos[BALLOON_MAX];			// シーンXモデルのそれぞれの位置情報
+	D3DXMATRIX *m_mtx;							// 行列情報
+	int m_nPopBalloon;							// 現在出現している風船の個数
+	int m_nBringBalloon;						// 現在持っている風船の個数
+};		
 
 #endif

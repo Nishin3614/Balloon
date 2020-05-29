@@ -55,8 +55,8 @@ protected:
 private:
 	/* 構造体 */
 	/* 関数 */
-	void Move(void);					// 移動
-
+	void Move(void);					// 移動処理
+	void Action(void);					// 行動処理
 	/* 変数 */
 	static int	m_nId;					// 番号
 	D3DXVECTOR3	m_posold;				// 前の位置
