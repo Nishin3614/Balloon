@@ -67,14 +67,18 @@ public:
 		// 初期化
 		STATUS()
 		{
-			nMaxBalloon = 0;			// 最大HP
-			nMaxInertia = 0;			// 慣性力
-			nMaxJump = 0;				// ジャンプ力
+			nMaxBalloon = 0;			// 最大風船数
+			nMaxPopBalloon = 0;			// 最大出現風船数
+			fMaxInertia = 0;			// 慣性力
+			fMaxJump = 0;				// ジャンプ力
+			fMaxMove = 0;				// 移動力
 		}
 		/* 変数 */
-		int			nMaxBalloon;	// 最大HP
-		int			nMaxInertia;	// 慣性力
-		int			nMaxJump;		// ジャンプ力
+		int			nMaxBalloon;		// 最大風船数
+		int			nMaxPopBalloon;		// 最大出現風船数
+		float		fMaxInertia;		// 慣性力
+		float		fMaxJump;			// ジャンプ力
+		float		fMaxMove;			// 移動力
 	} STATUS, *PSTATUS;
 	/* 関数 */
 	CCharacter();
@@ -138,9 +142,10 @@ public:
 	static void UnLoad(
 		CHARACTER const character,		// キャラクター
 		int const nMaxkey				// 最大キー
-		);	
+		);
 #ifdef _DEBUG
 	void Debug(void);
+	static void AllDebug(void);
 #endif // _DEBUG
 	CCollision * GetCollision(void) { return m_pCharacterCollision.get(); };
 protected:

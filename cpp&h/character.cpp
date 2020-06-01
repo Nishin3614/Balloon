@@ -213,7 +213,7 @@ void CCharacter::Init()
 	}
 
 	// 風船生成
-	m_pBalloon = CBalloon::Create(&m_mtxWorld);
+	m_pBalloon = CBalloon::Create(&m_mtxWorld,m_sStatus[m_character].nMaxPopBalloon);
 	// ステータスの反映 //
 	// 初期風船を持っている個数
 	m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
@@ -314,7 +314,7 @@ void CCharacter::BalloonCollision(
 )
 {
 	// キャラクターと風船の当たり判定処理
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	for (int nCntBalloon = 0; nCntBalloon < pBalloon->GetPopMaxBalloon(); nCntBalloon++)
 	{
 		// 相手キャラクターの風船がNULLなら
 		// ->関数を抜ける
@@ -741,7 +741,7 @@ int CCharacter::GetCameraCharacter(void)
 void CCharacter::FagGravity(void)
 {
 	// 重力処理
-	m_move.y -= 1.0f;
+	//m_move.y -= 1.0f;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -884,13 +884,21 @@ HRESULT CCharacter::LoadStatus(void)
 			case 0:
 				m_sStatus[nCntLine].nMaxBalloon = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
-				// 慣性力
+				// 風船の個数
 			case 1:
-				m_sStatus[nCntLine].nMaxInertia = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				m_sStatus[nCntLine].nMaxPopBalloon = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// 慣性力
+			case 2:
+				m_sStatus[nCntLine].fMaxInertia = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
 				// ジャンプ力
-			case 2:
-				m_sStatus[nCntLine].nMaxJump = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+			case 3:
+				m_sStatus[nCntLine].fMaxJump = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// 移動力
+			case 4:
+				m_sStatus[nCntLine].fMaxMove = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
 			default:
 				break;
@@ -923,6 +931,33 @@ void CCharacter::UnLoad(
 #ifdef _DEBUG
 void CCharacter::Debug(void)
 {
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// デバッグ表示(キャラクター全体)
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::AllDebug(void)
+{
+	// キャラクターステータスの更新 //
+	CDebugproc::Print("F12:キャラクターステータスの更新\n");
+	// F12ボタンを押すと
+	// ステータスが更新される
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_F12))
+	{
+		LoadStatus();
+	}
+	// キャラクターステータスの表示 //
+	CDebugproc::Print("//----------キャラクターステータス情報----------//\n");
+	for (int nCntCharacter = 0; nCntCharacter < CHARACTER_MAX; nCntCharacter++)
+	{
+		CDebugproc::Print("// [%d]\n",nCntCharacter);
+		CDebugproc::Print("最大持っていける風船数:%d\n", m_sStatus[nCntCharacter].nMaxBalloon);
+		CDebugproc::Print("最大出現風船数:%d\n", m_sStatus[nCntCharacter].nMaxPopBalloon);
+		CDebugproc::Print("慣性力:%.2f\n", m_sStatus[nCntCharacter].fMaxInertia);
+		CDebugproc::Print("ジャンプ力:%.2f\n", m_sStatus[nCntCharacter].fMaxJump);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+	}
+	CDebugproc::Print("//----------キャラクターステータス情報----------//\n");
 }
 #endif // _DEBUG
 

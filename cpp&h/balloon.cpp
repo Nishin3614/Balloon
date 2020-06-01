@@ -23,6 +23,8 @@
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define BALLOON_SPEED (10.0f)
+#define BALLOON_Y (50.0f)
+#define BALLOON_RADIUS (50.0f)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -39,14 +41,7 @@ CBalloon::CBalloon() : CScene::CScene()
 	m_nPopBalloon = 2;
 	m_nBringBalloon = 0;
 	m_mtx = NULL;
-	// 初期設定
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
-	{
-		// モデル生成
-		m_apSceneX[nCntBalloon] = NULL;
-		// 位置情報の初期化
-		m_aPos[nCntBalloon] = D3DVECTOR3_ZERO;
-	}
+	m_fAngleBalloon = 0;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -61,24 +56,6 @@ CBalloon::~CBalloon()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::Init(void)
 {
-	// 風船の初期位置設定
-	m_aPos[0] = D3DXVECTOR3(50.0f, 50.0f, 0.0f);
-	m_aPos[1] = D3DXVECTOR3(-50.0f, 50.0f, 0.0f);
-	// 初期設定
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
-	{
-		// モデル生成
-		m_apSceneX[nCntBalloon] = CScene_X::Create_Self(
-			m_aPos[nCntBalloon],
-			D3DVECTOR3_ZERO,
-			4
-		);
-		// 当たり判定設定(球)
-		m_apSceneX[nCntBalloon]->SetCollision(
-			CShape::SHAPETYPE_SPHERE,
-			CCollision::OBJTYPE_BALLOON
-		);
-	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -86,8 +63,8 @@ void CBalloon::Init(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::Uninit(void)
 {
-	// シーンXの終了処理
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	// 終了処理
+	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apSceneX.size(); nCntBalloon++)
 	{
 		// シーンXのNULLチェック
 		// ->ループスキップ
@@ -104,7 +81,7 @@ void CBalloon::Uninit(void)
 void CBalloon::Update(void)
 {
 	// シーンXの更新処理
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apSceneX.size(); nCntBalloon++)
 	{
 		// シーンXのNULLチェック
 		// ->ループスキップ
@@ -122,7 +99,7 @@ void CBalloon::Update(void)
 void CBalloon::Draw(void)
 {
 	// シーンXの更新処理
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apSceneX.size(); nCntBalloon++)
 	{
 		// シーンXのNULLチェック
 		// ->ループスキップ
@@ -149,7 +126,7 @@ void CBalloon::SetMatrix(D3DXMATRIX * mtx)
 	// 行列情報のポインターをコピーする
 	m_mtx = mtx;
 	// シーンXの親行列情報設定処理
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apSceneX.size(); nCntBalloon++)
 	{
 		// シーンXのNULLチェック
 		// ->ループスキップ
@@ -160,19 +137,51 @@ void CBalloon::SetMatrix(D3DXMATRIX * mtx)
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 外に出して置ける風船の最大個数を設定
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon::SetPopMaxBalloom(int const & nPopMaxBaloon)
+{
+	// 最大出現数を代入
+	m_nMaxPopBalloon = nPopMaxBaloon;
+	// 角度
+	m_fAngleBalloon = D3DX_PI / m_nMaxPopBalloon * 2;
+	// 初期設定
+	for (int nCntBalloon = 0; nCntBalloon < m_nMaxPopBalloon; nCntBalloon++)
+	{
+		// モデル生成
+		m_apSceneX.push_back(CScene_X::Create_Self(
+			D3DXVECTOR3(
+				sinf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS,
+				BALLOON_Y,
+				cosf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS),
+			D3DVECTOR3_ZERO,
+			4
+		));
+		// 当たり判定設定(球)
+		m_apSceneX[nCntBalloon]->SetCollision(
+			CShape::SHAPETYPE_SPHERE,
+			CCollision::OBJTYPE_BALLOON
+		);
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 風船を生成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::CreateBalloon(void)
 {
 	// 風船生成処理
-	for (int nCntBalloon = 0; nCntBalloon < BALLOON_MAX; nCntBalloon++)
+	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apSceneX.size(); nCntBalloon++)
 	{
 		// シーンXのNULLチェック
 		// ->ループスキップ
 		if (m_apSceneX[nCntBalloon] != NULL) continue;
 		// モデル生成
 		m_apSceneX[nCntBalloon] = CScene_X::Create_Self(
-			m_aPos[nCntBalloon],
+			D3DXVECTOR3(
+				sinf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS,
+				BALLOON_Y,
+				cosf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS),
 			D3DVECTOR3_ZERO,
 			4
 		);
@@ -205,7 +214,7 @@ CScene_X * CBalloon::GetSceneX(int const & nBalloon)
 {
 	// 0 < nBalloon <= BALLOON_MAXなら
 	// ->関数を抜ける
-	if (nBalloon < 0 || nBalloon >= BALLOON_MAX)
+	if (nBalloon < 0 || nBalloon >= (signed)m_apSceneX.size())
 	{
 #ifdef _DEBUG
 		CCalculation::Messanger("CBalloon::GetSceneX->上限越え");
@@ -220,7 +229,8 @@ CScene_X * CBalloon::GetSceneX(int const & nBalloon)
 // 作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon * CBalloon::Create(
-	D3DXMATRIX *mtx								// 行列
+	D3DXMATRIX *mtx,								// 行列
+	int const &nPopMaxBalloon
 )
 {
 	// 変数宣言
@@ -231,6 +241,8 @@ CBalloon * CBalloon::Create(
 	pBalloon->ManageSetting(CScene::LAYER_3DOBJECT);
 	// 初期化処理
 	pBalloon->Init();
+	// 外に出して置ける風船の最大個数を設定
+	pBalloon->SetPopMaxBalloom(nPopMaxBalloon);
 	// 行列情報設定
 	pBalloon->SetMatrix(mtx);
 	// 生成したオブジェクトを返す
