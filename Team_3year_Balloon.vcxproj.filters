@@ -222,7 +222,10 @@
     <ClCompile Include="cpp&amp;h\ranking.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="network.cpp">
+    <ClCompile Include="cpp&amp;h\network.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="cpp&amp;h\networkKeyboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -437,7 +440,10 @@
     <ClInclude Include="cpp&amp;h\ranking.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="network.h">
+    <ClInclude Include="cpp&amp;h\network.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="cpp&amp;h\networkKeyboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
