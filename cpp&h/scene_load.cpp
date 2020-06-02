@@ -22,8 +22,7 @@
 #include "meshsphere.h"
 #include "collision.h"
 #include "camera.h"
-#include "player.h"
-#include "solider.h"
+#include "character.h"
 #include "circleshadow.h"
 #include "time.h"
 #include "fade.h"
@@ -130,20 +129,10 @@ void CScene_load::LoadAll(void)
 	}
 
 	/* 3Dモデル*/
-	// キャラクターステータス
-	if (!CCharacter::LoadStatus() == S_OK)
+	// キャラクター情報
+	if (!CCharacter::Load() == S_OK)
 	{
-		CCalculation::Messanger("キャラクターステータス情報読み取り失敗");
-	}
-	// プレイヤー
-	if(!CPlayer::Load()== S_OK)
-	{
-		CCalculation::Messanger("プレイヤー読み取り失敗");
-	}
-	// 兵士
-	if (!CSolider::Load() == S_OK)
-	{
-		CCalculation::Messanger("兵士読み取り失敗");
+		CCalculation::Messanger("すべてキャラクター情報読み取り失敗");
 	}
 	// 円形シャドウ
 	if (!CCircleshadow::Load() == S_OK)
@@ -174,8 +163,8 @@ void CScene_load::UnLoadAll(void)
 	CPause_ui::UnLoad();
 	// 床
 	CFloor::UnLoad();
-	// プレイヤー
-	CPlayer::UnLoad();
+	// キャラクター
+	CCharacter::UnLoad();
 	// 3Deffect
 	C3DEffect::Unload();
 	// 3Dparticle

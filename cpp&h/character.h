@@ -55,7 +55,8 @@ public:
 	// キャラクター
 	typedef enum
 	{
-		CHARACTER_PLAYER = 0,
+		CHARACTER_P_THUNDER = 0,
+		CHARACTER_P_ZOMBIE,
 		CHARACTER_SOLIDER,
 		CHARACTER_MAX
 	} CHARACTER;
@@ -81,12 +82,12 @@ public:
 		float		fMaxMove;			// 移動力
 	} STATUS, *PSTATUS;
 	/* 関数 */
-	CCharacter();
-	~CCharacter();
-	void Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	CCharacter(CHARACTER const &character);
+	virtual ~CCharacter();
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 	// キャラクターが死んだとき
 	virtual void Die(void);
 	// 風船生成
@@ -131,18 +132,21 @@ public:
 	);												
 	// カメラ追尾しているID
 	static int GetCameraCharacter(void);
+	/*
 	// ロード・アンロード
 	static void Load(
 		CHARACTER const character,		// キャラクター
 		int const nMaxMotion,			// 最大モーション
 		const char * file_name			// ファイル名
 		);
-	// ステータス情報
+		*/
+	// キャラクター全ソースの読み込み
+	static HRESULT Load(void);
+	// キャラクターの情報読み込み
+	static HRESULT Load_Character(void);
+	// ステータス情報読み込み
 	static HRESULT LoadStatus(void);
-	static void UnLoad(
-		CHARACTER const character,		// キャラクター
-		int const nMaxkey				// 最大キー
-		);
+	static void UnLoad(void);
 #ifdef _DEBUG
 	void Debug(void);
 	static void AllDebug(void);
