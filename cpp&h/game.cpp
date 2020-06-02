@@ -9,7 +9,7 @@
 #include "number.h"
 #include "fade.h"
 #include "floor.h"
-#include "player.h"
+#include "p_thunder.h"
 #include "meshobit.h"
 #include "meshdome.h"
 #include "meshsphere.h"
@@ -76,7 +76,7 @@ void CGame::Init(void)
 	// 3Dマップ生成
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
 	// プレイヤー
-	CPlayer::Create(D3DXVECTOR3(0.0f,0.0f,200.0f));
+	CP_thunder::Create(D3DXVECTOR3(0.0f,0.0f,200.0f));
 	// ポーズの生成
 	m_pause = new CPause();
 	// ポーズの初期化
