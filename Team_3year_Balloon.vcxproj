@@ -219,6 +219,7 @@
     <ClCompile Include="cpp&amp;h\scene_three.cpp" />
     <ClCompile Include="cpp&amp;h\scene_two.cpp" />
     <ClCompile Include="cpp&amp;h\scene_X.cpp" />
+    <ClCompile Include="cpp&amp;h\score.cpp" />
     <ClCompile Include="cpp&amp;h\shadow_mapping.cpp" />
     <ClCompile Include="cpp&amp;h\shape.cpp" />
     <ClCompile Include="cpp&amp;h\solider.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="cpp&amp;h\scene_three.h" />
     <ClInclude Include="cpp&amp;h\scene_two.h" />
     <ClInclude Include="cpp&amp;h\scene_X.h" />
+    <ClInclude Include="cpp&amp;h\score.h" />
     <ClInclude Include="cpp&amp;h\shadow_mapping.h" />
     <ClInclude Include="cpp&amp;h\shape.h" />
     <ClInclude Include="cpp&amp;h\solider.h" />

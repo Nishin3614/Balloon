@@ -25,6 +25,7 @@
 #include "ui_group.h"
 #include "Extrusion.h"
 #include "3Dmap.h"
+#include "score.h"
 
 /* ポーズ */
 #include "pause.h"
@@ -80,7 +81,8 @@ void CGame::Init(void)
 	CP_thunder::Create(D3DXVECTOR3(0.0f,0.0f,200.0f));
 	// プレイヤー2
 	CP_zombie::Create(D3DXVECTOR3(0.0f, 0.0f, -200.0f));
-
+	// スコア生成
+	m_pScore = CScore::Create();
 	// ポーズの生成
 	m_pause = new CPause();
 	// ポーズの初期化
@@ -98,6 +100,13 @@ void CGame::Uninit(void)
 		m_pause->Uninit();
 		delete m_pause;
 		m_pause = NULL;
+	}
+	// スコア
+	if (m_pScore != NULL)
+	{
+		m_pScore->Uninit();
+		delete m_pScore;
+		m_pScore = NULL;
 	}
 	// ゲーム状態の初期化
 	m_state = STATE_NORMAL;
@@ -159,6 +168,10 @@ void CGame::Draw(void)
 		{
 			m_pause->Draw();
 		}
+	}
+	if (m_pScore != NULL)
+	{
+		m_pScore->Draw();
 	}
 }
 
