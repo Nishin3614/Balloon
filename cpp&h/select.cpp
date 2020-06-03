@@ -64,7 +64,7 @@ void CSelect::Init(void)
 	// 3Dマップ生成
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
 	// キャラクター選択
-	// サーバーからプレイヤー番号を取得し反映
+	// ------------------サーバーからプレイヤー番号を取得し反映------------------------ //
 	CSelectCharacter::Create(0, D3DXVECTOR3(200.0f, 0.0f, 200.0f));
 }
 
@@ -92,7 +92,6 @@ void CSelect::Update(void)
 		// 選択画面へ遷移
 		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_1))
 		{
-
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// リザルトへ
