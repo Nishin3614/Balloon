@@ -45,6 +45,13 @@ void CNetworkKeyboard::Update(void)
 {
 	// 変数宣言
 	BYTE aKeyState[MAX_PLAYER][NUM_KEY_MAX] = {};	// キーボードの入力情報
+	KEYSTATE keystate = GetKeystate();
+
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		*aKeyState[nCount] = *keystate.m_aKeyState[nCount];
+	}
+
 	int nCntKey;
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)

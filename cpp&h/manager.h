@@ -51,6 +51,7 @@ class CTitle;		// タイトル
 class CTutorial;	// チュートリアル
 class CResult;		// リザルト
 class CRanking;		// ランキング
+class CNetwork;		// ネットワーク
 
 // ------------------------------------------
 //
@@ -88,6 +89,8 @@ public:
 	static CFade * GetFade(void) { return m_fade; };			// 画面遷移の取得
 	static CGame * GetGame(void) { return m_game; };			// ゲームの取得
 	static MODE GetMode(void) { return m_mode; };			// モードの取得
+	static CNetwork * GetNetwork(void) { return m_pNetwork; }		// ネットワークの取得
+
 protected:
 
 private:
@@ -108,6 +111,7 @@ private:
 	static CGame * m_game;					// ゲーム
 	static CResult * m_result;				// リザルト
 	static CRanking * m_ranking;			// ランキング
+	static CNetwork * m_pNetwork;			// ネットワーク
 
 	static MODE m_mode;						// モード
 	static bool	m_bWire;					// ワイヤーモード
