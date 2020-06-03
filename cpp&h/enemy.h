@@ -26,12 +26,12 @@ class CEnemy : public CCharacter
 public:	
 	/* ä÷êî */
 	// é©ï™é©êgóp
-	CEnemy();
-	~CEnemy();
-	void Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	CEnemy(CHARACTER const &character);
+	virtual ~CEnemy();
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG

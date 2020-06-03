@@ -17,7 +17,8 @@
 #include "meshwall.h"
 #include "scene_X.h"
 #include "scene_three.h"
-#include "player.h"
+#include "p_thunder.h"
+#include "p_zombie.h"
 #include "solider.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -85,10 +86,17 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 	// キャラクター
 	for (nCntMap = 0; nCntMap < (signed)m_vec_char[map].size(); nCntMap++)
 	{
-		// プレイヤー
-		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_PLAYER)
+		// プレイヤー(雷)
+		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_P_THUNDER)
 		{
-			CPlayer::Create(m_vec_char[map][nCntMap].pos,
+			CP_thunder::Create(m_vec_char[map][nCntMap].pos,
+				m_vec_char[map][nCntMap].rot
+			);
+		}
+		// プレイヤー(ゾンビ)
+		else if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_P_ZOMBIE)
+		{
+			CP_zombie::Create(m_vec_char[map][nCntMap].pos,
 				m_vec_char[map][nCntMap].rot
 			);
 		}

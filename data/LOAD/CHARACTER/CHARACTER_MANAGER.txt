@@ -1,0 +1,3 @@
+data/LOAD/CHARACTER/Tricker.txt
+data/LOAD/CHARACTER/General.txt
+data/LOAD/CHARACTER/Solider.txt

@@ -11,7 +11,7 @@
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "balloon.h"
-#include "player.h"
+#include "p_thunder.h"
 #include "3Dparticle.h"
 #include "game.h"
 #include "spherecollision.h"
@@ -148,7 +148,7 @@ void CBalloon::SetPopMaxBalloom(int const & nPopMaxBaloon)
 	// 初期設定
 	for (int nCntBalloon = 0; nCntBalloon < m_nMaxPopBalloon; nCntBalloon++)
 	{
-		// モデル生成
+		// プレイヤー(雷)生成
 		m_apSceneX.push_back(CScene_X::Create_Self(
 			D3DXVECTOR3(
 				sinf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS,
@@ -176,7 +176,7 @@ void CBalloon::CreateBalloon(void)
 		// シーンXのNULLチェック
 		// ->ループスキップ
 		if (m_apSceneX[nCntBalloon] != NULL) continue;
-		// モデル生成
+		// プレイヤー(雷)生成
 		m_apSceneX[nCntBalloon] = CScene_X::Create_Self(
 			D3DXVECTOR3(
 				sinf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS,
