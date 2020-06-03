@@ -16,6 +16,7 @@
 #include "tutorial.h"
 #include "result.h"
 #include "ranking.h"
+#include "network.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -44,6 +45,7 @@ CResult * CManager::m_result = NULL;					// リザルト
 CRanking * CManager::m_ranking = NULL;					// ランキング
 CManager::MODE CManager::m_mode = MODE_SELECT;			// モード
 bool CManager::m_bWire = false;							// ワイヤー
+CNetwork * CManager::m_pNetwork = NULL;					// ネットワーク
 
 // ----------------------------------------------------------------------------------------------------
 // コンストラクタ
@@ -79,6 +81,8 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	m_sound = new CSound;
 	// レンダリングの生成
 	m_renderer = new CRenderer;
+	// ネットワークの生成
+	m_pNetwork = new CNetwork;
 	/* 画面 */
 	// タイトルの生成
 	m_title = new CTitle;
@@ -94,6 +98,9 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	m_ranking = new CRanking;
 	// モードの設定
 	m_mode = STARTMODE;
+
+	// ネットワークの設定データ読み込み
+	CNetwork::LoadConfiguration();
 
 	/* 初期化 */
 	// キーボード
@@ -134,6 +141,19 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 		delete m_renderer;
 		m_renderer = NULL;
 		return E_FAIL;
+	}
+	// ネットワーク
+	if (!m_pNetwork->Init(hInstance, hWnd) == S_OK)
+	{
+		m_renderer->Uninit();
+		delete m_renderer;
+		m_renderer = NULL;
+		return E_FAIL;
+	}
+
+	if (m_pNetwork != NULL)
+	{
+		m_pNetwork->Connect();
 	}
 	// 画面遷移
 	m_fade = CFade::Create(STARTMODE);
