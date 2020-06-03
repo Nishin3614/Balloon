@@ -42,11 +42,16 @@ public:
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
-	// ì¬
+	// ¶¬ˆ—(ƒV[ƒ“ŠÇ—)
 	static CP_thunder * Create(
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);			// ì¬
+	// ¶¬ˆ—(ŒÂlŠÇ—)
+	static CP_thunder * Create_Self(
+		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
+		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
+	);
 	static HRESULT Load(void);			// “Ç‚İ‚İ
 	static void UnLoad(void);			// UnLoad‚·‚é
 protected:

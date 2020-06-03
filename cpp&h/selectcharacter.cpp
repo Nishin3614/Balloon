@@ -1,36 +1,13 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// ゲーム処理 [game.cpp]
+// キャラクター選択処理 [selectcharacter.cpp]
 // Author : KOKI NISHIYAMA
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#include "game.h"
+#include "selectcharacter.h"
 /* 描画 */
-#include "number.h"
-#include "fade.h"
-#include "floor.h"
 #include "p_thunder.h"
 #include "p_zombie.h"
-#include "meshobit.h"
-#include "meshdome.h"
-#include "meshsphere.h"
-#include "meshwall.h"
-#include "3Deffect.h"
-#include "bgdome.h"
-#include "time.h"
-#include "collision.h"
-#include "camera.h"
-#include "3Dparticle.h"
-#include "keyboard.h"
-#include "ui_group.h"
-#include "Extrusion.h"
-#include "3Dmap.h"
-#include "score.h"
-
-#include "selectcharacter.h"
-
-/* ポーズ */
-#include "pause.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -43,169 +20,182 @@
 // 静的変数宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CGame::STATE CGame::m_state = CGame::STATE_NORMAL;		// 状態
+int CSelectCharacter::m_SaveCharaType[CONTROLPLAYER_MAX] = {};	// プレイヤーが選んだキャラクタータイプを保存
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CGame::CGame()
+CSelectCharacter::CSelectCharacter() : CScene::CScene()
 {
-	m_pause = NULL;
-	m_state = CGame::STATE_NORMAL;
+	// 初期化
+	m_pThunder = NULL;
+	m_pZombie = NULL;
+	m_CharacterType = 0;
+	m_PlayerID = 0;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // デストラクタ
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CGame::~CGame()
+CSelectCharacter::~CSelectCharacter()
 {
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 初期化
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CGame::Init(void)
+void CSelectCharacter::Init(void)
 {
-	// カメラのタイプ設定
-	CManager::GetRenderer()->GetCamera()->SetType(CCamera::TYPE_FOLLOW);
-	/* 初期化 */
-	// 状態
-	m_state = STATE_NORMAL;
-	/* 作成 */	
-	// 3Dエフェクトの生成
-	C3DEffect::Create();
-	// 球の設定
-	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
-		10000.0f);
-	// 3Dマップ生成
-	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
-	// プレイヤー生成
-	PlayerCreate();
-	// スコア生成
-	m_pScore = CScore::Create();
-	// ポーズの生成
-	m_pause = new CPause();
-	// ポーズの初期化
-	m_pause->Init();
+	// プレイヤー(雷)
+	m_pThunder = CP_thunder::Create_Self(m_pos);
+	// プレイヤー(ゾンビ)
+	m_pZombie = CP_zombie::Create_Self(m_pos);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 終了
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CGame::Uninit(void)
+void CSelectCharacter::Uninit(void)
 {
-	// ポーズ
-	if (m_pause != NULL)
+	// プレイヤー(雷)がNULLではないなら
+	// ->終了処理
+	if (m_pThunder != NULL)
 	{
-		m_pause->Uninit();
-		delete m_pause;
-		m_pause = NULL;
+		m_pThunder->Uninit();
+		delete m_pThunder;
+		m_pThunder = NULL;
 	}
-	// スコア
-	if (m_pScore != NULL)
+	// プレイヤー(ゾンビ)がNULLではないなら
+	// ->終了処理
+	if (m_pZombie != NULL)
 	{
-		m_pScore->Uninit();
-		delete m_pScore;
-		m_pScore = NULL;
+		m_pZombie->Uninit();
+		delete m_pZombie;
+		m_pZombie = NULL;
 	}
-	// ゲーム状態の初期化
-	m_state = STATE_NORMAL;
-	// シーンの開放
-	CScene::ReleaseAll();
-	// シーンストップ解除
-	CScene::UpdateStop(false);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 更新
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CGame::Update(void)
+void CSelectCharacter::Update(void)
 {
-	// ポーズ状態ならば
-	if (m_state == STATE_PAUSE)
+	// 右が入力されたら
+	// ->キャラクター番号が加算
+	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_RIGHT))
 	{
-		if (m_pause != NULL)
-		{
-			m_pause->Update();
-		}
+		m_CharacterType++;
 	}
-	// ポーズ状態ではないとき
-	else
+	// 左が入力されたら
+	// ->キャラクター番号が減算
+	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
 	{
-		// ポーズへ
-		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_POUSE))
-		{
-			PauseState();
-		}
+		m_CharacterType--;
 	}
-
-	CFade *pFade = CManager::GetFade();
-
-	// フェードしていないとき
-	if (pFade->GetFade() == CFade::FADE_NONE)
+	// 範囲設定
+	if (m_CharacterType >= CPlayer::CHARATYPE_MAX)
 	{
-		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_1))
-		{
+		m_CharacterType = 0;
+	}
+	else if (m_CharacterType < 0)
+	{
+		m_CharacterType = CPlayer::CHARATYPE_MAX - 1;
+	}
+#ifdef _DEBUG
+	CDebugproc::Print("キャラクター選択:%d\n", m_CharacterType);
+#endif // _DEBUG
 
-			if (pFade->GetFade() == CFade::FADE_NONE)
-			{
-				// リザルトへ
-				pFade->SetFade(CManager::MODE_RESULT);
-			}
+	// 現在のキャラクター番号の保存
+	m_SaveCharaType[m_PlayerID] = m_CharacterType;
+
+	// プレイヤーの更新
+	switch (m_CharacterType)
+	{
+		// プレイヤー(雷)
+	case 0:
+		// プレイヤー(雷)がNULLではないなら
+		// ->更新処理
+		if (m_pThunder != NULL)
+		{
+			m_pThunder->Update();
 		}
+		break;
+		// プレイヤー(ゾンビ)
+	case 1:
+		// プレイヤー(ゾンビ)がNULLではないなら
+		// ->更新処理
+		if (m_pZombie != NULL)
+		{
+			m_pZombie->Update();
+		}
+		break;
+	default:
+		break;
 	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 描画
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CGame::Draw(void)
+void CSelectCharacter::Draw(void)
 {
-	if (m_state == STATE_PAUSE)
+	switch (m_CharacterType)
 	{
-		if (m_pause != NULL)
+		// プレイヤー(雷)
+	case 0:
+		// プレイヤー(雷)がNULLではないなら
+		// ->描画処理
+		if (m_pThunder != NULL)
 		{
-			m_pause->Draw();
+			m_pThunder->Draw();
 		}
-	}
-	if (m_pScore != NULL)
-	{
-		m_pScore->Draw();
-	}
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ポーズ状態
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CGame::PauseState(void)
-{
-	// ゲーム状態をポーズに
-	if (m_state != STATE_PAUSE)
-	{
-		m_state = STATE_PAUSE;
-		// 更新を止める
-		CScene::UpdateStop(true);
-		// メニュー音
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_MENU);
+		break;
+		// プレイヤー(ゾンビ)
+	case 1:
+		// プレイヤー(ゾンビ)がNULLではないなら
+		// ->描画処理
+		if (m_pZombie != NULL)
+		{
+			m_pZombie->Draw();
+		}
+		break;
+	default:
+		break;
 	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// プレイヤー生成
+// 生成
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CGame::PlayerCreate(void)
+CSelectCharacter * CSelectCharacter::Create(
+	int const &nPlayerId,	// プレイヤーID
+	D3DXVECTOR3 const &pos	// 位置
+)
 {
-	for (int nCntPlayer = 0; nCntPlayer < CONTROLPLAYER_MAX; nCntPlayer++)
+	// 変数宣言
+	CSelectCharacter * pSelect_chara;
+	// メモリの生成(初め->基本クラス,後->派生クラス)
+	pSelect_chara = new CSelectCharacter;
+	// プレイヤー番号設定
+	pSelect_chara->m_PlayerID = nPlayerId;
+	// 位置設定
+	pSelect_chara->m_pos = pos;
+	// 初期化処理
+	pSelect_chara->Init();
+	// シーン管理
+	pSelect_chara->ManageSetting(CScene::LAYER_SELECTCHARACTER);
+	// 生成したオブジェクトを返す
+	return pSelect_chara;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 静的変数の初期化
+// (選択画面の初期化時に関数を呼ぶ)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CSelectCharacter::InitStatic(void)
+{
+	for (int nCntSelectChara = 0; nCntSelectChara < CONTROLPLAYER_MAX; nCntSelectChara++)
 	{
-		// プレイヤー1
-		if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_THUNDER)
-		{
-			CP_thunder::Create(D3DXVECTOR3(0.0f, 0.0f, -100.0f * nCntPlayer));
-		}
-		else if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_ZOMBIE)
-		{
-			CP_zombie::Create(D3DXVECTOR3(0.0f, 0.0f, -100.0f * nCntPlayer));
-		}
+		m_SaveCharaType[nCntSelectChara] = 0;
 	}
 }

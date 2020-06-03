@@ -13,7 +13,7 @@
 #include "scene_X.h"
 #include "manager.h"
 #include "debugproc.h"
-#include "game.h"
+#include "selectcharacter.h"
 #include "floor.h"
 #include "shadow_mapping.h"
 #include "collision.h"

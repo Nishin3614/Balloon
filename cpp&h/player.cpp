@@ -54,11 +54,12 @@ void CPlayer::Init(void)
 	CCharacter::Init();
 	// 変数宣言
 	D3DXVECTOR3 pos;	// ゲージの配置用
+
 	// カメラの初期化
 	// カメラの注視点設定
 	CManager::GetRenderer()->GetCamera()->SetPosR(
-		CCharacter::GetPos(),
-		CCharacter::GetRot()
+		CCharacter::GetPos() + D3DXVECTOR3(0.0f,D3DX_PI,0.0f),
+		CCharacter::GetRot() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f)
 	);
 }
 
@@ -78,7 +79,10 @@ void CPlayer::Update(void)
 	// モーション設定
 	CCharacter::SetMotion(MOTIONTYPE_NEUTRAL);
 	// 行動処理
-	Action();
+	if (CManager::GetMode() != CManager::MODE_SELECT)
+	{
+		Action();
+	}
 	// キャラクター更新
 	CCharacter::Update();
 

@@ -10,7 +10,7 @@
 #include "collision.h"
 #include "3Dparticle.h"
 #include "camera.h"
-#include "game.h"
+#include "selectcharacter.h"
 #include "meshobit.h"
 #include "ui.h"
 #include "Extrusion.h"
@@ -213,13 +213,15 @@ void CCharacter::Init()
 		// ステンシルシャドウの生成
 		m_pStencilshadow = CStencilshadow::Create(m_pos, D3DXVECTOR3(10.0f, 10000.0f, 10.0f));
 	}
-
-	// 風船生成
-	m_pBalloon = CBalloon::Create(&m_mtxWorld,m_sStatus[m_character].nMaxPopBalloon);
-	// ステータスの反映 //
-	// 初期風船を持っている個数
-	m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
-
+	// 選択画面以外なら
+	if (CManager::GetMode() != CManager::MODE_SELECT)
+	{
+		// 風船生成
+		m_pBalloon = CBalloon::Create(&m_mtxWorld, m_sStatus[m_character].nMaxPopBalloon);
+		// ステータスの反映 //
+		// 初期風船を持っている個数
+		m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
+	}
 	// 通常モーション設定
 	SetMotion(MOTIONTYPE_NEUTRAL);
 }
@@ -293,6 +295,9 @@ void CCharacter::Collision(void)
 		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
 		// ->ループスキップ
 		else if (pCharacter == this) continue;
+		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
+		// ->ループスキップ
+		else if (pCharacter->GetCollision() == NULL) continue;
 		// キャラクター同士の当たり判定処理
 		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
 		{
@@ -306,8 +311,12 @@ void CCharacter::Collision(void)
 			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
 		}
-		// キャラクターと風船の当たり判定処理
-		BalloonCollision(pCharacter->m_pBalloon);
+		// 選択画面以外なら
+		if (CManager::GetMode() != CManager::MODE_SELECT)
+		{
+			// キャラクターと風船の当たり判定処理
+			BalloonCollision(pCharacter->m_pBalloon);
+		}
 	}
 }
 
@@ -478,8 +487,8 @@ void CCharacter::TrackCamera(void)
 	{
 		return;
 	}
-	// モードがゲームとチュートリアルの場合
-	if (CManager::GetMode() == CManager::MODE_GAME)
+	// モードが選択画面とチュートリアルの場合
+	if (CManager::GetMode() == CManager::MODE_SELECT)
 	{
 		// カメラの注視点設定
 		CManager::GetRenderer()->GetCamera()->SetPosDestRPlayer(

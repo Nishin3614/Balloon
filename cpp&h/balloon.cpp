@@ -13,7 +13,7 @@
 #include "balloon.h"
 #include "p_thunder.h"
 #include "3Dparticle.h"
-#include "game.h"
+#include "selectcharacter.h"
 #include "spherecollision.h"
 #include "circleshadow.h"
 
