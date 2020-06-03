@@ -10,7 +10,7 @@
 #include "collision.h"
 #include "3Dparticle.h"
 #include "camera.h"
-#include "game.h"
+#include "selectcharacter.h"
 #include "meshobit.h"
 #include "ui.h"
 #include "Extrusion.h"
@@ -30,7 +30,8 @@
 #define CHARACTER_KEYMOVE (1)													// キー移動
 #define CHARACTER_G (0.5f)														// 重力
 #define CHARACTER_RESISTANCE (0.5f)												// 抵抗力
-#define CHARACTER_STATUS_FILE ("data/LOAD/STATUS/status_manager_Character.csv")	// ファイル名
+#define CHARACTER_STATUS_FILE ("data/LOAD/STATUS/status_manager_Character.csv")	// ステータスファイル名
+#define CHARACTER_INFO_FILE ("data/LOAD/CHARACTER/CHARACTER_MANAGER.txt")		// キャラクターファイル名
 #define CIRCLESHADOW (true)														// 円形のシャドウにするかしないか
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -38,23 +39,23 @@
 // 静的変数宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-MODEL_ALL	*CCharacter::m_modelAll[CHARACTER_MAX] = {};		// モデル全体の情報
-CModel_info	*CCharacter::m_model_info[CHARACTER_MAX] = {};		// モデル情報
-vector<int>	CCharacter::m_modelId[CHARACTER_MAX];				// モデル番号
+MODEL_ALL	*CCharacter::m_modelAll[CHARACTER_MAX] = {};		// キャラクター全体の情報
+CModel_info	*CCharacter::m_model_info[CHARACTER_MAX] = {};		// キャラクター情報
+vector<int>	CCharacter::m_modelId[CHARACTER_MAX];				// キャラクター番号
 D3DXVECTOR3	CCharacter::m_CharacterSize[CHARACTER_MAX] = {};	// キャラクターのサイズ
 CCharacter::STATUS CCharacter::m_sStatus[CHARACTER_MAX] = {};	// キャラクターすべてのスタータス情報
-int			CCharacter::m_NumParts[CHARACTER_MAX] = {};			// 動かすモデル数
-int			CCharacter::m_NumModel[CHARACTER_MAX] = {};			// 最大モデル数
+int			CCharacter::m_NumParts[CHARACTER_MAX] = {};			// 動かすキャラクター数
+int			CCharacter::m_NumModel[CHARACTER_MAX] = {};			// 最大キャラクター数
 int			CCharacter::m_nCameraCharacter = 0;					// キャラクターに追尾するID
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // オーバーローバーコンストラクタ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CCharacter::CCharacter() : CScene::CScene()
+CCharacter::CCharacter(CHARACTER const &character) : CScene::CScene()
 {
 	m_pMeshobit = NULL;								// 軌跡
-	m_pModel = NULL;								// モデル
-	m_character = CHARACTER_PLAYER;					// キャラクター
+	m_pModel = NULL;								// キャラクター
+	m_character = CHARACTER_P_THUNDER;				// キャラクター
 	m_pos = D3DXVECTOR3(0.0f,0.0f,0.0f);			// 位置
 	m_posold = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 前の位置
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);			// 移動量
@@ -77,6 +78,7 @@ CCharacter::CCharacter() : CScene::CScene()
 	m_pStencilshadow = NULL;						// ステンシルシャドウ
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
+	m_character = character;						// キャラクター設定
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -91,7 +93,7 @@ CCharacter::~CCharacter()
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Init()
 {
-	// モデルのメモリ確保
+	// キャラクターのメモリ確保
 	m_pModel = new CModel[m_NumParts[m_character]];
 
 	// キャラクターの設定
@@ -99,11 +101,11 @@ void CCharacter::Init()
 	{
 		// キャラクター情報渡し
 		m_pModel[nCntModel].Init();
-		// モデルの情報を渡す
+		// キャラクターの情報を渡す
 		m_pModel[nCntModel].BindModel(
 			m_modelAll[m_character]->pModel_offset[nCntModel]
 		);
-		// モデルの番号設定
+		// キャラクターの番号設定
 		m_pModel[nCntModel].SetModelId(m_modelId[m_character][nCntModel]);
 		// シャドウon
 		if (CIRCLESHADOW == false)
@@ -112,8 +114,8 @@ void CCharacter::Init()
 		}
 		// モーション設定
 		m_pModel[nCntModel].BeginMotion(
-			m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].Key[nCntModel],
-			m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].nFrame);
+			m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].Key[nCntModel],
+			m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].nFrame);
 		// すべての親以外
 		if (nCntModel != 0)
 		{
@@ -132,7 +134,7 @@ void CCharacter::Init()
 		}
 	}
 	// 敵か味方か
-	if (m_character == CHARACTER_PLAYER)
+	if (m_character == CHARACTER_P_THUNDER)
 	{
 		m_nIDWho = 0;
 	}
@@ -211,12 +213,17 @@ void CCharacter::Init()
 		// ステンシルシャドウの生成
 		m_pStencilshadow = CStencilshadow::Create(m_pos, D3DXVECTOR3(10.0f, 10000.0f, 10.0f));
 	}
-
-	// 風船生成
-	m_pBalloon = CBalloon::Create(&m_mtxWorld,m_sStatus[m_character].nMaxPopBalloon);
-	// ステータスの反映 //
-	// 初期風船を持っている個数
-	m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
+	// 選択画面以外なら
+	if (CManager::GetMode() != CManager::MODE_SELECT)
+	{
+		// 風船生成
+		m_pBalloon = CBalloon::Create(&m_mtxWorld, m_sStatus[m_character].nMaxPopBalloon);
+		// ステータスの反映 //
+		// 初期風船を持っている個数
+		m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
+	}
+	// 通常モーション設定
+	SetMotion(MOTIONTYPE_NEUTRAL);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -288,6 +295,9 @@ void CCharacter::Collision(void)
 		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
 		// ->ループスキップ
 		else if (pCharacter == this) continue;
+		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
+		// ->ループスキップ
+		else if (pCharacter->GetCollision() == NULL) continue;
 		// キャラクター同士の当たり判定処理
 		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
 		{
@@ -301,8 +311,12 @@ void CCharacter::Collision(void)
 			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
 		}
-		// キャラクターと風船の当たり判定処理
-		BalloonCollision(pCharacter->m_pBalloon);
+		// 選択画面以外なら
+		if (CManager::GetMode() != CManager::MODE_SELECT)
+		{
+			// キャラクターと風船の当たり判定処理
+			BalloonCollision(pCharacter->m_pBalloon);
+		}
 	}
 }
 
@@ -319,7 +333,7 @@ void CCharacter::BalloonCollision(
 		// 相手キャラクターの風船がNULLなら
 		// ->関数を抜ける
 		if (pBalloon->GetSceneX(nCntBalloon) == NULL) continue;
-		// 相手キャラクターの風船のモデルがNULLなら
+		// 相手キャラクターの風船のキャラクターがNULLなら
 		// ->関数を抜ける
 		else if (pBalloon->GetSceneX(nCntBalloon)->GetCollision() == NULL) continue;
 		// 自キャラクターと相手のキャラクターの風船の判定
@@ -347,7 +361,7 @@ void CCharacter::Update_Normal(void)
 	Motion();
 	// エフェクト情報更新
 	Motion_Effect();
-	// モデル更新
+	// キャラクター更新
 	ModelUpdate();
 }
 
@@ -363,8 +377,8 @@ void CCharacter::NextKeyMotion(void)
 		{
 			// モーション設定
 			m_pModel[nCntModel].SetMotion(
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].Key[nCntModel],
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].nFrame);
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].Key[nCntModel],
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].nFrame);
 		}
 	}
 }
@@ -423,7 +437,7 @@ void CCharacter::Motion(void)
 	// モーションの保存
 	m_nMotiontypeOld = m_nMotiontype;
 	// フレーム数が同じになったら
-	if (m_nFrame >= m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].nFrame)
+	if (m_nFrame >= m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].nFrame)
 	{
 		// 初期化
 		m_nFrame = 0;	// フレーム
@@ -432,10 +446,10 @@ void CCharacter::Motion(void)
 		// モーションカメラの切り替えの初期化
 		m_bMotionCamera = false;
 		// キー情報が超えたら
-		if (m_keyinfoCnt >= m_modelAll[m_character]->pMotion[m_nMotiontype].nNumKey)
+		if (m_keyinfoCnt >= m_modelAll[m_character]->pMotion[m_nMotiontype]->nNumKey)
 		{
 			// ループしないとき
-			if (m_modelAll[m_character]->pMotion[m_nMotiontype].nLoop == 0)
+			if (m_modelAll[m_character]->pMotion[m_nMotiontype]->nLoop == 0)
 			{
 				m_nMotiontype = 0;	// モーションタイプ
 			}
@@ -449,7 +463,7 @@ void CCharacter::Motion(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// モデルの更新処理
+// キャラクターの更新処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::ModelUpdate(void)
 {
@@ -469,12 +483,12 @@ void CCharacter::ModelUpdate(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::TrackCamera(void)
 {
-	if (m_character != CHARACTER_PLAYER)
+	if (m_character != CHARACTER_P_THUNDER)
 	{
 		return;
 	}
-	// モードがゲームとチュートリアルの場合
-	if (CManager::GetMode() == CManager::MODE_GAME)
+	// モードが選択画面とチュートリアルの場合
+	if (CManager::GetMode() == CManager::MODE_SELECT)
 	{
 		// カメラの注視点設定
 		CManager::GetRenderer()->GetCamera()->SetPosDestRPlayer(
@@ -516,15 +530,15 @@ void CCharacter::Motion_Effect(void)
 {
 	// 変数宣言
 	D3DXVECTOR3 pos;
-	for (int nCntMotionEffect = 0; nCntMotionEffect < (signed)m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].v_MotionEffect.size(); nCntMotionEffect++)
+	for (int nCntMotionEffect = 0; nCntMotionEffect < (signed)m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.size(); nCntMotionEffect++)
 	{
 		// 開始時間外ならスキップ
-		if (m_nFrame < m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nStart)
+		if (m_nFrame < m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nStart)
 		{
 			continue;
 		}
 		// 終了時間外ならスキップ
-		else if (m_nFrame > m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nEnd)
+		else if (m_nFrame > m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nEnd)
 		{
 			continue;
 		}
@@ -532,12 +546,12 @@ void CCharacter::Motion_Effect(void)
 		// 位置設定
 		D3DXVec3TransformCoord(
 			&pos,
-			&m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).offset,
-			CCharacter::GetMatrix(m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nKeyID)
+			&m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).offset,
+			CCharacter::GetMatrix(m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nKeyID)
 		);
 		// パーティクルの生成
 		C3DParticle::Create(
-			(C3DParticle::PARTICLE_OFFSET_ID)m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nParticleType,
+			(C3DParticle::PARTICLE_OFFSET_ID)m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nParticleType,
 			pos);
 	}
 }
@@ -547,34 +561,34 @@ void CCharacter::Motion_Effect(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Motion_Obit()
 {
-	for (int nCntMotionObit = 0; nCntMotionObit < (signed)m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.size(); nCntMotionObit++)
+	for (int nCntMotionObit = 0; nCntMotionObit < (signed)m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.size(); nCntMotionObit++)
 	{
 		// 開始時間外ならスキップ
-		if (m_nMotionFrame < m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nBeginFram)
+		if (m_nMotionFrame < m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nBeginFram)
 		{
 			continue;
 		}
 		// 終了時間外ならスキップ
-		else if (m_nMotionFrame > m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nEndFram)
+		else if (m_nMotionFrame > m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nEndFram)
 		{
 			continue;
 		}
 		// 開始時に位置を初期に
-		else if (m_nMotionFrame == m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nBeginFram)
+		else if (m_nMotionFrame == m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nBeginFram)
 		{
-			m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nObitID)->InitPos(*CCharacter::GetMatrix(m_modelAll[m_character]->v_MeshObitLoad.at(
-				m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nObitID).nPart));
+			m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nObitID)->InitPos(*CCharacter::GetMatrix(m_modelAll[m_character]->v_MeshObitLoad.at(
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nObitID).nPart));
 		}
 		// 軌跡の色の設定
-		m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nObitID)->SetCol(
-			m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).BeginCol,
-			m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).EndCol
+		m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nObitID)->SetCol(
+			m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).BeginCol,
+			m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).EndCol
 		);
 		// 軌跡の描画設定
-		m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nObitID)->DrawSet(*CCharacter::GetMatrix(m_modelAll[m_character]->v_MeshObitLoad.at(
-			m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nObitID).nPart));
+		m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nObitID)->DrawSet(*CCharacter::GetMatrix(m_modelAll[m_character]->v_MeshObitLoad.at(
+			m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nObitID).nPart));
 		// 軌跡の描画
-		m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype].v_MeshObit_detail.at(nCntMotionObit).nObitID)->Draw();
+		m_vec_pMeshObit.at(m_modelAll[m_character]->pMotion[m_nMotiontype]->v_MeshObit_detail.at(nCntMotionObit).nObitID)->Draw();
 	}
 }
 
@@ -590,15 +604,15 @@ void CCharacter::MotionCamera(void)
 	if (!m_bMotionCamera)
 	{
 		// 要素があったら処理を行う
-		if (m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].pMotionCamera != NULL)
+		if (m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].pMotionCamera != NULL)
 		{
 			// カメラモーション設定
 			pCamera->SetCamera_Motion(
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].pMotionCamera->offsetR + m_pos,
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].pMotionCamera->rot + m_rot,
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].pMotionCamera->fLength,
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].pMotionCamera->fHeight,
-				m_modelAll[m_character]->pMotion[m_nMotiontype].KeyInfo[m_keyinfoCnt].pMotionCamera->fIntertia
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].pMotionCamera->offsetR + m_pos,
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].pMotionCamera->rot + m_rot,
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].pMotionCamera->fLength,
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].pMotionCamera->fHeight,
+				m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].pMotionCamera->fIntertia
 			);
 			// モーションカメラの切り替え
 			m_bMotionCamera = true;
@@ -642,7 +656,7 @@ void CCharacter::Draw(void)
 		&mtxTrans);					// 3
 
 
-	// モデル
+	// キャラクター
 	for (int nCntModel = 0; nCntModel < m_NumParts[m_character]; nCntModel++)
 	{
 		// ヌルチェック
@@ -721,10 +735,10 @@ int CCharacter::GetMaxFrame(
 	// モーション全体のフレーム数
 	if (nNowKeyCnt == -1)
 	{
-		return m_modelAll[character]->pMotion[nMotionID].nAllFrame;
+		return m_modelAll[character]->pMotion[nMotionID]->nAllFrame;
 	}
 	// 一つのキー間のフレーム数
-	return m_modelAll[character]->pMotion[nMotionID].KeyInfo[nNowKeyCnt].nFrame;
+	return m_modelAll[character]->pMotion[nMotionID]->KeyInfo[nNowKeyCnt].nFrame;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -750,7 +764,7 @@ void CCharacter::FagGravity(void)
 void CCharacter::SetMotion(int const nMotiontype)
 {
 	// ループ状態の時
-	if (m_modelAll[m_character]->pMotion[m_nMotiontype].nLoop == 1)
+	if (m_modelAll[m_character]->pMotion[m_nMotiontype]->nLoop == 1)
 	{
 		m_nMotiontype = nMotiontype;
 	}
@@ -769,7 +783,7 @@ void CCharacter::ComplusionSetMotion(int const nMotiontype)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 D3DXVECTOR3 *CCharacter::GetPartsRot(int const nModelID)
 {
-	// モデルの行列情報取得
+	// キャラクターの行列情報取得
 	if (nModelID >= 0 ||
 		nModelID < m_NumParts[m_character])
 	{
@@ -781,7 +795,7 @@ D3DXVECTOR3 *CCharacter::GetPartsRot(int const nModelID)
 		return &m_rot;
 	}
 #ifdef _DEBUG
-	CCalculation::Messanger("キャラクターのモデルの回転情報がありません");
+	CCalculation::Messanger("キャラクターのキャラクターの回転情報がありません");
 #endif // _DEBUG
 	// 指定されたIDがない場合
 	return &m_rot;
@@ -792,7 +806,7 @@ D3DXVECTOR3 *CCharacter::GetPartsRot(int const nModelID)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 D3DXVECTOR3 *CCharacter::GetPartsPos(int const nModelID)
 {
-	// モデルの行列情報取得
+	// キャラクターの行列情報取得
 	if (nModelID >= 0 ||
 		nModelID < m_NumParts[m_character])
 	{
@@ -804,7 +818,7 @@ D3DXVECTOR3 *CCharacter::GetPartsPos(int const nModelID)
 		return &m_rot;
 	}
 #ifdef _DEBUG
-	CCalculation::Messanger("キャラクターのモデルの回転情報がありません");
+	CCalculation::Messanger("キャラクターのキャラクターの回転情報がありません");
 #endif // _DEBUG
 	// 指定されたIDがない場合
 	return &m_rot;
@@ -812,11 +826,11 @@ D3DXVECTOR3 *CCharacter::GetPartsPos(int const nModelID)
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 行列取得処理
-// -1はキャラクターの行列情報、0～はモデルの行列情報
+// -1はキャラクターの行列情報、0～はキャラクターの行列情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 D3DXMATRIX * CCharacter::GetMatrix(int const nModelID)
 {
-	// モデルの行列情報取得
+	// キャラクターの行列情報取得
 	if(nModelID >= 0 ||
 		nModelID < m_NumParts[m_character])
 	{
@@ -828,12 +842,13 @@ D3DXMATRIX * CCharacter::GetMatrix(int const nModelID)
 		return &m_mtxWorld;
 	}
 #ifdef _DEBUG
-	CCalculation::Messanger("キャラクターのモデルの行列情報がありません");
+	CCalculation::Messanger("キャラクターのキャラクターの行列情報がありません");
 #endif // _DEBUG
 	// 指定されたIDがない場合
 	return &m_mtxWorld;
 }
 
+/*
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 読み込み処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -844,18 +859,81 @@ void CCharacter::Load(
 )
 {
 	// 変数宣言
-	LPDIRECT3DDEVICE9	pDevice = CManager::GetRenderer()->GetDevice();
-	// モデルとモーション情報の生成
+	// キャラクターとモーション情報の生成
 	m_modelAll[character] = new MODEL_ALL;
 	// キャラクターのテキストデータの取得
 	CModel_info::TextLoad(
-		m_modelAll[character],					// モデル情報
-		m_modelId[character],					// モデルファイル
+		m_modelAll[character],					// キャラクター情報
+		m_modelId[character],					// キャラクターファイル
 		nMaxMotion,								// モーション数
-		m_NumModel[character],					// 最大モデル数
-		m_NumParts[character],					// 動かすモデル数
+		m_NumModel[character],					// 最大キャラクター数
+		m_NumParts[character],					// 動かすキャラクター数
 		file_name								// ファイル名
 	);
+}
+*/
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// キャラクター全ソースの読み込み
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+HRESULT CCharacter::Load(void)
+{
+	// 変数宣言
+	HRESULT hr;
+	// キャラクターの情報読み込み
+	hr = Load_Character();
+	// ステータスの情報読み込み
+	hr = LoadStatus();
+	return hr;
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// キャラクターの情報読み込み
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+HRESULT CCharacter::Load_Character(void)
+{
+	// ファイルの中身格納用
+	vector<vector<string>> vsvec_Contens;
+	// ファイルの中身を取得する
+	vsvec_Contens = CCalculation::FileContens(CHARACTER_INFO_FILE, ',');
+	// 行ごとに回す
+	for (int nCntLine = 0; nCntLine < (signed)vsvec_Contens.size(); nCntLine++)
+	{
+		// 項目ごとに回す
+		for (int nCntItem = 0; nCntItem < (signed)vsvec_Contens.at(nCntLine).size(); nCntItem++)
+		{
+			switch (nCntItem)
+			{
+				// パス情報
+			case 0:
+				// キャラクターの最大数を超えたら
+				// ケースを抜ける
+				if (nCntLine >= CHARACTER_MAX)
+				{
+#ifdef _DEBUG
+					CCalculation::Messanger("CharacterのLoad_Character関数->キャラクターの最大数を超えました。");
+#endif // _DEBUG
+					break;
+				}
+				// キャラクターとモーション情報の生成
+				m_modelAll[nCntLine] = new MODEL_ALL;
+				// キャラクターのテキストデータの取得
+				CModel_info::TextLoad(
+					m_modelAll[nCntLine],							// キャラクター情報
+					m_modelId[nCntLine],							// キャラクターファイル
+					m_NumModel[nCntLine],							// 最大キャラクター数
+					m_NumParts[nCntLine],							// 動かすキャラクター数
+					vsvec_Contens.at(nCntLine).at(nCntItem).c_str()	// ファイル名
+				);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	// vectorの多重配列開放
+	vector<vector<string>>().swap(vsvec_Contens);
+	return S_OK;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -913,16 +991,13 @@ HRESULT CCharacter::LoadStatus(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 読み込んだ情報を破棄処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CCharacter::UnLoad(
-	CHARACTER const character,
-	int const nMaxMotion)
+void CCharacter::UnLoad(void)
 {
-	// 変数宣言
-	int	nCntMotion = 0;		// モーションカウント
-	int	nCntKeySet = 0;		// フレーム数6
-
-	// モデル・モーションの破棄
-	CModel_info::TextUnload(m_modelAll[character], nMaxMotion);
+	// キャラクター・モーションの破棄
+	for (int nCntCharacter = 0; nCntCharacter < CHARACTER_MAX; nCntCharacter++)
+	{
+		CModel_info::TextUnload(m_modelAll[nCntCharacter]);
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

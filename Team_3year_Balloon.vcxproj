@@ -207,9 +207,11 @@
     <ClCompile Include="cpp&amp;h\network.cpp" />
     <ClCompile Include="cpp&amp;h\networkKeyboard.cpp" />
     <ClCompile Include="cpp&amp;h\number.cpp" />
+    <ClCompile Include="cpp&amp;h\p_thunder.cpp" />
     <ClCompile Include="cpp&amp;h\pause.cpp" />
     <ClCompile Include="cpp&amp;h\pause_ui.cpp" />
     <ClCompile Include="cpp&amp;h\player.cpp" />
+    <ClCompile Include="cpp&amp;h\p_zombie.cpp" />
     <ClCompile Include="cpp&amp;h\ranking.cpp" />
     <ClCompile Include="cpp&amp;h\rectcollision.cpp" />
     <ClCompile Include="cpp&amp;h\renderer.cpp" />
@@ -219,6 +221,9 @@
     <ClCompile Include="cpp&amp;h\scene_three.cpp" />
     <ClCompile Include="cpp&amp;h\scene_two.cpp" />
     <ClCompile Include="cpp&amp;h\scene_X.cpp" />
+    <ClCompile Include="cpp&amp;h\score.cpp" />
+    <ClCompile Include="cpp&amp;h\select.cpp" />
+    <ClCompile Include="cpp&amp;h\selectcharacter.cpp" />
     <ClCompile Include="cpp&amp;h\shadow_mapping.cpp" />
     <ClCompile Include="cpp&amp;h\shape.cpp" />
     <ClCompile Include="cpp&amp;h\solider.cpp" />
@@ -281,9 +286,11 @@
     <ClInclude Include="cpp&amp;h\network.h" />
     <ClInclude Include="cpp&amp;h\networkKeyboard.h" />
     <ClInclude Include="cpp&amp;h\number.h" />
+    <ClInclude Include="cpp&amp;h\p_thunder.h" />
     <ClInclude Include="cpp&amp;h\pause.h" />
     <ClInclude Include="cpp&amp;h\pause_ui.h" />
     <ClInclude Include="cpp&amp;h\player.h" />
+    <ClInclude Include="cpp&amp;h\p_zombie.h" />
     <ClInclude Include="cpp&amp;h\ranking.h" />
     <ClInclude Include="cpp&amp;h\rectcollision.h" />
     <ClInclude Include="cpp&amp;h\renderer.h" />
@@ -293,6 +300,9 @@
     <ClInclude Include="cpp&amp;h\scene_three.h" />
     <ClInclude Include="cpp&amp;h\scene_two.h" />
     <ClInclude Include="cpp&amp;h\scene_X.h" />
+    <ClInclude Include="cpp&amp;h\score.h" />
+    <ClInclude Include="cpp&amp;h\select.h" />
+    <ClInclude Include="cpp&amp;h\selectcharacter.h" />
     <ClInclude Include="cpp&amp;h\shadow_mapping.h" />
     <ClInclude Include="cpp&amp;h\shape.h" />
     <ClInclude Include="cpp&amp;h\solider.h" />

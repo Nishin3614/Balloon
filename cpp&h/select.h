@@ -1,11 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// ゲームヘッダー処理 [game.h]
+// 選択画面処理 [select.h]
 // Author : KOKI NISHIYAMA
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _SELECT_H_
+#define _SELECT_H_
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -35,20 +35,14 @@ class CScore;			// スコア
 // クラス
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CGame
+class CSelect
 {
 public:
 	/* 列挙型 */
 	// 状態
-	typedef enum
-	{
-		STATE_NORMAL = 0,
-		STATE_PAUSE,
-		STATE_MAX
-	} STATE;
 	/* 関数 */
-	CGame();
-	~CGame();
+	CSelect();
+	~CSelect();
 	void Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -56,21 +50,10 @@ public:
 #ifdef _DEBUG
 	void Debug(void) {};
 #endif // _DEBUG
-	// 設定
-	static void SetState(STATE const state) { m_state = state; };		// 状態
-	// 取得
-	static STATE GetState(void) { return m_state; };					// 状態
 
 protected:
 private:
 	/* 関数 */
-	void PauseState(void);				// ポーズの状態
-	void PlayerCreate(void);			// プレイヤー生成
 	/* 変数 */
-	static STATE m_state;				// 状態
-
-	CPause * m_pause;					// ポーズ
-	CScore * m_pScore;					// スコア
-
 };
 #endif

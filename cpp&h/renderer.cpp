@@ -75,16 +75,16 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 
 	// デバイスのプレゼンテーションパラメータの設定
 	ZeroMemory(&m_d3dpp, sizeof(m_d3dpp));								// ワークをゼロクリア
-	m_d3dpp.BackBufferWidth = SCREEN_WIDTH;							// ゲーム画面サイズ(幅)
+	m_d3dpp.BackBufferWidth = SCREEN_WIDTH;								// ゲーム画面サイズ(幅)
 	m_d3dpp.BackBufferHeight = SCREEN_HEIGHT;							// ゲーム画面サイズ(高さ)
 	m_d3dpp.BackBufferFormat = d3ddm.Format;							// バックバッファの形式
 	m_d3dpp.BackBufferCount = 1;										// バックバッファの数
-	m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;						// ダブルバッファの切り替え(映像信号に同期)
-	m_d3dpp.EnableAutoDepthStencil = TRUE;							// デプスバッファ(Ｚバッファ)とステンシルバッファを作成
+	m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;							// ダブルバッファの切り替え(映像信号に同期)
+	m_d3dpp.EnableAutoDepthStencil = TRUE;								// デプスバッファ(Ｚバッファ)とステンシルバッファを作成
 	m_d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;						// デプスバッファとして16bitを使う
-	m_d3dpp.Windowed = bWindow;										// ウィンドウモード
+	m_d3dpp.Windowed = bWindow;											// ウィンドウモード
 	m_d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;		// リフレッシュレート(現在の速度に合わせる)
-	m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;		// インターバル(VSyncを待って描画)
+	m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;			// インターバル(VSyncを待って描画)
 	// m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;	// クライアント領域を直ちに更新する
 
 	// Direct3Dデバイスの生成

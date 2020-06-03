@@ -1,11 +1,11 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// ゲームヘッダー処理 [game.h]
+// キャラクター選択処理 [selectcharacter.h]
 // Author : KOKI NISHIYAMA
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _SELECTCHARACTER_H_
+#define _SELECTCHARACTER_H_
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -14,7 +14,7 @@
 // インクルードファイル
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#include "main.h"
+#include "scene.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -27,28 +27,22 @@
 // 前方宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CPause;			// ポーズ
-class CScore;			// スコア
+class CP_thunder;			// ポーズ
+class CP_zombie;			// スコア
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // クラス
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CGame
+class CSelectCharacter : public CScene
 {
 public:
 	/* 列挙型 */
 	// 状態
-	typedef enum
-	{
-		STATE_NORMAL = 0,
-		STATE_PAUSE,
-		STATE_MAX
-	} STATE;
 	/* 関数 */
-	CGame();
-	~CGame();
+	CSelectCharacter();
+	~CSelectCharacter();
 	void Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -56,21 +50,25 @@ public:
 #ifdef _DEBUG
 	void Debug(void) {};
 #endif // _DEBUG
-	// 設定
-	static void SetState(STATE const state) { m_state = state; };		// 状態
-	// 取得
-	static STATE GetState(void) { return m_state; };					// 状態
-
+	// 生成
+	static CSelectCharacter * Create(
+		int const &nPlayerId,	// プレイヤーID
+		D3DXVECTOR3 const &pos	// 位置
+	);
+	// 静的変数の初期化
+	// (選択画面の初期化時に関数を呼ぶ)
+	static void InitStatic(void);
+	// プレイヤーが選んだキャラクタータイプを取得
+	static int GetSaveCharaType(int const &nPlayerID) { return m_SaveCharaType[nPlayerID]; };
 protected:
 private:
 	/* 関数 */
-	void PauseState(void);				// ポーズの状態
-	void PlayerCreate(void);			// プレイヤー生成
 	/* 変数 */
-	static STATE m_state;				// 状態
-
-	CPause * m_pause;					// ポーズ
-	CScore * m_pScore;					// スコア
-
+	static int m_SaveCharaType[CONTROLPLAYER_MAX];	// プレイヤーが選んだキャラクタータイプを保存
+	CP_thunder * m_pThunder;						// プレイヤー(雷)
+	CP_zombie * m_pZombie;							// プレイヤー(ゾンビ)
+	int m_CharacterType;							// キャラクタータイプ
+	int m_PlayerID;									// プレイヤー番号
+	D3DXVECTOR3 m_pos;								// 位置
 };
 #endif

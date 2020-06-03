@@ -10,6 +10,7 @@
 /* 描画 */
 #include "scene.h"
 #include "game.h"
+#include "select.h"
 #include "fade.h"
 #include "title.h"
 #include "tutorial.h"
@@ -22,7 +23,7 @@
 // マクロ関数
 //
 // ----------------------------------------------------------------------------------------------------
-#define STARTMODE (MODE_GAME)
+#define STARTMODE (MODE_SELECT)
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -38,10 +39,11 @@ CSound * CManager::m_sound = NULL;						// サウンド
 CFade * CManager::m_fade = NULL;						// フェード
 CTitle * CManager::m_title = NULL;						// タイトル
 CTutorial * CManager::m_tutorial = NULL;				// チュートリアル
+CSelect * CManager::m_select = NULL;					// 選択画面
 CGame * CManager::m_game = NULL;						// ゲーム
 CResult * CManager::m_result = NULL;					// リザルト
 CRanking * CManager::m_ranking = NULL;					// ランキング
-CManager::MODE CManager::m_mode = CManager::MODE_GAME;	// モード
+CManager::MODE CManager::m_mode = MODE_SELECT;			// モード
 bool CManager::m_bWire = false;							// ワイヤー
 CNetwork * CManager::m_pNetwork = NULL;					// ネットワーク
 
@@ -86,6 +88,8 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	m_title = new CTitle;
 	// チュートリアルの生成
 	m_tutorial = new CTutorial;
+	// 選択画面の生成
+	m_select = new CSelect;
 	// ゲームの生成
 	m_game = new CGame;
 	// リザルトの生成
@@ -228,6 +232,13 @@ void CManager::Uninit(void)
 		delete m_tutorial;
 		m_tutorial = NULL;
 	}
+	// 選択画面
+	if (m_select != NULL)
+	{
+		m_select->Uninit();
+		delete m_select;
+		m_select = NULL;
+	}
 	// ゲーム
 	if (m_game != NULL)
 	{
@@ -287,6 +298,10 @@ void CManager::Update(void)
 	case MODE_TUTORIAL:
 		m_tutorial->Update();
 		break;
+		// 選択画面
+	case MODE_SELECT:
+		m_select->Update();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Update();
@@ -334,6 +349,10 @@ void CManager::SetMode(MODE const mode)
 	case MODE_TUTORIAL:
 		m_tutorial->Uninit();
 		break;
+		// 選択画面
+	case MODE_SELECT:
+		m_select->Uninit();
+		break;
 		// ゲーム
 	case MODE_GAME:
 		m_game->Uninit();
@@ -362,6 +381,10 @@ void CManager::SetMode(MODE const mode)
 		// チュートリアル
 	case MODE_TUTORIAL:
 		m_tutorial->Init();
+		break;
+		// 選択画面
+	case MODE_SELECT:
+		m_select->Init();
 		break;
 		// ゲーム
 	case MODE_GAME:

@@ -231,11 +231,10 @@ typedef struct MODEL_ALL
 	MODEL_ALL()
 	{
 		pModel_offset = NULL;	// モデルのオフセット
-		pMotion = NULL;			// モーション
 		pCharacterCollision = NULL;	// キャラクター当たり判定情報
 	}
 	MODEL_OFFSET			*pModel_offset;			// モデルのオフセット
-	MOTION					*pMotion;				// モーション
+	vector<MOTION *>		pMotion;				// モーション
 	CHARACTERCOLLISION		*pCharacterCollision;	// キャラクター当たり判定情報
 	vector<ATTACKCOLLISION>	v_AttackCollision;		// 攻撃当たり判定情報
 	vector<MESHOBIT_BASIC>	v_MeshObitLoad;			// 軌跡の情報
@@ -290,16 +289,23 @@ public:
 	// モデルのテキストデータ読込
 	static void TextLoad(
 		MODEL_ALL	*pmodelAll,					// モデルとモーションの
-		vector<int> &ModelFile,	// モデルファイルの情報
+		vector<int> &ModelFile,					// モデルファイルの情報
 		int const &nMaxMotion,					// モーション数
+		int &nMaxkey,							// キー数
+		int &nMaxParts,							// 動かすモデル数
+		const char * file_name					// ファイル名
+	);
+	// モデルのテキストデータ読込
+	static void TextLoad(
+		MODEL_ALL	*pmodelAll,					// モデルとモーションの
+		vector<int> &ModelFile,					// モデルファイルの情報
 		int &nMaxkey,							// キー数
 		int &nMaxParts,							// 動かすモデル数
 		const char * file_name					// ファイル名
 	);
 	// 読み込んだモデルのテキストデータの破棄
 	static void TextUnload(
-		MODEL_ALL *pmodelAll,					// モデルとモーションの
-		int const &nMaxMotion					// モーション数
+		MODEL_ALL *pmodelAll					// モデルとモーションの
 		);
 protected:
 private:
