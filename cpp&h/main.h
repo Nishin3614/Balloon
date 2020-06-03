@@ -11,8 +11,10 @@
 // ------------------------------------------
 // インクルードファイル
 // ------------------------------------------
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRTDBG_MAP_ALLOC
+#include <WinSock2.h>
 #include <Windows.h>	// ウィンドウアプリケーション
 #include "d3dx9.h"
 /* C言語のライブラリ */
@@ -25,7 +27,7 @@
 #include <fstream>
 #include <sstream>
 #include <tchar.h>
-#include <vector>		// 動的配列ヘッダー	
+#include <vector>		// 動的配列ヘッダー
 #include <memory>		// メモリヘッダー
 
 #include "ImGui/imgui.h"
@@ -47,8 +49,9 @@ using namespace std;	// 名前空間指定
 #pragma comment(lib,"d3d9.lib")		// 描画処理に必要
 #pragma comment(lib,"d3dx9.lib")	// [d3d9.lib]の拡張ライブラリ
 #pragma comment(lib,"dxguid.lib")	// DirectXコンポーネント(部品)
-#pragma comment (lib,"winmm.lib")
-#pragma comment (lib, "dinput8.lib")
+#pragma comment(lib,"winmm.lib")
+#pragma comment(lib, "dinput8.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 // ------------------------------------------
 //
