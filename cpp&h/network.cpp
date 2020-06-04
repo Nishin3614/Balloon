@@ -37,7 +37,7 @@ HRESULT CNetwork::Init(HINSTANCE hInstance, HWND hWnd)
 	HRESULT hr;
 
 	hr = Build();					// ソケットの生成
-	OutputDebugString("クライアント構築完了");
+	OutputDebugString("クライアント構築完了\n");
 
 	return hr;
 }
@@ -190,10 +190,12 @@ HRESULT CNetwork::Connect(void)
 	val = connect(m_sockClient, (struct sockaddr *)&m_addrServer, sizeof(m_addrServer));
 	if (val == SOCKET_ERROR)
 	{
-		printf("error : %d\n", WSAGetLastError());
+		char aError[64];
+		sprintf(aError, "ネットワークエラー!\nerror : %d\n", WSAGetLastError());
+		MessageBox(NULL, aError, "警告!", MB_ICONWARNING);
 		return E_FAIL;
 	}
 
-	OutputDebugString("サーバとの接続完了");
+	OutputDebugString("サーバとの接続完了\n");
 	return S_OK;
 }

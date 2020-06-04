@@ -1,39 +1,39 @@
 // ------------------------------------------
 //
-// ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼å‡¦ç†ã®èª¬æ˜[manager.h]
+// ƒ}ƒl[ƒWƒƒ[ˆ—‚Ìà–¾[manager.h]
 // Author : Koki Nishiyama
 //
 // ------------------------------------------
 #ifndef _MANAGER_H_
-#define _MANAGER_H_	 // ãƒ•ã‚¡ã‚¤ãƒ«åã‚’åŸºæº–ã‚’æ±ºã‚ã‚‹
+#define _MANAGER_H_	 // ƒtƒ@ƒCƒ‹–¼‚ğŠõT‚ğŒˆ‚ß‚é
 
 // ------------------------------------------
 //
-// ã‚¤ãƒ³ã‚¯ãƒ«ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«
+// ƒCƒ“ƒNƒ‹[ƒhƒtƒ@ƒCƒ‹
 //
 // ------------------------------------------
-/* åŸºæœ¬ */
+/* Šî–{ */
 #include "main.h"
 #include "Calculation.h"
 
-/* æç”» */
+/* •`‰æ */
 #include "renderer.h"
 
-/* å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹ */
+/* “ü—ÍƒfƒoƒCƒX */
 #include "keyboard.h"
 #include "joypad.h"
 #include "mouse.h"
 #include "keyconfig.h"
 
-/* ã‚µã‚¦ãƒ³ãƒ‰ */
+/* ƒTƒEƒ“ƒh */
 #include "sound.h"
 
-/* ãƒ‡ãƒãƒƒã‚°è¡¨ç¤º */
+/* ƒfƒoƒbƒO•\¦ */
 #include "debugproc.h"
 
 // ------------------------------------------
 //
-// ãƒã‚¯ãƒ­é–¢æ•°
+// ƒ}ƒNƒŠÖ”
 //
 // ------------------------------------------
 #define ONEPLAYER_STAGE (5)
@@ -43,28 +43,28 @@
 
 // ------------------------------------------
 //
-// å‰æ–¹å®£è¨€
+// ‘O•ûéŒ¾
 //
 // ------------------------------------------
-class CFade;		// ç”»é¢é·ç§»
-class CGame;		// ã‚²ãƒ¼ãƒ 
-class CTitle;		// ã‚¿ã‚¤ãƒˆãƒ«
-class CTutorial;	// ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«
-class CResult;		// ãƒªã‚¶ãƒ«ãƒˆ
-class CRanking;		// ãƒ©ãƒ³ã‚­ãƒ³ã‚°
-class CNetwork;		// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯
-class CSelect;		// é¸æŠç”»é¢
+class CFade;		// ‰æ–Ê‘JˆÚ
+class CGame;		// ƒQ[ƒ€
+class CTitle;		// ƒ^ƒCƒgƒ‹
+class CTutorial;	// ƒ`ƒ…[ƒgƒŠƒAƒ‹
+class CResult;		// ƒŠƒUƒ‹ƒg
+class CRanking;		// ƒ‰ƒ“ƒLƒ“ƒO
+class CNetwork;		// ƒlƒbƒgƒ[ƒN
+class CSelect;		// ‘I‘ğ‰æ–Ê
 
 // ------------------------------------------
 //
-// ã‚¯ãƒ©ã‚¹
+// ƒNƒ‰ƒX
 //
 // ------------------------------------------
 class CManager
 {
 public:
-	/* åˆ—æŒ™å‹ */
-	// ãƒ¢ãƒ¼ãƒ‰
+	/* —ñ‹“Œ^ */
+	// ƒ‚[ƒh
 	typedef enum
 	{
 		MODE_TITLE = 0,
@@ -75,51 +75,51 @@ public:
 		MODE_RANKING,
 		MODE_MAX
 	} MODE;
-	/* é–¢æ•° */
+	/* ŠÖ” */
 	CManager();
 	~CManager();
 	HRESULT  Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static void SetMode(MODE const mode);							// ãƒ¢ãƒ¼ãƒ‰è¨­å®š
-	static CRenderer * GetRenderer(void) { return m_renderer; };	// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã®å–å¾—
-	static CKeyboard * GetKeyboard(void) { return m_keyboard; };	// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®å–å¾—
-	static CJoypad * GetJoy(void) { return m_joypad; };				// ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰ã®å–å¾—
-	static CMouse * GetMouse(void) { return m_mouse; };				// ãƒã‚¦ã‚¹ã®å–å¾—
-	static CKeyConfig * GetKeyConfig(void) { return m_keyconfig; };	// ã‚­ãƒ¼è©³ç´°ã®å–å¾—
-	static CSound * GetSound(void) { return m_sound; };		// ã‚µã‚¦ãƒ³ãƒ‰ã®å–å¾—
-	static CFade * GetFade(void) { return m_fade; };			// ç”»é¢é·ç§»ã®å–å¾—
-	static CGame * GetGame(void) { return m_game; };			// ã‚²ãƒ¼ãƒ ã®å–å¾—
-	static MODE GetMode(void) { return m_mode; };			// ãƒ¢ãƒ¼ãƒ‰ã®å–å¾—
-	static CNetwork * GetNetwork(void) { return m_pNetwork; }		// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã®å–å¾—
-	static CSelect * GetSelect(void) { return m_select; };			// é¸æŠç”»é¢ã®å–å¾—
+	static void SetMode(MODE const mode);							// ƒ‚[ƒhİ’è
+	static CRenderer * GetRenderer(void) { return m_renderer; };	// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ÌûØ€
+	static CKeyboard * GetKeyboard(void) { return m_keyboard; };	// ƒL[ƒ{[ƒh‚ÌûØ€
+	static CJoypad * GetJoy(void) { return m_joypad; };				// ƒWƒ‡ƒCƒpƒbƒh‚ÌûØ€
+	static CMouse * GetMouse(void) { return m_mouse; };				// ƒ}ƒEƒX‚ÌûØ€
+	static CKeyConfig * GetKeyConfig(void) { return m_keyconfig; };	// ƒL[Ú×‚ÌûØ€
+	static CSound * GetSound(void) { return m_sound; };		// ƒTƒEƒ“ƒh‚ÌûØ€
+	static CFade * GetFade(void) { return m_fade; };			// ‰æ–Ê‘JˆÚ‚ÌûØ€
+	static CGame * GetGame(void) { return m_game; };			// ƒQ[ƒ€‚ÌûØ€
+	static MODE GetMode(void) { return m_mode; };			// ƒ‚[ƒh‚ÌûØ€
+	static CNetwork * GetNetwork(void) { return m_pNetwork; }		// ƒlƒbƒgƒ[ƒN‚ÌûØ€
+	static CSelect * GetSelect(void) { return m_select; };			// ‘I‘ğ‰æ–Ê‚ÌûØ€
 
 protected:
 
 private:
-	// ã‚²ãƒ¼ãƒ ã«æ¬ ã‹ã›ãªã„ã‚‚ã®
-	static CRenderer * m_renderer;			// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°
-	static CSound * m_sound;				// ã‚µã‚¦ãƒ³ãƒ‰
+	// ƒQ[ƒ€‚ÉŒ‡‚©‚¹‚È‚¢‚à‚Ì
+	static CRenderer * m_renderer;			// ƒŒƒ“ƒ_ƒŠƒ“ƒO
+	static CSound * m_sound;				// ƒTƒEƒ“ƒh
 
-	// å…¥åŠ›ãƒ‡ãƒã‚¤ã‚¹
-	static CKeyboard * m_keyboard;			// ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰
-	static CJoypad * m_joypad;				// ã‚¸ãƒ§ã‚¤ãƒ‘ãƒƒãƒ‰
-	static CMouse * m_mouse;				// ãƒã‚¦ã‚¹
-	static CKeyConfig * m_keyconfig;		// ã‚­ãƒ¼è©³ç´°
+											// “ü—ÍƒfƒoƒCƒX
+	static CKeyboard * m_keyboard;			// ƒL[ƒ{[ƒh
+	static CJoypad * m_joypad;				// ƒWƒ‡ƒCƒpƒbƒh
+	static CMouse * m_mouse;				// ƒ}ƒEƒX
+	static CKeyConfig * m_keyconfig;		// ƒL[Ú×
 
-											// ç”»é¢
-	static CFade * m_fade;					// ç”»é¢é·ç§»
-	static CTitle * m_title;				// ã‚¿ã‚¤ãƒˆãƒ«
-	static CTutorial * m_tutorial;			// ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«
-	static CGame * m_game;					// ã‚²ãƒ¼ãƒ 
-	static CSelect * m_select;				// é¸æŠç”»é¢
-	static CResult * m_result;				// ãƒªã‚¶ãƒ«ãƒˆ
-	static CRanking * m_ranking;			// ãƒ©ãƒ³ã‚­ãƒ³ã‚°
-	static CNetwork * m_pNetwork;			// ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯
+											// ‰æ–Ê
+	static CFade * m_fade;					// ‰æ–Ê‘JˆÚ
+	static CTitle * m_title;				// ƒ^ƒCƒgƒ‹
+	static CTutorial * m_tutorial;			// ƒ`ƒ…[ƒgƒŠƒAƒ‹
+	static CGame * m_game;					// ƒQ[ƒ€
+	static CSelect * m_select;				// ‘I‘ğ‰æ–Ê
+	static CResult * m_result;				// ƒŠƒUƒ‹ƒg
+	static CRanking * m_ranking;			// ƒ‰ƒ“ƒLƒ“ƒO
+	static CNetwork * m_pNetwork;			// ƒlƒbƒgƒ[ƒN
 
-	static MODE m_mode;						// ãƒ¢ãƒ¼ãƒ‰
-	static bool	m_bWire;					// ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ¢ãƒ¼ãƒ‰
+	static MODE m_mode;						// ƒ‚[ƒh
+	static bool	m_bWire;					// ƒƒCƒ„[ƒ‚[ƒh
 };
 
 #endif // !_MANAGER_H_
