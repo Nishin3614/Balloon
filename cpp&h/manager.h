@@ -88,13 +88,15 @@ public:
 	static CJoypad * GetJoy(void) { return m_joypad; };				// ƒWƒ‡ƒCƒpƒbƒh‚ÌûØ€
 	static CMouse * GetMouse(void) { return m_mouse; };				// ƒ}ƒEƒX‚ÌûØ€
 	static CKeyConfig * GetKeyConfig(void) { return m_keyconfig; };	// ƒL[Ú×‚ÌûØ€
-	static CSound * GetSound(void) { return m_sound; };		// ƒTƒEƒ“ƒh‚ÌûØ€
-	static CFade * GetFade(void) { return m_fade; };			// ‰æ–Ê‘JˆÚ‚ÌûØ€
-	static CGame * GetGame(void) { return m_game; };			// ƒQ[ƒ€‚ÌûØ€
-	static MODE GetMode(void) { return m_mode; };			// ƒ‚[ƒh‚ÌûØ€
+	static CSound * GetSound(void) { return m_sound; };				// ƒTƒEƒ“ƒh‚ÌûØ€
+	static CFade * GetFade(void) { return m_fade; };				// ‰æ–Ê‘JˆÚ‚ÌûØ€
+	static CGame * GetGame(void) { return m_game; };				// ƒQ[ƒ€‚ÌûØ€
+	static MODE GetMode(void) { return m_mode; };					// ƒ‚[ƒh‚ÌûØ€
 	static CNetwork * GetNetwork(void) { return m_pNetwork; }		// ƒlƒbƒgƒ[ƒN‚ÌûØ€
 	static CSelect * GetSelect(void) { return m_select; };			// ‘I‘ğ‰æ–Ê‚ÌûØ€
 
+	// ƒvƒŒƒCƒ„[”Ô†‚Ìæ“¾
+	static int const &GetPlayerID(void) { return m_nPlayerID; };	// ƒvƒŒƒCƒ„[”Ô†
 protected:
 
 private:
@@ -120,6 +122,7 @@ private:
 
 	static MODE m_mode;						// ƒ‚[ƒh
 	static bool	m_bWire;					// ƒƒCƒ„[ƒ‚[ƒh
+	static int m_nPlayerID;					// ƒvƒŒƒCƒ„[”Ô†
 };
 
 #endif // !_MANAGER_H_

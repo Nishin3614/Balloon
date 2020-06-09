@@ -42,7 +42,7 @@ CCamera::CCamera()
 	m_fLength = m_load[m_type].fLengh;
 	m_fHeight = m_load[m_type].fHeight;
 	m_RotSpeed.x = CAMERA_INIT;				// 回転スピード
-	m_RotSpeed.y = -CAMERA_INIT;				// 回転スピード
+	m_RotSpeed.y = -CAMERA_INIT;			// 回転スピード
 	m_fIntertia = 0.1f;
 	m_bSet = false;	
 }
@@ -105,7 +105,6 @@ void CCamera::Update_Play(void)
 	CCalculation::Rot_One_Limit(m_rot.x);
 	CCalculation::Rot_One_Limit(m_rot.y);
 	CCalculation::Rot_One_Limit(m_rot.z);
-
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

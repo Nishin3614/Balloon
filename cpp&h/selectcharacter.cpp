@@ -47,9 +47,9 @@ CSelectCharacter::~CSelectCharacter()
 void CSelectCharacter::Init(void)
 {
 	// プレイヤー(雷)
-	m_pThunder = CP_thunder::Create_Self(m_pos);
+	m_pThunder = CP_thunder::Create_Self(m_PlayerID,m_pos);
 	// プレイヤー(ゾンビ)
-	m_pZombie = CP_zombie::Create_Self(m_pos);
+	m_pZombie = CP_zombie::Create_Self(m_PlayerID, m_pos);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

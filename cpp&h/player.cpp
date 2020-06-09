@@ -34,7 +34,6 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter::CCharacter(character)
 {
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
-	m_nId = m_All;					// 番号
 	m_All++;						// 総数
 }
 
@@ -78,20 +77,48 @@ void CPlayer::Update(void)
 {
 	// モーション設定
 	CCharacter::SetMotion(MOTIONTYPE_NEUTRAL);
-	// 行動処理
+	// 選択画面以外なら
 	if (CManager::GetMode() != CManager::MODE_SELECT)
 	{
-		Action();
+		// キャラクター自体のプレイヤー番号とコントロールしているプレイヤー番号が同じなら
+		// ->行動処理
+		if (m_nPlayerID == CManager::GetPlayerID())
+		{
+			// 自キャラの行動処理
+			MyAction();
+		}
+		// それ以外のキャラクターの処理
+		else
+		{
+			// 他キャラの行動処理
+			OtherAction();
+		}
 	}
 	// キャラクター更新
 	CCharacter::Update();
+}
 
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 自キャラ行動処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::MyAction(void)
+{
+	// 自キャラの移動処理
+	MyMove();
+	// 風船を膨らませる
+	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
+	{
+		// 風船を生成する処理
+		BalloonCreate();
+	}
+	// カメラの処理
+	Camera();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 移動処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CPlayer::Move(void)
+void CPlayer::MyMove(void)
 {
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
@@ -245,18 +272,192 @@ void CPlayer::Move(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 行動処理
+// カメラ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CPlayer::Action(void)
+void CPlayer::Camera(void)
 {
-	// 移動
-	Move();
-	// 風船を膨らませる
-	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
+	// カメラ上のプレイヤー位置・回転情報の設定
+	CCamera * pCamera = CManager::GetRenderer()->GetCamera();
+	pCamera->SetPosDestRPlayer(
+		CCharacter::GetPos(),
+		CCharacter::GetRot()
+	);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 他キャラ行動処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::OtherAction(void)
+{
+	// 他キャラの移動処理
+	//OtherMove();
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 他キャラ移動処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::OtherMove(void)
+{
+	// 変数宣言
+	D3DXVECTOR3 move, rot;			// 移動量、回転
+	bool bMove = false;				// 移動状態
+	float fRot;						// 回転
+	// 情報取得
+	rot = CCharacter::GetRotDest();								// 目的回転量
+	move = CCharacter::GetMove();								// 移動量
+
+
+
+
+
+	// サーバー側からカメラの回転情報を取得する
+	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
+
+
+
+
+
+
+	// 移動 //
+	/* ジョイパッド */
+	// パッド用 //
+	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
+	float fMove;			// 移動速度
+	float fAngle;			// スティック角度の計算用変数
+	fAngle = 0.0f;			// 角度
+
+	if (CManager::GetJoy() != NULL)
 	{
-		// 風船を生成する処理
-		BalloonCreate();
+		// ゲームパッドのスティック情報を取得
+		CManager::GetJoy()->GetStickLeft(0, nValueH, nValueV);
+
+		/* プレイヤー移動 */
+		// ゲームパッド移動
+		if (nValueH != 0 || nValueV != 0)
+		{
+			// 角度の計算
+			fAngle = atan2f((float)nValueH, (float)nValueV);
+
+			if (fAngle > D3DX_PI)
+			{
+				fAngle -= D3DX_PI * 2;
+			}
+			else if (fAngle < -D3DX_PI)
+			{
+				fAngle += D3DX_PI * 2;
+			}
+			// 速度の計算
+			if (abs(nValueH) > abs(nValueV))
+			{
+				fMove = (abs(nValueH) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
+			}
+			else
+			{
+				fMove = (abs(nValueV) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
+			}
+			rot.y = fAngle + fRot;
+
+			// スティックの角度によってプレイヤー移動
+			move.x -= sinf(fAngle + fRot) * (fMove);
+			move.z -= cosf(fAngle + fRot) * (fMove);
+			// 移動状態on
+			bMove = true;
+		}
 	}
+	/* キーボード */
+	// 左
+	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_A))
+	{
+		// 移動状態on
+		bMove = true;
+		// 奥
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_W))
+		{
+			rot.y = -D3DX_PI * 0.25f + fRot;
+
+			move.x += sinf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 手前
+		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_S))
+		{
+			rot.y = -D3DX_PI * 0.75f + fRot;
+
+			move.x += sinf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 左
+		else
+		{
+			rot.y = -D3DX_PI * 0.5f + fRot;
+			move.x += sinf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+	}
+	// 右
+	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_D))
+	{
+		// 移動状態on
+		bMove = true;
+
+		// 奥
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_W))
+		{
+			rot.y = D3DX_PI * 0.25f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 手前
+		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_S))
+		{
+			rot.y = D3DX_PI * 0.75f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 右
+		else
+		{
+			rot.y = D3DX_PI * 0.5f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+	}
+	// 奥に行く
+	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_W))
+	{
+		// 移動状態on
+		bMove = true;
+		rot.y = D3DX_PI * 0.0f + fRot;
+		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	}
+	// 手前に行く
+	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_S))
+	{
+		// 移動状態on
+		bMove = true;
+		rot.y = D3DX_PI * 1.0f + fRot;
+		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	}
+	// 宙に浮く
+	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_JUMP))
+	{
+		move.y += CCharacter::GetStatus().fMaxJump;
+	}
+	// 移動状態なら
+	if (bMove == true)
+	{
+		CCharacter::SetMotion(MOTIONTYPE_MOVE);
+	}
+	// 抵抗力
+	move.x *= CCharacter::GetStatus().fMaxInertia;
+	move.z *= CCharacter::GetStatus().fMaxInertia;
+	CCharacter::SetMove(move);
+	CCharacter::SetRotDest(rot);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

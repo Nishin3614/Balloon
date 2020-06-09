@@ -49,6 +49,10 @@ public:
 	virtual void Draw(void);
 	// プレイヤーが死んだときの関数
 	virtual void Die(void) {};
+	// プレイヤー番号の設定
+	void SetPlayerID(int const &nPlayerID) { m_nPlayerID = nPlayerID; };
+	// プレイヤー番号の取得
+	int const &GetPlayerID(void) { return m_nPlayerID; };
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
@@ -58,11 +62,14 @@ protected:
 private:
 	/* 構造体 */
 	/* 関数 */
-	void Move(void);					// 移動処理
-	void Action(void);					// 行動処理
+	void MyMove(void);					// 自キャラ移動処理
+	void MyAction(void);				// 自キャラ行動処理
+	void Camera(void);					// カメラ処理
+	void OtherMove(void);				// 他キャラ移動処理
+	void OtherAction(void);				// 他キャラ行動処理
 	/* 変数 */
 	static int	m_All;					// 総数
 	D3DXVECTOR3	m_posold;				// 前の位置
-	int m_nId;							// 番号
+	int m_nPlayerID;							// 番号
 };
 #endif

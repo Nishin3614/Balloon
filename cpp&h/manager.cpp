@@ -25,6 +25,7 @@
 // ----------------------------------------------------------------------------------------------------
 #define STARTMODE (MODE_SELECT)
 
+
 // ----------------------------------------------------------------------------------------------------
 //
 // 静的変数宣言
@@ -46,6 +47,7 @@ CRanking * CManager::m_ranking = NULL;					// ランキング
 CManager::MODE CManager::m_mode = MODE_SELECT;			// モード
 bool CManager::m_bWire = false;							// ワイヤー
 CNetwork * CManager::m_pNetwork = NULL;					// ネットワーク
+int CManager::m_nPlayerID = 0;							// プレイヤー番号
 
 // ----------------------------------------------------------------------------------------------------
 // コンストラクタ
@@ -154,7 +156,20 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	if (m_pNetwork != NULL)
 	{
 		m_pNetwork->Connect();
+		m_pNetwork->Update();
 	}
+
+
+
+
+	// プレイヤー番号の設定
+	m_nPlayerID;
+
+	// カメラなどの設定
+	// どのプレイヤー番号を追尾するか
+	// ゲームのカメラのアップデートでそれを指定するかも
+
+
 	// 画面遷移
 	m_fade = CFade::Create(STARTMODE);
 

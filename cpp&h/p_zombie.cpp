@@ -87,6 +87,7 @@ void CP_zombie::Debug(void)
 // 生成処理(シーン管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CP_zombie * CP_zombie::Create(
+	int const &nPlayerID,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR3 const & rot
 )
@@ -98,6 +99,7 @@ CP_zombie * CP_zombie::Create(
 	// シーン管理設定
 	pP_zombie->ManageSetting(CScene::LAYER_CHARACTER);
 	// 設定
+	pP_zombie->SetPlayerID(nPlayerID);
 	pP_zombie->SetPos(pos);
 	pP_zombie->SetRot(rot);
 	pP_zombie->SetRotDest(rot);
@@ -111,6 +113,7 @@ CP_zombie * CP_zombie::Create(
 // 生成処理(個人管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CP_zombie * CP_zombie::Create_Self(
+	int const &nPlayerID,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR3 const & rot
 )
@@ -120,6 +123,7 @@ CP_zombie * CP_zombie::Create_Self(
 	// メモリの生成(初め->基本クラス,後->派生クラス)
 	pP_zombie = new CP_zombie();
 	// 設定
+	pP_zombie->SetPlayerID(nPlayerID);
 	pP_zombie->SetPos(pos);
 	pP_zombie->SetRot(rot);
 	pP_zombie->SetRotDest(rot);

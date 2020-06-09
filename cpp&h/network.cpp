@@ -56,8 +56,11 @@ void CNetwork::Uninit(void)
 // ------------------------------------------
 void CNetwork::Update(void)
 {
-	//send(m_sockClient, "LOAD", sizeof("LOAD"), 0);
-	//recv(m_sockClient, (char*)&keystate, sizeof(KEYSTATE), 0);
+	int nID = -1;
+	send(m_sockClient, "LOADID", sizeof("LOADID"), 0);
+	recv(m_sockClient, (char*)&nID, sizeof(int), 0);
+
+	printf("“K“–‚É");
 }
 
 // ------------------------------------------

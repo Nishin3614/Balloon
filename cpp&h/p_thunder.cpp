@@ -87,6 +87,7 @@ void CP_thunder::Debug(void)
 // 生成処理(シーン管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CP_thunder * CP_thunder::Create(
+	int const &nPlayerID,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR3 const & rot
 )
@@ -98,6 +99,7 @@ CP_thunder * CP_thunder::Create(
 	// シーン管理設定
 	pP_thunder->ManageSetting(CScene::LAYER_CHARACTER);
 	// 設定
+	pP_thunder->SetPlayerID(nPlayerID);
 	pP_thunder->SetPos(pos);
 	pP_thunder->SetRot(rot);
 	pP_thunder->SetRotDest(rot);
@@ -111,6 +113,7 @@ CP_thunder * CP_thunder::Create(
 // 生成処理(個人管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CP_thunder * CP_thunder::Create_Self(
+	int const &nPlayerID,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR3 const & rot
 )
@@ -120,6 +123,7 @@ CP_thunder * CP_thunder::Create_Self(
 	// メモリの生成(初め->基本クラス,後->派生クラス)
 	pP_thunder = new CP_thunder();
 	// 設定
+	pP_thunder->SetPlayerID(nPlayerID);
 	pP_thunder->SetPos(pos);
 	pP_thunder->SetRot(rot);
 	pP_thunder->SetRotDest(rot);

@@ -483,10 +483,6 @@ void CCharacter::ModelUpdate(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::TrackCamera(void)
 {
-	if (m_character != CHARACTER_P_THUNDER)
-	{
-		return;
-	}
 	// モードが選択画面とチュートリアルの場合
 	if (CManager::GetMode() == CManager::MODE_SELECT)
 	{

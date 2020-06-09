@@ -83,25 +83,11 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 			true
 		);
 	}
-	// キャラクター
+	// 敵キャラクターの生成
 	for (nCntMap = 0; nCntMap < (signed)m_vec_char[map].size(); nCntMap++)
 	{
-		// プレイヤー(雷)
-		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_P_THUNDER)
-		{
-			CP_thunder::Create(m_vec_char[map][nCntMap].pos,
-				m_vec_char[map][nCntMap].rot
-			);
-		}
-		// プレイヤー(ゾンビ)
-		else if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_P_ZOMBIE)
-		{
-			CP_zombie::Create(m_vec_char[map][nCntMap].pos,
-				m_vec_char[map][nCntMap].rot
-			);
-		}
-		// 兵士
-		else if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_SOLIDER)
+		// 敵1
+		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_SOLIDER)
 		{
 				CSolider::Create(m_vec_char[map][nCntMap].pos,
 				m_vec_char[map][nCntMap].rot

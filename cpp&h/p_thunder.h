@@ -44,11 +44,13 @@ public:
 #endif // _DEBUG
 	// ¶¬ˆ—(ƒV[ƒ“ŠÇ—)
 	static CP_thunder * Create(
+		int const &nPlayerID,
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);			// ì¬
 	// ¶¬ˆ—(ŒÂlŠÇ—)
 	static CP_thunder * Create_Self(
+		int const &nPlayerID,
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);
