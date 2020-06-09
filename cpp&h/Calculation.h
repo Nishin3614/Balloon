@@ -736,6 +736,20 @@ public:
 		D3DXMATRIX *Originmtx,	// 元になる行列情報
 		D3DXMATRIX *Viewmtx		// ビュー行列情報
 	);
+	// 垂直成分(質量なし = 等しく1)
+	// 引数1:Aのスピード
+	// 引数2:Bのスピード
+	static float CollisionAfter_VerticalComponent(
+		float const &fSpeedA,	// Aのスピード
+		float const &fSpeedB	// Bのスピード
+	);
+	// 反発係数(質量なし = 等しく1)
+	// 引数1:Aのスピード
+	// 引数2:Bのスピード
+	static float Coefficient_of_restitution(
+		float const &fSpeedA,	// Aのスピード
+		float const &fSpeedB	// Bのスピード
+	);
 	// メッセージ発生
 	static void Messanger(
 		const char * cMessa,	// メッセージ内容

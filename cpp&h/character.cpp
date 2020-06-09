@@ -259,8 +259,6 @@ void CCharacter::Uninit(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Update(void)
 {
-	// カメラ追尾処理
-	TrackCamera();
 	// 通常時の更新処理
 	Update_Normal();
 	// 区域制限
@@ -310,6 +308,9 @@ void CCharacter::Collision(void)
 			rot.y = (atan2f(diffpos.x, diffpos.z));
 			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+
+
+
 		}
 		// 選択画面以外なら
 		if (CManager::GetMode() != CManager::MODE_SELECT)
@@ -483,15 +484,15 @@ void CCharacter::ModelUpdate(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::TrackCamera(void)
 {
-	// モードが選択画面とチュートリアルの場合
-	if (CManager::GetMode() == CManager::MODE_SELECT)
-	{
-		// カメラの注視点設定
-		CManager::GetRenderer()->GetCamera()->SetPosDestRPlayer(
-			CCharacter::GetPos(),
-			CCharacter::GetRot()
-		);
-	}
+	//// モードが選択画面とチュートリアルの場合
+	//if (CManager::GetMode() == CManager::MODE_SELECT)
+	//{
+	//	// カメラの注視点設定
+	//	CManager::GetRenderer()->GetCamera()->SetPosDestRPlayer(
+	//		CCharacter::GetPos(),
+	//		CCharacter::GetRot()
+	//	);
+	//}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
