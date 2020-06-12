@@ -33,6 +33,7 @@
 #define CHARACTER_STATUS_FILE ("data/LOAD/STATUS/status_manager_Character.csv")	// ステータスファイル名
 #define CHARACTER_INFO_FILE ("data/LOAD/CHARACTER/CHARACTER_MANAGER.txt")		// キャラクターファイル名
 #define CIRCLESHADOW (true)														// 円形のシャドウにするかしないか
+#define REFLECTION_COEFFICIENT (1)	// 反発係数
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -299,8 +300,12 @@ void CCharacter::Collision(void)
 		// キャラクター同士の当たり判定処理
 		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
 		{
+
 			// キャラクター同士当たっている
 			// ->バウンド処理
+			D3DXVECTOR3 RefVecA;
+			D3DXVECTOR3 RefVecB;
+			/*
 			D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
 			D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
 			diffpos = pCharacter->m_pos - m_pos;
@@ -308,9 +313,26 @@ void CCharacter::Collision(void)
 			rot.y = (atan2f(diffpos.x, diffpos.z));
 			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+			*/
 
+			// 押し出し処理を入れる
+			// 今回の当たり判定とプレイヤーの位置ポインター管理
 
-
+			// 衝突後の速度計算処理
+			CCalculation::SquarColiAfterVec(
+				m_pos,
+				m_move,
+				pCharacter->m_pos,
+				pCharacter->m_move,
+				1,
+				1,
+				0.5f,
+				0.5f,
+				RefVecA,
+				RefVecB
+			);
+			m_move += RefVecA;
+			pCharacter->m_move += RefVecB;
 		}
 		// 選択画面以外なら
 		if (CManager::GetMode() != CManager::MODE_SELECT)

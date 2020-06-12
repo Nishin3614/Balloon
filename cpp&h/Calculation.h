@@ -739,17 +739,37 @@ public:
 	// 垂直成分(質量なし = 等しく1)
 	// 引数1:Aのスピード
 	// 引数2:Bのスピード
-	static float CollisionAfter_VerticalComponent(
-		float const &fSpeedA,	// Aのスピード
-		float const &fSpeedB	// Bのスピード
+	static void CollisionAfter_VerticalComponent(
+		float & fAfterSpeedA,	// 衝突後のスピードA
+		float & fAfterSpeedB,	// 衝突後のスピードB
+		float const & fSpeedA,	// スピードA
+		float const & fSpeedB,	// スピードB
+		float const & e = 1		// 反発係数
 	);
-	// 反発係数(質量なし = 等しく1)
-	// 引数1:Aのスピード
-	// 引数2:Bのスピード
-	static float Coefficient_of_restitution(
-		float const &fSpeedA,	// Aのスピード
-		float const &fSpeedB	// Bのスピード
+	// 球同士の衝突後速度位置算出
+	// 引数1:衝突中の球Aの中心位置
+	// 引数2:衝突の瞬間の球Aの速度
+	// 引数3:衝突中の球Bの中心位置
+	// 引数4:衝突中の球Bの速度
+	// 引数5:球Aの質量
+	// 引数6:球Bの質量
+	// 引数7:球Aの反発率
+	// 引数8:球Bの反発率
+	// 引数9:球Aの反射後の速度ベクトル
+	// 引数10:球Bの反射後の速度ベクトル
+	static bool SquarColiAfterVec(
+		D3DXVECTOR3 const & ColliPos_A,	// 衝突中の球Aの中心位置
+		D3DXVECTOR3 const & ColliVec_A,	// 衝突の瞬間の球Aの速度
+		D3DXVECTOR3 const & ColliPos_B,	// 衝突中の球Bの中心位置
+		D3DXVECTOR3 const & ColliVec_B,	// 衝突の瞬間の球Bの速度
+		float const & fWeight_A,		// 球Aの質量
+		float const & fWeight_B,		// 球Bの質量
+		float const & fRes_A,			// 球Aの反発率
+		float const & fRes_B,			// 球Bの反発率
+		D3DXVECTOR3 & pOut_Vec_A,		// 球Aの反射後の速度ベクトル
+		D3DXVECTOR3 & pOut_Vec_B		// 球Bの反射後の速度ベクトル
 	);
+
 	// メッセージ発生
 	static void Messanger(
 		const char * cMessa,	// メッセージ内容

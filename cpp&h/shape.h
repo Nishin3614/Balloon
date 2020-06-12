@@ -132,6 +132,7 @@ public:
 protected:
 
 private:
+	D3DXVECTOR3 *m_pPos;
 	D3DXVECTOR3 m_pos;
 	float m_radius;
 };

@@ -713,36 +713,69 @@ void CCalculation::SetBillboard(
 // 引数1:Aのスピード
 // 引数2:Bのスピード
 // ----------------------------------------------------------------------------------------------------
-float CCalculation::CollisionAfter_VerticalComponent(float const & fSpeedA, float const & fSpeedB)
+void CCalculation::CollisionAfter_VerticalComponent(
+	float & fAfterSpeedA,	// 衝突後のスピードA
+	float & fAfterSpeedB,	// 衝突後のスピードB
+	float const & fSpeedA,	// スピードA
+	float const & fSpeedB,	// スピードB
+	float const & e			// 反発係数
+)
 {
-	// 変数宣言
-	
-	return 0.0f;
+	// 衝突後のスピードAの計算
+	fAfterSpeedA = fSpeedA + fSpeedB - e * (fSpeedA - fSpeedB);
+	// 衝突後のスピードBの計算
+	fAfterSpeedB = fSpeedA + fSpeedB + e * (fSpeedA - fSpeedB);
 }
 
 // ----------------------------------------------------------------------------------------------------
-// 反発係数(質量なし = 等しく1)
-// 引数1:Aのスピード
-// 引数2:Bのスピード
+// 球同士の衝突後速度位置算出
+// 引数1:衝突中の球Aの中心位置
+// 引数2:衝突の瞬間の球Aの速度
+// 引数3:衝突中の球Bの中心位置
+// 引数4:衝突中の球Bの速度
+// 引数5:球Aの質量
+// 引数6:球Bの質量
+// 引数7:球Aの反発率
+// 引数8:球Bの反発率
+// 引数9:球Aの反射後の速度ベクトル
+// 引数10:球Bの反射後の速度ベクトル
 // ----------------------------------------------------------------------------------------------------
-float CCalculation::Coefficient_of_restitution(
-	float const &fSpeedA,	// Aのスピード
-	float const &fSpeedB	// Bのスピード
+bool CCalculation::SquarColiAfterVec(
+	D3DXVECTOR3 const & ColliPos_A,	// 衝突中の球Aの中心位置
+	D3DXVECTOR3 const & ColliVec_A,	// 衝突の瞬間の球Aの速度
+	D3DXVECTOR3 const & ColliPos_B,	// 衝突中の球Bの中心位置
+	D3DXVECTOR3 const & ColliVec_B,	// 衝突の瞬間の球Bの速度
+	float const & fWeight_A,		// 球Aの質量
+	float const & fWeight_B,		// 球Bの質量
+	float const & fRes_A,			// 球Aの反発率
+	float const & fRes_B,			// 球Bの反発率
+	D3DXVECTOR3 & pOut_Vec_A,		// 球Aの反射後の速度ベクトル
+	D3DXVECTOR3 & pOut_Vec_B		// 球Bの反射後の速度ベクトル
 )
 {
 	// 変数宣言
-	float fColliBefore;	// 衝突前
-	float fColliAfter;	// 衝突後
-	float e;	// 反発係数
-	// 衝突前の計算
-	fColliBefore = fSpeedA - fSpeedB;
-	// 衝突後の計算
-	fColliAfter = abs(fSpeedA - fSpeedB) - abs(fSpeedB - fSpeedA);
-	// 衝突後/衝突前
-	e = fColliAfter / fColliBefore;
-	// 最後にマイナスをかける
-	e *= -1;
-	return e;
+	D3DXVECTOR3 C;			// 衝突軸ベクトル
+	D3DXVECTOR3 ConstVec;	// 定数ベクトル
+	float TotalWeight;		// 質量の合計
+	float RefRate;			// 反発率
+	float Dot;				// 内積
+
+	// 質量の合計計算
+	TotalWeight = fWeight_A + fWeight_B;
+	// 反発率
+	RefRate = (1 + fRes_A * fRes_B);
+	// 衝突軸ベクトル
+	C = ColliPos_B - ColliPos_A;
+	// 衝突軸ベクトルの正規化
+	D3DXVec3Normalize(&C, &C);
+	// 内積
+	Dot = D3DXVec3Dot(&(ColliVec_A - ColliVec_B), &C);
+	// 定数ベクトル
+	ConstVec = RefRate * Dot / TotalWeight * C;
+	// 衝突後速度ベクトル
+	pOut_Vec_A = -fWeight_B * ConstVec + ColliVec_A;
+	pOut_Vec_B = fWeight_A * ConstVec + ColliVec_B;
+	return true;
 }
 
 // ----------------------------------------------------------------------------------------------------

@@ -155,6 +155,20 @@ void CGame::Update(void)
 			}
 		}
 	}
+	// テスト用
+	if (pFade->GetFade() == CFade::FADE_NONE)
+	{
+		// ゲームへ遷移
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_2))
+		{
+
+			if (pFade->GetFade() == CFade::FADE_NONE)
+			{
+				// リザルトへ
+				pFade->SetFade(CManager::MODE_GAME);
+			}
+		}
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
