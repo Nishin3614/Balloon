@@ -16,7 +16,7 @@
 // テクスチャーID
 int CMeshsphere::m_nTexId[TEXTYPE_MAX] =
 {
-	51,
+	10,
 	0
 };
 

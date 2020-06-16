@@ -98,6 +98,45 @@ bool CCollision::CollisionDetection(CCollision * collision)
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たり判定(押し出し処理)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bool CCollision::CollisionDetection(
+	CCollision * collision, 
+	D3DXVECTOR3 * pPos
+)
+{
+	// 変数宣言	
+	bool bJudg = false;	// 当たり判定状態
+	// クラス型比較 //
+	// 矩形クラス
+	if (collision->GetShape()->GetType() == CShape::SHAPETYPE_RECT)
+	{
+		bJudg = Judg((CRectShape*)collision->GetShape(),pPos);
+	}
+	// 球クラス
+	else if (collision->GetShape()->GetType() == CShape::SHAPETYPE_SPHERE)
+	{
+
+	}
+	// 円柱クラス
+	else if (collision->GetShape()->GetType() == CShape::SHAPETYPE_COLUMN)
+	{
+
+	}
+	// 判定がtrueなら
+	// ->情報を保存
+	if (bJudg == true)
+	{
+		// 相手の当たり判定状態をtrueへ
+		collision->m_bCollision = true;
+		// 相手の番号を代入
+		collision->m_nOponentId = m_nMyObjectId;
+	}
+	// 当たり判定状態を返す
+	return bJudg;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 当たり判定(指定オブジェクト)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::CollisionDetection(OBJTYPE const & obj)
@@ -164,8 +203,13 @@ void CCollision::SetCollision(void)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 矩形と矩形の判定
+// pRectShapeA:矩形A
+// pRectShapeB:矩形B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::RectAndRect(CRectShape * const pRectShapeA, CRectShape * const pRectShapeB)
+bool CCollision::RectAndRect(
+	CRectShape * const pRectShapeA,	// 矩形A
+	CRectShape * const pRectShapeB	// 矩形B
+)
 {
 	// 変数宣言
 	D3DXVECTOR3 const &min_A = pRectShapeA->GetMin();
@@ -182,6 +226,105 @@ bool CCollision::RectAndRect(CRectShape * const pRectShapeA, CRectShape * const 
 	if (max_A.z < min_B.z) return false;
 	// 接触しているときはtrueを返す
 	return true;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 矩形と矩形の当たり判定
+// pRectShapeA:矩形A
+// pRectShapeB:矩形B
+// pPos:位置ポインター(親元の位置)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+bool CCollision::RectAndRect(
+	CRectShape * const pRectShapeA,	// 矩形A
+	CRectShape * const pRectShapeB,	// 矩形B
+	D3DXVECTOR3 * pPos				// 位置ポインター
+)
+{
+	// 変数宣言
+	D3DXVECTOR3 const &min_A = pRectShapeA->GetMin();
+	D3DXVECTOR3 const &min_B = pRectShapeB->GetMin();
+	D3DXVECTOR3 const &max_A = pRectShapeA->GetMax();
+	D3DXVECTOR3 const &max_B = pRectShapeB->GetMax();
+
+	// 接触していないときはfalseを返す
+	if (max_A.y > min_B.y &&
+		min_A.y < max_B.y)
+	{
+		// 素材のZ範囲
+		if (max_A.z > min_B.z&&
+			min_A.z < max_B.z)
+		{
+			// 当たり判定(左)
+			if (max_A.x > min_B.x)
+			{
+				// 素材状の左に
+				pPos->x = min_B.x - pRectShapeA->GetSize().x * 0.5f;
+				// 接触しているときはtrueを返す
+				return true;
+			}
+
+			// 当たり判定(右)
+			else if (min_A.x < max_A.x)
+			{
+				// 素材状の左に
+				pPos->x = max_B.x + pRectShapeA->GetSize().x * 0.5f;
+				// 接触しているときはtrueを返す
+				return true;
+			}
+		}
+		// 素材のX範囲
+		if (max_A.x > min_B.x&&
+			min_A.x < max_B.x)
+		{
+			// 当たり判定(手前)
+			if (max_A.z > min_B.z)
+			{
+				// 素材状の左に
+				pPos->z = min_B.z - pRectShapeA->GetSize().z * 0.5f;
+				// 接触しているときはtrueを返す
+				return true;
+			}
+
+			// 当たり判定(奥)
+			else if (min_A.z < max_B.z)
+			{
+				// 素材状の左に
+				pPos->z = max_B.z +
+					pRectShapeA->GetSize().z * 0.5f + 0.1f;
+				// 接触しているときはtrueを返す
+				return true;
+			}
+		}
+	}
+	// 素材のZ範囲
+	if (max_A.z > min_B.z&&
+		min_B.z < max_B.z)
+	{
+		// 素材のX範囲
+		if (max_A.x > min_B.x&&
+			min_A.x < max_B.x)
+		{
+			// 当たり判定(下)
+			if (max_A.y > min_B.y)
+			{
+				// 素材状の左に
+				pPos->y = min_B.y - pRectShapeA->GetSize().y * 0.5f;
+				// 接触しているときはtrueを返す
+				return true;
+			}
+
+			// 当たり判定(上)
+			else if (min_A.y < max_B.y)
+			{
+				// 素材状の左に
+				pPos->y = max_B.y + pRectShapeA->GetSize().y * 0.5f;
+				// 接触しているときはtrueを返す
+				return true;
+			}
+		}
+	}
+	// 接触していないときはfalseを返す
+	return false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

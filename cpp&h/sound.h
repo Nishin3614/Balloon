@@ -41,29 +41,14 @@ public:
 	// ラベル
 	typedef enum
 	{
-		LABEL_BGM_TITLE = 0,	// タイトル
-		LABEL_BGM_GAME,			// ゲーム
-		LABEL_BGM_RANKINGMOVE,	// ランキング
-		LABEL_SE_ENTER,			// 決定音
-		LABEL_SE_SWORDSLASH1,	// 攻撃が当たった時の音
-		LABEL_SE_SWORD,			// 剣を振りかざし
-		LABEL_SE_TRICKBEFORE,	// 秘奥義発動直前
-		LABEL_SE_BOMB,			// 爆発音
-		LABEL_SE_CURSOL,		// カーソル音
-		LABEL_SE_SWITCH,		// 文字表示時の音
-		LABEL_SE_CLEAR,			// クリア時
-		LABEL_SE_WORNING,		// 警告音
-		LABEL_VOICE_ATTCK,		// 攻撃
-		LABEL_VOICE_SKILL_1,	// 技１
-		LABEL_VOICE_SKILL_2,	// 技２
-		LABEL_VOICE_TRICK1,		// 秘奥義１
-		LABEL_VOICE_TRICK2,		// 秘奥義２
-		LABEL_VOICE_DAMAGE,		// ダメージ
-		LABEL_SE_MENU,			// メニューへ
-		LABEL_SE_GAMEOVER,		// ゲームオーバー
-		LABEL_SE_GAMESTART,		// ゲームスタート
-		LABEL_VOICE_DIED,		// プレイヤーが戦闘不能時の声
-		LABEL_VOICE_DIED2,		// プレイヤーが戦闘不能時の声2
+		LABEL_SE_CURSOL = 0,	// SE_カーソル
+		LABEL_SE_DAMAGE,		// SE_ダメージ
+		LABEL_SE_DELETE,		// SE_削除
+		LABEL_SE_DOWN,			// SE_落ちる
+		LABEL_SE_ENTER,			// SE_決定
+		LABEL_SE_FAIL,			// SE_失敗
+		LABEL_SE_MENU,			// SE_メニュー
+		LABEL_SE_THROW,			// SE_捨てる
 		LABEL_MAX,
 	} LABEL;
 	/* 関数 */

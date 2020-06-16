@@ -31,9 +31,7 @@ public:
 	/* —ñ‹“Œ^ */
 	typedef enum
 	{
-		MAP_STAGE_1,
-		MAP_STAGE_2,
-		MAP_STAGE_3,
+		MAP_STAGE_1 = 0,
 		MAP_MAX
 	} MAP;
 	/* —ñ‹“Œ^ */

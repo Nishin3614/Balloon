@@ -57,7 +57,7 @@ public:
 	{
 		CHARACTER_P_THUNDER = 0,
 		CHARACTER_P_ZOMBIE,
-		CHARACTER_SOLIDER,
+		CHARACTER_NPC,
 		CHARACTER_MAX
 	} CHARACTER;
 	/* 構造体 */
@@ -196,6 +196,7 @@ private:
 	void Limit(void);									// 制限区域
 	void Motion_Effect(void);							// モーションエフェクト		
 	void Motion_Obit(void);								// モーション軌跡
+	void BalloonNone(void);								// 風船がない場合
 	/* 変数 */
 	/* 構造体のスタティックにする */
 	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報

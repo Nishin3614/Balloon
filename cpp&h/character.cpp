@@ -203,7 +203,7 @@ void CCharacter::Init()
 	{
 		m_pCharacterCollision = std::move(CRectCollision::Create_Self(
 			m_modelAll[m_character]->pCharacterCollision->Offset,
-			m_pos + m_modelAll[m_character]->pCharacterCollision->RectInfo->size
+			m_modelAll[m_character]->pCharacterCollision->RectInfo->size
 		));
 	}
 	// シャドウon
@@ -232,26 +232,38 @@ void CCharacter::Init()
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Uninit(void)
 {
-	// ヌルチェック
+	// モデルヌルチェック
+	// ->モデルの開放
 	if (m_pModel != NULL)
 	{
 		delete[] m_pModel;
 		m_pModel = NULL;
 	}
+	// キャラクター当たり判定のヌルチェック
+	// ->開放
 	if (m_pCharacterCollision != NULL)
 	{
 		m_pCharacterCollision->Uninit();
-		m_pCharacterCollision = NULL;
+		m_pCharacterCollision.reset();
 	}
+	// 軌跡の情報を開放する
 	for (int nCntMotionObit = 0; nCntMotionObit < (signed)m_vec_pMeshObit.size(); nCntMotionObit++)
 	{
 		// 軌跡の終了処理
 		m_vec_pMeshObit.at(nCntMotionObit)->Uninit();
 	}
+	// ステンシルシャドウのヌルチェック
 	// ステンシルシャドウの初期化
 	if (m_pStencilshadow != NULL)
 	{
 		m_pStencilshadow = NULL;
+	}
+	// 風船のヌルチェック
+	// ->風船の開放
+	if (m_pBalloon != NULL)
+	{
+		m_pBalloon->Release();
+		m_pBalloon = NULL;
 	}
 }
 
@@ -300,12 +312,10 @@ void CCharacter::Collision(void)
 		// キャラクター同士の当たり判定処理
 		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
 		{
-
 			// キャラクター同士当たっている
 			// ->バウンド処理
 			D3DXVECTOR3 RefVecA;
 			D3DXVECTOR3 RefVecB;
-			/*
 			D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
 			D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
 			diffpos = pCharacter->m_pos - m_pos;
@@ -313,11 +323,12 @@ void CCharacter::Collision(void)
 			rot.y = (atan2f(diffpos.x, diffpos.z));
 			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
-			*/
+			// 死亡処理
+			BalloonNone();
 
 			// 押し出し処理を入れる
 			// 今回の当たり判定とプレイヤーの位置ポインター管理
-
+			/*
 			// 衝突後の速度計算処理
 			CCalculation::SquarColiAfterVec(
 				m_pos,
@@ -333,6 +344,7 @@ void CCharacter::Collision(void)
 			);
 			m_move += RefVecA;
 			pCharacter->m_move += RefVecB;
+			*/
 		}
 		// 選択画面以外なら
 		if (CManager::GetMode() != CManager::MODE_SELECT)
@@ -612,6 +624,19 @@ void CCharacter::Motion_Obit()
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船がない場合
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::BalloonNone(void)
+{
+	// 出現している風船の数が0の場合
+	// ->キャラクター死亡
+	if (m_pBalloon->GetPopBalloon() == 0)
+	{
+		Die();
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // モーションカメラの更新
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::MotionCamera(void)
@@ -693,17 +718,19 @@ void CCharacter::Draw(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Die(void)
 {
-	D3DXVECTOR3 ParticlePos;		// パーティクルが出る位置
-	// パーティクルの位置(体の位置)
-	ParticlePos = D3DXVECTOR3(
-		CCharacter::GetMatrix(1)->_41,
-		CCharacter::GetMatrix(1)->_42,
-		CCharacter::GetMatrix(1)->_43
-	);
+	// 開放
+	Release();
+	// ステンシルシャドウがNULLなら
+	// ->開放する
+	if (m_pStencilshadow != NULL)
+	{
+		m_pStencilshadow->Release();
+		m_pStencilshadow = NULL;
+	}
 	// パーティクル生成
 	C3DParticle::Create(
 		C3DParticle::OFFSET_ID_CROSSLINE,
-		ParticlePos
+		m_pos
 	);
 }
 
@@ -712,8 +739,12 @@ void CCharacter::Die(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::BalloonCreate(void)
 {
-	// 風船を生成する処理
-	m_pBalloon->CreateBalloon();
+	// 所持している風船が0超過なら
+	// ->風船を生成する処理
+	if (m_pBalloon->GetBringBalloon() > 0)
+	{
+		m_pBalloon->CreateBalloon();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1019,12 +1050,18 @@ void CCharacter::UnLoad(void)
 	}
 }
 
+#ifdef _DEBUG
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // デバッグ表示
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#ifdef _DEBUG
 void CCharacter::Debug(void)
 {
+	CDebugproc::Print("キャラクタータイプ[%d]\n", m_character);
+	CDebugproc::Print("位置[%.1f,%.1f,%.1f]\n",
+		m_pos.x,
+		m_pos.y,
+		m_pos.z
+	);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

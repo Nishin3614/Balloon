@@ -131,11 +131,6 @@ void CScene_X::Update(void)
 		m_pShadow->SetPos(D3DXVECTOR3(m_pos.x,0.1f,m_pos.z));
 		m_pShadow->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, m_fShadowAlpha));
 	}
-	// •°‰Î‚Ìê‡
-	if (m_nModelId == 2)
-	{
-		C3DParticle::Create(C3DParticle::OFFSET_ID_TRICK1, CScene_X::GetPos());
-	}
 	// “–‚½‚è”»’è‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
 	// XV
 	if (m_Collision != NULL)

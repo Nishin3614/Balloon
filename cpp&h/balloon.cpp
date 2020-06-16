@@ -115,6 +115,8 @@ void CBalloon::Draw(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::Debug(void)
 {
+	CDebugproc::Print("所持している風船の数[%d]\n", m_nBringBalloon);
+	CDebugproc::Print("出現している風船の数[%d]\n", m_nPopBalloon);
 }
 #endif // _DEBUG
 
@@ -148,14 +150,14 @@ void CBalloon::SetPopMaxBalloom(int const & nPopMaxBaloon)
 	// 初期設定
 	for (int nCntBalloon = 0; nCntBalloon < m_nMaxPopBalloon; nCntBalloon++)
 	{
-		// プレイヤー(雷)生成
+		//風船生成
 		m_apSceneX.push_back(CScene_X::Create_Self(
 			D3DXVECTOR3(
 				sinf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS,
 				BALLOON_Y,
 				cosf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS),
 			D3DVECTOR3_ZERO,
-			4
+			0
 		));
 		// 当たり判定設定(球)
 		m_apSceneX[nCntBalloon]->SetCollision(
@@ -183,7 +185,7 @@ void CBalloon::CreateBalloon(void)
 				BALLOON_Y,
 				cosf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS),
 			D3DVECTOR3_ZERO,
-			4
+			0
 		);
 		// 当たり判定設定(球)
 		m_apSceneX[nCntBalloon]->SetCollision(
@@ -243,6 +245,8 @@ CBalloon * CBalloon::Create(
 	pBalloon->Init();
 	// 外に出して置ける風船の最大個数を設定
 	pBalloon->SetPopMaxBalloom(nPopMaxBalloon);
+	// 出現している風船の個数に代入する
+	pBalloon->m_nPopBalloon = nPopMaxBalloon;
 	// 行列情報設定
 	pBalloon->SetMatrix(mtx);
 	// 生成したオブジェクトを返す
@@ -276,5 +280,7 @@ void CBalloon::BreakBalloon(int const &nCntBalloon)
 		m_apSceneX[nCntBalloon]->Uninit();
 		delete m_apSceneX[nCntBalloon];
 		m_apSceneX[nCntBalloon] = NULL;
+		// 出現している風船の個数を増やす
+		m_nPopBalloon--;
 	}
 }

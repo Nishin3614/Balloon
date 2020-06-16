@@ -40,34 +40,15 @@ public:
 	// UIタイプ
 	typedef enum
 	{
-		UITYPE_GAMEDIED = 0,
-		UITYPE_GAMEEVENT_BOSS,
-		UITYPE_GAMEEVENT_GOAL,
-		UITYPE_GAMEEVENT_MERCHANT,
-		UITYPE_GAMECLEAR,
-		UITYPE_GAMEWARNING,
-		UITYPE_GAMEUI,
-		UITYPE_GAMEUI_NUMBER,
+		UITYPE_GAMEUI = 0,
 		UITYPE_PAUSEUI_BG,
 		UITYPE_PAUSEUI_SELECT,
-		UITYPE_PAUSEUI_CLEAR,
 		UITYPE_RANKINGUI,
 		UITYPE_SETTINGUI_BG,
 		UITYPE_SETTINGUI_SELECT,
 		UITYPE_TITLEUI_NAME,
 		UITYPE_TITLEUI_SELECT,
 		UITYPE_TITLEUI_SELECT_BG,
-		UITYPE_TITLEUI_TUTORIALSKIP,
-		UITYPE_TITLEUI_TUTORIALSKIP_SELECT,
-		UITYPE_TOTALUI_BG,
-		UITYPE_TOTALUI_NUMBER,
-		UITYPE_TUTORIAL_ATTACK,
-		UITYPE_TUTORIAL_CLEAR,
-		UITYPE_TUTORIAL_END,
-		UITYPE_TUTORIAL_KNOCK,
-		UITYPE_TUTORIAL_TRICK,
-		UITYPE_TUTORIAL_WALK,
-		UITYPE_TUTORIAL_SKIP,
 		UITYPE_MAX
 	} UITYPE;
 	// UIの情報格納用型名
@@ -271,40 +252,8 @@ private:
 
 	/* 関数 */
 	// 初期化 //
-	// タイトルUI名前の初期化
-	void Init_UiType_Title_Ui_Name(void);
-	// タイトル選択の更新
-	void Init_UiType_Title_Select(void);
-	// ゲームスタート時の初期化
-	void Init_UiType_GameStart(void);
-	// ゲームオーバー時の初期化
-	void Init_UiType_GameOver(void);
-	// ゲーム死亡時の初期化
-	void Init_UiType_GameDied(void);
 
 	// 更新 //
-	// ゲームオーバーの更新
-	void Update_UiType_GameOver(void);
-	// ゲームスタートの更新
-	void Update_UiType_GameStart(void);
-	// ゲーム死亡の更新
-	void Update_UiType_GameDied(void);
-	// タイトルUI名前の更新
-	void Update_UiType_Title_Ui_Name(void);
-	// タイトル選択の更新
-	void Update_UiType_Title_Select(void);
-	// タイトルチュートリアルスキップの更新
-	void Update_UiType_Title_TutorialSkip(void);
-	// チュートリアル歩くの初期化
-	void Update_UiType_Tutorial_Walk(void);
-	// チュートリアル攻撃の初期化
-	void Update_UiType_Tutorial_Attack(void);
-	// チュートリアル秘奥義の初期化
-	void Update_UiType_Tutorial_Trick(void);
-	// チュートリアル終了の初期化
-	void Update_UiType_Tutorial_End(void);
-	// チュートリアル合格の初期化
-	void Update_UiType_Tutorial_Clear(void);
 
 	/* 変数 */
 	static vector<UI_LOAD> m_vec_UiLoad[UITYPE_MAX];	// Ui読み込み用変数

@@ -48,7 +48,7 @@ public:
 	virtual void Update(void);
 	virtual void Draw(void);
 	// プレイヤーが死んだときの関数
-	virtual void Die(void) {};
+	virtual void Die(void);
 	// プレイヤー番号の設定
 	void SetPlayerID(int const &nPlayerID) { m_nPlayerID = nPlayerID; };
 	// プレイヤー番号の取得

@@ -84,6 +84,8 @@ public:
 	// 判定の有無
 	// 矩形クラスの当たり判定比較
 	virtual bool Judg(CRectShape * const RectShape) = 0;
+	// 矩形クラスの当たり判定比較(押し出し処理)
+	virtual bool Judg(CRectShape * const RectShape,D3DXVECTOR3 * pPos) = 0;
 	// 球クラスの当たり判定比較
 	virtual bool Judg(CSphereShape * const SphereShape) = 0;
 	// 円柱クラスの当たり判定比較
@@ -92,6 +94,10 @@ public:
 	bool SelectShape(CShape * const shape);
 	// 当たり判定同士の判定(指定)
 	bool CollisionDetection(CCollision * collision);
+	// 当たり判定同士の判定(押し出し処理)
+	bool CollisionDetection(
+		CCollision * collision,
+		D3DXVECTOR3 * pPos);
 	// 当たり判定同士の判定(指定オブジェクト)
 	bool CollisionDetection(OBJTYPE const &obj);
 	// 当たり判定同士の判定(全体)
@@ -109,9 +115,20 @@ public:
 	virtual CShape * const GetShape(void) = 0;
 
 	// 矩形と矩形の当たり判定
+	// pRectShapeA:矩形A
+	// pRectShapeB:矩形B
 	static bool RectAndRect(
 		CRectShape * const pRectShapeA,	// 矩形A
 		CRectShape * const pRectShapeB	// 矩形B
+	);
+	// 矩形と矩形の当たり判定
+	// pRectShapeA:矩形A
+	// pRectShapeB:矩形B
+	// pPos:位置ポインター(親元の位置)
+	static bool RectAndRect(
+		CRectShape * const pRectShapeA,	// 矩形A
+		CRectShape * const pRectShapeB,	// 矩形B
+		D3DXVECTOR3 * pPos				// 位置ポインター
 	);
 	// 矩形と球の当たり判定
 	static bool RectAndSphere(

@@ -87,7 +87,7 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 	for (nCntMap = 0; nCntMap < (signed)m_vec_char[map].size(); nCntMap++)
 	{
 		// “G1
-		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_SOLIDER)
+		if (m_vec_char[map][nCntMap].nCharacter == CCharacter::CHARACTER_NPC)
 		{
 				CSolider::Create(m_vec_char[map][nCntMap].pos,
 				m_vec_char[map][nCntMap].rot

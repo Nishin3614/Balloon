@@ -29,8 +29,8 @@ D3DXVECTOR3 CCalculation::Cross_product(
 	D3DXVECTOR3 &VecB)
 {
 	return D3DXVECTOR3(
-		VecA.y * VecB.z - VecA.z * VecB.y, 
-		VecA.z * VecB.x - VecA.x * VecB.z, 
+		VecA.y * VecB.z - VecA.z * VecB.y,
+		VecA.z * VecB.x - VecA.x * VecB.z,
 		VecA.x * VecB.y - VecA.y * VecB.x);
 }
 
@@ -41,7 +41,7 @@ float CCalculation::Dot_product(D3DXVECTOR3 &VecA, D3DXVECTOR3 &VecB)
 {
 	return (
 		VecA.x * VecB.x +
-		VecA.y * VecB.y + 
+		VecA.y * VecB.y +
 		VecA.z * VecB.z);
 }
 
@@ -49,9 +49,9 @@ float CCalculation::Dot_product(D3DXVECTOR3 &VecA, D3DXVECTOR3 &VecB)
 // 底面の四角形の中に入っているかいないか
 // ----------------------------------------------------------------------------------------------------
 bool CCalculation::SquareBottom_Judg(
-	D3DXVECTOR3 pos,		
-	D3DXVECTOR3 size, 
-	D3DXVECTOR3 rot, 
+	D3DXVECTOR3 pos,
+	D3DXVECTOR3 size,
+	D3DXVECTOR3 rot,
 	int			nBlock_W,
 	int			nBlock_H,
 	D3DXVECTOR3 worldpos
@@ -150,13 +150,13 @@ bool CCalculation::SquareBottom_Judg(
 		// 中
 		if (fCross_p[nCnt] > 0)
 		{
-			bCross = true;
+		bCross = true;
 		}
 
 		// 外
 		else
 		{
-			return false;
+		return false;
 		}
 		*/
 	}
@@ -169,11 +169,11 @@ bool CCalculation::SquareBottom_Judg(
 // 側面の四角形の中に入っているかいないか
 // ----------------------------------------------------------------------------------------------------
 bool CCalculation::SquareSide_Judg(
-	D3DXVECTOR3 pos, 
+	D3DXVECTOR3 pos,
 	D3DXVECTOR3 size,
-	D3DXVECTOR3 rot, 
-	int nBlock_W, 
-	int nBlock_H, 
+	D3DXVECTOR3 rot,
+	int nBlock_W,
+	int nBlock_H,
 	D3DXVECTOR3 worldpos)
 {
 	// 高さの範囲
@@ -247,8 +247,8 @@ float CCalculation::DiffPoint(
 {
 	// 変数宣言
 	D3DXVECTOR3 diffpos;	// 差分の位置
-	float diff,diff2;		// 差
-	// 差分の位置の計算
+	float diff, diff2;		// 差
+							// 差分の位置の計算
 	diffpos = posA - posB;
 	// xとyの斜めの長さ
 	diff = sqrt(diffpos.x * diffpos.x + diffpos.y * diffpos.y);
@@ -268,7 +268,7 @@ float CCalculation::DiffPoint(
 	// 変数宣言
 	D3DXVECTOR2 diffpos;	// 差分の位置
 	float diff;		// 差
-	// 差分の位置の計算
+					// 差分の位置の計算
 	diffpos = posA - posB;
 	// xとyの斜めの長さ
 	diff = sqrt(diffpos.x * diffpos.x + diffpos.y * diffpos.y);
@@ -299,8 +299,8 @@ float CCalculation::DiffPointSquare(D3DXVECTOR2 const & posA, D3DXVECTOR2 const 
 // 球の足し算計算
 // ----------------------------------------------------------------------------------------------------
 float CCalculation::Addition_Sphere(
-	float Length_x, 
-	float Length_y, 
+	float Length_x,
+	float Length_y,
 	float Length_z)
 {
 	// 変数宣言
@@ -334,8 +334,8 @@ bool CCalculation::Collision_Circle(
 	float fRange;		// 範囲
 	float fDistance;	// 距離
 
-	// 範囲の計算
-	//fRange = fMeSize * fMeSize + fOppSize * fOppSize;
+						// 範囲の計算
+						//fRange = fMeSize * fMeSize + fOppSize * fOppSize;
 	fRange = (fMeSize + fOppSize) * (fMeSize + fOppSize);
 	// 実際の距離の計算
 	fDistance =
@@ -349,7 +349,7 @@ bool CCalculation::Collision_Circle(
 // 球の当たり判定
 // ----------------------------------------------------------------------------------------------------
 bool CCalculation::Collision_Sphere(
-	D3DXVECTOR3 const &Me, 
+	D3DXVECTOR3 const &Me,
 	float const &fMeSize,
 	D3DXVECTOR3 const &Opponent,
 	float const &fOppSize
@@ -359,7 +359,7 @@ bool CCalculation::Collision_Sphere(
 	float fRange;		// 範囲
 	float fDistance;	// 距離
 
-	// 範囲の計算
+						// 範囲の計算
 	fRange = fMeSize * fMeSize + fOppSize * fOppSize;
 
 	// 実際の距離の計算
@@ -412,7 +412,7 @@ D3DXVECTOR3* CCalculation::CalcScreenToWorld(
 	D3DXMATRIX mtxInvViexport;	// 計算用逆行列ビューポット
 	D3DXMATRIX mtxChange;		// 座標変換用マトリックス
 
-	// ビューポットの行列作成
+								// ビューポットの行列作成
 	D3DXMatrixIdentity(&mtxVP);	// 初期化
 	mtxVP._11 = Screen_w / 2.0f;
 	mtxVP._22 = -Screen_h / 2.0f;
@@ -424,11 +424,11 @@ D3DXVECTOR3* CCalculation::CalcScreenToWorld(
 	D3DXMatrixInverse(&mtxInvPrj, NULL, mtxPrj);		// プロジェクションマトリックス
 	D3DXMatrixInverse(&mtxInvViexport, NULL, &mtxVP);	// ビューポットマトリックス
 
-	// スクリーンからワールドへ
+														// スクリーンからワールドへ
 	mtxChange = mtxInvViexport * mtxInvPrj * mtxInvViex;		// 座標変換用
 	D3DXVec3TransformCoord(pout, &D3DXVECTOR3(Sx, Sy, fZ), &mtxChange);	// スクリーンからワールドへ
 
-	// ワールドのポイントを返す
+																		// ワールドのポイントを返す
 	return pout;
 }
 
@@ -445,29 +445,29 @@ D3DXVECTOR3* CCalculation::CalcScreenToXZ(
 	D3DXMATRIX* mtxPrj,		// プロジェクションマトリックス
 	D3DXVECTOR3 obj			// オブジェクトの位置
 )
-{				
+{
 	// 変数宣言
 	D3DXVECTOR3 Mearpos;	// 最近値
 	D3DXVECTOR3 Farpos;		// 最遠値
 	D3DXVECTOR3 Ray;		// マウスポイント方向
 
-	// スクリーン座標をワールド座標に変換
+							// スクリーン座標をワールド座標に変換
 	CalcScreenToWorld(		// 最近値
-		&Mearpos, 
+		&Mearpos,
 		Sx, Sy,
 		0.0f,
 		Screen_w, Screen_h,
 		mtxView,
-		mtxPrj);	
+		mtxPrj);
 
 	CalcScreenToWorld(		// 最遠値
-		&Farpos, 
+		&Farpos,
 		Sx, Sy,
 		1.0f,
 		Screen_w, Screen_h,
 		mtxView,
-		mtxPrj);	
-	
+		mtxPrj);
+
 	// マウスポイント方向
 	Ray = Farpos - Mearpos;
 	D3DXVec3Normalize(&Ray, &Ray);	// 正規化
@@ -520,7 +520,7 @@ D3DXVECTOR3* CCalculation::CalcWorldToScreen(
 	D3DXMATRIX mtxVP;			// 計算用ビューポット
 	D3DXMATRIX mtxChange;				// 
 
-	// ビューポットの行列作成
+										// ビューポットの行列作成
 	D3DXMatrixIdentity(&mtxVP);			// 初期化
 	mtxVP._11 = SCREEN_WIDTH / 2.0f;
 	mtxVP._22 = -SCREEN_HEIGHT / 2.0f;
@@ -542,7 +542,7 @@ D3DXVECTOR2 CCalculation::Linear_function(D3DXVECTOR3 Apos, D3DXVECTOR3 Bpos)
 	float fCons;	// 比例定数
 	float fSection;	// 切片
 
-	// 比例定数計算
+					// 比例定数計算
 	fCons = (Apos.y - Bpos.y) / (Apos.x - Bpos.x);
 	// 切片計算
 	fSection = Apos.y - Apos.x * fCons;
@@ -558,8 +558,8 @@ D3DXVECTOR3 CCalculation::TwoLine_Inse(D3DXVECTOR2 ALinear, D3DXVECTOR2 BLinear)
 	// 変数宣言
 	D3DXVECTOR3 Insecsion;	// 交点
 
-	/* 交点計算 */
-	// x
+							/* 交点計算 */
+							// x
 	Insecsion.x = (BLinear.y - ALinear.y) / (ALinear.x - BLinear.x);
 	// y
 	Insecsion.y = ALinear.x * Insecsion.x + ALinear.y;
@@ -577,7 +577,7 @@ bool CCalculation::TlyCollision(
 )
 {
 	// 変数宣言
-	D3DXVECTOR3 posA,posB;
+	D3DXVECTOR3 posA, posB;
 	va_list va;	// 可変変数
 	int nCntMax;
 	// 可変引数を1個にまとめる
@@ -587,7 +587,7 @@ bool CCalculation::TlyCollision(
 	{
 		posA = va_arg(va, D3DXVECTOR3);
 		posB = va_arg(va, D3DXVECTOR3);
-		
+
 	}
 	va_end(va);
 
@@ -598,7 +598,7 @@ bool CCalculation::TlyCollision(
 // 外積の当たり判定
 // ----------------------------------------------------------------------------------------------------
 bool CCalculation::CrossCollision(
-	D3DXVECTOR3 *ObjectPos, 
+	D3DXVECTOR3 *ObjectPos,
 	D3DXVECTOR3 *PosA,
 	D3DXVECTOR3 *PosB,
 	D3DXVECTOR3 *PosC
@@ -606,11 +606,11 @@ bool CCalculation::CrossCollision(
 {
 	// 変数宣言
 	D3DXVECTOR3 VecCompOri, VecAhe;		// ベクトル方向
-	D3DXVECTOR3 Cross1,Cross2,Cross3;	// 外積の計算結果
-	// 一つ目
+	D3DXVECTOR3 Cross1, Cross2, Cross3;	// 外積の計算結果
+										// 一つ目
 	VecCompOri = *PosB - *PosA;
 	VecAhe = *ObjectPos - *PosA;
-	D3DXVec3Cross(&Cross1,&VecCompOri, &VecAhe);
+	D3DXVec3Cross(&Cross1, &VecCompOri, &VecAhe);
 	// 二つ目
 	VecCompOri = *PosC - *PosB;
 	VecAhe = *ObjectPos - *PosB;
@@ -639,7 +639,7 @@ D3DXVECTOR3 CCalculation::Vector3ToMatrix(
 	D3DXMATRIX const & mtx
 )
 {
-	return vector3Out = D3DXVECTOR3(mtx._41,mtx._42,mtx._43);
+	return vector3Out = D3DXVECTOR3(mtx._41, mtx._42, mtx._43);
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -660,8 +660,8 @@ unsigned CCalculation::GetDigit_Division(unsigned nNum)
 {
 	// 変数宣言
 	unsigned digit = 0;	// 桁数
-	// nNumが0になるまでループ
-	while (nNum != 0) 
+						// nNumが0になるまでループ
+	while (nNum != 0)
 	{
 		nNum /= 10;
 		// 桁数アップ
@@ -760,7 +760,7 @@ bool CCalculation::SquarColiAfterVec(
 	float RefRate;			// 反発率
 	float Dot;				// 内積
 
-	// 質量の合計計算
+							// 質量の合計計算
 	TotalWeight = fWeight_A + fWeight_B;
 	// 反発率
 	RefRate = (1 + fRes_A * fRes_B);
@@ -951,7 +951,7 @@ bool CCalculation::Existenceofscript(FILE * pFile)
 // テクスチャーのサイズを取得(2D)
 // ------------------------------------------
 bool CCalculation::GetTexSize(
-	LPDIRECT3DTEXTURE9 pTex, 
+	LPDIRECT3DTEXTURE9 pTex,
 	D3DXVECTOR2 * pSize
 )
 {
@@ -1011,8 +1011,8 @@ vector<string> CCalculation::split(
 	string sRead;					// 文字列読み込み用
 	vector<string> vec_Result;		// 1行読み込み用
 
-	// 指定した区切りが来る限りループする
-	while (getline(iss_Line,sRead,delimiter))
+									// 指定した区切りが来る限りループする
+	while (getline(iss_Line, sRead, delimiter))
 	{
 		// 読み取った文字列を格納する
 		vec_Result.push_back(sRead);
@@ -1035,7 +1035,7 @@ vector<vector<string>> CCalculation::FileContens(
 	string					s_Line;		// 1時的に1行読み込む
 	vector<vector<string>>	svec_Char;	// ファイルの中身格納用
 
-	// ファイルを開く
+										// ファイルを開く
 	ifs_file.open(cns_cFile);
 	// 読み込みに失敗したらエラー文を出し関数を抜ける
 	if (ifs_file.fail())
@@ -1060,7 +1060,7 @@ vector<vector<string>> CCalculation::FileContens(
 
 
 
-/* 
+/*
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ImGui用関数
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1099,5 +1099,5 @@ void CCalculation::ImG_Parallel(void)
 
 void MYLIBLARY::in(void)
 {
-	
+
 }

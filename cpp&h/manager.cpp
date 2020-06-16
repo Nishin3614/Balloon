@@ -144,20 +144,20 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 		m_renderer = NULL;
 		return E_FAIL;
 	}
-	// ネットワーク
-	if (!m_pNetwork->Init(hInstance, hWnd) == S_OK)
-	{
-		m_renderer->Uninit();
-		delete m_renderer;
-		m_renderer = NULL;
-		return E_FAIL;
-	}
+	//// ネットワーク
+	//if (!m_pNetwork->Init(hInstance, hWnd) == S_OK)
+	//{
+	//	m_renderer->Uninit();
+	//	delete m_renderer;
+	//	m_renderer = NULL;
+	//	return E_FAIL;
+	//}
 
-	if (m_pNetwork != NULL)
-	{
-		m_pNetwork->Connect();
-		m_pNetwork->Update();
-	}
+	//if (m_pNetwork != NULL)
+	//{
+	//	m_pNetwork->Connect();
+	//	m_pNetwork->Update();
+	//}
 
 
 

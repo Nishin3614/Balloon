@@ -136,7 +136,7 @@ unique_ptr<CRectShape> CRectShape::Create(
 unique_ptr<CSphereShape> CSphereShape::Create(
 	D3DXVECTOR3 const &offset,
 	D3DXVECTOR3 const &pos,
-	float const & radius
+	float const &radius
 )
 {
 	// •Ï”éŒ¾

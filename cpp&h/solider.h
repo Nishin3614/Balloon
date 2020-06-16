@@ -41,7 +41,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	// •ºm‚ª€‚ñ‚¾‚Æ‚«‚ÌŠÖ”
-	void Die(void) {};
+	void Die(void);
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG

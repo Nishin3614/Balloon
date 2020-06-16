@@ -69,6 +69,8 @@ public:
 	// 
 	// 矩形クラスの当たり判定比較
 	bool Judg(CRectShape * const RectShape);
+	// 矩形クラスの当たり判定比較(押し出し処理)
+	bool Judg(CRectShape * const RectShape, D3DXVECTOR3 * pPos);
 	// 球クラスの当たり判定比較
 	bool Judg(CSphereShape * const SphereShape);
 	// 円柱クラスの当たり判定比較

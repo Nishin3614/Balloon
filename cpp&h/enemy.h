@@ -36,7 +36,7 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	// “G‚ª€‚ñ‚¾‚Æ‚«‚ÌŠÖ”
-	virtual void Die(void) = 0;
+	virtual void Die(void);
 	static HRESULT Load(void);								// “Ç‚İ‚İ
 	static void UnLoad(void);								// UnLoad‚·‚é
 protected:
