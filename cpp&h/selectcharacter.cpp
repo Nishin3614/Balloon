@@ -8,7 +8,7 @@
 /* 描画 */
 #include "p_thunder.h"
 #include "p_zombie.h"
-
+#include "scene_two.h"
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // マクロ定義
@@ -32,6 +32,10 @@ CSelectCharacter::CSelectCharacter() : CScene::CScene()
 	m_pZombie = NULL;
 	m_CharacterType = 0;
 	m_PlayerID = 0;
+	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_MAX; nCntCharacter++)
+	{
+		m_pSceneTwo[nCntCharacter] = NULL;
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -50,6 +54,24 @@ void CSelectCharacter::Init(void)
 	m_pThunder = CP_thunder::Create_Self(m_PlayerID,m_pos);
 	// プレイヤー(ゾンビ)
 	m_pZombie = CP_zombie::Create_Self(m_PlayerID, m_pos);
+	// それぞれの選択アイコン
+	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_MAX; nCntCharacter++)
+	{
+		m_pSceneTwo[nCntCharacter] = CScene_TWO::Create(
+			CScene_TWO::OFFSET_TYPE_CENTER,
+			D3DXVECTOR3(SCREEN_WIDTH * 0.5f,500.0f,0.0f),
+			D3DXVECTOR2(100.0f,100.0f));
+		// テクスチャー未設定
+		//
+		m_pSceneTwo[nCntCharacter]->BindTexture(NULL);
+		//
+		// テクスチャー未設定
+		// やること
+		// 位置設定をしてあげる
+		// 選択が変わったら、位置も変える
+		// どう動かすか考える
+
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -72,6 +94,19 @@ void CSelectCharacter::Uninit(void)
 		m_pZombie->Uninit();
 		delete m_pZombie;
 		m_pZombie = NULL;
+	}
+	// それぞれの選択アイコン
+	// ->終了処理
+	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_MAX; nCntCharacter++)
+	{
+		// 選択アイコンがNULLではないなら
+		// ->終了処理
+		if (m_pSceneTwo[nCntCharacter] != NULL)
+		{
+			// 終了処理
+			m_pSceneTwo[nCntCharacter]->Release();
+			m_pSceneTwo[nCntCharacter] = NULL;
+		}
 	}
 }
 
@@ -132,6 +167,20 @@ void CSelectCharacter::Update(void)
 	default:
 		break;
 	}
+
+	// それぞれの選択アイコン
+	// ->終了処理
+	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_MAX; nCntCharacter++)
+	{
+		// 選択アイコンがNULLではないなら
+		// ->更新処理
+		if (m_pSceneTwo[nCntCharacter] != NULL)
+		{
+			// 更新処理
+			m_pSceneTwo[nCntCharacter]->Update();
+		}
+	}
+
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,6 +210,18 @@ void CSelectCharacter::Draw(void)
 		break;
 	default:
 		break;
+	}
+	// それぞれの選択アイコン
+	// ->終了処理
+	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_MAX; nCntCharacter++)
+	{
+		// 選択アイコンがNULLではないなら
+		// ->終了処理
+		if (m_pSceneTwo[nCntCharacter] != NULL)
+		{
+			// 終了処理
+			m_pSceneTwo[nCntCharacter]->Draw();
+		}
 	}
 }
 

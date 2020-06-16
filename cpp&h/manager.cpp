@@ -23,7 +23,7 @@
 // マクロ関数
 //
 // ----------------------------------------------------------------------------------------------------
-#define STARTMODE (MODE_SELECT)
+#define STARTMODE (MODE_TITLE)
 
 
 // ----------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ CSelect * CManager::m_select = NULL;					// 選択画面
 CGame * CManager::m_game = NULL;						// ゲーム
 CResult * CManager::m_result = NULL;					// リザルト
 CRanking * CManager::m_ranking = NULL;					// ランキング
-CManager::MODE CManager::m_mode = MODE_SELECT;			// モード
+CManager::MODE CManager::m_mode = STARTMODE;			// モード
 bool CManager::m_bWire = false;							// ワイヤー
 CNetwork * CManager::m_pNetwork = NULL;					// ネットワーク
 int CManager::m_nPlayerID = 0;							// プレイヤー番号
