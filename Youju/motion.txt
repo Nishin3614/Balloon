@@ -1,0 +1,73 @@
+#==============================================================================
+#
+# 『モーションビューワ』スクリプトファイル [motion.txt]
+# Author : AKIRA TANAKA
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 6
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/BalloonBody.x			# [0]体
+MODEL_FILENAME = data/MODEL/BalloonHead.x			# [1]頭
+MODEL_FILENAME = data/MODEL/BalloonHandRight.x		# [2]右手
+MODEL_FILENAME = data/MODEL/BalloonHandLeft.x		# [3]左手
+MODEL_FILENAME = data/MODEL/BalloonAshiRight.x		# [4]右足
+MODEL_FILENAME = data/MODEL/BalloonAshiLeft.x		# [5]左足
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	NUM_PARTS = 6					# パーツ数
+
+	PARTSSET						# [0]体
+		INDEX = 0
+		PARENT = -1					# (親)NULL
+		POS = 0.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [1]頭
+		INDEX = 1
+		PARENT = 0					# (親)体
+		POS = 0.0 17.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [2]右手
+		INDEX = 2
+		PARENT = 0					# (親)右腕
+		POS = -15.0 10.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [3]左手
+		INDEX = 3
+		PARENT = 0					# (親)左腕
+		POS = 15.0 10.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [4]右足
+		INDEX = 4
+		PARENT = 0					# (親)右腿
+		POS = -6.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+	PARTSSET						# [5]左足
+		INDEX = 5
+		PARENT = 0					# (親)左腿
+		POS = 6.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+END_CHARACTERSET
+
+END_SCRIPT		# この行は絶対消さないこと！
