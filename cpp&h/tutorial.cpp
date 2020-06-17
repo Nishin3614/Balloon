@@ -73,7 +73,7 @@ void CTutorial::Update(void)
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// チュートリアルへ
-				pFade->SetFade(CManager::MODE_GAME);
+				pFade->SetFade(CManager::MODE_SELECT);
 			}
 		}
 	}

@@ -55,11 +55,19 @@ public:
 	// キャラクター
 	typedef enum
 	{
-		CHARACTER_P_THUNDER = 0,
-		CHARACTER_P_ZOMBIE,
-		CHARACTER_NPC,
-		CHARACTER_MAX
+		// プレイヤー用 //
+		CHARACTER_P_THUNDER = 0,				// 雷使い
+		CHARACTER_P_ZOMBIE,						// ゾンビ
+		CHARACTER_PLAYERMAX,					// プレイヤー用のキャラクター最大数
+		// プレイヤー用 //
+		// 敵用 //
+		CHARACTER_NPC = CHARACTER_PLAYERMAX,	// NPC
+		// 敵用 //
+		CHARACTER_MAX,							// キャラクター全体数
 	} CHARACTER;
+	// 敵用キャラクター最大数
+#define CHARACTER_ENEMYMAX (CHARACTER_MAX - CHARACTER_PLAYERMAX)	// 敵用キャラクター最大数
+
 	/* 構造体 */
 	// ステータス情報
 	typedef struct STATUS

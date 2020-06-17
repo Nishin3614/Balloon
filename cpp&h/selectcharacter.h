@@ -65,12 +65,13 @@ protected:
 private:
 	/* 関数 */
 	/* 変数 */
-	static int m_SaveCharaType[CONTROLPLAYER_MAX];			// プレイヤーが選んだキャラクタータイプを保存
-	CP_thunder * m_pThunder;								// プレイヤー(雷)
-	CP_zombie * m_pZombie;									// プレイヤー(ゾンビ)
-	CScene_TWO * m_pSceneTwo[CCharacter::CHARACTER_MAX];	// キャラクター選択アイコン
-	int m_CharacterType;									// キャラクタータイプ
-	int m_PlayerID;											// プレイヤー番号
-	D3DXVECTOR3 m_pos;										// 位置
+	static int m_SaveCharaType[CONTROLPLAYER_MAX];					// プレイヤーが選んだキャラクタータイプを保存
+	CP_thunder * m_pThunder;										// プレイヤー(雷)
+	CP_zombie * m_pZombie;											// プレイヤー(ゾンビ)
+	CScene_TWO * m_pSelectUi;										// 選択UI
+	CScene_TWO * m_pSelectIcon[CCharacter::CHARACTER_PLAYERMAX];	// キャラクター選択アイコン
+	int m_CharacterType;											// キャラクタータイプ
+	int m_PlayerID;													// プレイヤー番号
+	D3DXVECTOR3 m_pos;												// 位置
 };
 #endif
