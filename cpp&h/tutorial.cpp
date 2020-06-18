@@ -12,6 +12,8 @@
 #include "player.h"
 #include "manager.h"
 
+#include "ui.h"
+
 //=============================================================================
 //
 // コンストラクタ
@@ -38,7 +40,7 @@ CTutorial::~CTutorial()
 //=============================================================================
 HRESULT CTutorial::Init()
 {
-
+	CUi::LoadCreate(CUi::UITYPE_TUTORIALUI);
 	// 初期化
 	return S_OK;
 }

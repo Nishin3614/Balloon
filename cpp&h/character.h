@@ -137,7 +137,9 @@ public:
 		CHARACTER character,					// キャラクター
 		int nMotionID,							// モーションID
 		int nNowKeyCnt = -1						// 現在のキーカウント
-	);												
+	);
+	// バルーンの情報取得
+	CBalloon * GetBalloon(void) { return m_pBalloon; };
 	// カメラ追尾しているID
 	static int GetCameraCharacter(void);
 	/*
@@ -154,7 +156,11 @@ public:
 	static HRESULT Load_Character(void);
 	// ステータス情報読み込み
 	static HRESULT LoadStatus(void);
+	// キャラクター全ソースの開放
 	static void UnLoad(void);
+	// キャラクターの静的変数の初期化
+	static void InitStatic(void);
+
 #ifdef _DEBUG
 	void Debug(void);
 	static void AllDebug(void);
@@ -169,7 +175,7 @@ protected:
 	void SetMotion(int const nMotiontype);
 	// 強制モーション設定
 	void ComplusionSetMotion(int const nMotiontype);
-		
+	// 重力
 	void FagGravity(void);						// 重力
 	// 目標回転量設定
 	void SetRotDest(D3DXVECTOR3 const &rotDest)		{ m_rotLast = rotDest; };	
@@ -214,6 +220,7 @@ private:
 	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
 	static int						m_NumParts[CHARACTER_MAX];		// 動かすモデル数
 	static STATUS					m_sStatus[CHARACTER_MAX];		// キャラクターすべてのスタータス情報
+	static int						m_nAllCharacter;				// 出現しているキャラクター人数
 	CMeshobit						*m_pMeshobit;					// 軌跡
 	CModel 							*m_pModel;						// モデル
 	CHARACTER						m_character;					// キャラクター

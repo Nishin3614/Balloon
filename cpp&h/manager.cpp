@@ -332,6 +332,13 @@ void CManager::Update(void)
 	default:
 		break;
 	}
+#ifdef _DEBUG
+	// 強制タイトルフェード
+	if (m_keyboard->GetKeyboardTrigger(DIK_0))
+	{
+		m_fade->SetFade(MODE_TITLE);
+	}
+#endif // _DEBUG
 
 	// 画面遷移
 	m_fade->Update();

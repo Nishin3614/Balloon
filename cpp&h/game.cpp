@@ -78,6 +78,8 @@ void CGame::Init(void)
 	/* 初期化 */
 	// 状態
 	m_state = STATE_NORMAL;
+	// キャラクターの総人数
+	CCharacter::InitStatic();
 	/* 作成 */	
 	// 3Dエフェクトの生成
 	C3DEffect::Create();
@@ -222,11 +224,11 @@ void CGame::PlayerCreate(void)
 		// プレイヤー1
 		if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_THUNDER)
 		{
-			CP_thunder::Create(nCntPlayer,D3DXVECTOR3(0.0f, 0.0f, -100.0f * nCntPlayer));
+			CP_thunder::Create(nCntPlayer,D3DXVECTOR3(0.0f, 0.0f, -200.0f * nCntPlayer));
 		}
 		else if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_ZOMBIE)
 		{
-			CP_zombie::Create(nCntPlayer, D3DXVECTOR3(0.0f, 0.0f, -100.0f * nCntPlayer));
+			CP_zombie::Create(nCntPlayer, D3DXVECTOR3(0.0f, 0.0f, -200.0f * nCntPlayer));
 		}
 	}
 }

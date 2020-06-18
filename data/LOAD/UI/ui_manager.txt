@@ -7,3 +7,4 @@ data/LOAD/UI/setting_ui_select.txt
 data/LOAD/UI/title_ui_name.txt
 data/LOAD/UI/title_ui_select.txt
 data/LOAD/UI/title_ui_select_bg.txt
+data/LOAD/UI/tutorial_ui.txt

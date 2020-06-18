@@ -7,8 +7,11 @@
 #include "player.h"
 #include "input.h"
 #include "camera.h"
-
+#include "balloon.h"
 #include "ui.h"
+
+
+#include "fade.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -254,15 +257,28 @@ void CPlayer::MyMove(void)
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
-	// 宙に浮く
-	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_JUMP))
+	// 出現している風船の数が0以外なら
+	if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
 	{
-		move.y += CCharacter::GetStatus().fMaxJump;
+		// 宙に浮く
+		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_JUMP))
+		{
+			move.y += CCharacter::GetStatus().fMaxJump;
+		}
 	}
 	// 移動状態なら
 	if (bMove == true)
 	{
 		CCharacter::SetMotion(MOTIONTYPE_MOVE);
+	}
+	// yの上限設定
+	if (move.y > 10.0f)
+	{
+		move.y = 10.0f;
+	}
+	if (move.y < -5.0f)
+	{
+		move.y = -5.0f;
 	}
 	// 抵抗力
 	move.x *= CCharacter::GetStatus().fMaxInertia;
@@ -465,6 +481,16 @@ void CPlayer::Die(void)
 {
 	// 死亡処理
 	CCharacter::Die();
+	// コントロールする自キャラの場合
+	if (m_nPlayerID == CManager::GetPlayerID())
+	{
+
+		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+		{
+			// チュートリアルへ
+			CManager::GetFade()->SetFade(CManager::MODE_TITLE);
+		}
+	}
 }
 
 #ifdef _DEBUG
