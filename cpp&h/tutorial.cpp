@@ -69,7 +69,6 @@ void CTutorial::Update(void)
 		// ゲームへ遷移
 		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
 		{
-
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// チュートリアルへ

@@ -9,8 +9,8 @@
 #include "renderer.h"
 #include "sound.h"
 #include "scene.h"
-#include "player.h"
 #include "manager.h"
+#include "ui.h"
 
 //=============================================================================
 //
@@ -38,7 +38,8 @@ CTitle::~CTitle()
 //=============================================================================
 HRESULT CTitle::Init()
 {
-	
+	// UIê∂ê¨
+	CUi::LoadCreate(CUi::UITYPE_TITLEUI_NAME);
 	// èâä˙âª
 	return S_OK;
 }

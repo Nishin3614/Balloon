@@ -93,7 +93,7 @@ void CSelect::Update(void)
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
 		// ‘I‘ð‰æ–Ê‚Ö‘JˆÚ
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_1))
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
 		{
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
