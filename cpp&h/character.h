@@ -197,6 +197,9 @@ protected:
 	STATE							m_State;			// 現状のステータス
 	int								m_nCntState;		// カウントステータス
 
+
+	/* プロトタイプ用 */
+	void Limit(void);									// 制限区域
 private:
 	/* 関数 */
 	void Collision(void);								// それぞれの当たり判定
@@ -207,7 +210,6 @@ private:
 	void Motion(void);									// モーション
 	void ModelUpdate(void);								// モデルの更新
 	void TrackCamera(void);								// カメラ追尾
-	void Limit(void);									// 制限区域
 	void Motion_Effect(void);							// モーションエフェクト		
 	void Motion_Obit(void);								// モーション軌跡
 	void BalloonNone(void);								// 風船がない場合

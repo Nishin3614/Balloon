@@ -281,8 +281,6 @@ void CCharacter::Update(void)
 {
 	// 通常時の更新処理
 	Update_Normal();
-	// 区域制限
-	Limit();
 	// 当たり判定処理
 	Collision();
 	// ステンシルシャドウの位置設定
