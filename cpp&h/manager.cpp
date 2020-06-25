@@ -153,14 +153,6 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 		return E_FAIL;
 	}
 
-	if (m_pNetwork != NULL)
-	{
-		m_pNetwork->Connect();
-	}
-
-	// プレイヤー番号の設定
-	m_nPlayerID;
-
 	// カメラなどの設定
 	// どのプレイヤー番号を追尾するか
 	// ゲームのカメラのアップデートでそれを指定するかも

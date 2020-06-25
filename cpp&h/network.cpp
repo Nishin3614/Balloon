@@ -351,8 +351,8 @@ bool CNetwork::KeyData(void)
 	{
 		char data[1024];
 
-		sprintf(data, "SAVE_KEY %d %d %d %d %d", m_nId, pKeyboard->GetKeyboardPress(DIK_UP), pKeyboard->GetKeyboardPress(DIK_LEFT),
-			pKeyboard->GetKeyboardPress(DIK_DOWN), pKeyboard->GetKeyboardPress(DIK_RIGHT));
+		sprintf(data, "SAVE_KEY %d %d %d %d %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D));
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
 	}
 

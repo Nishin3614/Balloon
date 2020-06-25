@@ -79,6 +79,7 @@ public:
 	bool KeyData(void);
 	SOCKET GetSocket(void) { return m_sockClient; }
 	bool GetPressKeyboard(int nId, int nKey);
+	int GetId(void) { return m_nId; }
 
 private:
 	SOCKET createServerSocket(unsigned short port);
