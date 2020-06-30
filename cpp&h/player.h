@@ -49,6 +49,13 @@ public:
 	virtual void Draw(void);
 	// プレイヤーが死んだときの関数
 	virtual void Die(void);
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
 	// プレイヤー番号の設定
 	void SetPlayerID(int const &nPlayerID) { m_nPlayerID = nPlayerID; };
 	// プレイヤー番号の取得

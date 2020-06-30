@@ -511,7 +511,8 @@ void CScene_X::SetCollision(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CScene_X::SetCollision(
 	int const & nShapeType,
-	int const &obj
+	int const &obj,
+	bool const &bPush
 )
 {
 	// 当たり判定がNULLではないなら
@@ -519,7 +520,7 @@ void CScene_X::SetCollision(
 	if (m_Collision != NULL)
 	{
 #ifdef _DEBUG
-		CCalculation::Messanger("CScene_X::SetCollisionの中->既にデータが入っています");
+		CCalculation::Messanger("CScene_X::SetCollisionの中->既にあたり判定のデータが入っています");
 #endif // _DEBUG
 		return;
 	}
@@ -530,9 +531,11 @@ void CScene_X::SetCollision(
 	case CShape::SHAPETYPE_RECT:
 		// 矩形の当たり判定生成
 		m_Collision = CRectCollision::Create(
-			m_pos,
 			m_pModelLoad[m_nModelId]->size,
-			(CCollision::OBJTYPE)obj
+			D3DVECTOR3_ZERO,
+			(CCollision::OBJTYPE)obj,
+			this,
+			bPush
 		);
 		// 位置情報の更新(行列渡し)
 		m_Collision->GetShape()->PassMatrix(m_mtxWorld);
@@ -541,10 +544,11 @@ void CScene_X::SetCollision(
 	case CShape::SHAPETYPE_SPHERE:
 		// 球の当たり判定生成
 		m_Collision = CSphereCollision::Create(
-			D3DVECTOR3_ZERO,
-			m_pos,
 			m_pModelLoad[m_nModelId]->size.x,
-			(CCollision::OBJTYPE)obj
+			D3DVECTOR3_ZERO,
+			(CCollision::OBJTYPE)obj,
+			this,
+			bPush
 		);
 		// 位置情報の更新(行列渡し)
 		m_Collision->GetShape()->PassMatrix(m_mtxWorld);
@@ -553,11 +557,12 @@ void CScene_X::SetCollision(
 	case CShape::SHAPETYPE_COLUMN:
 		// 球の当たり判定生成
 		m_Collision = CColumnCollision::Create(
-			D3DVECTOR3_ZERO,
-			m_pos,
 			m_pModelLoad[m_nModelId]->size.x,
-			1,
-			(CCollision::OBJTYPE)obj
+			m_pModelLoad[m_nModelId]->size.y,
+			D3DVECTOR3_ZERO,
+			(CCollision::OBJTYPE)obj,
+			this,
+			bPush
 		);
 		// 位置情報の更新(行列渡し)
 		m_Collision->GetShape()->PassMatrix(m_mtxWorld);

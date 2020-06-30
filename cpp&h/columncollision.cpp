@@ -38,6 +38,28 @@ CColumnCollision::CColumnCollision() : CCollision::CCollision()
 	// 初期化
 }
 
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 終了処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CColumnCollision::Uninit(void)
+{
+	// 円柱情報の開放
+	m_pColumnShape.reset();
+
+}
+
+#ifdef _DEBUG
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たり判定処理(矩形と円柱)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CColumnCollision::Debug(void)
+{
+	CDebugproc::Print("----------円柱の当たり判定情報----------\n");
+	CDebugproc::Print("半径(%.1f)\n", m_pColumnShape->GetRadius());
+	CDebugproc::Print("高さ(%.1f)\n", m_pColumnShape->GetVertical());
+	CCollision::Debug();
+}
+#endif // _DEBUG
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 当たり判定処理(矩形と円柱)
@@ -47,9 +69,12 @@ bool CColumnCollision::Judg(CRectShape * const RectShape)
 	return RectAndColumn(RectShape, this->m_pColumnShape.get());
 }
 
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たり判定処理(球と矩形)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CColumnCollision::Judg(CRectShape * const RectShape, D3DXVECTOR3 * pPos)
 {
-	return false;
+	return RectAndColumn(RectShape, this->m_pColumnShape.get());
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -72,21 +97,24 @@ bool CColumnCollision::Judg(CColumnShape * const ColumnShape)
 // 作成処理(シーン管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CColumnCollision *CColumnCollision::Create(
-	D3DXVECTOR3 const offset,
-	D3DXVECTOR3 const &pos,
 	float const &fRadius,
 	float const &fVertical,
-	OBJTYPE const &obj
+	D3DXVECTOR3 const offset,
+	OBJTYPE const &obj,
+	CScene * pScene,
+	bool const &bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
 	CColumnCollision *pColumnCollision;
 	// メモリ確保
 	pColumnCollision = new CColumnCollision();
-	// 円柱の設定
-	pColumnCollision->m_pColumnShape = CColumnShape::Create(offset,pos,fRadius,fVertical);
-	pColumnCollision->m_pColumnShape->SetPos(pos);
+	// 円柱の当たり判定の円柱の生成
+	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset,fRadius,fVertical,bPush,pPos,pPosold));
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
+	pColumnCollision->SetOwnScene(pScene);
 	// シーン管理設定
 	pColumnCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pColumnCollision;
@@ -96,18 +124,21 @@ CColumnCollision *CColumnCollision::Create(
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
-	D3DXVECTOR3 const offset,
-	D3DXVECTOR3 const &pos,
 	float const &fRadius,
 	float const &fVertical,
-	OBJTYPE const &obj
+	D3DXVECTOR3 const offset,
+	OBJTYPE const &obj,
+	CScene * pScene,
+	bool const &bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
 	unique_ptr<CColumnCollision> pColumnCollision(new CColumnCollision);
 	// 円柱の設定
-	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset,pos,fRadius, fVertical));
-	pColumnCollision->m_pColumnShape->SetPos(pos);
+	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset, fRadius, fVertical, bPush, pPos,pPosold));
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
+	pColumnCollision->SetOwnScene(pScene);
 	return pColumnCollision;
 }

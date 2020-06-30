@@ -922,6 +922,29 @@ void  CModel_info::TextLoad(
 
 						}
 					}
+					// 球情報が来たら
+					else if (strcmp(cHeadText, "SPHERE") == 0)
+					{
+						// 球情報の確保
+						pmodelAll->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo.reset(new SPHEREINFO);
+						// エンド球の当たり判定が来るまでループ
+						while (strcmp(cHeadText, "END_SPHERE") != 0)
+						{
+							// 初期化
+							cHeadText[0] = '\0';
+							cRaedText[0] = '\0';
+							fgets(cRaedText, sizeof(cRaedText), pFile);
+							sscanf(cRaedText, "%s", &cHeadText);
+							// 半径情報読み込み
+							if (strcmp(cHeadText, "RADIUS") == 0)
+							{
+								sscanf(cRaedText, "%s %s %f",
+									&cDie, &cDie,
+									&pmodelAll->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo->fRadius
+								);
+							}
+						}
+					}
 				}
 			}
 			// 攻撃の当たり判定が来たら

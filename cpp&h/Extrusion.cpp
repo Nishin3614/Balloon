@@ -153,7 +153,7 @@ bool CExtrusion::CircleCollision(void)
 
 		//‚¨ŒÝ‚¢‚Ì‹——£
 		float fLength = D3DXVec2Length(&D3DXVECTOR2(diffpos.x, diffpos.z));
-
+		
 		// ’·‚³‚Ì”äŠr
 		if (fLength < fDiffPower)
 		{

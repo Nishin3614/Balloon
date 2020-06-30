@@ -209,7 +209,8 @@ typedef struct CHARACTERCOLLISION
 	// コンストラクタ
 	CHARACTERCOLLISION() = default;
 	D3DXVECTOR3 Offset;				// オフセット
-	unique_ptr<RECTINFO> RectInfo;	// 矩形情報
+	unique_ptr<RECTINFO> RectInfo;				// 矩形情報
+	unique_ptr<SPHEREINFO> p_uni_SphereInfo;	// 球情報
 } CHARACTERCOLLISION;
 
 // 攻撃用当たり判定の基本情報

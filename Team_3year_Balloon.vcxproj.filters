@@ -33,9 +33,6 @@
     <ClCompile Include="cpp&amp;h\3Dmap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="cpp&amp;h\3Dobject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -258,9 +255,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="cpp&amp;h\3Dmap.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="cpp&amp;h\3Dobject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="cpp&amp;h\3Dparticle.h">

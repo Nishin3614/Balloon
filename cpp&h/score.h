@@ -36,6 +36,20 @@ public:
 	void Uninit(void);			// 終了
 	void Update(void);			// 更新
 	void Draw(void);			// 描画
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	)
+	{};
+	// ポインター位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
+	// ポインター過去の位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
+	// ポインター移動量情報の取得
+	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
 	void SetPos(D3DXVECTOR3 pos);
 	void AddScore(int nValue);
 	void SetScore(int nScore);

@@ -53,6 +53,21 @@ public:
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	)
+	{};
+	// ポインター位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
+	// ポインター過去の位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
+	// ポインター移動量情報の取得
+	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
+
 	static HRESULT Load(void);
 	static void UnLoad(void);
 	// 作成処理(シーン管理)

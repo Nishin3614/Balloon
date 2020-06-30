@@ -165,7 +165,6 @@
     <ClCompile Include="cpp&amp;h\3Deffect.cpp" />
     <ClCompile Include="cpp&amp;h\3Dline.cpp" />
     <ClCompile Include="cpp&amp;h\3Dmap.cpp" />
-    <ClCompile Include="cpp&amp;h\3Dobject.cpp" />
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
     <ClCompile Include="cpp&amp;h\bgdome.cpp" />
@@ -242,7 +241,6 @@
     <ClInclude Include="cpp&amp;h\3Deffect.h" />
     <ClInclude Include="cpp&amp;h\3Dline.h" />
     <ClInclude Include="cpp&amp;h\3Dmap.h" />
-    <ClInclude Include="cpp&amp;h\3Dobject.h" />
     <ClInclude Include="cpp&amp;h\3Dparticle.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />
     <ClInclude Include="cpp&amp;h\bgdome.h" />

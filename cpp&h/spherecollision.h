@@ -59,12 +59,27 @@ public:
 	CSphereCollision();
 	virtual ~CSphereCollision() {};
 	virtual void Init(void) {};
-	virtual void Uninit(void) {};
+	virtual void Uninit(void);
 	virtual void Update(void) {};
 	virtual void Draw(void) {};
 #ifdef _DEBUG
-	virtual void Debug(void) {};
+	virtual void Debug(void);
 #endif // _DEBUG
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	)
+	{};
+	// ポインター位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
+	// ポインター過去の位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
+	// ポインター移動量情報の取得
+	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
+
 	CShape * const GetShape(void) { return m_pSphereShape.get(); };
 	// 
 	// 矩形クラスの当たり判定比較
@@ -78,17 +93,23 @@ public:
 	// 設定
 	// 作成処理(シーン管理)
 	static CSphereCollision *Create(
-		D3DXVECTOR3 const offset,
-		D3DXVECTOR3 const &pos,
 		float const &fRadius,
-		OBJTYPE const &obj = OBJTYPE_ACTOR
-	);
+		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
+		OBJTYPE const &obj = OBJTYPE_ACTOR,
+		CScene * pScene = NULL,
+		bool const &bPush = false,
+		D3DXVECTOR3 * pPos = NULL,
+		D3DXVECTOR3 * pPosold = NULL
+		);
 	// 作成処理(個人管理)
 	static unique_ptr<CSphereCollision> Create_Self(
-		D3DXVECTOR3 const offset,
-		D3DXVECTOR3 const &pos,
 		float const &fRadius,
-		OBJTYPE const &obj = OBJTYPE_ACTOR
+		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
+		OBJTYPE const &obj = OBJTYPE_ACTOR,
+		CScene * pScene = NULL,
+		bool const &bPush = false,
+		D3DXVECTOR3 * pPos = NULL,
+		D3DXVECTOR3 * pPosold = NULL
 	);
 
 protected:

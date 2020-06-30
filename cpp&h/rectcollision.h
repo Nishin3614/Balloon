@@ -63,14 +63,28 @@ public:
 	} INFO;
 	/* 関数 */
 	CRectCollision();
-	~CRectCollision() {};
-	void Init(void);
-	void Uninit(void) {};
-	void Update(void) {};
-	void Draw(void) {};
+	virtual ~CRectCollision() {};
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void) {};
+	virtual void Draw(void) {};
 #ifdef _DEBUG
-	void Debug(void) {};
+	virtual void Debug(void);
 #endif // _DEBUG
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	)
+	{};
+	// ポインター位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
+	// ポインター過去の位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
+	// ポインター移動量情報の取得
+	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
 	// 形の取得
 	CShape * const GetShape(void) { return m_pRectShape.get(); };
 	// 矩形の取得
@@ -86,15 +100,23 @@ public:
 	// 設定
 	// 作成処理(シーン管理)
 	static CRectCollision *Create(
-		D3DXVECTOR3 const offset,
 		D3DXVECTOR3 const size,
-		OBJTYPE const &obj = OBJTYPE_ACTOR
+		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
+		OBJTYPE const &obj = OBJTYPE_ACTOR,
+		CScene * pScene = NULL,
+		bool const &bPush = false,
+		D3DXVECTOR3 * pPos = NULL,
+		D3DXVECTOR3 * pPosold = NULL
 	);
 	// 作成処理(個人管理)
 	static unique_ptr<CRectCollision> Create_Self(
-		D3DXVECTOR3 const offset,
 		D3DXVECTOR3 const size,
-		OBJTYPE const &obj = OBJTYPE_ACTOR
+		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
+		OBJTYPE const &obj = OBJTYPE_ACTOR,
+		CScene * pScene = NULL,
+		bool const &bPush = false,
+		D3DXVECTOR3 * pPos = NULL,
+		D3DXVECTOR3 * pPosold = NULL
 	);
 
 protected:
@@ -102,6 +124,7 @@ protected:
 private:
 	// 変数宣言
 	unique_ptr<CRectShape> m_pRectShape;	// 矩形
+
 };
 
 // ----------------------------------------------------------------------------------------------------

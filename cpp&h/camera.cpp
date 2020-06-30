@@ -76,11 +76,13 @@ void CCamera::Update(void)
 	Update_Play();
 
 #ifdef _DEBUG
+	/*
 	CDebugproc::Print("回転量X%.3f\n", m_rot.x);
 	CDebugproc::Print("回転量X%.3f\n", m_posVDest.y);
 	// CDebugproc::Print("カメラの視点x:%f,y:%f,z:%f\n", m_posVDest.x, m_posVDest.y, m_posVDest.z);
 	// CDebugproc::Print("カメラの注視点x:%f,y:%f,z:%f\n", m_posR.x, m_posR.y, m_posR.z);
 	// CDebugproc::Print("カメラの角度x:%f,y:%f,z:%f\n", m_rot.x, m_rot.y, m_rot.z);
+	*/
 #endif // _DEBUG
 }
 
@@ -153,10 +155,11 @@ void CCamera::Debug(void)
 			ImGui::TreePop();
 		}
 	}
-
+	/*
 	CDebugproc::Print("PosV(%.1f,%.1f,%.1f)\n", m_posV.x, m_posV.y, m_posV.z);
 	CDebugproc::Print("m_posVDest(%.1f,%.1f,%.1f)\n", m_posVDest.x, m_posVDest.y, m_posVDest.z);
 	CDebugproc::Print("m_posVDiff(%.1f,%.1f,%.1f)\n", m_posVDiff.x, m_posVDiff.y, m_posVDiff.z);
+	*/
 }
 #endif // _DEBUG
 

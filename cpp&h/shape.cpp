@@ -1,3 +1,15 @@
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+// Shape処理の説明[shape.cpp]
+// Author : Koki Nishiyama
+//
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+// インクルードファイル
+//
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "shape.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -8,6 +20,11 @@ void CRectShape::PassMatrix(
 	D3DXMATRIX const &mtx
 )
 {
+	// 過去の最大・最小座標の代入
+	m_MinOld = m_Min;
+	m_MaxOld = m_Max;
+	// 位置情報設定
+	CShape::PassMatrix(mtx);
 	// 最小座標値の設定
 	D3DXVec3TransformCoord(&m_Min, &(this->GetOffset() - m_size), &mtx);
 	// 最大座標値の設定
@@ -18,28 +35,23 @@ void CRectShape::PassMatrix(
 // 矩形の最大座標値と最小座標値の計算
 // 1:位置情報,2:回転情報
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CRectShape::PassPos(D3DXVECTOR3 const & pos, D3DXVECTOR3 const & rot)
+void CRectShape::PassPos(D3DXVECTOR3 const & rot)
 {
 	// 変数宣言
-	D3DXMATRIX mtx;
-	// 回転を反映
-	D3DXMatrixRotationYawPitchRoll(&mtx,
-		rot.y,
-		rot.x,
-		rot.z);
-	// 最小座標値の設定
-	D3DXVec3TransformCoord(&m_Min, &(pos + this->GetOffset() - m_size), &mtx);
-	// 最大座標値の設定
-	D3DXVec3TransformCoord(&m_Max, &(pos + this->GetOffset() + m_size), &mtx);
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 矩形の最大座標値と最小座標値の計算
-// 軸方向が平面(角度0)の時
-// 1:位置情報
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CRectShape::PassPos(D3DXVECTOR3 const & pos)
-{
+	D3DXVECTOR3 pos;	// 位置情報
+	// ポインター位置情報がNULLではないなら
+	// 位置情報取得
+	if (CShape::Get_PPos() != NULL)
+	{
+		pos = *CShape::Get_PPos();
+	}
+	else
+	{
+		pos = CShape::Get_Pos();
+	}
+	// 過去の最大・最小座標の代入
+	m_MinOld = m_Min;
+	m_MaxOld = m_Max;
 	// 最大座標値の計算
 	m_Max = pos + this->GetOffset() + m_size * 0.5f;
 	// 最小座標値の計算
@@ -118,13 +130,22 @@ D3DXVECTOR3 CRectShape::GetClosestpoint(D3DXVECTOR3 const & pos)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 unique_ptr<CRectShape> CRectShape::Create(
 	D3DXVECTOR3 const &offset,
-	D3DXVECTOR3 const &size
+	D3DXVECTOR3 const &size,
+	bool const &bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
 	unique_ptr<CRectShape> pRect(new CRectShape);
 	// 半径の設定
 	pRect->SetSize(size);
+	// ポインター位置情報の設定
+	pRect->Set_PPos(pPos);
+	// 過去のポインター位置情報設定
+	pRect->Set_PPosold(pPosold);
+	// 押し出し処理のありなし
+	pRect->SetPush(bPush);
 	// オフセットの設定
 	pRect->SetOffset(offset);
 	return pRect;
@@ -135,16 +156,22 @@ unique_ptr<CRectShape> CRectShape::Create(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 unique_ptr<CSphereShape> CSphereShape::Create(
 	D3DXVECTOR3 const &offset,
-	D3DXVECTOR3 const &pos,
-	float const &radius
-)
+	float const &radius,
+	bool const &bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
+	)
 {
 	// 変数宣言
 	unique_ptr<CSphereShape> pSphere(new CSphereShape);
 	// オフセットの設定
 	pSphere->SetOffset(offset);
-	// 位置設定
-	pSphere->SetPos(pos);
+	// ポインター位置情報設定
+	pSphere->Set_PPos(pPos);
+	// 過去のポインター位置情報設定
+	pSphere->Set_PPosold(pPosold);
+	// 押し出し処理のありなし
+	pSphere->SetPush(bPush);
 	// 半径の設定
 	pSphere->SetRadius(radius);
 	return pSphere;
@@ -156,8 +183,7 @@ unique_ptr<CSphereShape> CSphereShape::Create(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSphereShape::PassMatrix(D3DXMATRIX const & mtx)
 {
-	// 最大座標値の設定
-	D3DXVec3TransformCoord(&m_pos, &this->GetOffset(), &mtx);
+	CShape::PassMatrix(mtx);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -165,9 +191,11 @@ void CSphereShape::PassMatrix(D3DXMATRIX const & mtx)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 unique_ptr<CColumnShape> CColumnShape::Create(
 	D3DXVECTOR3 const &offset,
-	D3DXVECTOR3 const &pos,
 	float const & fRadius,
-	float const & fVertical
+	float const & fVertical,
+	bool const & bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
@@ -175,10 +203,25 @@ unique_ptr<CColumnShape> CColumnShape::Create(
 	// オフセットの設定
 	pColum->SetOffset(offset);
 	// 位置設定
-	pColum->SetPos(pos);
+	pColum->Set_PPos(pPos);
+	// 過去のポインター位置情報設定
+	pColum->Set_PPosold(pPosold);
 	// 半径の設定
 	pColum->SetRadius(fRadius);
+	// 押し出し処理のありなし
+	pColum->SetPush(bPush);
 	// 縦幅の設定
 	pColum->SetVertical(fVertical);
 	return pColum;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 行列からの位置情報代入
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CShape::PassMatrix(D3DXMATRIX const & mtx)
+{
+	// 過去の位置情報保存
+	m_posold = m_pos;
+	// 最大座標値の設定
+	D3DXVec3TransformCoord(&m_pos, &this->GetOffset(), &mtx);
 }

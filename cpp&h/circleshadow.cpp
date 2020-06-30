@@ -72,7 +72,9 @@ void CCircleshadow::Update(void)
 	CScene_THREE::Update();
 #ifdef _DEBUG
 	D3DXVECTOR3 pos = CScene_THREE::GetPos();
+	/*
 	CDebugproc::Print("âeÇÃèÍèä:(%.1f,%.1f,%.1f)\n", pos.x, pos.y, pos.z);
+	*/
 #endif // _DEBUG
 
 }

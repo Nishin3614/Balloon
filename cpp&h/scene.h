@@ -56,9 +56,21 @@ public:
 	virtual void Update(void) = 0;										// 更新
 	virtual void Draw(void) = 0;										// 描画
 #ifdef _DEBUG
-	virtual void Debug(void);										// デバッグ用
+	virtual void Debug(void);											// デバッグ用
 #endif // _DEBUG
-
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+		) = 0;
+	// ポインター位置情報を取得
+	virtual D3DXVECTOR3 * Scene_GetPPos(void) = 0;
+	// ポインター過去の位置情報を取得
+	virtual D3DXVECTOR3 * Scene_GetPPosold(void) = 0;
+	// ポインター移動量情報の取得
+	virtual D3DXVECTOR3 * Scene_GetPMove(void) = 0;
 	static void ReleaseAll(void);										// シーン親子リリース
 	static void UpdateAll(void);										// シーン親子更新
 	static void DrawAll(void);											// シーン親子描画
@@ -67,7 +79,7 @@ public:
 	static CScene * GetScene(
 		LAYER const &layer,												// レイヤー
 		int const &nCntScene,											// カウントシーン
-		CScene &										// クラス型情報
+		CScene &														// クラス型情報
 	);
 	// シーン情報取得(レイヤー指定)
 	static CScene * GetScene(
@@ -77,7 +89,7 @@ public:
 	// レイヤー内のシーン最大数取得
 	static int GetMaxLayer(LAYER const &layer) 
 	{ return (signed)m_pScene[layer].size(); };	
-	static bool GetUpdateStop(void) { return m_sta_bStop; };						// 静止状態
+	static bool GetUpdateStop(void) { return m_sta_bStop; };			// 静止状態
 	// 設定
 	// シーンの静止
 	static void UpdateStop(
@@ -106,7 +118,7 @@ public:
 	{
 		return m_bDraw;
 	};
-
+	// オブジェクトの開放準備
 	void Release(void);													// オブジェクトの破棄
 protected:
 

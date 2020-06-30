@@ -66,9 +66,10 @@ public:
 	// オブジェクトカテゴリー
 	typedef enum
 	{
-		OBJTYPE_CHARACTER = 0,
+		OBJTYPE_ACTOR = 0,
+		OBJTYPE_CHARACTER,
 		OBJTYPE_BALLOON,
-		OBJTYPE_ACTOR,
+		OBJTYPE_ATTACK,
 		OBJTYPE_MAX
 	} OBJTYPE;
 	/* 関数 */
@@ -79,8 +80,23 @@ public:
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
 #ifdef _DEBUG
-	virtual void Debug(void) = 0;
+	virtual void Debug(void);
 #endif // _DEBUG
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	)
+	{};
+	// ポインター位置情報を取得
+	virtual D3DXVECTOR3 * Scene_GetPPos(void) = 0;
+	// ポインター過去の位置情報を取得
+	virtual D3DXVECTOR3 * Scene_GetPPosold(void) = 0;
+	// ポインター移動量情報の取得
+	virtual D3DXVECTOR3 * Scene_GetPMove(void) = 0;
+
 	// 判定の有無
 	// 矩形クラスの当たり判定比較
 	virtual bool Judg(CRectShape * const RectShape) = 0;
@@ -90,6 +106,8 @@ public:
 	virtual bool Judg(CSphereShape * const SphereShape) = 0;
 	// 円柱クラスの当たり判定比較
 	virtual bool Judg(CColumnShape * const ColumnShape) = 0;
+	// 形を取得
+	virtual CShape * const GetShape(void) = 0;
 	// 形クラスの当たり判定
 	bool SelectShape(CShape * const shape);
 	// 当たり判定同士の判定(指定)
@@ -111,9 +129,10 @@ public:
 	bool &GetbCollision(void) { return m_bCollision; };
 	// 自分のオブジェクト番号設定
 	void SetObjectID(OBJTYPE const &obj) { m_nMyObjectId = obj; };
-	// 形を取得
-	virtual CShape * const GetShape(void) = 0;
-
+	// あたり判定を所有しているシーン情報取得
+	CScene * GetOwnScene(void) { return m_pScene; };
+	// あたり判定を所有しているシーン情報設定
+	void SetOwnScene(CScene * pScene) { m_pScene = pScene; };
 	// 矩形と矩形の当たり判定
 	// pRectShapeA:矩形A
 	// pRectShapeB:矩形B
@@ -126,7 +145,7 @@ public:
 	// pRectShapeB:矩形B
 	// pPos:位置ポインター(親元の位置)
 	static bool RectAndRect(
-		CRectShape * const pRectShapeA,	// 矩形A
+		CRectShape * pRectShapeA,		// 矩形A
 		CRectShape * const pRectShapeB,	// 矩形B
 		D3DXVECTOR3 * pPos				// 位置ポインター
 	);
@@ -134,6 +153,12 @@ public:
 	static bool RectAndSphere(
 		CRectShape * const pRectShapeA,		// 矩形A
 		CSphereShape * const pSphereShapeB	// 球B
+	);
+	// 矩形と球の当たり判定
+	static bool RectAndSphere(
+		CRectShape * const pRectShapeA,		// 矩形A
+		CSphereShape * const pSphereShapeB,	// 球B
+		D3DXVECTOR3 * pPos					// 位置
 	);
 	// 矩形と円柱の当たり判定
 	static bool RectAndColumn(
@@ -150,6 +175,12 @@ public:
 		CSphereShape * const pSphereShapeA,	// 球A
 		CSphereShape * const pSphereShapeB	// 球B
 	);
+	// 球と球の当たり判定
+	static bool SphereAndSphere(
+		CSphereShape * const pSphereShapeA,	// 球A
+		CSphereShape * const pSphereShapeB,	// 球B
+		D3DXVECTOR3 * pPos					// 位置
+	);
 	// 円柱と円柱の当たり判定
 	static bool ColumnAndColumn(
 		CColumnShape * const pColumnShapeA,	// 円柱A
@@ -162,6 +193,7 @@ private:
 	bool m_bCollision;						// 当たり判定状態
 	int m_nMyObjectId;						// オブジェクト番号
 	int m_nOponentId;						// 当たった時の相手
+	CScene * m_pScene;						// あたり判定を所有しているシーン情報
 };
 
 // ----------------------------------------------------------------------------------------------------

@@ -17,7 +17,6 @@
 // マクロ定義
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define RECTCOLLISION_FILE "data/LOAD/collision.txt"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -46,6 +45,36 @@ void CRectCollision::Init(void)
 {
 
 }
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 終了処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CRectCollision::Uninit(void)
+{
+	// 矩形情報の開放
+	m_pRectShape.reset();
+}
+
+#ifdef _DEBUG
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たり判定処理(矩形と円柱)
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CRectCollision::Debug(void)
+{
+	CDebugproc::Print("----------矩形の当たり判定情報----------\n");
+	CDebugproc::Print("最大座標(%.1f,%.1f,%.1f)\n", 
+		m_pRectShape->GetMax().x,
+		m_pRectShape->GetMax().y,
+		m_pRectShape->GetMax().z
+		);
+	CDebugproc::Print("最小座標(%.1f,%.1f,%.1f)\n",
+		m_pRectShape->GetMin().x,
+		m_pRectShape->GetMin().y,
+		m_pRectShape->GetMin().z
+		);
+	CCollision::Debug();
+}
+#endif // _DEBUG
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 当たり判定処理(矩形と矩形)
@@ -86,9 +115,13 @@ bool CRectCollision::Judg(CColumnShape * const ColumnShape)
 // 作成処理(シーン管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CRectCollision *CRectCollision::Create(
-	D3DXVECTOR3 const offset,
 	D3DXVECTOR3 const size,
-	OBJTYPE const &obj
+	D3DXVECTOR3 const offset,
+	OBJTYPE const &obj,
+	CScene * pScene,
+	bool const &bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
@@ -96,8 +129,9 @@ CRectCollision *CRectCollision::Create(
 	// メモリ確保
 	pRectCollision = new CRectCollision();
 	// 矩形の設定
-	pRectCollision->m_pRectShape = CRectShape::Create(offset,size);
-	pRectCollision->SetObjectID(obj);												// オブジェクト番号設定
+	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush, pPos, pPosold));
+	pRectCollision->SetObjectID(obj);											
+	pRectCollision->SetOwnScene(pScene);
 	// シーン管理設定
 	pRectCollision->ManageSetting(CScene::LAYER_COLLISION);
 	// 初期化処理
@@ -110,16 +144,21 @@ CRectCollision *CRectCollision::Create(
 // ※返り値はstd::moveで受け取ること
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 unique_ptr<CRectCollision> CRectCollision::Create_Self(
-	D3DXVECTOR3 const offset,
 	D3DXVECTOR3 const size,
-	OBJTYPE const &obj
+	D3DXVECTOR3 const offset,
+	OBJTYPE const &obj,
+	CScene * pScene,
+	bool const &bPush,
+	D3DXVECTOR3 * pPos,
+	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
 	unique_ptr<CRectCollision> pRectCollision(new CRectCollision);
 	// 矩形の設定
-	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size));
-	pRectCollision->SetObjectID(obj);												// オブジェクト番号設定
+	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush,pPos,pPosold));
+	pRectCollision->SetObjectID(obj);											
+	pRectCollision->SetOwnScene(pScene);
 	// 初期化処理
 	pRectCollision->Init();
 	return pRectCollision;

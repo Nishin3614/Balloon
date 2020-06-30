@@ -21,6 +21,7 @@
 class CExtrusion;
 class CMeshobit;
 class CCollision;
+class CRectCollision;
 class CStencilshadow;
 class CBalloon;
 
@@ -65,6 +66,7 @@ public:
 		// 敵用 //
 		CHARACTER_MAX,							// キャラクター全体数
 	} CHARACTER;
+
 	// 敵用キャラクター最大数
 #define CHARACTER_ENEMYMAX (CHARACTER_MAX - CHARACTER_PLAYERMAX)	// 敵用キャラクター最大数
 
@@ -98,6 +100,19 @@ public:
 	virtual void Draw(void);
 	// キャラクターが死んだとき
 	virtual void Die(void);
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
+	// ポインター位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
+	// ポインター過去の位置情報を取得
+	D3DXVECTOR3 * Scene_GetPPosold(void) { return &m_posold; };
+	// ポインター移動量情報の取得
+	D3DXVECTOR3 * Scene_GetPMove(void) { return &m_move; };
 	// 風船生成
 	void BalloonCreate(void);
 	// 必要に応じた動作 //
@@ -162,10 +177,10 @@ public:
 	static void InitStatic(void);
 
 #ifdef _DEBUG
-	void Debug(void);
+	virtual void  Debug(void);
 	static void AllDebug(void);
 #endif // _DEBUG
-	CCollision * GetCollision(void) { return m_pCharacterCollision.get(); };
+	CRectCollision * GetCollision(void) { return m_pCharacterCollision.get(); };
 protected:
 	/* 関数 */
 	// 設定 //
@@ -190,12 +205,15 @@ protected:
 	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };	
 
 	// モーションカメラの更新
-	void MotionCamera(void);							
+	void MotionCamera(void);		
+	// キャラクター同士の当たり判定
+	bool CharacterCollision(CCharacter * pCharacter);
 	/* 変数 */
 	static int						m_nCameraCharacter;	// キャラクターに追尾するID
 	// 仮
 	STATE							m_State;			// 現状のステータス
 	int								m_nCntState;		// カウントステータス
+
 
 
 	/* プロトタイプ用 */
@@ -245,7 +263,7 @@ private:
 	float							m_fLength;						// 攻撃の当たり範囲
 	float							m_fAlpha;						// アルファ値
 	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
-	unique_ptr<CCollision>			m_pCharacterCollision;			// キャラクターの当たり判定
+	unique_ptr<CRectCollision>		m_pCharacterCollision;			// キャラクターの当たり判定
 	vector<unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	vector<unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
 	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
