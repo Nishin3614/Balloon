@@ -78,9 +78,16 @@ void CNetwork::Update(void)
 	char cDataText[128];		//文字
 	char cPlayerData[MAX_PLAYER][128];		//比較
 
+	OutputDebugString("送信開始\n");
 	KeyData();
+	OutputDebugString("送信完了\n");
+
 	//nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
+
+	OutputDebugString("受信開始\n");
 	nError = recv(m_sockClientToServer, debug, sizeof(debug), 0);
+	OutputDebugString("受信完了\n");
+
 	if (nError == INVALID_SOCKET)
 	{
 		{// ソケットの作成に失敗したとき
