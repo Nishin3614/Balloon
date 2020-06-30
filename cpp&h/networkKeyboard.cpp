@@ -43,27 +43,27 @@ void CNetworkKeyboard::Uninit(void)
 // ------------------------------------------
 void CNetworkKeyboard::Update(void)
 {
-	// 変数宣言
-	BYTE aKeyState[MAX_PLAYER][NUM_KEY_MAX] = {};	// キーボードの入力情報
-	KEYSTATE keystate = GetKeystate();
+	//// 変数宣言
+	//BYTE aKeyState[MAX_PLAYER][NUM_KEY_MAX] = {};	// キーボードの入力情報
+	//KEYSTATE keystate = GetKeystate();
 
-	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-	{
-		*aKeyState[nCount] = *keystate.m_aKeyState[nCount];
-	}
+	//for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	//{
+	//	*aKeyState[nCount] = *keystate.m_aKeyState[nCount];
+	//}
 
-	int nCntKey;
+	//int nCntKey;
 
-	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
-	{
-		for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
-		{
-			// トリガー・リリース情報の作成
-			m_akeyStateTrigger[nCntPlayer][nCntKey] = (m_aKeyState[nCntPlayer][nCntKey] & aKeyState[nCntPlayer][nCntKey]) ^ aKeyState[nCntPlayer][nCntKey];
-			m_akeyStateUp[nCntPlayer][nCntKey] = m_aKeyState[nCntPlayer][nCntKey] ^ (m_aKeyState[nCntPlayer][nCntKey] & aKeyState[nCntPlayer][nCntKey]);
-			m_aKeyState[nCntPlayer][nCntKey] = aKeyState[nCntPlayer][nCntKey];	//キープレス情報保存
-		}
-	}
+	//for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+	//{
+	//	for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
+	//	{
+	//		// トリガー・リリース情報の作成
+	//		m_akeyStateTrigger[nCntPlayer][nCntKey] = (m_aKeyState[nCntPlayer][nCntKey] & aKeyState[nCntPlayer][nCntKey]) ^ aKeyState[nCntPlayer][nCntKey];
+	//		m_akeyStateUp[nCntPlayer][nCntKey] = m_aKeyState[nCntPlayer][nCntKey] ^ (m_aKeyState[nCntPlayer][nCntKey] & aKeyState[nCntPlayer][nCntKey]);
+	//		m_aKeyState[nCntPlayer][nCntKey] = aKeyState[nCntPlayer][nCntKey];	//キープレス情報保存
+	//	}
+	//}
 }
 
 // ------------------------------------------

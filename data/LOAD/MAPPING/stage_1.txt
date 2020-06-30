@@ -21,29 +21,5 @@ SCRIPT
     #==============================================================================
 	# キャラクター
 	#==============================================================================
-    # ----------[0]---------- #
-    CHARACTERSET
-        CHARACTERTYPE = 2
-        POS = 100.000 -200.000 0.000
-        ROT = 0.000 1.57 0.000
-    END_CHARACTERSET
-    # ----------[0]---------- #
-    CHARACTERSET
-        CHARACTERTYPE = 2
-        POS = -100.000 -200.000 0.000
-        ROT = 0.000 1.57 0.000
-    END_CHARACTERSET
-    # ----------[0]---------- #
-    CHARACTERSET
-        CHARACTERTYPE = 2
-        POS = -300.000 -200.000 0.000
-        ROT = 0.000 1.57 0.000
-    END_CHARACTERSET
-    # ----------[0]---------- #
-    CHARACTERSET
-        CHARACTERTYPE = 2
-        POS = 300.000 -200.000 0.000
-        ROT = 0.000 1.57 0.000
-    END_CHARACTERSET
 
 END_SCRIPT
