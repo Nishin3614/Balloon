@@ -60,7 +60,7 @@ void CPlayer::Init(void)
 	// カメラの初期化
 	// カメラの注視点設定
 	CManager::GetRenderer()->GetCamera()->SetPosR(
-		CCharacter::GetPos() + D3DXVECTOR3(0.0f,D3DX_PI,0.0f),
+		CCharacter::GetPos() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
 		CCharacter::GetRot() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f)
 	);
 }
@@ -115,6 +115,8 @@ void CPlayer::Update(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::MyAction(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
 	// 自キャラの移動処理
 	MyMove();
 	// 風船を膨らませる
@@ -123,8 +125,12 @@ void CPlayer::MyAction(void)
 		// 風船を生成する処理
 		BalloonCreate();
 	}
-	// カメラの処理
-	Camera();
+
+	if (m_nPlayerID == pNetwork->GetId())
+	{
+		// カメラの処理
+		Camera();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -194,7 +200,7 @@ void CPlayer::MyMove(void)
 	}
 	/* キーボード */
 	// 左
-	if (pNetwork->GetPressKeyboard(m_nPlayerID ,NUM_KEY_A))
+	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
 	{
 		// 移動状態on
 		bMove = true;
@@ -275,7 +281,7 @@ void CPlayer::MyMove(void)
 	if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
 	{
 		// 宙に浮く
-		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_JUMP))
+		if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
 		{
 			move.y += CCharacter::GetStatus().fMaxJump;
 		}
@@ -513,7 +519,7 @@ void CPlayer::Die(void)
 //-------------------------------------------------------------------------------------------------------------
 void CPlayer::Debug(void)
 {
-	CDebugproc::Print("-----プレイヤー番号[%d]-----\n",m_nPlayerID);
+	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter::Debug();
 }

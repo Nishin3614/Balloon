@@ -29,6 +29,7 @@ typedef enum
 	NUM_KEY_A,
 	NUM_KEY_S,
 	NUM_KEY_D,
+	NUM_KEY_SPACE,
 	NUM_KEY_M
 } NUM_KEY;
 
@@ -79,7 +80,10 @@ public:
 	bool KeyData(void);
 	SOCKET GetSocket(void) { return m_sockClient; }
 	bool GetPressKeyboard(int nId, int nKey);
+	bool GetTriggerKeyboard(int nId, int nKey);
 	int GetId(void) { return m_nId; }
+
+	static int ConvertDecimalToBinary(int nValue);
 
 private:
 	SOCKET createServerSocket(unsigned short port);

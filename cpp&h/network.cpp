@@ -8,6 +8,8 @@
 #include "manager.h"
 
 bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
+bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
+bool m_aKeyStateTrigger[MAX_PLAYER][NUM_KEY_M] = {};		// Trigger
 
 // ------------------------------------------
 // 静的メンバ変数
@@ -39,7 +41,18 @@ HRESULT CNetwork::Init(void)
 {
 	HRESULT hr;
 	hr = Build();					// ソケットの生成
+	char debug[256];
+
 	OutputDebugString("クライアント構築完了\n");
+
+	int ans = ConvertDecimalToBinary(100);
+	sprintf(debug, "ans = %d\n", ans);
+	OutputDebugString(debug);
+
+	ans = 100 & 15;
+	sprintf(debug, "ans = %d\n", ans);
+	OutputDebugString(debug);
+
 	return hr;
 }
 
@@ -84,12 +97,21 @@ void CNetwork::Update(void)
 		{
 			ConvertStringToFloat(cPlayerData[nCount], ",", fData);
 
-			m_aKeyState[nCount][NUM_KEY_W] = (int)fData[NUM_KEY_W];
-			m_aKeyState[nCount][NUM_KEY_A] = (int)fData[NUM_KEY_A];
-			m_aKeyState[nCount][NUM_KEY_S] = (int)fData[NUM_KEY_S];
-			m_aKeyState[nCount][NUM_KEY_D] = (int)fData[NUM_KEY_D];
-		}
+			for (int nCntkey = 0; nCntkey < NUM_KEY_M; nCntkey++)
+			{
+				m_aKeyStateOld[nCount][nCntkey] = m_aKeyState[nCount][nCntkey];
+			}
 
+			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
+			{
+				m_aKeyState[nCount][nCntKey] = (int)fData[nCntKey];
+			}
+
+			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
+			{
+				m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
+			}
+		}
 	}
 }
 
@@ -351,8 +373,8 @@ bool CNetwork::KeyData(void)
 	{
 		char data[1024];
 
-		sprintf(data, "SAVE_KEY %d %d %d %d %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D));
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE));
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
 	}
 
@@ -363,6 +385,11 @@ bool CNetwork::GetPressKeyboard(int nId, int nKey)
 {
 	//return(m_aKeyState[nId][nKey] & 0x80) ? true : false;
 	return m_aKeyState[nId][nKey];
+}
+
+bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
+{
+	return m_aKeyStateTrigger[nId][nKey];
 }
 
 // サーバーソケットを作成する
@@ -391,7 +418,7 @@ SOCKET CNetwork::createServerSocket(unsigned short port)
 //=============================================================================
 // 形式変換(float)関数
 //=============================================================================
-void CNetwork::ConvertStringToFloat(char* text,const char* delimiter, float* pResult)
+void CNetwork::ConvertStringToFloat(char* text, const char* delimiter, float* pResult)
 {
 	char* tp;
 	char* ctx;
@@ -404,4 +431,17 @@ void CNetwork::ConvertStringToFloat(char* text,const char* delimiter, float* pRe
 	{
 		pResult[nTemp++] = (float)atof(tp);
 	}
+}
+
+//=============================================================================
+// 2進数変換
+//=============================================================================
+int CNetwork::ConvertDecimalToBinary(int nValue) {
+	int ans = 0;
+	for (int nCount = 0; nValue > 0; nCount++)
+	{
+		ans = ans + (nValue % 2)*pow(10, nCount);
+		nValue = nValue / 2;
+	}
+	return ans;
 }
