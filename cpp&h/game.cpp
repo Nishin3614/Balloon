@@ -26,6 +26,7 @@
 #include "Extrusion.h"
 #include "3Dmap.h"
 #include "score.h"
+#include "network.h"
 
 #include "selectcharacter.h"
 
@@ -80,7 +81,7 @@ void CGame::Init(void)
 	m_state = STATE_NORMAL;
 	// キャラクターの総人数
 	CCharacter::InitStatic();
-	/* 作成 */	
+	/* 作成 */
 	// 3Dエフェクトの生成
 	C3DEffect::Create();
 	// 球の設定
@@ -130,6 +131,8 @@ void CGame::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Update(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
 	// ポーズ状態ならば
 	if (m_state == STATE_PAUSE)
 	{
@@ -177,6 +180,11 @@ void CGame::Update(void)
 				pFade->SetFade(CManager::MODE_GAME);
 			}
 		}
+	}
+
+	if (pNetwork != NULL)
+	{
+		pNetwork->Update();
 	}
 }
 

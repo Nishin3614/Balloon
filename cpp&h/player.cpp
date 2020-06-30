@@ -9,7 +9,7 @@
 #include "camera.h"
 #include "balloon.h"
 #include "ui.h"
-
+#include "network.h"
 
 #include "fade.h"
 
@@ -60,7 +60,7 @@ void CPlayer::Init(void)
 	// カメラの初期化
 	// カメラの注視点設定
 	CManager::GetRenderer()->GetCamera()->SetPosR(
-		CCharacter::GetPos() + D3DXVECTOR3(0.0f,D3DX_PI,0.0f),
+		CCharacter::GetPos() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
 		CCharacter::GetRot() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f)
 	);
 }
@@ -85,17 +85,17 @@ void CPlayer::Update(void)
 	{
 		// キャラクター自体のプレイヤー番号とコントロールしているプレイヤー番号が同じなら
 		// ->行動処理
-		if (m_nPlayerID == CManager::GetPlayerID())
+		//if (m_nPlayerID == CManager::GetPlayerID())
 		{
 			// 自キャラの行動処理
 			MyAction();
 		}
-		// それ以外のキャラクターの処理
-		else
-		{
-			// 他キャラの行動処理
-			OtherAction();
-		}
+		//// それ以外のキャラクターの処理
+		//else
+		//{
+		//	// 他キャラの行動処理
+		//	OtherAction();
+		//}
 	}
 	// キャラクター更新
 	CCharacter::Update();
@@ -115,6 +115,8 @@ void CPlayer::Update(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::MyAction(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
 	// 自キャラの移動処理
 	MyMove();
 	// 風船を膨らませる
@@ -123,8 +125,12 @@ void CPlayer::MyAction(void)
 		// 風船を生成する処理
 		BalloonCreate();
 	}
-	// カメラの処理
-	Camera();
+
+	if (m_nPlayerID == pNetwork->GetId())
+	{
+		// カメラの処理
+		Camera();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -136,10 +142,15 @@ void CPlayer::MyMove(void)
 	D3DXVECTOR3 move, rot;			// 移動量、回転
 	bool bMove = false;				// 移動状態
 	float fRot;						// 回転
+	int nId;
+
 	// 情報取得
 	rot = CCharacter::GetRotDest();								// 目的回転量
 	move = CCharacter::GetMove();								// 移動量
 	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	nId = pNetwork->GetId();
 
 	// 移動 //
 	/* ジョイパッド */
@@ -189,12 +200,12 @@ void CPlayer::MyMove(void)
 	}
 	/* キーボード */
 	// 左
-	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_A))
+	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
 	{
 		// 移動状態on
 		bMove = true;
 		// 奥
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_W))
+		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 		{
 			rot.y = -D3DX_PI * 0.25f + fRot;
 
@@ -202,7 +213,7 @@ void CPlayer::MyMove(void)
 			move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
 		}
 		// 手前
-		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_S))
+		else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
 		{
 			rot.y = -D3DX_PI * 0.75f + fRot;
 
@@ -218,13 +229,13 @@ void CPlayer::MyMove(void)
 		}
 	}
 	// 右
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_D))
+	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_D))
 	{
 		// 移動状態on
 		bMove = true;
 
 		// 奥
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_W))
+		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 		{
 			rot.y = D3DX_PI * 0.25f + fRot;
 
@@ -232,7 +243,7 @@ void CPlayer::MyMove(void)
 			move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
 		}
 		// 手前
-		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_S))
+		else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
 		{
 			rot.y = D3DX_PI * 0.75f + fRot;
 
@@ -249,7 +260,7 @@ void CPlayer::MyMove(void)
 		}
 	}
 	// 奥に行く
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_W))
+	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 	{
 		// 移動状態on
 		bMove = true;
@@ -258,7 +269,7 @@ void CPlayer::MyMove(void)
 		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
 	// 手前に行く
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_S))
+	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
 	{
 		// 移動状態on
 		bMove = true;
@@ -270,7 +281,7 @@ void CPlayer::MyMove(void)
 	if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
 	{
 		// 宙に浮く
-		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_JUMP))
+		if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
 		{
 			move.y += CCharacter::GetStatus().fMaxJump;
 		}
@@ -516,9 +527,7 @@ void CPlayer::Scene_Collision(int const & nObjType, CScene * pScene)
 //-------------------------------------------------------------------------------------------------------------
 void CPlayer::Debug(void)
 {
-	/*
-	CDebugproc::Print("-----プレイヤー番号[%d]-----\n",m_nPlayerID);
-	*/
+	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter::Debug();
 }

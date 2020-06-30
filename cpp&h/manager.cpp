@@ -144,26 +144,14 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 		m_renderer = NULL;
 		return E_FAIL;
 	}
-	//// ネットワーク
-	//if (!m_pNetwork->Init(hInstance, hWnd) == S_OK)
-	//{
-	//	m_renderer->Uninit();
-	//	delete m_renderer;
-	//	m_renderer = NULL;
-	//	return E_FAIL;
-	//}
-
-	//if (m_pNetwork != NULL)
-	//{
-	//	m_pNetwork->Connect();
-	//	m_pNetwork->Update();
-	//}
-
-
-
-
-	// プレイヤー番号の設定
-	m_nPlayerID;
+	// ネットワーク
+	if (!m_pNetwork->Init() == S_OK)
+	{
+		m_renderer->Uninit();
+		delete m_renderer;
+		m_renderer = NULL;
+		return E_FAIL;
+	}
 
 	// カメラなどの設定
 	// どのプレイヤー番号を追尾するか

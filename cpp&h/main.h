@@ -15,6 +15,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _CRTDBG_MAP_ALLOC
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <Windows.h>	// ウィンドウアプリケーション
 #include "d3dx9.h"
 /* C言語のライブラリ */

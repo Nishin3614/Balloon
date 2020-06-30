@@ -11,6 +11,7 @@
 #include "scene.h"
 #include "manager.h"
 #include "ui.h"
+#include "network.h"
 
 //=============================================================================
 //
@@ -61,8 +62,9 @@ void CTitle::Uninit(void)
 //
 //=============================================================================
 void CTitle::Update(void)
-{	
+{
 	CFade *pFade = CManager::GetFade();
+	CNetwork *pNetwork = CManager::GetNetwork();
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
@@ -70,11 +72,16 @@ void CTitle::Update(void)
 		// ゲームへ遷移
 		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
 		{
-
-			if (pFade->GetFade() == CFade::FADE_NONE)
+			if (pNetwork != NULL)
 			{
-				// チュートリアルへ
-				pFade->SetFade(CManager::MODE_TUTORIAL);
+				if (pNetwork->Connect() == S_OK)
+				{
+					if (pFade->GetFade() == CFade::FADE_NONE)
+					{
+						// チュートリアルへ
+						pFade->SetFade(CManager::MODE_TUTORIAL);
+					}
+				}
 			}
 		}
 	}
@@ -86,7 +93,7 @@ void CTitle::Update(void)
 //
 //=============================================================================
 void CTitle::Draw(void)
-{	
+{
 
 }
 
