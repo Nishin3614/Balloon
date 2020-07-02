@@ -200,7 +200,7 @@ CDebugcollision * CDebugcollision::Create(
 	// ƒƒ‚ƒŠŠm•Û
 	pDebugcollision = new CDebugcollision;
 	// ƒV[ƒ“ŠÇ—Ý’è
-	pDebugcollision->ManageSetting(CScene::LAYER_3DOBJECT);
+	//pDebugcollision->ManageSetting(CScene::LAYER_3DOBJECT);
 	// Ý’è
 	pDebugcollision->m_ppos = pos;
 	pDebugcollision->m_size = size;

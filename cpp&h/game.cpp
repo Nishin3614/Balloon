@@ -218,7 +218,7 @@ void CGame::PauseState(void)
 		// 更新を止める
 		CScene::UpdateStop(true);
 		// メニュー音
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_MENU);
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 	}
 }
 
