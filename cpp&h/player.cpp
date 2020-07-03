@@ -508,7 +508,7 @@ void CPlayer::Die(void)
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
 			// チュートリアルへ
-			CManager::GetFade()->SetFade(CManager::MODE_TITLE);
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
 	}
 }
@@ -527,6 +527,13 @@ void CPlayer::Scene_Collision(int const & nObjType, CScene * pScene)
 //-------------------------------------------------------------------------------------------------------------
 void CPlayer::Debug(void)
 {
+	if (m_nPlayerID == 0)
+	{
+		if(CManager::GetKeyboard()->GetKeyboardTrigger(DIK_R))
+		{
+			CCharacter::SetPos(D3DVECTOR3_ZERO);
+		}
+	}
 	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter::Debug();

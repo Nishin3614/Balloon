@@ -53,8 +53,10 @@ void CSphereCollision::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSphereCollision::Debug(void)
 {
+	/*
 	CDebugproc::Print("----------‹…‚Ì“–‚½‚è”»’èî•ñ----------\n");
 	CDebugproc::Print("”¼Œa(%.1f)\n", m_pSphereShape->GetRadius());
+	*/
 	CCollision::Debug();
 }
 #endif // _DEBUG

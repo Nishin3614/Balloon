@@ -473,9 +473,7 @@ void CCharacter::Move(void)
 	if (m_nMotiontype != MOTIONTYPE_STANDUP)
 	{
 		// 位置情報更新
-		m_pos.x += m_move.x;
-		m_pos.z += m_move.z;
-		m_pos.y += m_move.y;
+		m_pos += m_move;
 	}
 	Limit();
 
@@ -863,7 +861,7 @@ void CCharacter::Die(void)
 	{
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
-			CManager::GetFade()->SetFade(CManager::MODE_TITLE);
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
 	}
 }
@@ -881,6 +879,7 @@ void CCharacter::Scene_Collision(
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
+		/*
 		// シーン情報がNULLなら
 		// ->関数を抜ける
 		if (pScene == NULL)
@@ -905,8 +904,8 @@ void CCharacter::Scene_Collision(
 		rot.y = (atan2f(diffpos.x, diffpos.z));
 		m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 		m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+		*/
 
-		/*
 		// 変数宣言
 		D3DXVECTOR3 RefVecA;
 		D3DXVECTOR3 RefVecB;
@@ -916,20 +915,19 @@ void CCharacter::Scene_Collision(
 		// 今回の当たり判定とプレイヤーの位置ポインター管理
 		// 衝突後の速度計算処理
 		CCalculation::SquarColiAfterVec(
-		m_pos,
-		m_move,
-		*pCharacterPos,
-		*pCharacterMove,
-		1,
-		1,
-		0.5f,
-		0.5f,
-		RefVecA,
-		RefVecB
+			m_pos,
+			m_move,
+			*pCharacterPos,
+			*pCharacterMove,
+			1,
+			1,
+			0.8f,
+			0.8f,
+			RefVecA,
+			RefVecB
 		);
 		m_move += RefVecA;
 		*pCharacterMove += RefVecB;
-		*/
 		// 死亡処理
 		BalloonNone();
 	}
@@ -1265,7 +1263,6 @@ void CCharacter::InitStatic(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Debug(void)
 {
-	/*
 	CDebugproc::Print("キャラクタータイプ[%d]\n", m_character);
 	CDebugproc::Print("位置[%.1f,%.1f,%.1f]\n",
 		m_pos.x,
@@ -1277,7 +1274,6 @@ void CCharacter::Debug(void)
 		m_move.y,
 		m_move.z
 	);
-	*/
 	// キャラクターの当たり判定がNULLではないなら
 	// デバッグ処理
 	if (m_pCharacterCollision != NULL)

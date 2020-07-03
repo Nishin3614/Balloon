@@ -71,6 +71,7 @@ void CCollision::Debug(void)
 	{
 		posold = GetShape()->Get_Posold();
 	}
+	/*
 	CDebugproc::Print("ˆÊ’uî•ñ(%.1f,%.1f,%.1f)\n",
 		pos.x,
 		pos.y,
@@ -81,7 +82,7 @@ void CCollision::Debug(void)
 		posold.y,
 		posold.z
 	);
-
+	*/
 }
 
 #endif // _DEBUG
@@ -315,7 +316,7 @@ bool CCollision::RectAndRect(
 					pRectShapeA->GetPush())
 				{
 					// ‘fŞó‚Ì¶‚É
-					pos_A->x = min_B.x - pRectShapeA->GetSize().x * 0.5f;
+					pos_A->x = min_B.x - pRectShapeA->GetSize().x * 0.6f;
 				}
 				// ÚG‚µ‚Ä‚¢‚é‚Æ‚«‚Ítrue‚ğ•Ô‚·
 				bCollision = true;
@@ -332,7 +333,7 @@ bool CCollision::RectAndRect(
 					pRectShapeA->GetPush())
 				{
 					// ‘fŞó‚Ì¶‚É
-					pos_A->x = max_B.x + pRectShapeA->GetSize().x * 0.5f;
+					pos_A->x = max_B.x + pRectShapeA->GetSize().x * 0.6f;
 				}
 				// ÚG‚µ‚Ä‚¢‚é‚Æ‚«‚Ítrue‚ğ•Ô‚·
 				bCollision = true;
@@ -353,7 +354,7 @@ bool CCollision::RectAndRect(
 					pRectShapeA->GetPush())
 				{
 					// ‘fŞó‚Ì¶‚É
-					pos_A->z = min_B.z - pRectShapeA->GetSize().z * 0.5f;
+					pos_A->z = min_B.z - pRectShapeA->GetSize().z * 0.6f;
 				}
 				// ÚG‚µ‚Ä‚¢‚é‚Æ‚«‚Ítrue‚ğ•Ô‚·
 				bCollision = true;
@@ -371,7 +372,7 @@ bool CCollision::RectAndRect(
 				{
 					// ‘fŞó‚Ì¶‚É
 					pos_A->z = max_B.z +
-						pRectShapeA->GetSize().z * 0.5f;
+						pRectShapeA->GetSize().z * 0.6f;
 				}
 				// ÚG‚µ‚Ä‚¢‚é‚Æ‚«‚Ítrue‚ğ•Ô‚·
 				bCollision = true;

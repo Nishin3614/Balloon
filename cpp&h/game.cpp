@@ -163,7 +163,7 @@ void CGame::Update(void)
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// ƒŠƒUƒ‹ƒg‚Ö
-				pFade->SetFade(CManager::MODE_RESULT);
+				pFade->SetFade(CManager::MODE_TUTORIAL);
 			}
 		}
 	}

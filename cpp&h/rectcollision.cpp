@@ -65,6 +65,7 @@ void CRectCollision::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CRectCollision::Debug(void)
 {
+	/*
 	CDebugproc::Print("----------‹éŒ`‚Ì“–‚½‚è”»’èî•ñ----------\n");
 	CDebugproc::Print("Å‘åÀ•W(%.1f,%.1f,%.1f)\n", 
 		m_pRectShape->GetMax().x,
@@ -76,6 +77,7 @@ void CRectCollision::Debug(void)
 		m_pRectShape->GetMin().y,
 		m_pRectShape->GetMin().z
 		);
+		*/
 	CCollision::Debug();
 }
 #endif // _DEBUG
