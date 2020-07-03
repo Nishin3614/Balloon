@@ -27,6 +27,7 @@
 #include "3Dmap.h"
 #include "score.h"
 #include "network.h"
+#include "item.h"
 
 #include "selectcharacter.h"
 
@@ -91,6 +92,8 @@ void CGame::Init(void)
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_1);
 	// プレイヤー生成
 	PlayerCreate();
+	// アイテム生成
+	CItem::Create(D3DXVECTOR3(0.0f, 500.0f, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	// スコア生成
 	m_pScore = CScore::Create();
 	// ポーズの生成
