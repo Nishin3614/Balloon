@@ -26,14 +26,14 @@
 // クラス
 //
 // ------------------------------------------
-class CDebugcollision : public CScene
+class CDebugcollision
 {
 public:
 	/* 列挙型 */
 	typedef enum
 	{
-		COLLISIONTYPE_BOX = 0,
-		COLLISIONTYPE_CICLE,
+		COLLISIONTYPE_RECT = 0,
+		COLLISIONTYPE_SPHERE,
 		COLLISIONTYPE_MAX
 	} COLLISIONTYPE;
 
@@ -42,35 +42,19 @@ public:
 	~CDebugcollision();
 
 	void Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-#ifdef _DEBUG
-	void Debug(void);
-#endif // _DEBUG
-	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
-		int const &nObjType = 0,	// オブジェクトタイプ
-		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
-	// ポインター位置情報を取得
-	D3DXVECTOR3 * Scene_GetPPos(void) { return m_ppos; };
-	// ポインター過去の位置情報を取得
-	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
-	// ポインター移動量情報の取得
-	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
-	static CDebugcollision * Create(
+	static void Create_Rect(
 		D3DXVECTOR3 * pos,
-		D3DXVECTOR3 * size,
-		COLLISIONTYPE type
+		D3DXVECTOR3 const &size
+	);	
+	static void Create_Sphere(
+		D3DXVECTOR3 * pos,
+		float const fRadius
 	);
+
 protected:
 
 private:
-	void BoxCollision(void);
+	//void BoxCollision(void);
 
 
 	D3DXVECTOR3 * m_ppos;

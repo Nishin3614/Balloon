@@ -35,11 +35,11 @@
 // ----------------------------------------
 // コンストラクタ処理
 // ----------------------------------------
-CDebugcollision::CDebugcollision() : CScene::CScene()
+CDebugcollision::CDebugcollision()
 {
 	m_ppos = NULL;
 	m_size = NULL;
-	m_type = COLLISIONTYPE_BOX;
+	m_type = COLLISIONTYPE_RECT;
 }
 
 // ----------------------------------------
@@ -56,8 +56,7 @@ void CDebugcollision::Init(void)
 {
 	switch (m_type)
 	{
-	case COLLISIONTYPE_BOX:
-		BoxCollision();
+	case COLLISIONTYPE_RECT:
 		break;
 	default:
 		break;
@@ -65,148 +64,114 @@ void CDebugcollision::Init(void)
 }
 
 // ----------------------------------------
-// 箱の当たり判定処理
+// 矩形の当たり判定可視化生成
 // ----------------------------------------
-void CDebugcollision::BoxCollision(void)
+void CDebugcollision::Create_Rect(
+	D3DXVECTOR3 * pos,
+	D3DXVECTOR3 const &size
+)
 {
+	// やること
+	// 判定のやつとコネクトさせる
+
+
+
+
+
 	// 1つ目
 	C3DLine::Create(
-		m_ppos,
-		D3DXVECTOR3(0.0f,0.0f,0.0f),
-		D3DXVECTOR3(-m_size->x * 0.5f, m_size->y * 0.5f,-m_size->z * 0.5f),
-		D3DXVECTOR3(m_size->x * 0.5f, m_size->y * 0.5f, -m_size->z * 0.5f)
+		pos,
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		D3DXVECTOR3(-size.x * 0.5f, size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(size.x * 0.5f, size.y * 0.5f, -size.z * 0.5f)
 	);
 	// 2つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(m_size->x * 0.5f, m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(m_size->x * 0.5f, -m_size->y * 0.5f, -m_size->z * 0.5f)
+		D3DXVECTOR3(size.x * 0.5f, size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(size.x * 0.5f, -size.y * 0.5f, -size.z * 0.5f)
 	);
 	// 3つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(m_size->x * 0.5f, -m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(-m_size->x * 0.5f, -m_size->y * 0.5f, -m_size->z * 0.5f)
+		D3DXVECTOR3(size.x * 0.5f, -size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, -size.z * 0.5f)
 	);
 	// 4つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(-m_size->x * 0.5f, -m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(-m_size->x * 0.5f, m_size->y * 0.5f, -m_size->z * 0.5f)
+		D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(-size.x * 0.5f, size.y * 0.5f, -size.z * 0.5f)
 	);
 	// 5つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(-m_size->x * 0.5f, m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(-m_size->x * 0.5f, m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(-size.x * 0.5f, size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(-size.x * 0.5f, size.y * 0.5f, size.z * 0.5f)
 	);
 	// 6つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(m_size->x * 0.5f, m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(m_size->x * 0.5f, m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(size.x * 0.5f, size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f)
 	);
 	// 7つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(m_size->x * 0.5f, -m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(m_size->x * 0.5f, -m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(size.x * 0.5f, -size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(size.x * 0.5f, -size.y * 0.5f, size.z * 0.5f)
 	);
 	// 8つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(-m_size->x * 0.5f, -m_size->y * 0.5f, -m_size->z * 0.5f),
-		D3DXVECTOR3(-m_size->x * 0.5f, -m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, -size.z * 0.5f),
+		D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, size.z * 0.5f)
 	);
 	// 9つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(-m_size->x * 0.5f, m_size->y * 0.5f, m_size->z * 0.5f),
-		D3DXVECTOR3(m_size->x * 0.5f, m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(-size.x * 0.5f, size.y * 0.5f, size.z * 0.5f),
+		D3DXVECTOR3(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f)
 	);
 	// 10つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(m_size->x * 0.5f, m_size->y * 0.5f, m_size->z * 0.5f),
-		D3DXVECTOR3(m_size->x * 0.5f, -m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(size.x * 0.5f, size.y * 0.5f, size.z * 0.5f),
+		D3DXVECTOR3(size.x * 0.5f, -size.y * 0.5f, size.z * 0.5f)
 	);
 	// 11つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(m_size->x * 0.5f, -m_size->y * 0.5f, m_size->z * 0.5f),
-		D3DXVECTOR3(-m_size->x * 0.5f, -m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(size.x * 0.5f, -size.y * 0.5f, size.z * 0.5f),
+		D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, size.z * 0.5f)
 	);
 	// 12つ目
 	C3DLine::Create(
-		m_ppos,
+		pos,
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		D3DXVECTOR3(-m_size->x * 0.5f, -m_size->y * 0.5f, m_size->z * 0.5f),
-		D3DXVECTOR3(-m_size->x * 0.5f, m_size->y * 0.5f, m_size->z * 0.5f)
+		D3DXVECTOR3(-size.x * 0.5f, -size.y * 0.5f, size.z * 0.5f),
+		D3DXVECTOR3(-size.x * 0.5f, size.y * 0.5f, size.z * 0.5f)
 	);
-
 }
 
 // ----------------------------------------
-// 終了処理
+// 球の当たり判定可視化生成
 // ----------------------------------------
-void CDebugcollision::Uninit(void)
-{
-}
-
-// ----------------------------------------
-// 更新処理
-// ----------------------------------------
-void CDebugcollision::Update(void)
-{
-}
-
-// ----------------------------------------
-// 描画処理
-// ----------------------------------------
-void CDebugcollision::Draw(void)
-{
-}
-
-#ifdef _DEBUG
-//-------------------------------------------------------------------------------------------------------------
-// デバッグ表示
-//-------------------------------------------------------------------------------------------------------------
-void CDebugcollision::Debug(void)
-{
-}
-#endif // _DEBUG
-
-// ----------------------------------------
-// 生成処理
-// ----------------------------------------
-CDebugcollision * CDebugcollision::Create(
+void CDebugcollision::Create_Sphere(
 	D3DXVECTOR3 * pos,
-	D3DXVECTOR3 * size,
-	COLLISIONTYPE type
+	float const fRadius
 )
 {
-	// 変数宣言
-	CDebugcollision * pDebugcollision;	// デバッグ当たり判定
-	// メモリ確保
-	pDebugcollision = new CDebugcollision;
-	// シーン管理設定
-	//pDebugcollision->ManageSetting(CScene::LAYER_3DOBJECT);
-	// 設定
-	pDebugcollision->m_ppos = pos;
-	pDebugcollision->m_size = size;
-	pDebugcollision->m_type = type;
-	// 初期化
-	pDebugcollision->Init();
-	// 返す
-	return pDebugcollision;
+
+	
 }

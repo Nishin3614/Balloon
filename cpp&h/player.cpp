@@ -277,13 +277,16 @@ void CPlayer::MyMove(void)
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
-	// 出現している風船の数が0以外なら
-	if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
+	// 風船がNULLではないなら
+	if (CCharacter::GetBalloon() != NULL)
 	{
-		// 宙に浮く
-		if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+		if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
 		{
-			move.y += CCharacter::GetStatus().fMaxJump;
+			// 宙に浮く
+			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+			{
+				move.y += CCharacter::GetStatus().fMaxJump;
+			}
 		}
 	}
 	// 移動状態なら

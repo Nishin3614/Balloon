@@ -55,7 +55,7 @@ void CItem::Init(void)
 	CScene_THREE::SetCol(D3DXCOLOR_CA(1.0f, 1.0f));
 	// シーン3Dの初期化
 	CScene_THREE::Init();
-	CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this, false, &m_pos);
+	CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this,NULL, false, &m_pos);
 	// ビルボード
 	CScene_THREE::SetBillboard(true);
 	CScene_THREE::SetLighting(true);		// ライティング
@@ -126,7 +126,7 @@ CItem *CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// シーン初期化
 	m_pItem->Init();
 
-	m_pItem->ManageSetting(LAYER_3DOBJECT);
+	m_pItem->ManageSetting(LAYER_3DOBJECT2);
 
 	// 値を返す
 	return m_pItem;
@@ -154,6 +154,20 @@ void CItem::Unload(void)
 	{
 		m_pTex->Release();
 		m_pTex = NULL;
+	}
+}
+
+// ==========================================================
+// 当たった後の処理
+// 引数1:オブジェクトタイプ
+// 引数2:相手のシーン情報
+// ==========================================================
+void CItem::Scene_Collision(int const & nObjType, CScene * pScene)
+{
+	// オブジェクトタイプがキャラクターなら
+	if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	{
+		Release();
 	}
 }
 

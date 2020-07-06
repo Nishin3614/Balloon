@@ -62,7 +62,7 @@ void CSelect::Init(void)
 	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
 		10000.0f);
 	// 3Dマップ生成
-	C3DMap::LoadCreate(C3DMap::MAP_STAGE_1);
+	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
 	// 選択キャラクターの生成
 	// もし、キャラ選択決定した後に全プレイヤーの
 	CSelectCharacter::Create(

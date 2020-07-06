@@ -75,5 +75,6 @@ private:
 	/* •Ï” */
 	static int m_nAllNum;		// Œ»İ‘¶İ‚µ‚Ä‚¢‚é”
 	static int m_nKoCount;		// “|‚µ‚½”
+	int m_nID;					// ”Ô†
 };
 #endif

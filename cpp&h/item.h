@@ -31,7 +31,13 @@ public:
 	void Uninit(void);										// 終了
 	void Update(void);										// 更新
 	void Draw(void);										// 描画
-
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_Collision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
 	bool ItemCollision(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pVtxMax, D3DXVECTOR3 *pVtxMin);				// 弾の当たり判定
 
 	static CItem *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成

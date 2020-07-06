@@ -57,7 +57,6 @@ void CSelectCharacter::Init(void)
 	m_pThunder = CP_thunder::Create_Self(m_PlayerID, m_pos);
 	// プレイヤー(ゾンビ)
 	m_pZombie = CP_zombie::Create_Self(m_PlayerID, m_pos);
-
 	// 選択UI生成
 	m_pSelectUi = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,

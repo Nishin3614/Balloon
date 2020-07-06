@@ -97,6 +97,7 @@ public:
 		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
 		OBJTYPE const &obj = OBJTYPE_ACTOR,
 		CScene * pScene = NULL,
+		CScene * pParent = NULL,
 		bool const &bPush = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL
@@ -107,6 +108,7 @@ public:
 		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
 		OBJTYPE const &obj = OBJTYPE_ACTOR,
 		CScene * pScene = NULL,
+		CScene * pParent = NULL,
 		bool const &bPush = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL

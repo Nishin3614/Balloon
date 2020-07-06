@@ -100,7 +100,8 @@ CSphereCollision *CSphereCollision::Create(
 	float const &fRadius,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
-	CScene * pScene,
+	CScene * pOwner,
+	CScene * pParent,
 	bool const &bPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
@@ -113,7 +114,8 @@ CSphereCollision *CSphereCollision::Create(
 	// 球の設定
 	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush, pPos,pPosold));	// 球の形を生成
 	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
-	pSphereCollision->SetOwnScene(pScene);
+	pSphereCollision->SetOwnScene(pOwner);
+	pSphereCollision->SetParent(pParent);
 	// シーン管理設定
 	pSphereCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pSphereCollision;
@@ -126,7 +128,8 @@ unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 	float const &fRadius,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
-	CScene * pScene,
+	CScene * pOwner,
+	CScene * pParent,
 	bool const &bPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
@@ -136,7 +139,8 @@ unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 	unique_ptr<CSphereCollision> pSphereCollision(new CSphereCollision);
 	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush, pPos,pPosold));	// 球の形を生成
 	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
-	pSphereCollision->SetOwnScene(pScene);
+	pSphereCollision->SetOwnScene(pOwner);
+	pSphereCollision->SetParent(pParent);
 
 	return pSphereCollision;
 }

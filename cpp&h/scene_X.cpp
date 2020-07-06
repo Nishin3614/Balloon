@@ -115,6 +115,8 @@ void CScene_X::Uninit(void)
 	// 当たり判定情報の開放
 	if (m_Collision != NULL)
 	{
+		m_Collision->CompulsionScene();
+		m_Collision->Release();
 		m_Collision = NULL;
 	}
 }
@@ -251,6 +253,20 @@ void CScene_X::Debug(void)
 #endif // _DEBUG
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// あたり判定を強制的に削除
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_X::CollisionDelete(void)
+{
+	// 当たり判定情報の開放
+	if (m_Collision != NULL)
+	{
+		m_Collision->CompulsionScene();
+		m_Collision->Release();
+		m_Collision = NULL;
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(シーン管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CScene_X * CScene_X::Create(
@@ -372,6 +388,8 @@ HRESULT CScene_X::LoadModel(void)
 			default:
 				break;
 			}
+			// モデル読み込み変数の初期化
+			pModelLoad.reset();
 		}
 	}
 	return S_OK;
@@ -408,6 +426,8 @@ HRESULT CScene_X::UnLoadModel(void)
 				m_pModelLoad[nCntModel]->vec_pTexture[nCntTex] = NULL;
 			}
 		}
+		// モデル読み込み変数の初期化
+		m_pModelLoad[nCntModel].reset();
 	}
 	return S_OK;
 }
@@ -512,7 +532,8 @@ void CScene_X::SetCollision(void)
 void CScene_X::SetCollision(
 	int const & nShapeType,
 	int const &obj,
-	bool const &bPush
+	bool const &bPush,
+	CScene * pParent
 )
 {
 	// 当たり判定がNULLではないなら
@@ -535,6 +556,7 @@ void CScene_X::SetCollision(
 			D3DVECTOR3_ZERO,
 			(CCollision::OBJTYPE)obj,
 			this,
+			pParent,
 			bPush
 		);
 		// 位置情報の更新(行列渡し)
@@ -548,6 +570,7 @@ void CScene_X::SetCollision(
 			D3DVECTOR3_ZERO,
 			(CCollision::OBJTYPE)obj,
 			this,
+			pParent,
 			bPush
 		);
 		// 位置情報の更新(行列渡し)
@@ -562,6 +585,7 @@ void CScene_X::SetCollision(
 			D3DVECTOR3_ZERO,
 			(CCollision::OBJTYPE)obj,
 			this,
+			pParent,
 			bPush
 		);
 		// 位置情報の更新(行列渡し)

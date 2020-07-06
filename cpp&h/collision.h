@@ -109,6 +109,7 @@ public:
 	virtual bool Judg(CColumnShape * const ColumnShape) = 0;
 	// 形を取得
 	virtual CShape * const GetShape(void) = 0;
+
 	// 形クラスの当たり判定
 	bool SelectShape(CShape * const shape);
 	// 当たり判定同士の判定(指定)
@@ -131,9 +132,15 @@ public:
 	// 自分のオブジェクト番号設定
 	void SetObjectID(OBJTYPE const &obj) { m_nMyObjectId = obj; };
 	// あたり判定を所有しているシーン情報取得
-	CScene * GetOwnScene(void) { return m_pScene; };
+	CScene * GetOwnScene(void) { return m_pOwner; };
 	// あたり判定を所有しているシーン情報設定
-	void SetOwnScene(CScene * pScene) { m_pScene = pScene; };
+	void SetOwnScene(CScene * pScene) { m_pOwner = pScene; };
+	// // あたり判定を所有しているオブジェクトの親情報取得
+	CScene * GetParent(void) { return m_pParent; };
+	// // あたり判定を所有しているオブジェクトの親情報設定
+	void SetParent(CScene * pParent) { m_pParent = pParent; };
+	// あたり判定を所有しているシーン情報を強制NULL代入
+	void CompulsionScene(void);
 	// 矩形と矩形の当たり判定
 	// pRectShapeA:矩形A
 	// pRectShapeB:矩形B
@@ -194,7 +201,8 @@ private:
 	bool m_bCollision;						// 当たり判定状態
 	int m_nMyObjectId;						// オブジェクト番号
 	int m_nOponentId;						// 当たった時の相手
-	CScene * m_pScene;						// あたり判定を所有しているシーン情報
+	CScene * m_pOwner;						// あたり判定を所有しているシーン情報
+	CScene * m_pParent;						// あたり判定を所有しているオブジェクトの親情報
 };
 
 // ----------------------------------------------------------------------------------------------------
