@@ -4,7 +4,6 @@
 // Author : Koki Nishiyama
 //
 // ------------------------------------------
-
 #ifndef _MAIN_H_
 #define _MAIN_H_	 // ファイル名を基準を決める
 
@@ -30,6 +29,7 @@
 #include <tchar.h>
 #include <vector>		// 動的配列ヘッダー
 #include <memory>		// メモリヘッダー
+#include <future>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_dx9.h"

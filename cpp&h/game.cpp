@@ -75,6 +75,8 @@ CGame::~CGame()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Init(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
 	// カメラのタイプ設定
 	CManager::GetRenderer()->GetCamera()->SetType(CCamera::TYPE_FOLLOW);
 	/* 初期化 */
@@ -100,6 +102,12 @@ void CGame::Init(void)
 	m_pause = new CPause();
 	// ポーズの初期化
 	m_pause->Init();
+
+	char data[64];
+	memset(&data, 0, sizeof(data));
+	sprintf(data, "SETPLAY 1");
+
+	pNetwork->SendTCP(data, sizeof(data));
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -107,6 +115,14 @@ void CGame::Init(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Uninit(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	char data[64];
+	memset(&data, 0, sizeof(data));
+	sprintf(data, "SETPLAY 0");
+
+	pNetwork->SendTCP(data, sizeof(data));
+
 	// ポーズ
 	if (m_pause != NULL)
 	{

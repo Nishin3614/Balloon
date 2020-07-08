@@ -89,13 +89,13 @@ private:
 	SOCKET createServerSocket(unsigned short port);
 	static void ConvertStringToFloat(char* text,const char* delimiter, float* pResult);
 
-	SOCKET m_sockClient;								//ソケット(クライアント)
-	SOCKET m_sockClientToServer;						// ソケットキー情報
-	SOCKET m_sockServerToClient;						// ソケットキー情報
+	SOCKET m_sockClient;								// ソケット(クライアント)
+	SOCKET m_sockClientToServer;						// ソケット(UDP送信用)
+	SOCKET m_sockServerToClient;						// ソケット(UDP受信用)
 
-	struct sockaddr_in m_addrServer;					//ソケットアドレス(サーバ)の情報
-	struct sockaddr_in m_addrClientToServer;			// キー送信用ソケット
-	struct sockaddr_in m_addrServerToClient;			// キー送信用ソケット
+	struct sockaddr_in m_addrServer;					// ソケットアドレス(サーバ)の情報(TCP送受信)
+	struct sockaddr_in m_addrClientToServer;			// キー送信用ソケット(UDP送信用)
+	struct sockaddr_in m_addrServerToClient;			// キー送信用ソケット(UDP受信用)
 
 	PLAYERSTATE keystate;
 	fd_set m_readfds;
