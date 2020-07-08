@@ -775,6 +775,12 @@ bool CCalculation::SquarColiAfterVec(
 	// 衝突後速度ベクトル
 	pOut_Vec_A = -fWeight_B * ConstVec + ColliVec_A;
 	pOut_Vec_B = fWeight_A * ConstVec + ColliVec_B;
+	if (pOut_Vec_A.x > 1000.0f ||
+		pOut_Vec_A.y > 1000.0f ||
+		pOut_Vec_A.z > 1000.0f)
+	{
+		return false;
+	}
 	return true;
 }
 

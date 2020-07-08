@@ -11,6 +11,7 @@
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "RectCollision.h"
+#include "debugcollision.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -43,7 +44,10 @@ CRectCollision::CRectCollision() : CCollision::CCollision()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CRectCollision::Init(void)
 {
-
+#ifdef _DEBUG
+	// 矩形のデバッグ表示
+	CDebugcollision::Create_Rect(m_pRectShape->Get_PPos(),m_pRectShape->GetSize());
+#endif // _DEBUG
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -61,6 +65,7 @@ void CRectCollision::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CRectCollision::Debug(void)
 {
+	/*
 	CDebugproc::Print("----------矩形の当たり判定情報----------\n");
 	CDebugproc::Print("最大座標(%.1f,%.1f,%.1f)\n", 
 		m_pRectShape->GetMax().x,
@@ -72,6 +77,7 @@ void CRectCollision::Debug(void)
 		m_pRectShape->GetMin().y,
 		m_pRectShape->GetMin().z
 		);
+		*/
 	CCollision::Debug();
 }
 #endif // _DEBUG
@@ -118,7 +124,8 @@ CRectCollision *CRectCollision::Create(
 	D3DXVECTOR3 const size,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
-	CScene * pScene,
+	CScene * pOwner,
+	CScene * pParent,
 	bool const &bPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
@@ -131,7 +138,8 @@ CRectCollision *CRectCollision::Create(
 	// 矩形の設定
 	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush, pPos, pPosold));
 	pRectCollision->SetObjectID(obj);											
-	pRectCollision->SetOwnScene(pScene);
+	pRectCollision->SetOwnScene(pOwner);
+	pRectCollision->SetParent(pParent);
 	// シーン管理設定
 	pRectCollision->ManageSetting(CScene::LAYER_COLLISION);
 	// 初期化処理
@@ -147,7 +155,8 @@ unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	D3DXVECTOR3 const size,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
-	CScene * pScene,
+	CScene * pOwner,
+	CScene * pParent,
 	bool const &bPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
@@ -158,7 +167,8 @@ unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	// 矩形の設定
 	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush,pPos,pPosold));
 	pRectCollision->SetObjectID(obj);											
-	pRectCollision->SetOwnScene(pScene);
+	pRectCollision->SetOwnScene(pOwner);
+	pRectCollision->SetParent(pParent);
 	// 初期化処理
 	pRectCollision->Init();
 	return pRectCollision;

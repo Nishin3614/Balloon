@@ -26,6 +26,7 @@ int CSolider::m_nKoCount = 0;		// 倒した数
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CSolider::CSolider() : CEnemy::CEnemy(CHARACTER_NPC)
 {
+	m_nID = m_nAllNum;
 	// 総数アっプ
 	m_nAllNum++;
 }
@@ -114,12 +115,12 @@ CSolider * CSolider::Create(
 	pSolider = new CSolider();
 	// シーン管理設定
 	pSolider->ManageSetting(CScene::LAYER_CHARACTER);
-	// 初期化処理
-	pSolider->Init();
 	// 位置設定
 	pSolider->SetPos(pos);
 	// 回転設定
 	pSolider->SetRot(rot);
+	// 初期化処理
+	pSolider->Init();
 	// 生成したオブジェクトを返す
 	return pSolider;
 }

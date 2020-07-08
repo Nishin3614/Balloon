@@ -37,6 +37,8 @@
 CCollision::CCollision() : CScene::CScene()
 {
 	// 初期化
+	m_pOwner = NULL;
+	m_pParent = NULL;
 	m_bCollision = false;
 	m_nMyObjectId = 0;
 	m_nOponentId = -1;
@@ -81,7 +83,6 @@ void CCollision::Debug(void)
 		posold.y,
 		posold.z
 	);
-
 }
 
 #endif // _DEBUG
@@ -116,6 +117,24 @@ bool CCollision::CollisionDetection(CCollision * collision)
 	{
 		return false;
 	}
+	// 引数の当たり判定が自分のあたり判定なら
+	// ->関数を抜ける
+	if (this == collision)
+	{
+		return false;
+	}
+	// NULLチェック
+	if (this->m_pOwner != NULL ||
+		collision->m_pParent != NULL)
+	{
+		// 引数の当たり判定の親情報と自分の所有者が同一の場合
+		// ->関数を抜ける
+		if (this->m_pOwner == collision->m_pParent)
+		{
+			return false;
+		}
+	}
+	// ->関数を抜ける
 	// 変数宣言
 	bool bJudg = false;	// 当たり判定状態
 	// クラス型比較 //
@@ -144,15 +163,15 @@ bool CCollision::CollisionDetection(CCollision * collision)
 		collision->m_nOponentId = m_nMyObjectId;
 		// シーン情報がNULLではないなら
 		// ->当たった後の処理を行う
-		if (m_pScene != NULL)
+		if (m_pOwner != NULL)
 		{
-			m_pScene->Scene_Collision(collision->m_nMyObjectId,collision->m_pScene);
+			m_pOwner->Scene_Collision(collision->m_nMyObjectId,collision->m_pOwner);
 		}
 		// 相手のシーン情報がNULLではないなら
 		// ->当たった後の処理を行う
-		if (collision->m_pScene != NULL)
+		if (collision->m_pOwner != NULL)
 		{
-			collision->m_pScene->Scene_Collision(m_nMyObjectId,m_pScene);
+			collision->m_pOwner->Scene_Collision(m_nMyObjectId,m_pOwner);
 		}
 	}
 	// 当たり判定状態を返す
@@ -270,6 +289,15 @@ void CCollision::SetCollision(void)
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// あたり判定を所有しているシーン情報を強制NULL代入
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCollision::CompulsionScene(void)
+{
+	m_pOwner = NULL;	
+	m_pParent = NULL;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 矩形と矩形の判定
 // pRectShapeA:矩形A
 // pRectShapeB:矩形B
@@ -315,7 +343,7 @@ bool CCollision::RectAndRect(
 					pRectShapeA->GetPush())
 				{
 					// 素材状の左に
-					pos_A->x = min_B.x - pRectShapeA->GetSize().x * 0.5f;
+					pos_A->x = min_B.x - pRectShapeA->GetSize().x * 0.6f;
 				}
 				// 接触しているときはtrueを返す
 				bCollision = true;
@@ -332,7 +360,7 @@ bool CCollision::RectAndRect(
 					pRectShapeA->GetPush())
 				{
 					// 素材状の左に
-					pos_A->x = max_B.x + pRectShapeA->GetSize().x * 0.5f;
+					pos_A->x = max_B.x + pRectShapeA->GetSize().x * 0.6f;
 				}
 				// 接触しているときはtrueを返す
 				bCollision = true;
@@ -353,7 +381,7 @@ bool CCollision::RectAndRect(
 					pRectShapeA->GetPush())
 				{
 					// 素材状の左に
-					pos_A->z = min_B.z - pRectShapeA->GetSize().z * 0.5f;
+					pos_A->z = min_B.z - pRectShapeA->GetSize().z * 0.6f;
 				}
 				// 接触しているときはtrueを返す
 				bCollision = true;
@@ -371,7 +399,7 @@ bool CCollision::RectAndRect(
 				{
 					// 素材状の左に
 					pos_A->z = max_B.z +
-						pRectShapeA->GetSize().z * 0.5f;
+						pRectShapeA->GetSize().z * 0.6f;
 				}
 				// 接触しているときはtrueを返す
 				bCollision = true;
@@ -401,7 +429,7 @@ bool CCollision::RectAndRect(
 					pos_A->y = min_B.y - pRectShapeA->GetSize().y;
 				}
 				// 接触しているときはtrueを返す
-				bCollision = true;
+ 				bCollision = true;
 			}
 
 			// 当たり判定(上)
@@ -423,8 +451,12 @@ bool CCollision::RectAndRect(
 
 		}
 	}
-	// 位置情報更新
-	pRectShapeA->PassPos(D3DVECTOR3_ZERO);
+	// 当たっていたら更新
+	if (bCollision)
+	{
+		// 位置情報更新
+		pRectShapeA->PassPos(D3DVECTOR3_ZERO);
+	}
 	// 接触しているときはtrueを返す
 	return bCollision;
 }
@@ -628,7 +660,6 @@ bool CCollision::RectAndColumn(CRectShape * const pRectShapeA, CColumnShape * co
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::SphereAndColumn(CSphereShape * const pSphereShapeA, CColumnShape * const pColumnShapeB)
 {
-
 	return false;
 }
 

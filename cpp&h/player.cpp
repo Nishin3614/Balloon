@@ -277,13 +277,16 @@ void CPlayer::MyMove(void)
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
-	// 出現している風船の数が0以外なら
-	if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
+	// 風船がNULLではないなら
+	if (CCharacter::GetBalloon() != NULL)
 	{
-		// 宙に浮く
-		if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+		if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
 		{
-			move.y += CCharacter::GetStatus().fMaxJump;
+			// 宙に浮く
+			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+			{
+				move.y += CCharacter::GetStatus().fMaxJump;
+			}
 		}
 	}
 	// 移動状態なら
@@ -508,7 +511,7 @@ void CPlayer::Die(void)
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
 			// チュートリアルへ
-			CManager::GetFade()->SetFade(CManager::MODE_TITLE);
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
 	}
 }
@@ -527,6 +530,13 @@ void CPlayer::Scene_Collision(int const & nObjType, CScene * pScene)
 //-------------------------------------------------------------------------------------------------------------
 void CPlayer::Debug(void)
 {
+	if (m_nPlayerID == 0)
+	{
+		if(CManager::GetKeyboard()->GetKeyboardTrigger(DIK_R))
+		{
+			CCharacter::SetPos(D3DVECTOR3_ZERO);
+		}
+	}
 	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter::Debug();

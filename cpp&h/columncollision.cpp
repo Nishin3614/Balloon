@@ -101,7 +101,8 @@ CColumnCollision *CColumnCollision::Create(
 	float const &fVertical,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
-	CScene * pScene,
+	CScene * pOwner,
+	CScene * pParent,
 	bool const &bPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
@@ -114,7 +115,8 @@ CColumnCollision *CColumnCollision::Create(
 	// 円柱の当たり判定の円柱の生成
 	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset,fRadius,fVertical,bPush,pPos,pPosold));
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
-	pColumnCollision->SetOwnScene(pScene);
+	pColumnCollision->SetOwnScene(pOwner);
+	pColumnCollision->SetParent(pParent);
 	// シーン管理設定
 	pColumnCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pColumnCollision;
@@ -128,7 +130,8 @@ unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 	float const &fVertical,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
-	CScene * pScene,
+	CScene * pOwner,
+	CScene * pParent,
 	bool const &bPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
@@ -139,6 +142,7 @@ unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 	// 円柱の設定
 	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset, fRadius, fVertical, bPush, pPos,pPosold));
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
-	pColumnCollision->SetOwnScene(pScene);
+	pColumnCollision->SetOwnScene(pOwner);
+	pColumnCollision->SetParent(pParent);
 	return pColumnCollision;
 }

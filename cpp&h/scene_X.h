@@ -79,6 +79,8 @@ public:
 		CScene * pScene = NULL		// 相手のシーン情報
 	)
 	{};
+	// あたり判定を強制的に削除
+	void CollisionDelete(void);
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
 	// ポインター過去の位置情報を取得
@@ -120,11 +122,15 @@ public:
 	void SetCollision(void);													// 当たり判定
 	void SetParentMtx(D3DXMATRIX * ParentMax) { m_pParentMtx = ParentMax; };	// 親マトリックスの設定
 	// 当たり判定設定
-	// 0:矩形、1:球、2:円柱
+	// nShapeType:0:矩形、1:球、2:円柱
+	// obj:オブジェクトタイプ
+	// bPush:押し出し処理
+	// pParent:親情報
 	void SetCollision(
 		int const &nShapeType,
 		int const &obj,
-		bool const &bPush = false
+		bool const &bPush = false,
+		CScene * pParent = NULL
 	);									// 当たり判定設定
 
 	// 取得

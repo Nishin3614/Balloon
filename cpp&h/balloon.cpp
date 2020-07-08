@@ -143,7 +143,10 @@ void CBalloon::SetMatrix(D3DXMATRIX * mtx)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 外に出して置ける風船の最大個数を設定
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CBalloon::SetPopMaxBalloom(int const & nPopMaxBaloon)
+void CBalloon::SetPopMaxBalloom(
+	int const & nPopMaxBaloon,
+	CScene * pParent
+)
 {
 	// 最大出現数を代入
 	m_nMaxPopBalloon = nPopMaxBaloon;
@@ -158,13 +161,15 @@ void CBalloon::SetPopMaxBalloom(int const & nPopMaxBaloon)
 				sinf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS,
 				BALLOON_Y,
 				cosf(m_fAngleBalloon * (nCntBalloon + 1)) * BALLOON_RADIUS),
-			D3DVECTOR3_ZERO,
-			0
-		));
+				D3DVECTOR3_ZERO,
+				0
+			));
 		// 当たり判定設定(球)
 		m_apSceneX[nCntBalloon]->SetCollision(
 			CShape::SHAPETYPE_SPHERE,
-			CCollision::OBJTYPE_BALLOON
+			CCollision::OBJTYPE_BALLOON,
+			false,
+			pParent
 		);
 	}
 }
@@ -172,7 +177,9 @@ void CBalloon::SetPopMaxBalloom(int const & nPopMaxBaloon)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 風船を生成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CBalloon::CreateBalloon(void)
+void CBalloon::CreateBalloon(
+	CScene * pParent
+)
 {
 	// 風船生成処理
 	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apSceneX.size(); nCntBalloon++)
@@ -192,7 +199,9 @@ void CBalloon::CreateBalloon(void)
 		// 当たり判定設定(球)
 		m_apSceneX[nCntBalloon]->SetCollision(
 			CShape::SHAPETYPE_SPHERE,
-			CCollision::OBJTYPE_BALLOON
+			CCollision::OBJTYPE_BALLOON,
+			false,
+			pParent
 		);
 		// 親行列の設定
 		m_apSceneX[nCntBalloon]->SetParentMtx(m_mtx);
@@ -233,8 +242,9 @@ CScene_X * CBalloon::GetSceneX(int const & nBalloon)
 // 作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon * CBalloon::Create(
-	D3DXMATRIX *mtx,								// 行列
-	int const &nPopMaxBalloon
+	D3DXMATRIX *mtx,			// 行列
+	int const &nPopMaxBalloon,	// 最大風船数
+	CScene * pParent			// 親情報
 )
 {
 	// 変数宣言
@@ -246,7 +256,10 @@ CBalloon * CBalloon::Create(
 	// 初期化処理
 	pBalloon->Init();
 	// 外に出して置ける風船の最大個数を設定
-	pBalloon->SetPopMaxBalloom(nPopMaxBalloon);
+	pBalloon->SetPopMaxBalloom(
+		nPopMaxBalloon,
+		pParent
+	);
 	// 出現している風船の個数に代入する
 	pBalloon->m_nPopBalloon = nPopMaxBalloon;
 	// 行列情報設定

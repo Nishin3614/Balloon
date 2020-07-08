@@ -153,73 +153,87 @@ void CCharacter::Init()
 		m_nIDWho = 1;
 	}
 
-	// 軌跡の設定
-	for (int nCntObit_Basic = 0; nCntObit_Basic < (signed)m_modelAll[m_character]->v_MeshObitLoad.size(); nCntObit_Basic++)
+	// ゲーム画面なら
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		m_vec_pMeshObit.push_back(std::move(CMeshobit::Create_Self(
-			m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nLine,
-			m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).BeginOffset,
-			m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).EndOffset,
-			(CMeshobit::TEX)m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nTexType
-		)));
-	}
-
-	// 攻撃当たり判定設定
-	for (int nCntAttackCollision = 0; nCntAttackCollision < (signed)m_modelAll[m_character]->v_AttackCollision.size(); nCntAttackCollision++)
-	{
-		// 変数宣言
-		D3DXVECTOR3 pos;
-		// 当たり判定の位置の設定 
-		D3DXVec3TransformCoord(
-			&pos,
-			&m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-			&m_pModel[m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).nParts].GetMatrix()
-		);
-		// 矩形の当たり判定
-		if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo)
+		// 軌跡の設定
+		for (int nCntObit_Basic = 0; nCntObit_Basic < (signed)m_modelAll[m_character]->v_MeshObitLoad.size(); nCntObit_Basic++)
 		{
+			m_vec_pMeshObit.push_back(std::move(CMeshobit::Create_Self(
+				m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nLine,
+				m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).BeginOffset,
+				m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).EndOffset,
+				(CMeshobit::TEX)m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nTexType
+			)));
+		}
+
+		// 攻撃当たり判定設定
+		for (int nCntAttackCollision = 0; nCntAttackCollision < (signed)m_modelAll[m_character]->v_AttackCollision.size(); nCntAttackCollision++)
+		{
+			// 変数宣言
+			D3DXVECTOR3 pos;
+			// 当たり判定の位置の設定 
+			D3DXVec3TransformCoord(
+				&pos,
+				&m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+				&m_pModel[m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).nParts].GetMatrix()
+			);
 			// 矩形の当たり判定
-			m_vec_AttackCollision.push_back(std::move(CRectCollision::Create_Self(
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo->size,
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-				CCollision::OBJTYPE_ATTACK
-			)));
-		}
-		// 球の当たり判定
-		else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo)
-		{
+			if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo)
+			{
+				// 矩形の当たり判定
+				m_vec_AttackCollision.push_back(std::move(CRectCollision::Create_Self(
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo->size,
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+					CCollision::OBJTYPE_ATTACK
+				)));
+			}
 			// 球の当たり判定
-			m_vec_AttackCollision.push_back(std::move(CSphereCollision::Create_Self(
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo->fRadius,
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-				CCollision::OBJTYPE_ATTACK
-			)));
-		}
-		// 円柱の当たり判定
-		else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo)
-		{
+			else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo)
+			{
+				// 球の当たり判定
+				m_vec_AttackCollision.push_back(std::move(CSphereCollision::Create_Self(
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo->fRadius,
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+					CCollision::OBJTYPE_ATTACK
+				)));
+			}
 			// 円柱の当たり判定
-			m_vec_AttackCollision.push_back(std::move(CColumnCollision::Create_Self(
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fRadius,
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fVertical,
-				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-				CCollision::OBJTYPE_ATTACK
-			)));
+			else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo)
+			{
+				// 円柱の当たり判定
+				m_vec_AttackCollision.push_back(std::move(CColumnCollision::Create_Self(
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fRadius,
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fVertical,
+					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+					CCollision::OBJTYPE_ATTACK
+				)));
+			}
 		}
-	}
 
-	// キャラクター当たり判定設定
-	if (m_modelAll[m_character]->pCharacterCollision != NULL)
-	{
-		m_pCharacterCollision = std::move(CRectCollision::Create_Self(
-			m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
-			m_modelAll[m_character]->pCharacterCollision->Offset,
-			CCollision::OBJTYPE_CHARACTER,
-			this,
-			true,
-			&m_pos,
-			&m_posold
-		));
+		// キャラクター当たり判定設定
+		if (m_modelAll[m_character]->pCharacterCollision != NULL)
+		{
+			m_pCharacterCollision = CRectCollision::Create(
+				m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
+				m_modelAll[m_character]->pCharacterCollision->Offset,
+				CCollision::OBJTYPE_CHARACTER,
+				this,
+				NULL,
+				true,
+				&m_pos,
+				&m_posold
+			);
+		}
+		// 風船生成
+		m_pBalloon = CBalloon::Create(
+			&m_mtxWorld,
+			m_sStatus[m_character].nMaxPopBalloon,
+			this
+		);
+		// ステータスの反映 //
+		// 初期風船を持っている個数
+		m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
 	}
 	// シャドウon
 	if (CIRCLESHADOW == true)
@@ -228,15 +242,6 @@ void CCharacter::Init()
 		pos.y = 0;
 		// ステンシルシャドウの生成
 		m_pStencilshadow = CStencilshadow::Create(m_pos, D3DXVECTOR3(10.0f, 10000.0f, 10.0f));
-	}
-	// 選択画面以外なら
-	if (CManager::GetMode() != CManager::MODE_SELECT)
-	{
-		// 風船生成
-		m_pBalloon = CBalloon::Create(&m_mtxWorld, m_sStatus[m_character].nMaxPopBalloon);
-		// ステータスの反映 //
-		// 初期風船を持っている個数
-		m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
 	}
 	// 通常モーション設定
 	SetMotion(MOTIONTYPE_NEUTRAL);
@@ -258,8 +263,8 @@ void CCharacter::Uninit(void)
 	// ->開放
 	if (m_pCharacterCollision != NULL)
 	{
-		m_pCharacterCollision->Uninit();
-		m_pCharacterCollision.reset();
+		m_pCharacterCollision->CompulsionScene();
+		m_pCharacterCollision = NULL;
 	}
 	// 軌跡の情報を開放する
 	for (int nCntMotionObit = 0; nCntMotionObit < (signed)m_vec_pMeshObit.size(); nCntMotionObit++)
@@ -277,7 +282,6 @@ void CCharacter::Uninit(void)
 	// ->風船の開放
 	if (m_pBalloon != NULL)
 	{
-		m_pBalloon->Release();
 		m_pBalloon = NULL;
 	}
 }
@@ -309,107 +313,31 @@ void CCharacter::Update(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Collision(void)
 {
-	// 判定
-	CCharacter * pCharacter;
-	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_CHARACTER); nCntLayer++)
+	// 変数宣言
+	CCollision * pCollision;
+	int nCnt = CScene::GetMaxLayer(LAYER_COLLISION);
+	// あたり判定判定
+	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_COLLISION); nCntLayer++)
 	{
-		// キャラクター情報取得
-		pCharacter = (CCharacter *)CScene::GetScene(LAYER_CHARACTER, nCntLayer);
-		// キャラクター情報が入っていない場合
+		// あたり判定の情報取得
+		pCollision = (CCollision *)CScene::GetScene(LAYER_COLLISION, nCntLayer);
+		// 自分の当たり判定の情報がNULLなら
 		// ->ループスキップ
-		if (pCharacter == NULL) continue;
-		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
+		if (m_pCharacterCollision == NULL) continue;
+		// あたり判定情報入っていない場合
 		// ->ループスキップ
-		else if (pCharacter == this) continue;
-		// 現在のキャラクター情報と取得したキャラクター情報が同じ場合
+		else if (pCollision == NULL) continue;
+		// キャラクターの当たり判定と取得した当たり判定が同じなら
 		// ->ループスキップ
-		else if (pCharacter->GetCollision() == NULL) continue;
-		/*
-		// キャラクター同士の当たり判定
-		else if (CharacterCollision(pCharacter))
+		else if (m_pCharacterCollision == pCollision)
 		{
-#ifdef _DEBUG
-			CDebugproc::Print("当たっています\n");
-#endif // _DEBUG
-
+			continue;
 		}
-		*/
-		// キャラクター同士の当たり判定処理
-		else if (m_pCharacterCollision->CollisionDetection(pCharacter->GetCollision()))
+		// キャラクターとあたり判定同士の当たり判定処理
+		else if (m_pCharacterCollision->CollisionDetection(pCollision))
 		{
-			/*
-			// キャラクター同士当たっている
-			// ->バウンド処理
-			D3DXVECTOR3 RefVecA;
-			D3DXVECTOR3 RefVecB;
-			D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
-			D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
-			diffpos = pCharacter->m_pos - m_pos;
-			// 相手から見てプレイヤーがいる角度
-			rot.y = (atan2f(diffpos.x, diffpos.z));
-			m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
-			m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
-			// 死亡処理
-			//BalloonNone();
-			*/
-			// 押し出し処理を入れる
-			// 今回の当たり判定とプレイヤーの位置ポインター管理
-			/*
-			// 衝突後の速度計算処理
-			CCalculation::SquarColiAfterVec(
-				m_pos,
-				m_move,
-				pCharacter->m_pos,
-				pCharacter->m_move,
-				1,
-				1,
-				0.5f,
-				0.5f,
-				RefVecA,
-				RefVecB
-			);
-			m_move += RefVecA;
-			pCharacter->m_move += RefVecB;
-			*/
-		}
-		// 選択画面以外なら
-		if (CManager::GetMode() != CManager::MODE_SELECT)
-		{
-			// キャラクターと風船の当たり判定処理
-			BalloonCollision(pCharacter->m_pBalloon);
 		}
 	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 風船との当たり判定処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CCharacter::BalloonCollision(
-	CBalloon * pBalloon	// 風船の情報
-)
-{
-	// キャラクターと風船の当たり判定処理
-	for (int nCntBalloon = 0; nCntBalloon < pBalloon->GetPopMaxBalloon(); nCntBalloon++)
-	{
-		// 相手キャラクターの風船がNULLなら
-		// ->関数を抜ける
-		if (pBalloon->GetSceneX(nCntBalloon) == NULL) continue;
-		// 相手キャラクターの風船のキャラクターがNULLなら
-		// ->関数を抜ける
-		else if (pBalloon->GetSceneX(nCntBalloon)->GetCollision() == NULL) continue;
-		// 自キャラクターと相手のキャラクターの風船の判定
-		else if (m_pCharacterCollision->CollisionDetection(
-			pBalloon->GetSceneX(nCntBalloon)->GetCollision()))
-		{
-			// やること
-			// あたり判定を一つのforで終わらせる
-			// Scene_Collision(～);
-			// ～にシーン情報を入れる？
-		}
-	}
-	// 直すこと
-	// まだ当たった後の判定をとっただけ
-
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -467,22 +395,23 @@ void CCharacter::Move(void)
 	m_rot.x = CCalculation::Rot_One_Limit(m_rot.x);
 	m_rot.y = CCalculation::Rot_One_Limit(m_rot.y);
 	m_rot.z = CCalculation::Rot_One_Limit(m_rot.z);
-	
+
 	// 移動
 	m_move.y -= 0.1f;
 	if (m_nMotiontype != MOTIONTYPE_STANDUP)
 	{
 		// 位置情報更新
-		m_pos.x += m_move.x;
-		m_pos.z += m_move.z;
-		m_pos.y += m_move.y;
+		m_pos += m_move;
 	}
 	Limit();
 
-	// 当たり判定の更新
-	m_pCharacterCollision->GetShape()->PassPos(m_pos);
+	// キャラクターの当たり判定がNULLではないなら
+	// ->当たり判定の更新
+	if (m_pCharacterCollision != NULL)
+	{
+		m_pCharacterCollision->GetShape()->PassPos(m_pos);
+	}
 }
-
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // モーション処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -570,28 +499,34 @@ void CCharacter::Limit(void)
 	if (m_pos.x < -950)
 	{
 		m_pos.x = -950;
+		m_move.x = 0.0f;
 	}
 	if (m_pos.x > 950)
 	{
 		m_pos.x = 950;
+		m_move.x = 0.0f;
 	}
 	// zの制限
 	if (m_pos.z < -950)
 	{
 		m_pos.z = -950;
+		m_move.z = 0.0f;
 	}
 	if (m_pos.z > 950)
 	{
 		m_pos.z = 950;
+		m_move.z = 0.0f;
 	}
 	// yの制限
 	if (m_pos.y < -100.0f)
 	{
 		m_pos.y = -100.0f;
+		m_move.y = 0.0f;
 	}
 	if (m_pos.y > 1000.0f)
 	{
 		m_pos.y = 1000.0f;
+		m_move.y = 0.0f;
 	}
 }
 
@@ -716,6 +651,7 @@ void CCharacter::MotionCamera(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCharacter::CharacterCollision(CCharacter * pCharacter)
 {
+	/*
 	// 変数宣言
 	D3DXVECTOR3 deltaVelocity = m_move - pCharacter->m_move;			// 速さ
 	float fxtMin, fxtMax, fytMin, fytMax, fztMin, fztMax, ftMin, ftMax;																// x,y,zの最小最大の時間、最終的な最小最大の時間
@@ -781,6 +717,7 @@ bool CCharacter::CharacterCollision(CCharacter * pCharacter)
 		// ※ちなみに、お互いに頂点同士が衝突した場合はx成分、y成分の両方を補正している
 		return true;
 	}
+	*/
 	return false;
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -854,16 +791,28 @@ void CCharacter::Die(void)
 	// 総キャラクターカウントダウン
 	m_nAllCharacter--;
 
-
-
-
+	// キャラクター当たり判定のヌルチェック
+	// ->開放
+	if (m_pCharacterCollision != NULL)
+	{
+		m_pCharacterCollision->CompulsionScene();
+		m_pCharacterCollision->Release();
+		m_pCharacterCollision = NULL;
+	}
+	// 風船のヌルチェック
+	// ->風船の開放
+	if (m_pBalloon != NULL)
+	{
+		m_pBalloon->Release();
+		m_pBalloon = NULL;
+	}
 	// 総キャラクターが一人だけなら
 	// ->タイトルへフェード
 	if (m_nAllCharacter <= 1)
 	{
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
-			CManager::GetFade()->SetFade(CManager::MODE_TITLE);
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
 	}
 }
@@ -878,9 +827,13 @@ void CCharacter::Scene_Collision(
 	CScene * pScene
 )
 {
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
+		/*
 		// シーン情報がNULLなら
 		// ->関数を抜ける
 		if (pScene == NULL)
@@ -905,8 +858,8 @@ void CCharacter::Scene_Collision(
 		rot.y = (atan2f(diffpos.x, diffpos.z));
 		m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
 		m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
+		*/
 
-		/*
 		// 変数宣言
 		D3DXVECTOR3 RefVecA;
 		D3DXVECTOR3 RefVecB;
@@ -916,22 +869,30 @@ void CCharacter::Scene_Collision(
 		// 今回の当たり判定とプレイヤーの位置ポインター管理
 		// 衝突後の速度計算処理
 		CCalculation::SquarColiAfterVec(
-		m_pos,
-		m_move,
-		*pCharacterPos,
-		*pCharacterMove,
-		1,
-		1,
-		0.5f,
-		0.5f,
-		RefVecA,
-		RefVecB
+			m_pos,
+			m_move,
+			*pCharacterPos,
+			*pCharacterMove,
+			1,
+			1,
+			1.0f,
+			1.0f,
+			RefVecA,
+			RefVecB
 		);
 		m_move += RefVecA;
 		*pCharacterMove += RefVecB;
-		*/
 		// 死亡処理
 		BalloonNone();
+	}
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_ITEM)
+	{
+		// プレイヤーのスコア加算追加
+
+
+
+
 	}
 }
 
@@ -944,7 +905,7 @@ void CCharacter::BalloonCreate(void)
 	// ->風船を生成する処理
 	if (m_pBalloon->GetBringBalloon() > 0)
 	{
-		m_pBalloon->CreateBalloon();
+		m_pBalloon->CreateBalloon(this);
 	}
 }
 

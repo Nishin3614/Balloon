@@ -71,9 +71,12 @@ public:
 	// 出現している風船の個数を変化させる(上昇・減少)
 	void SetPopBalloon(int const &nPopBalloon = 1) { m_nPopBalloon += nPopBalloon; };
 	// 外に出して置ける風船の最大個数を設定
-	void SetPopMaxBalloom(int const &nPopMaxBaloon = 2);
+	void SetPopMaxBalloom(
+		int const &nPopMaxBaloon = 2,
+		CScene * pParent = NULL
+	);
 	// 風船を生成
-	void CreateBalloon(void);
+	void CreateBalloon(CScene * pParent);
 	// シーンX情報取得
 	CScene_X * GetSceneX(int const &nBalloon);	// シーンXの情報取得
 	// 風船を持っている個数を取得
@@ -85,7 +88,8 @@ public:
 	// 生成
 	static CBalloon * Create(
 		D3DXMATRIX *mtx,							// 行列
-		int const &nPopMaxBalloon					// 風船の最大出現数
+		int const &nPopMaxBalloon,					// 風船の最大出現数
+		CScene * pParent							// 親情報
 	);
 	// リソース情報読み込む設定
 	static HRESULT Load(void);					// リソース情報読み込む設定

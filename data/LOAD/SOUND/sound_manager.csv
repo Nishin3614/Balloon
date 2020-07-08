@@ -1,8 +1,23 @@
-data/SOUND/SE/SE_CURSOL.wav,0,1
-data/SOUND/SE/SE_Damage_Midium.wav,0,1
-data/SOUND/SE/SE_DELETE.wav,0,1
-data/SOUND/SE/SE_DOWN.wav,0,1
-data/SOUND/SE/SE_ENTER.wav,0,1
-data/SOUND/SE/SE_FAIL.wav,0,1
-data/SOUND/SE/SE_MENU.wav,0,1
-data/SOUND/SE/SE_THROW.wav,0,1
+data/SOUND/SE/Balloon breaks.wav,0,1
+data/SOUND/SE/Balloon breaks2.wav,0,1
+data/SOUND/SE/Balloon breaks3.wav,0,1
+data/SOUND/SE/kersplash1.wav,0,1
+data/SOUND/SE/kersplash2.wav,0,1
+data/SOUND/SE/kersplash3.wav,0,1
+data/SOUND/SE/kersplash4.wav,0,1
+data/SOUND/SE/landing1.wav,0,1
+data/SOUND/SE/landing2.wav,0,1
+data/SOUND/SE/pointget1.wav,0,1
+data/SOUND/SE/pointget2.wav,0,1
+data/SOUND/SE/pointget3.wav,0,1
+data/SOUND/SE/Selected sound1.wav,0,1
+data/SOUND/SE/Selected sound2.wav,0,1
+data/SOUND/SE/Selected sound3.wav,0,1
+data/SOUND/SE/thunder1.wav,0,1
+data/SOUND/SE/thunder2.wav,0,1
+data/SOUND/SE/thunder3.wav,0,1
+data/SOUND/SE/thunder4.wav,0,1
+data/SOUND/SE/thunder5.wav,0,1
+data/SOUND/SE/thunder6.wav,0,1
+data/SOUND/SE/wind1.wav,0,1
+data/SOUND/SE/wind2.wav,0,1

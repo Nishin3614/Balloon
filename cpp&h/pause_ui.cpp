@@ -140,7 +140,7 @@ void CPause_ui::Update(void)
 				m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 				m_uni_SelectUi->Set_Vtx_Pos();
 				// カーソル音
-				CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 			}
 			// スティックの上方向に傾けたとき |
 			// 上矢印が押されたとき |
@@ -158,7 +158,7 @@ void CPause_ui::Update(void)
 				m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 				m_uni_SelectUi->Set_Vtx_Pos();
 				// カーソル音
-				CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 			}
 			// Bボタンを押したら |
 			// ->選択している項目の処理
@@ -184,7 +184,7 @@ void CPause_ui::Update(void)
 			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 			m_uni_SelectUi->Set_Vtx_Pos();
 			// カーソル音
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 		}
 		// 上矢印を押したら |
 		// Wボタンを押したら |
@@ -202,7 +202,7 @@ void CPause_ui::Update(void)
 			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 			m_uni_SelectUi->Set_Vtx_Pos();
 			// カーソル音
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 		}
 		// エンター押したら |
 		// ->選択している項目の処理
@@ -217,7 +217,7 @@ void CPause_ui::Update(void)
 			CManager::GetGame()->SetState(CGame::STATE_NORMAL);
 			CScene::UpdateStop(false);
 			// メニュー音
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_MENU);
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 			// 選択番号初期化
 			m_nSelect = 0;
 			// 選択UIの位置更新
@@ -338,7 +338,7 @@ unique_ptr<CPause_ui> CPause_ui::Create_Self(void)
 void CPause_ui::Select(void)
 {
 	// エンター音
-	CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+	CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 
 	// ゲームに戻る
 	if (m_nSelect == PAUSE_UI_CONTINUE)

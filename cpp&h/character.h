@@ -21,7 +21,6 @@
 class CExtrusion;
 class CMeshobit;
 class CCollision;
-class CRectCollision;
 class CStencilshadow;
 class CBalloon;
 
@@ -180,7 +179,7 @@ public:
 	virtual void  Debug(void);
 	static void AllDebug(void);
 #endif // _DEBUG
-	CRectCollision * GetCollision(void) { return m_pCharacterCollision.get(); };
+	CCollision * GetCollision(void) { return m_pCharacterCollision; };
 protected:
 	/* 関数 */
 	// 設定 //
@@ -263,7 +262,7 @@ private:
 	float							m_fLength;						// 攻撃の当たり範囲
 	float							m_fAlpha;						// アルファ値
 	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
-	unique_ptr<CRectCollision>		m_pCharacterCollision;			// キャラクターの当たり判定
+	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
 	vector<unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	vector<unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
 	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ

@@ -135,7 +135,7 @@ void CCameraconfig::Update(void)
 			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 			m_uni_SelectUi->Set_Vtx_Pos();
 			// カーソル音
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 		}
 		// スティックの上方向に傾けたとき |
 		// 上矢印が押されたとき |
@@ -153,7 +153,7 @@ void CCameraconfig::Update(void)
 			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 			m_uni_SelectUi->Set_Vtx_Pos();
 			// カーソル音
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 		}
 		// Bボタンを押したら |
 		// ->選択している項目の処理
@@ -177,7 +177,7 @@ void CCameraconfig::Update(void)
 					RotSpeed.y += m_AddSpeed.y;
 					m_nSpeed++;
 					// エンター音
-					CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+					CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 				}
 			}
 			// テクスチャーアニメーション設定
@@ -199,7 +199,7 @@ void CCameraconfig::Update(void)
 					RotSpeed.y -= m_AddSpeed.y;
 					m_nSpeed--;
 					// エンター音
-					CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+					CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 				}
 			}
 			// テクスチャーアニメーション設定
@@ -232,7 +232,7 @@ void CCameraconfig::Update(void)
 		m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 		m_uni_SelectUi->Set_Vtx_Pos();
 		// カーソル音
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 	}
 	// 上矢印を押したら |
 	// Wボタンを押したら |
@@ -250,7 +250,7 @@ void CCameraconfig::Update(void)
 		m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 		m_uni_SelectUi->Set_Vtx_Pos();
 		// カーソル音
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 	}
 	// エンター押したら |
 	// ->選択している項目の処理
@@ -272,7 +272,7 @@ void CCameraconfig::Update(void)
 				RotSpeed.y += m_AddSpeed.y;
 				m_nSpeed++;
 				// エンター音
-				CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 			}
 		}
 		// テクスチャーアニメーション設定
@@ -292,7 +292,7 @@ void CCameraconfig::Update(void)
 				RotSpeed.y -= m_AddSpeed.y;
 				m_nSpeed--;
 				// エンター音
-				CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 			}
 		}
 		// テクスチャーアニメーション設定
@@ -310,7 +310,7 @@ void CCameraconfig::Update(void)
 		m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 		m_uni_SelectUi->Set_Vtx_Pos();
 		// エンター音
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 	}
 	/* 各UIの更新処理 */
 	// 背景の更新処理
@@ -404,7 +404,7 @@ unique_ptr<CCameraconfig> CCameraconfig::Create_Self(void)
 void CCameraconfig::Select(void)
 {
 	// エンター音
-	CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+	CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 	D3DXVECTOR2 &RotSpeed = CManager::GetRenderer()->GetCamera()->GetRotSpeed();
 
 	// カメラ上下設定

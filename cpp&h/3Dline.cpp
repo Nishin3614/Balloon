@@ -55,8 +55,8 @@ C3DLine::~C3DLine()
 void C3DLine::Init(void)
 {	
 	// 変数宣言
-	VERTEX_3D *pVtx;	// 頂点情報へのポイント
-	LPDIRECT3DDEVICE9 pDevice =		// デバイスの取得
+	VERTEX_3D *pVtx;							// 頂点情報へのポイント
+	LPDIRECT3DDEVICE9 pDevice =					// デバイスの取得
 		CManager::GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
@@ -110,7 +110,6 @@ void C3DLine::Update(void)
 #ifdef _DEBUG
 	//CDebugproc::Print("pos:(%.3f,%.3f,%.3f)\n", m_ppos->x, m_ppos->y, m_ppos->z);
 #endif // _DEBUG
-
 }
 
 // ----------------------------------------
@@ -164,7 +163,6 @@ void C3DLine::Draw(void)
 		0,
 		2
 	);
-
 }
 
 // ----------------------------------------
