@@ -72,5 +72,6 @@ private:
 	CPause * m_pause;					// ポーズ
 	CScore * m_pScore;					// スコア
 
+	std::thread th;
 };
 #endif
