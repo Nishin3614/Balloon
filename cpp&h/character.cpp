@@ -20,7 +20,7 @@
 #include "columncollision.h"
 #include "circleshadow.h"
 #include "stencilshadow.h"
-#include "balloon.h"
+#include "balloon_group.h"
 
 
 
@@ -214,26 +214,45 @@ void CCharacter::Init()
 		// キャラクター当たり判定設定
 		if (m_modelAll[m_character]->pCharacterCollision != NULL)
 		{
-			m_pCharacterCollision = CRectCollision::Create(
-				m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
-				m_modelAll[m_character]->pCharacterCollision->Offset,
-				CCollision::OBJTYPE_CHARACTER,
-				this,
-				NULL,
-				true,
-				&m_pos,
-				&m_posold
-			);
+			// 矩形の当たり判定
+			if (m_modelAll[m_character]->pCharacterCollision->RectInfo)
+			{
+				m_pCharacterCollision = CRectCollision::Create(
+					m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
+					m_modelAll[m_character]->pCharacterCollision->Offset,
+					CCollision::OBJTYPE_CHARACTER,
+					this,
+					NULL,
+					true,
+					&m_pos,
+					&m_posold
+				);
+			}
+			// 球の当たり判定
+			else if (m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo)
+			{
+				m_pCharacterCollision = CSphereCollision::Create(
+					m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo->fRadius,
+					m_modelAll[m_character]->pCharacterCollision->Offset,
+					CCollision::OBJTYPE_CHARACTER,
+					this,
+					NULL,
+					true,
+					&m_pos,
+					&m_posold
+				);
+
+			}
 		}
 		// 風船生成
-		m_pBalloon = CBalloon::Create(
+		m_pBalloon_group = CBalloon_group::Create(
 			&m_mtxWorld,
 			m_sStatus[m_character].nMaxPopBalloon,
 			this
 		);
 		// ステータスの反映 //
 		// 初期風船を持っている個数
-		m_pBalloon->SetBiginBalloon(m_sStatus[m_character].nMaxBalloon);
+		m_pBalloon_group->SetBiginBalloon_group(m_sStatus[m_character].nMaxBalloon);
 	}
 	// シャドウon
 	if (CIRCLESHADOW == true)
@@ -280,9 +299,9 @@ void CCharacter::Uninit(void)
 	}
 	// 風船のヌルチェック
 	// ->風船の開放
-	if (m_pBalloon != NULL)
+	if (m_pBalloon_group != NULL)
 	{
-		m_pBalloon = NULL;
+		m_pBalloon_group = NULL;
 	}
 }
 
@@ -606,13 +625,13 @@ void CCharacter::BalloonNone(void)
 {
 	// 風船の情報がNULLなら
 	// ->関数を抜ける
-	if (m_pBalloon == NULL)
+	if (m_pBalloon_group == NULL)
 	{
 		return;
 	}
 	// 出現している風船の数が0の場合
 	// ->キャラクター死亡
-	if (m_pBalloon->GetPopBalloon() == 0)
+	if (m_pBalloon_group->GetPopBalloon_group() == 0)
 	{
 		Die();
 	}
@@ -801,10 +820,10 @@ void CCharacter::Die(void)
 	}
 	// 風船のヌルチェック
 	// ->風船の開放
-	if (m_pBalloon != NULL)
+	if (m_pBalloon_group != NULL)
 	{
-		m_pBalloon->Release();
-		m_pBalloon = NULL;
+		m_pBalloon_group->Release();
+		m_pBalloon_group = NULL;
 	}
 	// 総キャラクターが一人だけなら
 	// ->タイトルへフェード
@@ -882,6 +901,7 @@ void CCharacter::Scene_Collision(
 		);
 		m_move += RefVecA;
 		*pCharacterMove += RefVecB;
+		
 		// 死亡処理
 		BalloonNone();
 	}
@@ -903,9 +923,9 @@ void CCharacter::BalloonCreate(void)
 {
 	// 所持している風船が0超過なら
 	// ->風船を生成する処理
-	if (m_pBalloon->GetBringBalloon() > 0)
+	if (m_pBalloon_group->GetBringBalloon_group() > 0)
 	{
-		m_pBalloon->CreateBalloon(this);
+		m_pBalloon_group->CreateBalloon_group(this);
 	}
 }
 

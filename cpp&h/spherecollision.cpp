@@ -116,6 +116,7 @@ CSphereCollision *CSphereCollision::Create(
 	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pSphereCollision->SetOwnScene(pOwner);
 	pSphereCollision->SetParent(pParent);
+	pSphereCollision->m_pSphereShape->m_pmove = pOwner->Scene_GetPMove();
 	// シーン管理設定
 	pSphereCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pSphereCollision;
@@ -141,6 +142,9 @@ std::unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pSphereCollision->SetOwnScene(pOwner);
 	pSphereCollision->SetParent(pParent);
-
+	if (pOwner != NULL)
+	{
+		pSphereCollision->m_pSphereShape->m_pmove = pOwner->Scene_GetPMove();
+	}
 	return pSphereCollision;
 }

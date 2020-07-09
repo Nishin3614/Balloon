@@ -52,7 +52,10 @@ protected:
 	// 行動
 private:
 	/* 関数 */
-
+	// AIアクション処理
+	void Ai_Action(void);
+	// AI移動処理
+	void Ai_Move(void);
 	/* 変数 */
 };
 #endif

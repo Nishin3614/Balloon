@@ -117,6 +117,7 @@ CColumnCollision *CColumnCollision::Create(
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pColumnCollision->SetOwnScene(pOwner);
 	pColumnCollision->SetParent(pParent);
+	pColumnCollision->m_pColumnShape->m_pmove = pOwner->Scene_GetPMove();
 	// シーン管理設定
 	pColumnCollision->ManageSetting(CScene::LAYER_COLLISION);
 	return pColumnCollision;
@@ -144,5 +145,6 @@ std::unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pColumnCollision->SetOwnScene(pOwner);
 	pColumnCollision->SetParent(pParent);
+	pColumnCollision->m_pColumnShape->m_pmove = pOwner->Scene_GetPMove();
 	return pColumnCollision;
 }

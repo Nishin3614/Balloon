@@ -22,7 +22,7 @@ class CExtrusion;
 class CMeshobit;
 class CCollision;
 class CStencilshadow;
-class CBalloon;
+class CBalloon_group;
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 構造体
@@ -153,7 +153,7 @@ public:
 		int nNowKeyCnt = -1						// 現在のキーカウント
 	);
 	// バルーンの情報取得
-	CBalloon * GetBalloon(void) { return m_pBalloon; };
+	CBalloon_group * GetBalloon(void) { return m_pBalloon_group; };
 	// カメラ追尾しているID
 	static int GetCameraCharacter(void);
 	/*
@@ -208,28 +208,28 @@ protected:
 	// キャラクター同士の当たり判定
 	bool CharacterCollision(CCharacter * pCharacter);
 	/* 変数 */
-	static int						m_nCameraCharacter;	// キャラクターに追尾するID
+	static int						m_nCameraCharacter;		// キャラクターに追尾するID
 	// 仮
-	STATE							m_State;			// 現状のステータス
-	int								m_nCntState;		// カウントステータス
+	STATE							m_State;				// 現状のステータス
+	int								m_nCntState;			// カウントステータス
 
 
 
 	/* プロトタイプ用 */
-	void Limit(void);									// 制限区域
+	void Limit(void);										// 制限区域
 private:
 	/* 関数 */
-	void Collision(void);								// それぞれの当たり判定
-	void BalloonCollision(CBalloon * pBalloon);			// 風船との当たり判定
-	void Update_Normal(void);							// 通常時の更新
-	void NextKeyMotion(void);							// 次のモーション
-	void Move(void);									// 移動
-	void Motion(void);									// モーション
-	void ModelUpdate(void);								// モデルの更新
-	void TrackCamera(void);								// カメラ追尾
-	void Motion_Effect(void);							// モーションエフェクト		
-	void Motion_Obit(void);								// モーション軌跡
-	void BalloonNone(void);								// 風船がない場合
+	void Collision(void);									// それぞれの当たり判定
+	void BalloonCollision(CBalloon_group * pBalloon_group);	// 風船との当たり判定
+	void Update_Normal(void);								// 通常時の更新
+	void NextKeyMotion(void);								// 次のモーション
+	void Move(void);										// 移動
+	void Motion(void);										// モーション
+	void ModelUpdate(void);									// モデルの更新
+	void TrackCamera(void);									// カメラ追尾
+	void Motion_Effect(void);								// モーションエフェクト		
+	void Motion_Obit(void);									// モーション軌跡
+	void BalloonNone(void);									// 風船がない場合
 	/* 変数 */
 	/* 構造体のスタティックにする */
 	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報
@@ -266,7 +266,7 @@ private:
 	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	std::vector<std::unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
 	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
-	CBalloon						* m_pBalloon;					// 風船情報
+	CBalloon_group					* m_pBalloon_group;				// 風船グループ情報
 };
 
 #endif

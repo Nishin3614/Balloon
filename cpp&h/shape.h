@@ -14,7 +14,6 @@
 //
 // ----------------------------------------------------------------------------------------------------
 #include "main.h"
-#include "Calculation.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -78,34 +77,60 @@ public:
 	// オフセット位置取得
 	D3DXVECTOR3 const &GetOffset(void) { return m_offset; };
 	// ポインター位置情報の設定
-	void Set_PPos(D3DXVECTOR3 * pPos) { m_pPos = pPos; };
+	void Set_PPos(D3DXVECTOR3 * pPos) { m_pCorePos = m_pPos = pPos; };
 	// ポインター位置情報の取得
 	D3DXVECTOR3 * Get_PPos(void) { return m_pPos; };
 	// ポインター位置情報の設定
-	void Set_PPosold(D3DXVECTOR3 * pPosold) { m_pPosold = pPosold; };
+	void Set_PPosold(D3DXVECTOR3 * pPosold) { m_pCorePosOld = m_pPosold = pPosold; };
 	// ポインター位置情報の取得
 	D3DXVECTOR3 * Get_PPosold(void) { return m_pPosold; };
 	// 位置情報の設定
-	void Set_Pos(D3DXVECTOR3 pos) { m_pos = pos; };
+	void Set_Pos(D3DXVECTOR3 pos) 
+	{
+		m_pos = pos; 
+		m_pCorePos = &m_pos;
+	};
 	// 位置情報の取得
 	D3DXVECTOR3 & Get_Pos(void) { return m_pos; };
-	// 位置情報の設定
-	void Set_Posold(D3DXVECTOR3 posold) { m_posold = posold; };
-	// 位置情報の取得
+	// 過去の位置情報の設定
+	void Set_Posold(D3DXVECTOR3 posold)
+	{ 
+		m_posold = posold; 
+		m_pCorePosOld = &m_posold;
+	};
+	// 過去の位置情報の取得
 	D3DXVECTOR3 & Get_Posold(void) { return m_posold; };
+	// 絶対的過去の位置情報の設定
+	D3DXVECTOR3 * Get_PosCore(void) { return m_pCorePos; };
+	// 絶対的位置情報の取得
+	D3DXVECTOR3 * Get_PosCoreold(void) { return m_pCorePosOld; };
+	// 最終的な位置情報設定
+	void Set_DestPos(void)
+	{
+		//m_DestPos = *m_pCorePos + m_offset;
+		//m_DestPosOld = *m_pCorePosOld + m_offset;
+	};
+
 	// 押し出し処理の有り無し取得
 	bool const &GetPush(void) { return m_bPush; };
 	// 押し出し処理の有り無し設定
 	void SetPush(bool const &bPush) { m_bPush = bPush; };
+
+	// 変数 //
+	D3DXVECTOR3 * m_pmove;				// 移動量
 protected:
 
 private:
-	D3DXVECTOR3 * m_pPos;		// ポインター位置情報
-	D3DXVECTOR3 m_pos;			// 位置情報
-	D3DXVECTOR3 * m_pPosold;	// 過去のポインター位置情報
-	D3DXVECTOR3 m_posold;		// 過去の位置情報
-	bool		m_bPush;		// 押し出し処理があるかない
-	D3DXVECTOR3 m_offset;		// オフセット座標
+	D3DXVECTOR3 * m_pPos;			// ポインター位置情報
+	D3DXVECTOR3 m_pos;				// 位置情報
+	D3DXVECTOR3 * m_pPosold;		// 過去のポインター位置情報
+	D3DXVECTOR3 m_posold;			// 過去の位置情報
+	D3DXVECTOR3 * m_pCorePos;		// 位置情報の絶対的変数
+	D3DXVECTOR3 * m_pCorePosOld;	// 過去の位置情報の絶対的変数
+	bool		m_bPush;			// 押し出し処理があるかない
+	D3DXVECTOR3 m_offset;			// オフセット座標
+	D3DXVECTOR3 m_DestPos;			// 最終的な位置情報
+	D3DXVECTOR3 m_DestPosOld;		// 過去の最終的な位置情報
 };
 
 // 球のクラス
@@ -160,7 +185,7 @@ public:
 	/* 関数 */
 	CRectShape() 
 	{
-		m_size = D3DVECTOR3_ZERO;
+		m_size = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_Min.x = m_Min.y = m_Min.z = FLT_MAX;
 		m_Max.x = m_Max.y = m_Max.z = -FLT_MAX;
 		m_MinOld.x = m_MinOld.y = m_MinOld.z = FLT_MAX;

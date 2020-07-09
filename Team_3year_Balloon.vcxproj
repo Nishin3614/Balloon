@@ -167,6 +167,7 @@
     <ClCompile Include="cpp&amp;h\3Dmap.cpp" />
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
+    <ClCompile Include="cpp&amp;h\balloon_group.cpp" />
     <ClCompile Include="cpp&amp;h\bgdome.cpp" />
     <ClCompile Include="cpp&amp;h\Calculation.cpp" />
     <ClCompile Include="cpp&amp;h\camera.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="cpp&amp;h\3Dmap.h" />
     <ClInclude Include="cpp&amp;h\3Dparticle.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />
+    <ClInclude Include="cpp&amp;h\balloon_group.h" />
     <ClInclude Include="cpp&amp;h\bgdome.h" />
     <ClInclude Include="cpp&amp;h\Calculation.h" />
     <ClInclude Include="cpp&amp;h\camera.h" />
