@@ -203,7 +203,7 @@ void CGame::Update(void)
 
 	if (pNetwork != NULL)
 	{
-		pNetwork->Update();
+		pNetwork->Start();
 	}
 }
 
