@@ -70,13 +70,13 @@ public:
 	// 頂点カラー
 	void Set_Vtx_Col(VERTEX_3D * pVtx = NULL);
 	// サイズ
-	void SetSize(D3DXVECTOR3 const &size)	{ m_size = size; };	
+	void SetSize(D3DXVECTOR3 const &size)	{ m_size = size; };
 	// 位置
-	void SetPos(D3DXVECTOR3 const &pos)		{ m_pos = pos; };	
+	void SetPos(D3DXVECTOR3 const &pos)		{ m_pos = pos; };
 	// 回転
 	void SetRot(D3DXVECTOR3 const &rot)		{ m_rot = rot; };
 	// 色
-	void SetCol(D3DXCOLOR const &col)		{ m_col = col; };		
+	void SetCol(D3DXCOLOR const &col)		{ m_col = col; };
 	// テクスチャー
 	void SetTex(
 		D3DXVECTOR2 const &first,									// 最短値
@@ -90,8 +90,8 @@ public:
 		m_nTexType = nTexType;
 	};
 	// ビルボード状態
-	void SetBillboard(bool const &bBillboard) 
-		{ m_bBillboard = bBillboard; };	
+	void SetBillboard(bool const &bBillboard)
+		{ m_bBillboard = bBillboard; };
 	// Z軸状態
 	void SetZEneble(bool const &bEneble)
 	{
@@ -114,11 +114,11 @@ public:
 	};
 	// 取得
 	// サイズ
-	D3DXVECTOR3 GetSize(void) const { return m_size; };		
+	D3DXVECTOR3 GetSize(void) const { return m_size; };
 	// 位置
-	D3DXVECTOR3 GetPos(void) const	{ return m_pos; };		
+	D3DXVECTOR3 GetPos(void) const	{ return m_pos; };
 	// 回転
-	D3DXVECTOR3 GetRot(void) const	{ return m_rot; };	
+	D3DXVECTOR3 GetRot(void) const	{ return m_rot; };
 	// テクスチャータイプ
 	int const &GetTexType(void) const { return m_nTexType; };
 	// シーン管理
@@ -149,7 +149,7 @@ public:
 		D3DXCOLOR	const & col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// 色
 	);
 	// 個人管理
-	static unique_ptr<CScene_THREE> Create_Uni(
+	static std::unique_ptr<CScene_THREE> Create_Uni(
 		OFFSET_TYPE	const & type,									// タイプ
 		D3DXVECTOR3 const & pos,									// 位置
 		D3DXVECTOR3 const & size,									// サイズ

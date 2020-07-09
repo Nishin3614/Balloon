@@ -67,7 +67,7 @@ void CRectCollision::Debug(void)
 {
 	/*
 	CDebugproc::Print("----------矩形の当たり判定情報----------\n");
-	CDebugproc::Print("最大座標(%.1f,%.1f,%.1f)\n", 
+	CDebugproc::Print("最大座標(%.1f,%.1f,%.1f)\n",
 		m_pRectShape->GetMax().x,
 		m_pRectShape->GetMax().y,
 		m_pRectShape->GetMax().z
@@ -137,7 +137,7 @@ CRectCollision *CRectCollision::Create(
 	pRectCollision = new CRectCollision();
 	// 矩形の設定
 	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush, pPos, pPosold));
-	pRectCollision->SetObjectID(obj);											
+	pRectCollision->SetObjectID(obj);
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
 	// シーン管理設定
@@ -151,7 +151,7 @@ CRectCollision *CRectCollision::Create(
 // 作成処理(個人管理)
 // ※返り値はstd::moveで受け取ること
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CRectCollision> CRectCollision::Create_Self(
+std::unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	D3DXVECTOR3 const size,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
@@ -163,10 +163,10 @@ unique_ptr<CRectCollision> CRectCollision::Create_Self(
 )
 {
 	// 変数宣言
-	unique_ptr<CRectCollision> pRectCollision(new CRectCollision);
+	std::unique_ptr<CRectCollision> pRectCollision(new CRectCollision);
 	// 矩形の設定
 	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush,pPos,pPosold));
-	pRectCollision->SetObjectID(obj);											
+	pRectCollision->SetObjectID(obj);
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
 	// 初期化処理

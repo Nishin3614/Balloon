@@ -233,7 +233,7 @@ private:
 	/* 変数 */
 	/* 構造体のスタティックにする */
 	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報
-	static vector<int>				m_modelId[CHARACTER_MAX];		// モデル番号
+	static std::vector<int>				m_modelId[CHARACTER_MAX];		// モデル番号
 	static CModel_info				*m_model_info[CHARACTER_MAX];	// モデル情報
 	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];	// キャラクターのサイズ
 	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
@@ -263,8 +263,8 @@ private:
 	float							m_fAlpha;						// アルファ値
 	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
 	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
-	vector<unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
-	vector<unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
+	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
+	std::vector<std::unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
 	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
 	CBalloon						* m_pBalloon;					// 風船情報
 };

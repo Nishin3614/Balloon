@@ -100,12 +100,12 @@ private:
 	/* 関数 */
 	void BreakBalloon(int const &nCntBalloon);	// 風船が割れる処理
 	/* 変数 */
-	vector<CScene_X *> m_apSceneX;				// シーンXモデル情報
+	std::vector<CScene_X *> m_apSceneX;				// シーンXモデル情報
 	D3DXMATRIX *m_mtx;							// 行列情報
 	int m_nPopBalloon;							// 現在出現している風船の個数
 	int m_nBringBalloon;						// 現在持っている風船の個数
 	int m_nMaxPopBalloon;						// 最大出現数の個数
 	float m_fAngleBalloon;						// 風船の出現する角度(円周率 * 2 / 最大出現数)
-};		
+};
 
 #endif

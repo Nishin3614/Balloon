@@ -62,7 +62,7 @@ public:
 	static HRESULT Load(void);		// 読み込み
 	static void UnLoad(void);		// UnLoadする
 	// 作成(個人管理)
-	static unique_ptr<CUi_group> Create_Self(CUi::UITYPE const &uitype);
+	static std::unique_ptr<CUi_group> Create_Self(CUi::UITYPE const &uitype);
 	// 作成(シーン管理)
 	static CUi_group * Create(CUi::UITYPE const &uitype);
 	// UI全体の状態情報取得
@@ -85,9 +85,9 @@ private:
 	CUi::VEC_UNI_UI m_Ui;							// UI情報
 	// 処理に必要な変数
 	// int型
-	vector<int> m_vec_nNumber;							// int情報
+	std::vector<int> m_vec_nNumber;							// int情報
 														// bool型
-	vector<bool> m_vec_Bool;							// bool情報						
+	std::vector<bool> m_vec_Bool;							// bool情報						
 
 };
 

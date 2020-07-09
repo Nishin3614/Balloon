@@ -251,10 +251,10 @@ C2DPresents * C2DPresents::Create(
 // 作成(個人管理)処理
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 C2DPresents * C2DPresents::Create_Self(
-	OFFSET_TYPE const & type, 
-	D3DXVECTOR3 const & pos, 
-	D3DXVECTOR2 const & size, 
-	float const & frot, 
+	OFFSET_TYPE const & type,
+	D3DXVECTOR3 const & pos,
+	D3DXVECTOR2 const & size,
+	float const & frot,
 	D3DXCOLOR const & col
 )
 {
@@ -277,16 +277,16 @@ C2DPresents * C2DPresents::Create_Self(
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成(個人管理)処理
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<C2DPresents> C2DPresents::Create_Unique(
-	OFFSET_TYPE const & type, 
-	D3DXVECTOR3 const & pos, 
-	D3DXVECTOR2 const & size, 
-	float const & frot, 
+std::unique_ptr<C2DPresents> C2DPresents::Create_Unique(
+	OFFSET_TYPE const & type,
+	D3DXVECTOR3 const & pos,
+	D3DXVECTOR2 const & size,
+	float const & frot,
 	D3DXCOLOR const & col
 )
 {
 	// 変数宣言
-	unique_ptr<C2DPresents> p2DPresents(new C2DPresents);		// 2Dプレゼンツ2Dクラス
+	std::unique_ptr<C2DPresents> p2DPresents(new C2DPresents);		// 2Dプレゼンツ2Dクラス
 	// 設定
 	p2DPresents->SetOffset(type);		// タイプ
 	p2DPresents->SetPosition(pos);		// 位置
@@ -391,7 +391,7 @@ void C2DPresents::Update_Scaling(void)
 	{
 		return;
 	}
-	
+
 	// 切り替えOFF|切り替わるON/OFF
 	if (m_pCooperation->pScal->nCntTimeChange == m_pCooperation->pScal->nTimeChange)
 	{

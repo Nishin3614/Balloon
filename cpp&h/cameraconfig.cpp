@@ -388,10 +388,10 @@ void CCameraconfig::UnLoad(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CCameraconfig> CCameraconfig::Create_Self(void)
+std::unique_ptr<CCameraconfig> CCameraconfig::Create_Self(void)
 {
 	// 変数宣言
-	unique_ptr<CCameraconfig> pCameraconfig(new CCameraconfig);
+	std::unique_ptr<CCameraconfig> pCameraconfig(new CCameraconfig);
 	// 初期化処理
 	pCameraconfig->Init();
 	// 生成したオブジェクトを返す

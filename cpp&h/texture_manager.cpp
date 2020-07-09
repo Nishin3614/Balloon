@@ -18,7 +18,7 @@
 // 静的変数宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vector<LPDIRECT3DTEXTURE9> CTexture_manager::m_st_vpTexture;
+std::vector<LPDIRECT3DTEXTURE9> CTexture_manager::m_st_vpTexture;
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -50,7 +50,7 @@ void CTexture_manager::UnLoad(void)
 		}
 	}
 	// テクスチャー情報の開放
-	vector<LPDIRECT3DTEXTURE9>().swap(m_st_vpTexture);
+	std::vector<LPDIRECT3DTEXTURE9>().swap(m_st_vpTexture);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ HRESULT CTexture_manager::Load(void)
 		CManager::GetRenderer()->GetDevice();
 	LPDIRECT3DTEXTURE9 pTex = NULL;
 	// ファイルの中身格納用
-	vector<vector<string>> vsvec_Contens;	
+	std::vector<std::vector<std::string>> vsvec_Contens;
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(TEXTURE_FILE, ',');
 	// 行ごとに回す
@@ -78,7 +78,7 @@ HRESULT CTexture_manager::Load(void)
 			case 0:
 				// テクスチャー生成
 				D3DXCreateTextureFromFile(
-					pDevice, 
+					pDevice,
 					vsvec_Contens.at(nCntLine).at(nCntItem).c_str(),
 					&pTex);
 				// テクスチャー追加
@@ -91,8 +91,8 @@ HRESULT CTexture_manager::Load(void)
 			}
 		}
 	}
-	// vectorの多重配列開放
-	vector<vector<string>>().swap(vsvec_Contens);
+	// std::vectorの多重配列開放
+	std::vector<std::vector<std::string>>().swap(vsvec_Contens);
 	return S_OK;
 }
 

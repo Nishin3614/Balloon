@@ -125,7 +125,7 @@ CColumnCollision *CColumnCollision::Create(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
+std::unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 	float const &fRadius,
 	float const &fVertical,
 	D3DXVECTOR3 const offset,
@@ -138,7 +138,7 @@ unique_ptr<CColumnCollision> CColumnCollision::Create_Self(
 )
 {
 	// 変数宣言
-	unique_ptr<CColumnCollision> pColumnCollision(new CColumnCollision);
+	std::unique_ptr<CColumnCollision> pColumnCollision(new CColumnCollision);
 	// 円柱の設定
 	pColumnCollision->m_pColumnShape = std::move(CColumnShape::Create(offset, fRadius, fVertical, bPush, pPos,pPosold));
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定

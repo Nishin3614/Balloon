@@ -126,7 +126,7 @@ private:
 	/* 関数 */
 	static void DeadFragAll(void);				// 死亡フラグが立ったものをリリース
 	/* 変数 */
-	static vector<CScene*> m_pScene[LAYER_MAX];	// シーン管理用変数
+	static std::vector<CScene*> m_pScene[LAYER_MAX];	// シーン管理用変数
 	static bool	m_sta_bStop;						// 更新を止める
 	static int m_nMaxStop;						// 最大静止時間
 	static int m_nCntStop;						// 静止時間

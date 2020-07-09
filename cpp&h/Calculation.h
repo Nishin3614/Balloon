@@ -558,25 +558,25 @@ typedef struct CHARFILE
 // マクロ定義
 //
 // ----------------------------------------------------------------------------------------------------
-#define INTEGER4_INI			INTEGER4(1,1,1,1)				
+#define INTEGER4_INI			INTEGER4(1,1,1,1)
 
 // ----------------------------------------------------------------------------------------------------
 //
 // クラス
 //
-// ---------------------------------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------------------------------
 class CCalculation
 {
 public:
 	/* 関数 */
 	// unique_ptr[int]型の情報を返す
 	// 注意:返し元はstd::moveを使用すること
-	static unique_ptr<int> int_ptr(
+	static std::unique_ptr<int> int_ptr(
 		int const nNum = 0
 	);
 	// unique_ptr[bool]型の情報を返す
 	// 注意:返し元はstd::moveを使用すること
-	static unique_ptr<bool> bool_ptr(void);
+	static std::unique_ptr<bool> bool_ptr(void);
 	// 距離の計算
 	static D3DXVECTOR3 Difference_Between(
 		D3DXVECTOR3 &posA,
@@ -792,12 +792,12 @@ public:
 		D3DXVECTOR3 * pSize
 	);
 	// 文字を特定の区切りごとに取得する(1行ごと)
-	static vector<string> split(
-		string& input,		// 1行のストリーム
+	static std::vector<std::string> split(
+		std::string& input,		// 1行のストリーム
 		char delimiter		// 区切り文字
 	);
 	// 文字を特定の区切りごとに取得する(ファイル全体)
-	static vector<vector<string>> FileContens(
+	static std::vector<std::vector<std::string>> FileContens(
 		char const * cns_cFile,	// ファイル名
 		char delimiter			// 区切り文字
 	);

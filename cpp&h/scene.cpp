@@ -27,7 +27,7 @@
 bool			CScene::m_sta_bStop = false;				// 更新を止める
 int				CScene::m_nMaxStop = 0;					// 最大静止時間
 int				CScene::m_nCntStop = 0;					// 静止時間
-vector<CScene*> CScene::m_pScene[LAYER_MAX] = {};		// シーン管理用変数
+std::vector<CScene*> CScene::m_pScene[LAYER_MAX] = {};		// シーン管理用変数
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // オーバーロードコンストラクタ
@@ -80,7 +80,7 @@ void CScene::ReleaseAll(void)
 			delete m_pScene[nCntLayer][nCntScene];
 			m_pScene[nCntLayer][nCntScene] = NULL;
 		}
-		vector<CScene*>().swap(m_pScene[nCntLayer]);
+		std::vector<CScene*>().swap(m_pScene[nCntLayer]);
 	}
 }
 

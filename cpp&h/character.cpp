@@ -46,7 +46,7 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 MODEL_ALL	*CCharacter::m_modelAll[CHARACTER_MAX] = {};		// キャラクター全体の情報
 CModel_info	*CCharacter::m_model_info[CHARACTER_MAX] = {};		// キャラクター情報
-vector<int>	CCharacter::m_modelId[CHARACTER_MAX];				// キャラクター番号
+std::vector<int>	CCharacter::m_modelId[CHARACTER_MAX];				// キャラクター番号
 D3DXVECTOR3	CCharacter::m_CharacterSize[CHARACTER_MAX] = {};	// キャラクターのサイズ
 CCharacter::STATUS CCharacter::m_sStatus[CHARACTER_MAX] = {};	// キャラクターすべてのスタータス情報
 int			CCharacter::m_NumParts[CHARACTER_MAX] = {};			// 動かすキャラクター数
@@ -172,7 +172,7 @@ void CCharacter::Init()
 		{
 			// 変数宣言
 			D3DXVECTOR3 pos;
-			// 当たり判定の位置の設定 
+			// 当たり判定の位置の設定
 			D3DXVec3TransformCoord(
 				&pos,
 				&m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
@@ -823,7 +823,7 @@ void CCharacter::Die(void)
 // 引数2:相手のシーン情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Scene_Collision(
-	int const & nObjType, 
+	int const & nObjType,
 	CScene * pScene
 )
 {
@@ -1105,7 +1105,7 @@ HRESULT CCharacter::Load(void)
 HRESULT CCharacter::Load_Character(void)
 {
 	// ファイルの中身格納用
-	vector<vector<string>> vsvec_Contens;
+	std::vector<std::vector<std::string>> vsvec_Contens;
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(CHARACTER_INFO_FILE, ',');
 	// 行ごとに回す
@@ -1143,8 +1143,8 @@ HRESULT CCharacter::Load_Character(void)
 			}
 		}
 	}
-	// vectorの多重配列開放
-	vector<vector<string>>().swap(vsvec_Contens);
+	// std::vectorの多重配列開放
+	std::vector<std::vector<std::string>>().swap(vsvec_Contens);
 	return S_OK;
 }
 
@@ -1154,7 +1154,7 @@ HRESULT CCharacter::Load_Character(void)
 HRESULT CCharacter::LoadStatus(void)
 {
 	// 変数宣言
-	vector<vector<string>> vsvec_Contens;	// ファイルの中身格納用
+	std::vector<std::vector<std::string>> vsvec_Contens;	// ファイルの中身格納用
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(CHARACTER_STATUS_FILE, ',');
 	// 行ごとに回す
@@ -1195,8 +1195,8 @@ HRESULT CCharacter::LoadStatus(void)
 			}
 		}
 	}
-	// vectorの多重配列開放
-	vector<vector<string>>().swap(vsvec_Contens);
+	// std::vectorの多重配列開放
+	std::vector<std::vector<std::string>>().swap(vsvec_Contens);
 	return S_OK;
 }
 

@@ -200,24 +200,24 @@ bool CCalculation::SquareSide_Judg(
 }
 
 // ----------------------------------------------------------------------------------------------------
-// unique_ptr[int]型の情報を返す
+// std::unique_ptr[int]型の情報を返す
 // 注意:返し元はstd::moveを使用すること
 // ----------------------------------------------------------------------------------------------------
-unique_ptr<int> CCalculation::int_ptr(int const nNum)
+std::unique_ptr<int> CCalculation::int_ptr(int const nNum)
 {
 	// 変数宣言
-	unique_ptr<int> uni_int(new int(nNum));	// unique_ptr[int]情報
+	std::unique_ptr<int> uni_int(new int(nNum));	// std::unique_ptr[int]情報
 	return uni_int;
 }
 
 // ----------------------------------------------------------------------------------------------------
-// unique_ptr[bool]型の情報を返す
+// std::unique_ptr[bool]型の情報を返す
 // 注意:返し元はstd::moveを使用すること
 // ----------------------------------------------------------------------------------------------------
-unique_ptr<bool> CCalculation::bool_ptr(void)
+std::unique_ptr<bool> CCalculation::bool_ptr(void)
 {
 	// 変数宣言
-	unique_ptr<bool> uni_bool(new bool);	// unique_ptr[bool]情報
+	std::unique_ptr<bool> uni_bool(new bool);	// std::unique_ptr[bool]情報
 	return uni_bool;
 }
 
@@ -518,7 +518,7 @@ D3DXVECTOR3* CCalculation::CalcWorldToScreen(
 	// 各行列の逆行列を算出 //
 	// 変数宣言
 	D3DXMATRIX mtxVP;			// 計算用ビューポット
-	D3DXMATRIX mtxChange;				// 
+	D3DXMATRIX mtxChange;				//
 
 										// ビューポットの行列作成
 	D3DXMatrixIdentity(&mtxVP);			// 初期化
@@ -1007,18 +1007,18 @@ bool CCalculation::GetTexSize(
 // ------------------------------------------
 // 文字を特定の区切りごとに取得する(1行ごと)
 // ------------------------------------------
-vector<string> CCalculation::split(
-	string& input,		// 1行のストリーム
+std::vector<std::string> CCalculation::split(
+	std::string& input,		// 1行のストリーム
 	char delimiter		// 区切り文字
 )
 {
 	// 変数宣言
-	istringstream iss_Line(input);	// 文字列ストリーム
-	string sRead;					// 文字列読み込み用
-	vector<string> vec_Result;		// 1行読み込み用
+	std::istringstream iss_Line(input);	// 文字列ストリーム
+	std::string sRead;					// 文字列読み込み用
+	std::vector<std::string> vec_Result;		// 1行読み込み用
 
 									// 指定した区切りが来る限りループする
-	while (getline(iss_Line, sRead, delimiter))
+	while (std::getline(iss_Line, sRead, delimiter))
 	{
 		// 読み取った文字列を格納する
 		vec_Result.push_back(sRead);
@@ -1030,16 +1030,15 @@ vector<string> CCalculation::split(
 // ------------------------------------------
 // ファイルの中身を取得
 // ------------------------------------------
-vector<vector<string>> CCalculation::FileContens(
+std::vector<std::vector<std::string>> CCalculation::FileContens(
 	char const * cns_cFile,
 	char delimiter
 )
 {
-	ofstream;
 	// 変数宣言
-	ifstream				ifs_file;	// ファイル用ストリーム
-	string					s_Line;		// 1時的に1行読み込む
-	vector<vector<string>>	svec_Char;	// ファイルの中身格納用
+	std::ifstream				ifs_file;	// ファイル用ストリーム
+	std::string					s_Line;		// 1時的に1行読み込む
+	std::vector<std::vector<std::string>>	svec_Char;	// ファイルの中身格納用
 
 										// ファイルを開く
 	ifs_file.open(cns_cFile);

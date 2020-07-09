@@ -124,7 +124,7 @@ CSphereCollision *CSphereCollision::Create(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
+std::unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 	float const &fRadius,
 	D3DXVECTOR3 const offset,
 	OBJTYPE const &obj,
@@ -136,7 +136,7 @@ unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 )
 {
 	// 変数宣言
-	unique_ptr<CSphereCollision> pSphereCollision(new CSphereCollision);
+	std::unique_ptr<CSphereCollision> pSphereCollision(new CSphereCollision);
 	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush, pPos,pPosold));	// 球の形を生成
 	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pSphereCollision->SetOwnScene(pOwner);

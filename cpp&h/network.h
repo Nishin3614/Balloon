@@ -107,5 +107,6 @@ private:
 	static int nPort;					// É|Å[Égî‘çÜ
 
 	std::thread m_th;
+	bool m_bGame;
 };
 #endif // !_NETWORK_H_

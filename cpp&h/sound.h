@@ -88,9 +88,9 @@ private:
 	HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 	HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);
 	/* 変数 */
-	static vector<string> m_vec_Filename;					// ファイル名
-	static vector<int> m_vec_nLoop;							// ループカウント
-	static vector<SOUND> m_vec_SoundType;					// サウンドタイプ
+	static std::vector<std::string> m_vec_Filename;					// ファイル名
+	static std::vector<int> m_vec_nLoop;							// ループカウント
+	static std::vector<SOUND> m_vec_SoundType;					// サウンドタイプ
 	static IXAudio2 *m_pXAudio2;							// XAudio2オブジェクトへのインターフェイス
 	static IXAudio2MasteringVoice *m_pMasteringVoice;		// マスターボイス
 	static BYTE *m_apDataAudio[LABEL_MAX];					// オーディオデータ

@@ -119,7 +119,7 @@ private:
 	int		m_nBlock_Width;						// 横ブロック数
 	bool	m_bUse;								// 使用
 	TYPE	m_type;								// タイプ
-	unique_ptr<CScene_TWO> m_pSceneTwo;						// 2Dポリゴン
+	std::unique_ptr<CScene_TWO> m_pSceneTwo;						// 2Dポリゴン
 };
 
 #endif
