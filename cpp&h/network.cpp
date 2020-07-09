@@ -85,7 +85,7 @@ void CNetwork::Update(void)
 	//nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
 
 	OutputDebugString("受信開始\n");
-	nError = recv(m_sockClientToServer, debug, sizeof(debug), 0);
+	nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
 	OutputDebugString("受信完了\n");
 
 	if (nError == INVALID_SOCKET)
@@ -119,6 +119,8 @@ void CNetwork::Update(void)
 				m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 			}
 		}
+
+		CDebugproc::Print("キー入力情報 : %d , %d , %d , %d , %d",m_aKeyState[m_nId][NUM_KEY_A], m_aKeyState[m_nId][NUM_KEY_S], m_aKeyState[m_nId][NUM_KEY_W], m_aKeyState[m_nId][NUM_KEY_D], m_aKeyState[m_nId][NUM_KEY_SPACE]);
 	}
 }
 
@@ -217,9 +219,12 @@ bool CNetwork::SendUDP(const char *data, int nSize)
 
 	//クライアントへデータ(ID)送信
 	nError = sendto(m_sockClientToServer, data, nSize, 0, (struct sockaddr *)&m_addrClientToServer, sizeof(m_addrClientToServer));
-	if (nError < 0)
+	if (nError == SOCKET_ERROR)
 	{
-		printf("送信エラー : %d\n", WSAGetLastError());
+		char aError[256];
+		memset(&aError, 0, sizeof(aError));
+		sprintf(aError, "送信エラー : %d\n", WSAGetLastError());
+		MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
 	}
 
 	return false;
@@ -324,15 +329,22 @@ HRESULT CNetwork::Build(void)
 	m_addrServer.sin_port = htons(nPort);
 	m_addrServer.sin_addr.S_un.S_addr = inet_addr(aIp);
 
-	//ソケットの設定
-	m_addrClientToServer.sin_family = AF_INET;
-	m_addrClientToServer.sin_port = htons(10032);
-	m_addrClientToServer.sin_addr.S_un.S_addr = inet_addr(aIp);
+	bind(m_sockClientToServer, (struct sockaddr *)&m_addrServer, sizeof(m_addrServer));
 
 	//ソケットの設定
 	m_addrServerToClient.sin_family = AF_INET;
 	m_addrServerToClient.sin_port = htons(10046);
 	m_addrServerToClient.sin_addr.S_un.S_addr = INADDR_ANY;
+
+	m_addrClientToServer.sin_family = AF_INET;
+	m_addrClientToServer.sin_port = htons(10032);
+	m_addrClientToServer.sin_addr.S_un.S_addr = inet_addr(aIp);
+
+	//// ここで、ノンブロッキングに設定しています。
+	//// val = 0でブロッキングモードに設定できます。
+	//// ソケットの初期設定はブロッキングモードです。
+	//u_long val = 1;
+	//ioctlsocket(m_sockClientToServer, FIONBIO, &val);
 
 	return S_OK;
 }
