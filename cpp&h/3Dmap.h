@@ -143,12 +143,12 @@ private:
 	// キャラクター生成
 	void CharaCreate(void);							
 	/* 変数 */
-	static vector<vector<OBJECT>> m_vec_obj;
-	static vector<vector<CHARACTER>> m_vec_char;
-	static vector<vector<POLYGON>> m_vec_polygon;
-	static vector<vector<FLOOR>> m_vec_floor;
-	static vector<vector<WALL>> m_vec_wall;
-	static vector<string> m_vec_String;					// ファイル情報読み書き用
+	static std::vector<std::vector<OBJECT>> m_vec_obj;
+	static std::vector<std::vector<CHARACTER>> m_vec_char;
+	static std::vector<std::vector<POLYGON>> m_vec_polygon;
+	static std::vector<std::vector<FLOOR>> m_vec_floor;
+	static std::vector<std::vector<WALL>> m_vec_wall;
+	static std::vector<std::string> m_vec_String;					// ファイル情報読み書き用
 	int m_nType;									// タイプ
 };
 

@@ -334,7 +334,7 @@ void CMeshobit::UnLoad(void)
 // ----------------------------------------
 // 作成処理
 // ----------------------------------------
-unique_ptr<CMeshobit> CMeshobit::Create_Self(
+std::unique_ptr<CMeshobit> CMeshobit::Create_Self(
 	int const &nLine,				// 線の数
 	D3DXVECTOR3 const &BeginOffset,	// 始点オフセット
 	D3DXVECTOR3 const &EndOffset,	// 終点オフセット
@@ -342,7 +342,7 @@ unique_ptr<CMeshobit> CMeshobit::Create_Self(
 )
 {
 	// 変数宣言
-	unique_ptr<CMeshobit> pMeshobit(new CMeshobit);		// シーン2Dクラス
+	std::unique_ptr<CMeshobit> pMeshobit(new CMeshobit);		// シーン2Dクラス
 	// 線の数
 	pMeshobit->m_nLine = nLine;
 	// 始点オフセット

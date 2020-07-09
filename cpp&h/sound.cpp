@@ -49,9 +49,9 @@
 // 静的変数宣言
 //
 // ----------------------------------------
-vector<string> CSound::m_vec_Filename = {};						// ファイル名
-vector<int> CSound::m_vec_nLoop = {};							// ループカウント
-vector<CSound::SOUND> CSound::m_vec_SoundType = {};				// サウンドタイプ
+std::vector<std::string> CSound::m_vec_Filename = {};						// ファイル名
+std::vector<int> CSound::m_vec_nLoop = {};							// ループカウント
+std::vector<CSound::SOUND> CSound::m_vec_SoundType = {};				// サウンドタイプ
 IXAudio2 * CSound::m_pXAudio2 = NULL;							// XAudio2オブジェクトへのインターフェイス
 IXAudio2MasteringVoice * CSound::m_pMasteringVoice = NULL;		// マスターボイス
 BYTE * CSound::m_apDataAudio[LABEL_MAX] = {};					// オーディオデータ
@@ -637,7 +637,7 @@ HRESULT CSound::Load(void)
 {
 	// 変数宣言
 	// ファイルの中身格納用
-	vector<vector<string>> vsvec_Contens;
+	std::vector<std::vector<std::string>> vsvec_Contens;
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(SOUND_FILE, ',');
 	// 行ごとに回す
@@ -656,12 +656,12 @@ HRESULT CSound::Load(void)
 				// ループ情報
 			case 1:
 				// ファイル名追加
-				m_vec_nLoop.push_back(stoi(vsvec_Contens.at(nCntLine).at(nCntItem).c_str()));
+				m_vec_nLoop.push_back(std::stoi(vsvec_Contens.at(nCntLine).at(nCntItem).c_str()));
 				break;
 				// サウンドタイプ情報
 			case 2:
 				// ファイル名追加
-				m_vec_SoundType.push_back((SOUND)stoi(vsvec_Contens.at(nCntLine).at(nCntItem).c_str()));
+				m_vec_SoundType.push_back((SOUND)std::stoi(vsvec_Contens.at(nCntLine).at(nCntItem).c_str()));
 				break;
 			default:
 				break;

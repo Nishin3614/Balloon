@@ -129,7 +129,7 @@ D3DXVECTOR3 CRectShape::GetClosestpoint(D3DXVECTOR3 const & pos)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 矩形クラスの作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CRectShape> CRectShape::Create(
+std::unique_ptr<CRectShape> CRectShape::Create(
 	D3DXVECTOR3 const &offset,
 	D3DXVECTOR3 const &size,
 	bool const &bPush,
@@ -138,7 +138,7 @@ unique_ptr<CRectShape> CRectShape::Create(
 )
 {
 	// 変数宣言
-	unique_ptr<CRectShape> pRect(new CRectShape);
+	std::unique_ptr<CRectShape> pRect(new CRectShape);
 	// 半径の設定
 	pRect->SetSize(size);
 	// ポインター位置情報の設定
@@ -157,7 +157,7 @@ unique_ptr<CRectShape> CRectShape::Create(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 球クラスの作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CSphereShape> CSphereShape::Create(
+std::unique_ptr<CSphereShape> CSphereShape::Create(
 	D3DXVECTOR3 const &offset,
 	float const &radius,
 	bool const &bPush,
@@ -166,7 +166,7 @@ unique_ptr<CSphereShape> CSphereShape::Create(
 	)
 {
 	// 変数宣言
-	unique_ptr<CSphereShape> pSphere(new CSphereShape);
+	std::unique_ptr<CSphereShape> pSphere(new CSphereShape);
 	// オフセットの設定
 	pSphere->SetOffset(offset);
 	// ポインター位置情報設定
@@ -194,7 +194,7 @@ void CSphereShape::PassMatrix(D3DXMATRIX const & mtx)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 円柱クラスの作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CColumnShape> CColumnShape::Create(
+std::unique_ptr<CColumnShape> CColumnShape::Create(
 	D3DXVECTOR3 const &offset,
 	float const & fRadius,
 	float const & fVertical,
@@ -204,7 +204,7 @@ unique_ptr<CColumnShape> CColumnShape::Create(
 )
 {
 	// 変数宣言
-	unique_ptr<CColumnShape> pColum(new CColumnShape);
+	std::unique_ptr<CColumnShape> pColum(new CColumnShape);
 	// オフセットの設定
 	pColum->SetOffset(offset);
 	// 位置設定

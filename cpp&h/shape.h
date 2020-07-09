@@ -145,7 +145,7 @@ public:
 	// 更新処理
 	virtual void Update(void) {};
 	// 作成
-	static unique_ptr<CSphereShape> Create(
+	static std::unique_ptr<CSphereShape> Create(
 		D3DXVECTOR3 const &offset,
 		float const &radius,
 		bool const &bPush = false,
@@ -205,7 +205,7 @@ public:
 	// ある座標から最も近い、ボックス上の座標を返す
 	D3DXVECTOR3 GetClosestpoint(D3DXVECTOR3 const &pos);
 	// 作成
-	static unique_ptr<CRectShape> Create(
+	static std::unique_ptr<CRectShape> Create(
 		D3DXVECTOR3 const &offset,
 		D3DXVECTOR3 const &size,
 		bool const &bPush = false,
@@ -249,7 +249,7 @@ public:
 	// 更新処理
 	virtual void Update(void) {};
 	// 作成
-	static unique_ptr<CColumnShape> Create(
+	static std::unique_ptr<CColumnShape> Create(
 		D3DXVECTOR3 const &offset,
 		float const & fRadius,
 		float const & fVertical,

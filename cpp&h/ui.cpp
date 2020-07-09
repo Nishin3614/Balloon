@@ -24,9 +24,9 @@
 // 静的変数宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vector<CUi::UI_LOAD> CUi::m_vec_UiLoad[CUi::UITYPE_MAX] = {};	// Ui読み込み用変数
+std::vector<CUi::UI_LOAD> CUi::m_vec_UiLoad[CUi::UITYPE_MAX] = {};	// Ui読み込み用変数
 bool	CUi::m_sta_UiUse[CUi::UITYPE_MAX] = {};					// このUIの使用状態
-vector<string> CUi::m_vec_String = {};					// ファイル情報読み書き用
+std::vector<std::string> CUi::m_vec_String = {};					// ファイル情報読み書き用
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ
@@ -302,7 +302,7 @@ HRESULT CUi::UiManagerLoad(void)
 {
 	// 変数宣言
 	// ファイルの中身格納用
-	vector<vector<string>> vsvec_Contens;
+	std::vector<std::vector<std::string>> vsvec_Contens;
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(UI_MANAGER_FILE, '\0');
 	// 行ごとに回す
@@ -822,8 +822,8 @@ void CUi::UnLoad(void)
 			delete m_vec_UiLoad[nCntLoad].at(nCntUi).pPresents;
 			m_vec_UiLoad[nCntLoad].at(nCntUi).pPresents = NULL;
 		}
-		// vectorの開放
-		vector<UI_LOAD>().swap(m_vec_UiLoad[nCntLoad]);
+		// std::vectorの開放
+		std::vector<UI_LOAD>().swap(m_vec_UiLoad[nCntLoad]);
 	}
 }
 
@@ -853,13 +853,13 @@ CUi * CUi::Create(
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CUi> CUi::Create_Self(
+std::unique_ptr<CUi> CUi::Create_Self(
 	UITYPE const &Uitype,
 	int const &nUi
 )
 {
 	// 変数宣言
-	unique_ptr<CUi> pUi(new CUi);
+	std::unique_ptr<CUi> pUi(new CUi);
 	// UIタイプの設定
 	pUi->m_Uitype = Uitype;
 	// UIID設定

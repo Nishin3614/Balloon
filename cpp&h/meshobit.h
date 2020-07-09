@@ -82,7 +82,7 @@ public:
 	// 読み込んだものを破棄
 	static void UnLoad(void);
 	// 作成処理(個人管理)
-	static unique_ptr<CMeshobit> Create_Self(
+	static std::unique_ptr<CMeshobit> Create_Self(
 		int const &nLine,				// 線の数
 		D3DXVECTOR3 const &BeginOffset,	// 始点オフセット
 		D3DXVECTOR3 const &EndOffset,	// 終点オフセット

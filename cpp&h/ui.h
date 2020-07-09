@@ -53,9 +53,9 @@ public:
 		UITYPE_MAX
 	} UITYPE;
 	// UIの情報格納用型名
-	typedef vector<unique_ptr<CUi>> VEC_UNI_UI;
+	typedef std::vector<std::unique_ptr<CUi>> VEC_UNI_UI;
 	// UIの情報格納用型名
-	typedef vector<CUi*> VEC_P_UI;
+	typedef std::vector<CUi*> VEC_P_UI;
 	/* 構造体*/
 	// 点滅ロード
 	typedef struct COOPERATION_COL_LOAD
@@ -236,7 +236,7 @@ public:
 		int const &nUi
 	);
 	// 作成処理(個人管理)
-	static unique_ptr<CUi> Create_Self(
+	static std::unique_ptr<CUi> Create_Self(
 		UITYPE const &Uitype,
 		int const &nUi
 	);
@@ -258,7 +258,7 @@ public:
 		UITYPE const &uitype
 	);
 	// 指定したUIの情報取得
-	static vector<UI_LOAD> GetUi(
+	static std::vector<UI_LOAD> GetUi(
 		UITYPE const &uitype
 	) { return m_vec_UiLoad[uitype]; };
 protected:
@@ -271,9 +271,9 @@ private:
 	// 更新 //
 
 	/* 変数 */
-	static vector<UI_LOAD> m_vec_UiLoad[UITYPE_MAX];	// Ui読み込み用変数
+	static std::vector<UI_LOAD> m_vec_UiLoad[UITYPE_MAX];	// Ui読み込み用変数
 	static bool	m_sta_UiUse[UITYPE_MAX];				// このUIの使用状態
-	static vector<string> m_vec_String;					// ファイル情報読み書き用
+	static std::vector<std::string> m_vec_String;					// ファイル情報読み書き用
 	CScene_TWO * m_pScene_two;							// シーン2D
 	C2DPresents * m_pPresents;							// 2Dプレゼンツ
 	UITYPE m_Uitype;									// UIタイプ
@@ -281,11 +281,11 @@ private:
 	
 	// 処理に必要な変数
 	// int型
-	vector<int> m_vec_nNumber;							// int情報
+	std::vector<int> m_vec_nNumber;							// int情報
 	// bool型
-	vector<bool> m_vec_Bool;							// bool情報						
+	std::vector<bool> m_vec_Bool;							// bool情報						
 	// シーンクラス
-	unique_ptr<CScene> m_pScene;						// シーン情報
+	std::unique_ptr<CScene> m_pScene;						// シーン情報
 
 };
 #endif

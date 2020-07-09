@@ -5,7 +5,8 @@
 //
 // ------------------------------------------
 #include "network.h"
-#include "manager.h"
+//#include "manager.h"
+#include "debugproc.h"
 
 bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
 bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
@@ -16,7 +17,6 @@ bool m_aKeyStateTrigger[MAX_PLAYER][NUM_KEY_M] = {};		// Trigger
 // ------------------------------------------
 char CNetwork::aIp[32] = {};
 int CNetwork::nPort = 0;
-char CNetwork::aMultiCast_ip[32] = {};
 
 // ------------------------------------------
 // コンストラクタ
@@ -53,6 +53,8 @@ HRESULT CNetwork::Init(void)
 	sprintf(debug, "ans = %d\n", ans);
 	OutputDebugString(debug);
 
+	m_bGame = true;
+
 	return hr;
 }
 
@@ -61,6 +63,8 @@ HRESULT CNetwork::Init(void)
 // ------------------------------------------
 void CNetwork::Uninit(void)
 {
+	m_bGame = false;
+
 	//ソケット(クライアント)の開放
 	closesocket(m_sockClient);
 }
@@ -70,57 +74,58 @@ void CNetwork::Uninit(void)
 // ------------------------------------------
 void CNetwork::Update(void)
 {
-	char debug[1024];
-	int nError = -1;
-	float fData[NUM_KEY_M];
-	char cDie[32];
-
-	char cDataText[128];		//文字
-	char cPlayerData[MAX_PLAYER][128];		//比較
-
-	OutputDebugString("送信開始\n");
-	KeyData();
-	OutputDebugString("送信完了\n");
-
-	//nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
-
-	OutputDebugString("受信開始\n");
-	nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
-	OutputDebugString("受信完了\n");
-
-	if (nError == INVALID_SOCKET)
+	while (m_bGame)
 	{
-		{// ソケットの作成に失敗したとき
+		char debug[1024];
+		int nError = -1;
+		float fData[NUM_KEY_M];
+		char cDie[32];
+
+		char cDataText[128];		//文字
+		char cPlayerData[MAX_PLAYER][128];		//比較
+
+		OutputDebugString("送信開始\n");
+		KeyData();
+		OutputDebugString("送信完了\n");
+
+		OutputDebugString("受信開始\n");
+		nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
+		OutputDebugString("受信完了\n");
+
+		if (nError == SOCKET_ERROR)
+		{
+			// ソケットの作成に失敗したとき
 			char aError[64];
 			sprintf(aError, "サーバーに接続失敗!!\n エラーコード : %d", WSAGetLastError());
 			MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
-		}
-	}
-	else
-	{
-		sscanf(debug, "%s %s %s %s %s", &cDie, &cPlayerData[0], &cPlayerData[1], &cPlayerData[2], &cPlayerData[3]);
 
-		for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+		}
+		else
 		{
-			ConvertStringToFloat(cPlayerData[nCount], ",", fData);
+			sscanf(debug, "%s %s %s %s %s", &cDie, &cPlayerData[0], &cPlayerData[1], &cPlayerData[2], &cPlayerData[3]);
 
-			for (int nCntkey = 0; nCntkey < NUM_KEY_M; nCntkey++)
+			for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 			{
-				m_aKeyStateOld[nCount][nCntkey] = m_aKeyState[nCount][nCntkey];
+				ConvertStringToFloat(cPlayerData[nCount], ",", fData);
+
+				for (int nCntkey = 0; nCntkey < NUM_KEY_M; nCntkey++)
+				{
+					m_aKeyStateOld[nCount][nCntkey] = m_aKeyState[nCount][nCntkey];
+				}
+
+				for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
+				{
+					m_aKeyState[nCount][nCntKey] = fData[nCntKey];
+				}
+
+				for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
+				{
+					m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
+				}
 			}
 
-			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
-			{
-				m_aKeyState[nCount][nCntKey] = (int)fData[nCntKey];
-			}
-
-			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
-			{
-				m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
-			}
+			CDebugproc::Print("キー入力情報 : %d , %d , %d , %d , %d", m_aKeyState[m_nId][NUM_KEY_A], m_aKeyState[m_nId][NUM_KEY_S], m_aKeyState[m_nId][NUM_KEY_W], m_aKeyState[m_nId][NUM_KEY_D], m_aKeyState[m_nId][NUM_KEY_SPACE]);
 		}
-
-		CDebugproc::Print("キー入力情報 : %d , %d , %d , %d , %d",m_aKeyState[m_nId][NUM_KEY_A], m_aKeyState[m_nId][NUM_KEY_S], m_aKeyState[m_nId][NUM_KEY_W], m_aKeyState[m_nId][NUM_KEY_D], m_aKeyState[m_nId][NUM_KEY_SPACE]);
 	}
 }
 
@@ -165,10 +170,6 @@ HRESULT CNetwork::LoadConfiguration(void)
 					else if (strcmp(cHeadText, "PORT") == 0)
 					{//パーツモデルのアドレス情報のとき
 						sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nPort);					//パーツの数を取得
-					}
-					else if (strcmp(cHeadText, "MULTICAST_IP") == 0)
-					{//パーツモデルのアドレス情報のとき
-						sscanf(cReadText, "%s %s %s", &cDie, &cDie, aMultiCast_ip);					//パーツの数を取得
 					}
 				}
 			}
@@ -236,6 +237,7 @@ bool CNetwork::SendUDP(const char *data, int nSize)
 bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 {
 	int nError;
+	char aError[256];
 
 	switch (type)
 	{
@@ -251,7 +253,8 @@ bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 
 	if (nError < 0)
 	{
-		printf("受信エラー : %d\n", WSAGetLastError());
+		sprintf(aError, "受信エラー : %d\n", WSAGetLastError());
+		MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
 		return false;
 	}
 	return false;
@@ -264,11 +267,6 @@ HRESULT CNetwork::Build(void)
 {
 	WSADATA wsaData;								//winsockの情報
 	int nError;										//エラー取得
-	struct ip_mreq mreq;
-
-	/* マルチキャスト用追加 */
-	char address[80]; // マルチキャストアドレス
-	struct ip_mreq stMreq;
 
 	//winsockの初期化
 	nError = WSAStartup(MAKEWORD(2, 0), &wsaData);
@@ -321,30 +319,19 @@ HRESULT CNetwork::Build(void)
 		return E_FAIL;
 	}
 
-	// ソケット作成
-	m_sockServerToClient = createServerSocket(10046);
-
 	//ソケットの設定
 	m_addrServer.sin_family = AF_INET;
-	m_addrServer.sin_port = htons(nPort);
+	m_addrServer.sin_port = htons(12345);
 	m_addrServer.sin_addr.S_un.S_addr = inet_addr(aIp);
 
 	bind(m_sockClientToServer, (struct sockaddr *)&m_addrServer, sizeof(m_addrServer));
-
-	//ソケットの設定
-	m_addrServerToClient.sin_family = AF_INET;
-	m_addrServerToClient.sin_port = htons(10046);
-	m_addrServerToClient.sin_addr.S_un.S_addr = INADDR_ANY;
 
 	m_addrClientToServer.sin_family = AF_INET;
 	m_addrClientToServer.sin_port = htons(10032);
 	m_addrClientToServer.sin_addr.S_un.S_addr = inet_addr(aIp);
 
-	//// ここで、ノンブロッキングに設定しています。
-	//// val = 0でブロッキングモードに設定できます。
-	//// ソケットの初期設定はブロッキングモードです。
-	//u_long val = 1;
-	//ioctlsocket(m_sockClientToServer, FIONBIO, &val);
+	// ソケット作成
+	m_sockServerToClient = createServerSocket(nPort);
 
 	return S_OK;
 }
@@ -374,6 +361,8 @@ HRESULT CNetwork::Connect(void)
 	OutputDebugString(debug);
 
 	OutputDebugString("サーバとの接続完了\n");
+
+	Start();
 	return S_OK;
 }
 
@@ -400,9 +389,11 @@ bool CNetwork::KeyData(void)
 	return false;
 }
 
+// ------------------------------------------
+// キーボードのプレス状態取得
+// ------------------------------------------
 bool CNetwork::GetPressKeyboard(int nId, int nKey)
 {
-	//return(m_aKeyState[nId][nKey] & 0x80) ? true : false;
 	return m_aKeyState[nId][nKey];
 }
 
@@ -411,11 +402,13 @@ bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
 	return m_aKeyStateTrigger[nId][nKey];
 }
 
+// ------------------------------------------
 // サーバーソケットを作成する
+// ------------------------------------------
 SOCKET CNetwork::createServerSocket(unsigned short port)
 {
 	SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
-	if (sock == INVALID_SOCKET)
+	if (sock == SOCKET_ERROR)
 	{// ソケットの作成に失敗したとき
 		char aError[64];
 		sprintf(aError, "ソケットの生成に失敗!!\n エラーコード : %d", WSAGetLastError());
@@ -429,7 +422,13 @@ SOCKET CNetwork::createServerSocket(unsigned short port)
 	adr.sin_port = htons(port);
 	adr.sin_addr.S_un.S_addr = INADDR_ANY;  // サーバ側で割り当てられている IP を自動で設定
 
-	bind(sock, (struct sockaddr *)&adr, sizeof(adr));
+	if (SOCKET_ERROR == bind(sock, (struct sockaddr *)&adr, sizeof(adr)))
+	{
+		char aError[64];
+		sprintf(aError, "ソケットの生成に失敗!!\n エラーコード : %d", WSAGetLastError());
+		MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
+		return sock;
+	}
 
 	return sock;
 }
@@ -450,6 +449,13 @@ void CNetwork::ConvertStringToFloat(char* text, const char* delimiter, float* pR
 	{
 		pResult[nTemp++] = (float)atof(tp);
 	}
+}
+
+void CNetwork::Start(void)
+{
+	// マルチスレッドにて更新開始
+	m_th = std::thread(&CNetwork::Update, this);
+	m_th.detach();
 }
 
 //=============================================================================

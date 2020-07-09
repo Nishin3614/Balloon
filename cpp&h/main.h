@@ -39,9 +39,6 @@
 #include "dinput.h"						// 入力機器用
 #include "xaudio2.h"					// BGM
 
-
-using namespace std;	// 名前空間指定
-
 // ------------------------------------------
 //
 // ライブラリのリンク

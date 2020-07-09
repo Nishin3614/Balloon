@@ -54,7 +54,7 @@ public:
 		}
 		LPD3DXMESH			pMesh;					// メッシュ情報へのポインタ
 		LPD3DXBUFFER		pBuffMat;				// マテリアル情報へのポインタ
-		vector<LPDIRECT3DTEXTURE9> vec_pTexture;	// テクスチャー情報
+		std::vector<LPDIRECT3DTEXTURE9> vec_pTexture;	// テクスチャー情報
 		DWORD				nNumMat;				// マテリアルの数
 		D3DXVECTOR3			vtxMinMaterials;		// モデル情報の位置の最小値
 		D3DXVECTOR3			vtxMaxMaterials;		// モデル情報の位置の最大値
@@ -103,7 +103,7 @@ public:
 		bool const &bShadowMap = false
 	);
 	// 作成処理(個人管理)
-	static unique_ptr<CScene_X> Create_Uni(
+	static std::unique_ptr<CScene_X> Create_Uni(
 		D3DXVECTOR3 const &pos,
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,
@@ -148,7 +148,7 @@ private:
 	/* 関数 */
 	static void ModelSetting(MODEL_LOAD * pModel_load);
 	/* 変数 */
-	static vector<unique_ptr<MODEL_LOAD>> m_pModelLoad;	// モデル情報の読み込み用
+	static std::vector<std::unique_ptr<MODEL_LOAD>> m_pModelLoad;	// モデル情報の読み込み用
 	
 	D3DXVECTOR3		m_pos;								// 位置情報
 	D3DXVECTOR3		m_rot;								// 回転情報

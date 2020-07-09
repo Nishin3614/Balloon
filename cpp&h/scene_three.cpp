@@ -263,7 +263,7 @@ CScene_THREE * CScene_THREE::Create(
 	pScene_Three->m_bAlpha = bAlpha;			// アルファブレンド
 	// 初期化処理
 	pScene_Three->Init();
-	
+
 	// 生成したオブジェクトを返す
 	return pScene_Three;
 }
@@ -310,7 +310,7 @@ CScene_THREE * CScene_THREE::Create_Self(
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 個人管理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CScene_THREE> CScene_THREE::Create_Uni(
+std::unique_ptr<CScene_THREE> CScene_THREE::Create_Uni(
 	OFFSET_TYPE	const & type,			// タイプ
 	D3DXVECTOR3 const & pos,			// 位置
 	D3DXVECTOR3 const & size,			// サイズ
@@ -324,7 +324,7 @@ unique_ptr<CScene_THREE> CScene_THREE::Create_Uni(
 )
 {
 	// 変数宣言
-	unique_ptr<CScene_THREE> pScene_Three(new CScene_THREE);		// シーン3Dクラス
+	std::unique_ptr<CScene_THREE> pScene_Three(new CScene_THREE);		// シーン3Dクラス
 	// 設定
 	pScene_Three->m_offsetType = type;			// タイプ
 	pScene_Three->m_pos = pos;					// 位置

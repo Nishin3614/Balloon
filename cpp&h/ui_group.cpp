@@ -124,10 +124,10 @@ void CUi_group::UnLoad(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ì¬ˆ—(ŒÂlŠÇ—)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CUi_group> CUi_group::Create_Self(CUi::UITYPE const &uitype)
+std::unique_ptr<CUi_group> CUi_group::Create_Self(CUi::UITYPE const &uitype)
 {
 	// •Ï”éŒ¾
-	unique_ptr<CUi_group> pUi_group(new CUi_group);
+	std::unique_ptr<CUi_group> pUi_group(new CUi_group);
 	// UIType‚Ìİ’è
 	pUi_group->m_Uitype = uitype;
 	// ‰Šú‰»ˆ—

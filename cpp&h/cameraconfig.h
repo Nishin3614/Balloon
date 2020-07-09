@@ -51,7 +51,7 @@ public:
 	static HRESULT Load(void);		// 読み込み
 	static void UnLoad(void);		// UnLoadする
 	// 生成
-	static unique_ptr<CCameraconfig> Create_Self(void);
+	static std::unique_ptr<CCameraconfig> Create_Self(void);
 	// カメラ設定オンオフ設定
 	static void SetConfig(bool const &bConfig) { m_bConfig = bConfig; };
 	// カメラ設定オンオフ取得
@@ -88,9 +88,9 @@ private:
 	static int m_nSpeed;							// カメラスピード
 	static D3DXVECTOR2 m_AddSpeed;					// カメラスピード加算
 	/* 各UIクラス */
-	vector<unique_ptr<CUi>> m_BgUi;					// 背景用UI
-	unique_ptr<CScene_TWO> m_uni_SelectUi;			// 選択UI
-	vector<unique_ptr<CUi>> m_Ui;					// UI情報
+	std::vector<std::unique_ptr<CUi>> m_BgUi;					// 背景用UI
+	std::unique_ptr<CScene_TWO> m_uni_SelectUi;			// 選択UI
+	std::vector<std::unique_ptr<CUi>> m_Ui;					// UI情報
 };
 
 #endif

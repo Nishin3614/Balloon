@@ -113,7 +113,7 @@ public:
 		D3DXCOLOR	const & col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// êF
 	);
 	// unique_ptrçÏê¨(ÉVÅ[Éìåpè≥Ç»Çµ)
-	static unique_ptr<CScene_TWO> Creat_Unique(
+	static std::unique_ptr<CScene_TWO> Creat_Unique(
 		OFFSET_TYPE const & type,
 		D3DXVECTOR3 const & pos,
 		D3DXVECTOR2 const & size,
