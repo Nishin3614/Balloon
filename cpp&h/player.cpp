@@ -119,6 +119,11 @@ void CPlayer::MyAction(void)
 
 	// Ž©ƒLƒƒƒ‰‚ÌˆÚ“®ˆ—
 	MyMove();
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_N))
+	{
+		D3DXVECTOR3 &move = CCharacter::GetMove();
+		move.y += 1.0f;
+	}
 	// •—‘D‚ð–c‚ç‚Ü‚¹‚é
 	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
 	{

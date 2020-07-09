@@ -312,10 +312,10 @@ void CCharacter::Update(void)
 {
 	// 過去の位置情報保存
 	m_posold = m_pos;
-	// 当たり判定処理
-	Collision();
 	// 通常時の更新処理
 	Update_Normal();
+	// 当たり判定処理
+	Collision();
 	// ステンシルシャドウの位置設定
 	if (m_pStencilshadow != NULL)
 	{

@@ -246,11 +246,11 @@ void CGame::PlayerCreate(void)
 		// ÉvÉåÉCÉÑÅ[1
 		if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_THUNDER)
 		{
-			CP_thunder::Create(nCntPlayer,D3DXVECTOR3(0.0f, 0.0f, -500.0f * nCntPlayer));
+			CP_thunder::Create(nCntPlayer, D3DXVECTOR3(500.0f, 0.0f, -500.0f * nCntPlayer));
 		}
 		else if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_ZOMBIE)
 		{
-			CP_zombie::Create(nCntPlayer, D3DXVECTOR3(0.0f, 0.0f, -500.0f * nCntPlayer));
+			CP_zombie::Create(nCntPlayer, D3DXVECTOR3(500.0f, 0.0f, -500.0f * nCntPlayer));
 		}
 	}
 }

@@ -165,13 +165,13 @@ bool CCollision::CollisionDetection(CCollision * collision)
 		// ->当たった後の処理を行う
 		if (m_pOwner != NULL)
 		{
-			//m_pOwner->Scene_Collision(collision->m_nMyObjectId,collision->m_pOwner);
+			m_pOwner->Scene_Collision(collision->m_nMyObjectId,collision->m_pOwner);
 		}
 		// 相手のシーン情報がNULLではないなら
 		// ->当たった後の処理を行う
 		if (collision->m_pOwner != NULL)
 		{
-			//collision->m_pOwner->Scene_Collision(m_nMyObjectId,m_pOwner);
+			collision->m_pOwner->Scene_Collision(m_nMyObjectId,m_pOwner);
 		}
 	}
 	// 当たり判定状態を返す
@@ -293,7 +293,7 @@ void CCollision::SetCollision(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCollision::CompulsionScene(void)
 {
-	m_pOwner = NULL;	
+	m_pOwner = NULL;
 	m_pParent = NULL;
 }
 
@@ -718,57 +718,13 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 		// 変数宣言
 		D3DXVECTOR3 posA = *pSphereShapeA->Get_PosCore();	// 位置A
 		D3DXVECTOR3 posB = *pSphereShapeB->Get_PosCore();	// 位置B
-		D3DXVECTOR3 diff = posB - posA;						// BからAの差
+		D3DXVECTOR3 diff = posA - posB;						// BからAの差
 		D3DXVECTOR3 vec;									// B->Aのベクトル
 		// ベクトルの正規化
 		D3DXVec3Normalize(&vec, &diff);
 		// 押し出し
-		*pSphereShapeA->Get_PPos() = vec * (pSphereShapeA->GetRadius() * pSphereShapeB->GetRadius());
-
-
-		/*
-		float fCollisionTime = 0;
-		D3DXVECTOR3 CollisionPos = D3DVECTOR3_ZERO;
-		D3DXVECTOR3 CollisionPosA;
-		D3DXVECTOR3 CollisionPosB;
-		CCalculation::CalcIntervalSphereSphere(
-			1,
-			pSphereShapeA,
-			*pSphereShapeA->m_pmove,
-			pSphereShapeB,
-			*pSphereShapeB->m_pmove,
-			fCollisionTime,
-			CollisionPos,
-			pos_A,
-			pos_B
-		);
-		*/
-
-			/*
-
-		// 変数宣言
-		// 距離
-		D3DXVECTOR3 diffpos = CCalculation::Difference_Between(
-			*pos_A + pSphereShapeA->GetOffset(),
-			*pos_B + pSphereShapeB->GetOffset());
-
-		// お互いの最大距離ポイント
-		float fDiffPower;
-		fDiffPower = pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius();
-
-		//お互いの距離
-		float fLength = D3DXVec3Length(&diffpos);
-		
-		// 長さの比較
-		if (fLength < fDiffPower)
-		{
-			// 自分から相手の角度
-			float fRot = atan2f(diffpos.x, diffpos.z);
-			// Extrusion処理
-			m_ppos->x = pExtrusion->m_ppos->x + sinf(fRot) * fDiffPower;
-			m_ppos->z = pExtrusion->m_ppos->z + cosf(fRot) * fDiffPower;
-		}
-		*/
+		*pSphereShapeA->Get_PPos() = posB + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
+		pSphereShapeA->PassPos(D3DVECTOR3_ZERO);
 	}
 	return bCollision;
 }
