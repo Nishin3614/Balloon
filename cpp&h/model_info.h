@@ -117,7 +117,7 @@ typedef struct KEY_INFO
 	int nNumCollision;							// 当たり判定の個数
 	int nMaxCollisiontime;						// 当たり判定の頻度
 	int nBlust;									// 吹っ飛び方
-	vector<MOTION_EFFECT> v_MotionEffect;		// モーションエフェクト
+	std::vector<MOTION_EFFECT> v_MotionEffect;		// モーションエフェクト
 	MOTION_CAMERA * pMotionCamera;				// モーションカメラ
 	KEY *Key;									// キー
 } KEY_INFO;
@@ -125,7 +125,7 @@ typedef struct KEY_INFO
 // モージョン情報
 typedef struct MOTION
 {
-	MOTION() 
+	MOTION()
 	{
 		nLoop = 0;								// ループ
 		nNumKey = 0;							// キー情報の数
@@ -149,8 +149,8 @@ typedef struct MOTION
 	int			Collision_EndFram;				// 終了フレーム数
 	int			Collision_Damage;				// ダメージ数
 
-	vector<COLLISION_DETAILS> v_Collision;		// 当たり判定詳細情報
-	vector<MESHOBIT_DETAILS> v_MeshObit_detail;	// 軌跡の詳細
+	std::vector<COLLISION_DETAILS> v_Collision;		// 当たり判定詳細情報
+	std::vector<MESHOBIT_DETAILS> v_MeshObit_detail;	// 軌跡の詳細
 	KEY_INFO	*KeyInfo;						// キー情報(モーション数)
 } MOTION;
 
@@ -209,8 +209,8 @@ typedef struct CHARACTERCOLLISION
 	// コンストラクタ
 	CHARACTERCOLLISION() = default;
 	D3DXVECTOR3 Offset;				// オフセット
-	unique_ptr<RECTINFO> RectInfo;				// 矩形情報
-	unique_ptr<SPHEREINFO> p_uni_SphereInfo;	// 球情報
+	std::unique_ptr<RECTINFO> RectInfo;				// 矩形情報
+	std::unique_ptr<SPHEREINFO> p_uni_SphereInfo;	// 球情報
 } CHARACTERCOLLISION;
 
 // 攻撃用当たり判定の基本情報
@@ -220,9 +220,9 @@ typedef struct ATTACKCOLLISION
 	ATTACKCOLLISION() = default;
 	int			nParts;							// パーツ
 	D3DXVECTOR3 Offset;							// オフセット
-	unique_ptr<RECTINFO> p_uni_RectInfo;		// 矩形情報
-	unique_ptr<SPHEREINFO> p_uni_SphereInfo;	// 球情報
-	unique_ptr<COLUMNINFO> p_uni_ColumnInfo;	// 円柱情報
+	std::unique_ptr<RECTINFO> p_uni_RectInfo;		// 矩形情報
+	std::unique_ptr<SPHEREINFO> p_uni_SphereInfo;	// 球情報
+	std::unique_ptr<COLUMNINFO> p_uni_ColumnInfo;	// 円柱情報
 } ATTACKCOLLISION;
 
 // モデル・モーションのの情報
@@ -235,10 +235,10 @@ typedef struct MODEL_ALL
 		pCharacterCollision = NULL;	// キャラクター当たり判定情報
 	}
 	MODEL_OFFSET			*pModel_offset;			// モデルのオフセット
-	vector<MOTION *>		pMotion;				// モーション
+	std::vector<MOTION *>		pMotion;				// モーション
 	CHARACTERCOLLISION		*pCharacterCollision;	// キャラクター当たり判定情報
-	vector<ATTACKCOLLISION>	v_AttackCollision;		// 攻撃当たり判定情報
-	vector<MESHOBIT_BASIC>	v_MeshObitLoad;			// 軌跡の情報
+	std::vector<ATTACKCOLLISION>	v_AttackCollision;		// 攻撃当たり判定情報
+	std::vector<MESHOBIT_BASIC>	v_MeshObitLoad;			// 軌跡の情報
 } MODEL_ALL;
 
 // モデル情報
@@ -290,7 +290,7 @@ public:
 	// モデルのテキストデータ読込
 	static void TextLoad(
 		MODEL_ALL	*pmodelAll,					// モデルとモーションの
-		vector<int> &ModelFile,					// モデルファイルの情報
+		std::vector<int> &ModelFile,					// モデルファイルの情報
 		int const &nMaxMotion,					// モーション数
 		int &nMaxkey,							// キー数
 		int &nMaxParts,							// 動かすモデル数
@@ -299,7 +299,7 @@ public:
 	// モデルのテキストデータ読込
 	static void TextLoad(
 		MODEL_ALL	*pmodelAll,					// モデルとモーションの
-		vector<int> &ModelFile,					// モデルファイルの情報
+		std::vector<int> &ModelFile,					// モデルファイルの情報
 		int &nMaxkey,							// キー数
 		int &nMaxParts,							// 動かすモデル数
 		const char * file_name					// ファイル名

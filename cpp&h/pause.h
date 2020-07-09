@@ -51,6 +51,6 @@ public:
 #endif // _DEBUG
 protected:
 private:
-	unique_ptr<CPause_ui> m_uni_Pause_ui;	// ポーズUI
+	std::unique_ptr<CPause_ui> m_uni_Pause_ui;	// ポーズUI
 };
 #endif

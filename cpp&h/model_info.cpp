@@ -31,7 +31,7 @@ CModel_info::~CModel_info()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void  CModel_info::TextLoad(
 	MODEL_ALL *pmodelAll,
-	vector<int> &ModelFile,
+	std::vector<int> &ModelFile,
 	int const &nMaxMotion,
 	int &nMaxkey,
 	int &nMaxParts,
@@ -756,7 +756,7 @@ void  CModel_info::TextLoad(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void  CModel_info::TextLoad(
 	MODEL_ALL *pmodelAll,
-	vector<int> &ModelFile,
+	std::vector<int> &ModelFile,
 	int &nMaxkey,
 	int &nMaxParts,
 	const char * file_name
@@ -1498,7 +1498,7 @@ void CModel_info::TextUnload(
 		// 軌跡の基本情報の開放
 		if (pmodelAll->v_MeshObitLoad.empty() == true)
 		{
-			vector<MESHOBIT_BASIC>().swap(pmodelAll->v_MeshObitLoad);
+			std::vector<MESHOBIT_BASIC>().swap(pmodelAll->v_MeshObitLoad);
 		}
 		// キャラクター当たり判定情報の開放
 		if (pmodelAll->pCharacterCollision != NULL)
@@ -1509,7 +1509,7 @@ void CModel_info::TextUnload(
 		// 攻撃の当たり判定情報の開放
 		if (pmodelAll->v_AttackCollision.empty() == false)
 		{
-			vector<ATTACKCOLLISION>().swap(pmodelAll->v_AttackCollision);
+			std::vector<ATTACKCOLLISION>().swap(pmodelAll->v_AttackCollision);
 		}
 		for (int nCntMotion = 0; nCntMotion < (signed)pmodelAll->pMotion.size(); nCntMotion++)
 		{
@@ -1524,7 +1524,7 @@ void CModel_info::TextUnload(
 				// エフェクト情報の開放
 				if (pmodelAll->pMotion[nCntMotion]->KeyInfo[nCntKeyInfo].v_MotionEffect.empty() == false)
 				{
-					vector<MOTION_EFFECT>().swap(pmodelAll->pMotion[nCntMotion]->KeyInfo[nCntKeyInfo].v_MotionEffect);
+					std::vector<MOTION_EFFECT>().swap(pmodelAll->pMotion[nCntMotion]->KeyInfo[nCntKeyInfo].v_MotionEffect);
 				}
 				// キーの破棄
 				delete[] pmodelAll->pMotion[nCntMotion]->KeyInfo[nCntKeyInfo].Key;
@@ -1538,13 +1538,13 @@ void CModel_info::TextUnload(
 			if (pmodelAll->pMotion[nCntMotion]->v_MeshObit_detail.empty() == false)
 			{
 				// 軌跡の詳細情報の開放
-				vector<MESHOBIT_DETAILS>().swap(pmodelAll->pMotion[nCntMotion]->v_MeshObit_detail);
+				std::vector<MESHOBIT_DETAILS>().swap(pmodelAll->pMotion[nCntMotion]->v_MeshObit_detail);
 			}
 			// 攻撃の当たり判定情報の開放
 			if (pmodelAll->pMotion[nCntMotion]->v_Collision.empty() == false)
 			{
 				// 当たり判定情報の開放
-				vector<COLLISION_DETAILS>().swap(pmodelAll->pMotion[nCntMotion]->v_Collision);
+				std::vector<COLLISION_DETAILS>().swap(pmodelAll->pMotion[nCntMotion]->v_Collision);
 			}
 			// モーションの破棄
 			delete pmodelAll->pMotion[nCntMotion];

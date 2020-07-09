@@ -160,15 +160,15 @@ CBalloon * CBalloon::Create_Self(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CBalloon> CBalloon::Create_Uni(
-	D3DXVECTOR3 const & pos, 
-	D3DXVECTOR3 const & rot, 
-	int const & nModelId, 
+std::unique_ptr<CBalloon> CBalloon::Create_Uni(
+	D3DXVECTOR3 const & pos,
+	D3DXVECTOR3 const & rot,
+	int const & nModelId,
 	bool const & bShadowMap
 )
 {
 	// 変数宣言
-	unique_ptr<CBalloon> pBalloon(new CBalloon);		// シーンXクラス
+	std::unique_ptr<CBalloon> pBalloon(new CBalloon);		// シーンXクラス
 	// 設定
 	pBalloon->SetPos(pos);
 	pBalloon->SetRot(rot);

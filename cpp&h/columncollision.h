@@ -81,7 +81,7 @@ public:
 	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
 
 	CShape * const GetShape(void) { return m_pColumnShape.get(); };
-	// 
+	//
 	// 矩形クラスの当たり判定比較
 	bool Judg(CRectShape * const RectShape);
 	// 矩形クラスの当たり判定比較(押し出し処理)
@@ -104,7 +104,7 @@ public:
 		D3DXVECTOR3 * pPosold = NULL
 	);
 	// 作成処理(個人管理)
-	static unique_ptr<CColumnCollision> Create_Self(
+	static std::unique_ptr<CColumnCollision> Create_Self(
 		float const &fRadius,
 		float const &fVertical,
 		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
@@ -120,7 +120,7 @@ protected:
 
 private:
 	// 変数宣言
-	unique_ptr<CColumnShape> m_pColumnShape;	// 矩形
+	std::unique_ptr<CColumnShape> m_pColumnShape;	// 矩形
 };
 
 // ----------------------------------------------------------------------------------------------------

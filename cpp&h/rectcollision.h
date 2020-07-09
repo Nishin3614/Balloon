@@ -110,7 +110,7 @@ public:
 		D3DXVECTOR3 * pPosold = NULL
 	);
 	// ì¬ˆ—(ŒÂlŠÇ—)
-	static unique_ptr<CRectCollision> Create_Self(
+	static std::unique_ptr<CRectCollision> Create_Self(
 		D3DXVECTOR3 const size,
 		D3DXVECTOR3 const offset = D3DVECTOR3_ZERO,
 		OBJTYPE const &obj = OBJTYPE_ACTOR,
@@ -125,7 +125,7 @@ protected:
 
 private:
 	// •Ï”éŒ¾
-	unique_ptr<CRectShape> m_pRectShape;	// ‹éŒ`
+	std::unique_ptr<CRectShape> m_pRectShape;	// ‹éŒ`
 
 };
 

@@ -37,7 +37,7 @@
 // 静的変数宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vector<unique_ptr<CScene_X::MODEL_LOAD>>  CScene_X::m_pModelLoad;	// プレイヤー(雷)情報の読み込み用
+std::vector<std::unique_ptr<CScene_X::MODEL_LOAD>>  CScene_X::m_pModelLoad;	// プレイヤー(雷)情報の読み込み用
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // イニシャライザコンストラクタ
@@ -322,15 +322,15 @@ CScene_X * CScene_X::Create_Self(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CScene_X> CScene_X::Create_Uni(
-	D3DXVECTOR3 const & pos, 
-	D3DXVECTOR3 const & rot, 
-	int const & nModelId, 
+std::unique_ptr<CScene_X> CScene_X::Create_Uni(
+	D3DXVECTOR3 const & pos,
+	D3DXVECTOR3 const & rot,
+	int const & nModelId,
 	bool const & bShadowMap
 )
 {
 	// 変数宣言
-	unique_ptr<CScene_X> pScene_X(new CScene_X);		// シーンXクラス
+	std::unique_ptr<CScene_X> pScene_X(new CScene_X);		// シーンXクラス
 	// 設定
 	pScene_X->m_pos = pos;
 	pScene_X->m_rot = rot;
@@ -350,7 +350,7 @@ HRESULT CScene_X::LoadModel(void)
 	// 変数宣言
 	LPDIRECT3DDEVICE9 pDevice =					// デバイスの取得
 		CManager::GetRenderer()->GetDevice();
-	vector<vector<string>> vsvec_Contens;		// テキストデータ格納用
+	std::vector<std::vector<std::string>> vsvec_Contens;		// テキストデータ格納用
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(TEXTURE_FILE, ',');
 	// 行ごとに回す
@@ -360,7 +360,7 @@ HRESULT CScene_X::LoadModel(void)
 		for (int nCntItem = 0; nCntItem < (signed)vsvec_Contens.at(nCntLine).size(); nCntItem++)
 		{
 			// 変数宣言
-			unique_ptr<MODEL_LOAD> pModelLoad(new MODEL_LOAD);	// プレイヤー(雷)情報の読み込み用
+			std::unique_ptr<MODEL_LOAD> pModelLoad(new MODEL_LOAD);	// プレイヤー(雷)情報の読み込み用
 			switch (nCntItem)
 			{
 				// パス情報
@@ -377,7 +377,7 @@ HRESULT CScene_X::LoadModel(void)
 					&pModelLoad->pMesh) == S_OK
 					)
 				{
-					string sNum = to_string(nCntLine);
+					std::string sNum = std::to_string(nCntLine);
 					CCalculation::Messanger(sNum.c_str());
 				}
 				// プレイヤー(雷)情報の設定

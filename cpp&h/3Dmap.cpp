@@ -33,12 +33,12 @@
 // 静的変数宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-vector<vector<C3DMap::OBJECT>> C3DMap::m_vec_obj;
-vector<vector<C3DMap::CHARACTER>> C3DMap::m_vec_char;
-vector<vector<C3DMap::POLYGON>> C3DMap::m_vec_polygon;
-vector<vector<C3DMap::FLOOR>> C3DMap::m_vec_floor;
-vector<vector<C3DMap::WALL>> C3DMap::m_vec_wall;
-vector<string> C3DMap::m_vec_String;
+std::vector<std::vector<C3DMap::OBJECT>> C3DMap::m_vec_obj;
+std::vector<std::vector<C3DMap::CHARACTER>> C3DMap::m_vec_char;
+std::vector<std::vector<C3DMap::POLYGON>> C3DMap::m_vec_polygon;
+std::vector<std::vector<C3DMap::FLOOR>> C3DMap::m_vec_floor;
+std::vector<std::vector<C3DMap::WALL>> C3DMap::m_vec_wall;
+std::vector<std::string> C3DMap::m_vec_String;
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -78,7 +78,7 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 		// シーンXの生成
 		CScene_X::Create(
 			m_vec_obj[map][nCntMap].pos,
-			m_vec_obj[map][nCntMap].rot, 
+			m_vec_obj[map][nCntMap].rot,
 			m_vec_obj[map][nCntMap].nModelType,
 			true
 		);
@@ -157,7 +157,7 @@ HRESULT C3DMap::ManagerLoad(void)
 {
 	// 変数宣言
 	// ファイルの中身格納用
-	vector<vector<string>> vsvec_Contens;
+	std::vector<std::vector<std::string>> vsvec_Contens;
 	// ファイルの中身を取得する
 	vsvec_Contens = CCalculation::FileContens(MANAGER_FILE, '\0');
 	// 行ごとに回す
@@ -188,7 +188,7 @@ HRESULT C3DMap::ScriptLoad(void)
 	// ファイルポイント
 	FILE *pFile;
 
-	// 変数宣言						
+	// 変数宣言
 	char cRaedText[128];	// 文字として読み取り用
 	char cHeadText[128];	// 比較するよう
 	char cDie[128];			// 不必要な文字
@@ -197,11 +197,11 @@ HRESULT C3DMap::ScriptLoad(void)
 	for (int nCntScript = 0; nCntScript < (signed)m_vec_String.size(); nCntScript++)
 	{
 		// 変数宣言
-		vector<OBJECT> vec_obj;
-		vector<CHARACTER> vec_char;
-		vector<POLYGON> vec_bill;
-		vector<FLOOR> vec_floor;
-		vector<WALL> vec_wall;
+		std::vector<OBJECT> vec_obj;
+		std::vector<CHARACTER> vec_char;
+		std::vector<POLYGON> vec_bill;
+		std::vector<FLOOR> vec_floor;
+		std::vector<WALL> vec_wall;
 		nCntObj = 0;
 		nCntChar = 0;
 		nCntPoly = 0;
@@ -212,7 +212,7 @@ HRESULT C3DMap::ScriptLoad(void)
 		if ((pFile = fopen(m_vec_String[nCntScript].c_str(), "r")) == NULL)
 		{// メッセージの表示
 #ifdef _DEBUG
-			string sErrow = m_vec_String[nCntScript] + "が見つかりません";
+			std::string sErrow = m_vec_String[nCntScript] + "が見つかりません";
 			CCalculation::Messanger(sErrow.c_str());
 #endif // _DEBUG
 			return E_FAIL;

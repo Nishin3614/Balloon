@@ -52,7 +52,7 @@ public:
 	static HRESULT Load(void);		// 読み込み
 	static void UnLoad(void);		// UnLoadする
 	// 生成
-	static unique_ptr<CPause_ui> Create_Self(void);
+	static std::unique_ptr<CPause_ui> Create_Self(void);
 protected:
 
 private:
@@ -81,10 +81,10 @@ private:
 	/* 変数 */
 	static int m_nSelect;							// 選択
 	/* 各UIクラス */
-	vector<unique_ptr<CUi>> m_BgUi;					// 背景用UI
-	unique_ptr<CScene_TWO> m_uni_SelectUi;			// 選択UI
-	vector<unique_ptr<CUi>> m_Ui;					// UI情報
-	unique_ptr<CCameraconfig> m_uni_CameraConfig;	// カメラ設定
+	std::vector<std::unique_ptr<CUi>> m_BgUi;					// 背景用UI
+	std::unique_ptr<CScene_TWO> m_uni_SelectUi;			// 選択UI
+	std::vector<std::unique_ptr<CUi>> m_Ui;					// UI情報
+	std::unique_ptr<CCameraconfig> m_uni_CameraConfig;	// カメラ設定
 };
 
 #endif

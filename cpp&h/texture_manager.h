@@ -41,7 +41,7 @@ public:
 	static LPDIRECT3DTEXTURE9 GetTexture(int const & nTextureId);
 protected:
 private:
-	static vector<LPDIRECT3DTEXTURE9> m_st_vpTexture;
+	static std::vector<LPDIRECT3DTEXTURE9> m_st_vpTexture;
 };
 
 #endif

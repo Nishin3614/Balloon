@@ -83,6 +83,8 @@ public:
 	bool GetTriggerKeyboard(int nId, int nKey);
 	int GetId(void) { return m_nId; }
 
+	void Start(void);
+
 	static int ConvertDecimalToBinary(int nValue);
 
 private:
@@ -95,7 +97,6 @@ private:
 
 	struct sockaddr_in m_addrServer;					// ソケットアドレス(サーバ)の情報(TCP送受信)
 	struct sockaddr_in m_addrClientToServer;			// キー送信用ソケット(UDP送信用)
-	struct sockaddr_in m_addrServerToClient;			// キー送信用ソケット(UDP受信用)
 
 	PLAYERSTATE keystate;
 	fd_set m_readfds;
@@ -103,7 +104,9 @@ private:
 	int m_nId;
 
 	static char aIp[32];				// IPアドレス
-	static char aMultiCast_ip[32];			// マルチキャストIP
 	static int nPort;					// ポート番号
+
+	std::thread m_th;
+	bool m_bGame;
 };
 #endif // !_NETWORK_H_

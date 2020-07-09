@@ -60,7 +60,7 @@ public:
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,
 		bool const &bShadowMap = false
-	);	
+	);
 	// ì¬ˆ—(ŒÂlŠÇ—)
 	static CBalloon * Create_Self(
 		D3DXVECTOR3 const &pos,
@@ -69,7 +69,7 @@ public:
 		bool const &bShadowMap = false
 	);
 	// ì¬ˆ—(ŒÂlŠÇ—)
-	static unique_ptr<CBalloon> Create_Uni(
+	static std::unique_ptr<CBalloon> Create_Uni(
 		D3DXVECTOR3 const &pos,
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,

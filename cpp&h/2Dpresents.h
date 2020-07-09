@@ -185,7 +185,7 @@ public:
 		D3DXCOLOR	const & col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f)	// 色
 	);
 	// 作成(個人管理スマートポインター)
-	static unique_ptr<C2DPresents> Create_Unique(
+	static std::unique_ptr<C2DPresents> Create_Unique(
 		OFFSET_TYPE	const & type,									// タイプ
 		D3DXVECTOR3 const & pos,									// 位置
 		D3DXVECTOR2 const & size,									// サイズ
@@ -267,8 +267,8 @@ private:
 	{
 		DESIGN_COL()
 		{
-			BeginCol = D3DXCOLOR_INI;		
-			EndCol = D3DXCOLOR_INI;		
+			BeginCol = D3DXCOLOR_INI;
+			EndCol = D3DXCOLOR_INI;
 			DiffCol = D3DXCOLOR_INI;
 			nfram = 0;
 			nMaxfram = 0;

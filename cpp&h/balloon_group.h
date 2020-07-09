@@ -96,12 +96,12 @@ private:
 	/* 関数 */
 	void BreakBalloon_group(int const &nCntBalloon_group);	// 風船グループが割れる処理
 	/* 変数 */
-	vector<CBalloon *> m_apBalloon;				// 風船モデル情報
+	std::vector<CBalloon *> m_apBalloon;				// 風船モデル情報
 	D3DXMATRIX *m_mtx;							// 行列情報
 	int m_nPopBalloon_group;							// 現在出現している風船グループの個数
 	int m_nBringBalloon_group;						// 現在持っている風船グループの個数
 	int m_nMaxPopBalloon_group;						// 最大出現数の個数
 	float m_fAngleBalloon_group;						// 風船グループの出現する角度(円周率 * 2 / 最大出現数)
-};		
+};
 
 #endif

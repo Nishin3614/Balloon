@@ -199,10 +199,10 @@ CScene_TWO * CScene_TWO::Create_Self(
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 作成(シーン継承なし、unique_ptr)処理
+// 作成(シーン継承なし、std::unique_ptr)処理
 // ※戻り値はstd::moveで受け取る
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-unique_ptr<CScene_TWO> CScene_TWO::Creat_Unique(
+std::unique_ptr<CScene_TWO> CScene_TWO::Creat_Unique(
 	OFFSET_TYPE const & type,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR2 const & size,
@@ -211,7 +211,7 @@ unique_ptr<CScene_TWO> CScene_TWO::Creat_Unique(
 )
 {
 	// 変数宣言
-	unique_ptr<CScene_TWO> pScene_Two(new CScene_TWO);		// シーン2Dクラス
+	std::unique_ptr<CScene_TWO> pScene_Two(new CScene_TWO);		// シーン2Dクラス
 	// 設定
 	pScene_Two->m_offsetType = type;	// タイプ
 	pScene_Two->m_pos = pos;			// 位置
