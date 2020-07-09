@@ -85,17 +85,17 @@ public:
 	// ポインター位置情報の取得
 	D3DXVECTOR3 * Get_PPosold(void) { return m_pPosold; };
 	// 位置情報の設定
-	void Set_Pos(D3DXVECTOR3 pos) 
+	void Set_Pos(D3DXVECTOR3 pos)
 	{
-		m_pos = pos; 
+		m_pos = pos;
 		m_pCorePos = &m_pos;
 	};
 	// 位置情報の取得
 	D3DXVECTOR3 & Get_Pos(void) { return m_pos; };
 	// 過去の位置情報の設定
 	void Set_Posold(D3DXVECTOR3 posold)
-	{ 
-		m_posold = posold; 
+	{
+		m_posold = posold;
 		m_pCorePosOld = &m_posold;
 	};
 	// 過去の位置情報の取得
@@ -181,9 +181,9 @@ public:
 	/* 列挙型 */
 
 	/* 型宣言 */
-	
+
 	/* 関数 */
-	CRectShape() 
+	CRectShape()
 	{
 		m_size = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		m_Min.x = m_Min.y = m_Min.z = FLT_MAX;

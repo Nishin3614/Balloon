@@ -231,4 +231,6 @@ void CShape::PassMatrix(D3DXMATRIX const & mtx)
 	m_posold = m_pos;
 	// Å‘åÀ•W’l‚ÌÝ’è
 	D3DXVec3TransformCoord(&m_pos, &this->GetOffset(), &mtx);
+	//
+	m_pCorePos = &m_pos;
 }
