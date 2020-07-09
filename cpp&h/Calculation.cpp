@@ -1132,7 +1132,7 @@ vector<string> CCalculation::split(
 	string sRead;					// 文字列読み込み用
 	vector<string> vec_Result;		// 1行読み込み用
 
-									// 指定した区切りが来る限りループする
+	// 指定した区切りが来る限りループする
 	while (getline(iss_Line, sRead, delimiter))
 	{
 		// 読み取った文字列を格納する

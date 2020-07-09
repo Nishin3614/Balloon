@@ -75,12 +75,13 @@ public:
 		int const &nModelId = 0,
 		bool const &bShadowMap = false
 	);
-	// İ’è
-
+	// “–‚½‚Á‚Ä‚¢‚é‚©‚Ì”»’è‚ğæ“¾
+	bool const &GetBalloonCollision(void) { return m_bCollision; };
 protected:
 private:
 	/* ŠÖ” */
 	/* •Ï” */
+	bool m_bCollision;
 };
 
 #endif

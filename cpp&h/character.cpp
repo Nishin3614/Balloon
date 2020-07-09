@@ -172,7 +172,7 @@ void CCharacter::Init()
 		{
 			// 変数宣言
 			D3DXVECTOR3 pos;
-			// 当たり判定の位置の設定 
+			// 当たり判定の位置の設定
 			D3DXVec3TransformCoord(
 				&pos,
 				&m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
@@ -842,7 +842,7 @@ void CCharacter::Die(void)
 // 引数2:相手のシーン情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Scene_Collision(
-	int const & nObjType, 
+	int const & nObjType,
 	CScene * pScene
 )
 {
@@ -901,7 +901,7 @@ void CCharacter::Scene_Collision(
 		);
 		m_move += RefVecA;
 		*pCharacterMove += RefVecB;
-		
+
 		// 死亡処理
 		BalloonNone();
 	}

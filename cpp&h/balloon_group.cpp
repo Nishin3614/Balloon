@@ -290,7 +290,7 @@ void CBalloon_group::BreakBalloon_group(int const &nCntBalloon_group)
 {
 	// “–‚½‚è”»’èó‘Ô‚ªtrue‚È‚ç
 	// ->ŠJ•ú
-	if (m_apBalloon[nCntBalloon_group]->GetbCollision())
+	if (m_apBalloon[nCntBalloon_group]->GetBalloonCollision())
 	{
 		m_apBalloon[nCntBalloon_group]->Uninit();
 		delete m_apBalloon[nCntBalloon_group];
