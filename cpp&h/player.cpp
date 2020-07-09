@@ -7,7 +7,7 @@
 #include "player.h"
 #include "input.h"
 #include "camera.h"
-#include "balloon.h"
+#include "balloon_group.h"
 #include "ui.h"
 #include "network.h"
 
@@ -155,6 +155,7 @@ void CPlayer::MyMove(void)
 	// 移動 //
 	/* ジョイパッド */
 	// パッド用 //
+	/*
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
@@ -165,7 +166,7 @@ void CPlayer::MyMove(void)
 		// ゲームパッドのスティック情報を取得
 		CManager::GetJoy()->GetStickLeft(0, nValueH, nValueV);
 
-		/* プレイヤー移動 */
+		// プレイヤー移動
 		// ゲームパッド移動
 		if (nValueH != 0 || nValueV != 0)
 		{
@@ -198,6 +199,9 @@ void CPlayer::MyMove(void)
 			bMove = true;
 		}
 	}
+*/
+
+
 	/* キーボード */
 	// 左
 	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
@@ -280,7 +284,7 @@ void CPlayer::MyMove(void)
 	// 風船がNULLではないなら
 	if (CCharacter::GetBalloon() != NULL)
 	{
-		if (CCharacter::GetBalloon()->GetPopBalloon() != 0)
+		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
 			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))

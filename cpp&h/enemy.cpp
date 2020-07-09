@@ -9,6 +9,8 @@
 #include "3Dparticle.h"
 #include "game.h"
 #include "circleshadow.h"
+#include "camera.h"
+#include "balloon_group.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -63,8 +65,217 @@ void CEnemy::Uninit(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CEnemy::Update(void)
 {
+	// AIアクション処理
+	Ai_Action();
+
 	// キャラクター更新処理
 	CCharacter::Update();
+}
+
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// AIアクション処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CEnemy::Ai_Action(void)
+{
+
+	// AI移動処理
+	//Ai_Move();
+	// 風船を膨らませる
+	if (CManager::GetJoy() != NULL)
+	{
+		if (CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_B))
+		{
+			// 風船を生成する処理
+			BalloonCreate();
+		}
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// AI移動処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CEnemy::Ai_Move(void)
+{
+	// 変数宣言
+	D3DXVECTOR3 move, rot;			// 移動量、回転
+	bool bMove = false;				// 移動状態
+	float fRot;						// 回転
+
+	// 情報取得
+	rot = CCharacter::GetRotDest();								// 目的回転量
+	move = CCharacter::GetMove();								// 移動量
+	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
+
+	// 移動 //
+	/* ジョイパッド */
+	// パッド用 //
+	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
+	float fMove;			// 移動速度
+	float fAngle;			// スティック角度の計算用変数
+	fAngle = 0.0f;			// 角度
+
+	if (CManager::GetJoy() != NULL)
+	{
+		// ゲームパッドのスティック情報を取得
+		CManager::GetJoy()->GetStickLeft(0, nValueH, nValueV);
+
+		/* プレイヤー移動 */
+		// ゲームパッド移動
+		if (nValueH != 0 || nValueV != 0)
+		{
+			// 角度の計算
+			fAngle = atan2f((float)nValueH, (float)nValueV);
+
+			if (fAngle > D3DX_PI)
+			{
+				fAngle -= D3DX_PI * 2;
+			}
+			else if (fAngle < -D3DX_PI)
+			{
+				fAngle += D3DX_PI * 2;
+			}
+			// 速度の計算
+			if (abs(nValueH) > abs(nValueV))
+			{
+				fMove = (abs(nValueH) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
+			}
+			else
+			{
+				fMove = (abs(nValueV) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
+			}
+			rot.y = fAngle + fRot;
+
+			// スティックの角度によってプレイヤー移動
+			move.x -= sinf(fAngle + fRot) * (fMove);
+			move.z -= cosf(fAngle + fRot) * (fMove);
+			// 移動状態on
+			bMove = true;
+		}
+		// 風船がNULLではないなら
+		if (CCharacter::GetBalloon() != NULL)
+		{
+			if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
+			{
+				// 宙に浮く
+				if (CManager::GetJoy()->GetTrigger(0,CJoypad::KEY_A))
+				{
+					move.y += CCharacter::GetStatus().fMaxJump;
+				}
+			}
+		}
+	}
+	/* キーボード */
+	// 左
+	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_J))
+	{
+		// 移動状態on
+		bMove = true;
+		// 奥
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
+		{
+			rot.y = -D3DX_PI * 0.25f + fRot;
+
+			move.x += sinf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 手前
+		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_K))
+		{
+			rot.y = -D3DX_PI * 0.75f + fRot;
+
+			move.x += sinf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 左
+		else
+		{
+			rot.y = -D3DX_PI * 0.5f + fRot;
+			move.x += sinf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+	}
+	// 右
+	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_L))
+	{
+		// 移動状態on
+		bMove = true;
+
+		// 奥
+		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
+		{
+			rot.y = D3DX_PI * 0.25f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 手前
+		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_K))
+		{
+			rot.y = D3DX_PI * 0.75f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+		// 右
+		else
+		{
+			rot.y = D3DX_PI * 0.5f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.z += cosf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+		}
+	}
+	// 奥に行く
+	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
+	{
+		// 移動状態on
+		bMove = true;
+		rot.y = D3DX_PI * 0.0f + fRot;
+		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	}
+	// 手前に行く
+	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_K))
+	{
+		// 移動状態on
+		bMove = true;
+		rot.y = D3DX_PI * 1.0f + fRot;
+		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	}
+	// 風船がNULLではないなら
+	if (CCharacter::GetBalloon() != NULL)
+	{
+		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
+		{
+			// 宙に浮く
+			if (CManager::GetKeyboard()->GetKeyboardPress(DIK_O))
+			{
+				move.y += CCharacter::GetStatus().fMaxJump;
+			}
+		}
+	}
+	// 移動状態なら
+	if (bMove == true)
+	{
+		CCharacter::SetMotion(MOTIONTYPE_MOVE);
+	}
+	// yの上限設定
+	if (move.y > 10.0f)
+	{
+		move.y = 10.0f;
+	}
+	if (move.y < -5.0f)
+	{
+		move.y = -5.0f;
+	}
+	// 抵抗力
+	move.x *= CCharacter::GetStatus().fMaxInertia;
+	move.z *= CCharacter::GetStatus().fMaxInertia;
+	CCharacter::SetMove(move);
+	CCharacter::SetRotDest(rot);
+
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

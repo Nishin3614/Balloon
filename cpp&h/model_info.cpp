@@ -926,7 +926,7 @@ void  CModel_info::TextLoad(
 					else if (strcmp(cHeadText, "SPHERE") == 0)
 					{
 						// 球情報の確保
-						pmodelAll->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo.reset(new SPHEREINFO);
+						pmodelAll->pCharacterCollision->p_uni_SphereInfo.reset(new SPHEREINFO);
 						// エンド球の当たり判定が来るまでループ
 						while (strcmp(cHeadText, "END_SPHERE") != 0)
 						{
@@ -940,7 +940,7 @@ void  CModel_info::TextLoad(
 							{
 								sscanf(cRaedText, "%s %s %f",
 									&cDie, &cDie,
-									&pmodelAll->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo->fRadius
+									&pmodelAll->pCharacterCollision->p_uni_SphereInfo->fRadius
 								);
 							}
 						}

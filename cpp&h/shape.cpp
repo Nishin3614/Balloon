@@ -11,6 +11,7 @@
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "shape.h"
+#include "Calculation.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 矩形の最大座標値と最小座標値の計算
@@ -144,6 +145,8 @@ unique_ptr<CRectShape> CRectShape::Create(
 	pRect->Set_PPos(pPos);
 	// 過去のポインター位置情報設定
 	pRect->Set_PPosold(pPosold);
+	// 最終的な位置情報の設定
+	pRect->Set_DestPos();
 	// 押し出し処理のありなし
 	pRect->SetPush(bPush);
 	// オフセットの設定
@@ -170,6 +173,8 @@ unique_ptr<CSphereShape> CSphereShape::Create(
 	pSphere->Set_PPos(pPos);
 	// 過去のポインター位置情報設定
 	pSphere->Set_PPosold(pPosold);
+	// 最終的な位置情報の設定
+	pSphere->Set_DestPos();
 	// 押し出し処理のありなし
 	pSphere->SetPush(bPush);
 	// 半径の設定
@@ -206,6 +211,8 @@ unique_ptr<CColumnShape> CColumnShape::Create(
 	pColum->Set_PPos(pPos);
 	// 過去のポインター位置情報設定
 	pColum->Set_PPosold(pPosold);
+	// 最終的な位置情報の設定
+	pColum->Set_DestPos();
 	// 半径の設定
 	pColum->SetRadius(fRadius);
 	// 押し出し処理のありなし

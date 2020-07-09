@@ -38,9 +38,9 @@ END_OBIT_PREPARATION
 #------------------------------------------------------------------------------
 CHARACTER_COLLISION
 	OFFSET = 0.0 50.0 0.0
-	RECT
-		SIZE = 50.0 100.0 50.0	
-	END_RECT
+	SPHERE
+		RADIUS = 50.0
+	END_SPHERE
 END_CHARACTER_COLLISION
 
 #------------------------------------------------------------------------------

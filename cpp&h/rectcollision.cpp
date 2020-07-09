@@ -140,6 +140,7 @@ CRectCollision *CRectCollision::Create(
 	pRectCollision->SetObjectID(obj);											
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
+	pRectCollision->m_pRectShape->m_pmove = pOwner->Scene_GetPMove();
 	// ƒV[ƒ“ŠÇ—İ’è
 	pRectCollision->ManageSetting(CScene::LAYER_COLLISION);
 	// ‰Šú‰»ˆ—
@@ -169,6 +170,7 @@ unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	pRectCollision->SetObjectID(obj);											
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
+	pRectCollision->m_pRectShape->m_pmove = pOwner->Scene_GetPMove();
 	// ‰Šú‰»ˆ—
 	pRectCollision->Init();
 	return pRectCollision;

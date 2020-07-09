@@ -727,6 +727,121 @@ void CCalculation::CollisionAfter_VerticalComponent(
 	fAfterSpeedB = fSpeedA + fSpeedB + e * (fSpeedA - fSpeedB);
 }
 
+// 2つの球の衝突までの時間と位置を取得
+// 双方の球は指定のベクトル方向に等速で進むと仮定
+// stepSec : 双方の球が進む時間
+// SphereA : 球A
+// VecA : 球Aの速度ベクトル
+// SphereB : 球B
+// VecB : 球Bの速度ベクトル
+// outSec : 衝突時刻
+// outColPos : 衝突位置（接点）
+// outColPosS1(option) : 衝突時の球Aの中心座標
+// outColPosS2(option) : 衝突時の球Bの中心座標
+bool CCalculation::CalcIntervalSphereSphere(
+	float fStepSec,				// fStepSec : 双方の球が進む時間
+	CSphereShape *SphereA,		// SphereA : 球A
+	const D3DXVECTOR3 &VecA,	// VecA : 球Aの速度ベクトル
+	CSphereShape *SphereB,		// SphereB : 球B
+	const D3DXVECTOR3 &VecB,	// VecB : 球Bの速度ベクトル
+	float &fOutSec,				// fOutSec : 衝突時刻
+	D3DXVECTOR3 &outColPos,		// outColPos : 衝突位置（接点）
+	D3DXVECTOR3 *outColPosS1,	// outColPosS1(option) : 衝突時のパーティクルAの中心座標
+	D3DXVECTOR3 *outColPosS2	// outColPosS2(option) : 衝突時のパーティクルBの中心座標
+)
+{
+	/*
+	// 前位置及び到達位置における球間のベクトルを算出
+	D3DXVECTOR3 SphereA_Pos = *SphereA->Get_PosCore() + SphereA->GetOffset();	// 球Aの位置
+	D3DXVECTOR3 SphereB_Pos = *SphereB->Get_PosCore() + SphereB->GetOffset();	// 球Bの位置
+	D3DXVECTOR3 A1 = SphereA_Pos + VecA * fStepSec;								// 球Aの位置(t=1)
+	D3DXVECTOR3 B1 = SphereB_Pos + VecB * fStepSec;								// 球Bの位置(t=1)
+	D3DXVECTOR3 C0 = SphereB_Pos - SphereA_Pos;									// 球Aと球B間のベクトル(t=0)
+	D3DXVECTOR3 C1 = B1 - A1;																							// 球Aと球B間のベクトル(t=1)
+	D3DXVECTOR3 D = C1 - C0;																							// C1とC0間のベクトル
+	float rAB = SphereA->GetRadius() + SphereB->GetRadius();															// 球Aと球Bの半径の合計
+	float rABSq = rAB * rAB;																							// 半径の合計の2乗
+	float P = D3DXVec3LengthSq(&D);																						// C1とC0間の距離の2乗
+	
+	// 衝突判定に解の公式を使えるか？
+	if (P == 0) {
+		// 平行移動 //
+		// t = 0で衝突しているか？
+		if (D3DXVec3LengthSq(&(SphereB_Pos - SphereA_Pos)) > rABSq) {
+			return false;
+		}
+		fOutSec = 0.0f;
+		if (outColPosS1 != 0)
+			*outColPosS1 = SphereA_Pos;
+		if (outColPosS2 != 0)
+			*outColPosS2 = SphereB_Pos;
+		if (SphereB_Pos  == SphereA_Pos) {
+			// 中心点も一緒なので中心点を衝突点として返す
+			outColPos = SphereA_Pos;
+			return true;
+		}
+
+		// 球A->Bのベクトル方向に長さrAの所を衝突点とする
+		outColPos = SphereA_Pos + (SphereA->GetRadius() / rAB) * C0;
+		return true; // 同じ方向に移動
+	}
+
+	// 衝突検知可能 //
+
+	// 最初から衝突している？
+	if (D3DXVec3LengthSq(&(SphereB_Pos  - SphereA_Pos)) <= rABSq) {
+		fOutSec = 0.0f;
+		outColPos = SphereA_Pos + SphereA->GetRadius() / rAB * C0;
+		if (outColPosS1 != 0)
+			*outColPosS1 = SphereA_Pos;
+		if (outColPosS2 != 0)
+			*outColPosS2 = SphereB_Pos ;
+		return true;
+	}
+	
+	float Q = D3DXVec3Dot(&C0, &D);
+	float R = D3DXVec3LengthSq(&C0);
+
+	// 衝突判定式
+	float judge = Q * Q - P * (R - rAB * rAB);
+	if (judge < 0) {
+		// 衝突していない
+		return false;
+	}
+
+	// 衝突時間の算出
+	float judge_rt = sqrtf(judge);
+	float t_plus = (-Q + judge_rt) / P;
+	float t_minus = (-Q - judge_rt) / P;
+	if (t_minus > t_plus) {
+		// t_minusを小さい方に
+		float tmp = t_minus;
+		t_minus = t_plus;
+		t_plus = tmp;
+	}
+
+	// 時間外衝突か？
+	if (t_minus < 0.0f || t_minus > 1.0f) {
+		return false;
+	}
+
+	// 衝突位置の決定
+	fOutSec = t_minus * fStepSec;
+	D3DXVECTOR3 Atc = SphereA_Pos + VecA * fStepSec * t_minus;
+	D3DXVECTOR3 Btc = SphereB_Pos  + VecB * fStepSec * t_minus;
+	outColPos = Atc + SphereA->GetRadius() / rAB * (Btc - Atc);
+
+	if (outColPosS1 != 0)
+		*outColPosS1 = Atc;
+	if (outColPosS2 != 0)
+		*outColPosS2 = Btc;
+		*/
+
+
+	return true; // 衝突
+
+}
+
 // ----------------------------------------------------------------------------------------------------
 // 球同士の衝突後速度位置算出
 // 引数1:衝突中の球Aの中心位置
@@ -760,7 +875,7 @@ bool CCalculation::SquarColiAfterVec(
 	float RefRate;			// 反発率
 	float Dot;				// 内積
 
-							// 質量の合計計算
+	// 質量の合計計算
 	TotalWeight = fWeight_A + fWeight_B;
 	// 反発率
 	RefRate = (1 + fRes_A * fRes_B);
