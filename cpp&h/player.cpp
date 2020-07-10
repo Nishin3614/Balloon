@@ -101,8 +101,6 @@ void CPlayer::Update(void)
 		}
 	}
 	// キャラクター更新
-	CCharacter::Update();
-
 	/* プロトタイプ用 */
 	// キャラクターの区域宣言
 	if (CManager::GetPlayerID() != m_nPlayerID)
@@ -308,9 +306,6 @@ void CPlayer::MyMove(void)
 	{
 		move.y = -5.0f;
 	}
-	// 抵抗力
-	move.x *= CCharacter::GetStatus().fMaxInertia;
-	move.z *= CCharacter::GetStatus().fMaxInertia;
 	CCharacter::SetMove(move);
 	CCharacter::SetRotDest(rot);
 }
