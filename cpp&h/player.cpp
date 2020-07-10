@@ -491,9 +491,6 @@ void CPlayer::OtherMove(void)
 	{
 		CCharacter::SetMotion(MOTIONTYPE_MOVE);
 	}
-	// íÔçRóÕ
-	move.x *= CCharacter::GetStatus().fMaxInertia;
-	move.z *= CCharacter::GetStatus().fMaxInertia;
 	CCharacter::SetMove(move);
 	CCharacter::SetRotDest(rot);
 }
