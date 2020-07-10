@@ -415,13 +415,17 @@ void CCharacter::Move(void)
 	m_rot.y = CCalculation::Rot_One_Limit(m_rot.y);
 	m_rot.z = CCalculation::Rot_One_Limit(m_rot.z);
 
-	// 移動
-	m_move.y -= 0.1f;
 	if (m_nMotiontype != MOTIONTYPE_STANDUP)
 	{
 		// 位置情報更新
 		m_pos += m_move;
 	}
+	// 移動
+	// 抵抗力
+	m_move.y -= 0.1f;
+	m_move.x *= CCharacter::GetStatus().fMaxInertia;
+	m_move.z *= CCharacter::GetStatus().fMaxInertia;
+
 	Limit();
 
 	// キャラクターの当たり判定がNULLではないなら

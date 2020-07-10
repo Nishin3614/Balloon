@@ -81,6 +81,8 @@ public:
 	int const &GetPopBalloon_group(void) { return m_nPopBalloon_group; };
 	// 現在の風船グループの最大出現数の取得
 	int const &GetPopMaxBalloon_group(void) { return m_nMaxPopBalloon_group; };
+	// 風船グループが割れる処理
+	void BreakBalloon_group(int const &nCntBalloon_group);	// 風船グループが割れる処理
 	// 生成
 	static CBalloon_group * Create(
 		D3DXMATRIX *mtx,							// 行列
@@ -94,7 +96,6 @@ public:
 protected:
 private:
 	/* 関数 */
-	void BreakBalloon_group(int const &nCntBalloon_group);	// 風船グループが割れる処理
 	/* 変数 */
 	std::vector<CBalloon *> m_apBalloon;				// 風船モデル情報
 	D3DXMATRIX *m_mtx;							// 行列情報
