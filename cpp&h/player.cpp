@@ -101,6 +101,7 @@ void CPlayer::Update(void)
 		}
 	}
 	// キャラクター更新
+	CCharacter::Update();
 	/* プロトタイプ用 */
 	// キャラクターの区域宣言
 	if (CManager::GetPlayerID() != m_nPlayerID)
