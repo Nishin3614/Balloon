@@ -98,6 +98,8 @@ void CNetwork::Update(void)
 		{
 			dwExecLastTime = dwCurrentTime;	// 処理した時刻を保存
 
+			OutputDebugString("更新開始");
+
 			char debug[1024];
 			int nError = -1;
 			float fData[NUM_KEY_M + 1];
@@ -110,9 +112,29 @@ void CNetwork::Update(void)
 			KeyData();
 			OutputDebugString("送信完了\n");
 
-			OutputDebugString("受信開始\n");
-			nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
-			OutputDebugString("受信完了\n");
+			fd_set readfds;
+			FD_ZERO(&readfds);
+			FD_SET(m_sockServerToClient, &readfds);
+
+			struct timeval tv;
+
+			// 指定した秒数でタイムアウトさせます
+			tv.tv_sec = 1;
+			tv.tv_usec = 0;
+
+			nError = select(0, &readfds, NULL, NULL, &tv);
+			if (nError == 0)
+			{
+				OutputDebugString("タイムアウト\n");
+				continue;
+			}
+			
+			if (FD_ISSET(m_sockServerToClient, &readfds))
+			{
+				OutputDebugString("受信開始\n");
+				nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
+				OutputDebugString("受信完了\n");
+			}
 
 			if (nError == SOCKET_ERROR)
 			{
@@ -149,6 +171,8 @@ void CNetwork::Update(void)
 			}
 		}
 	}
+
+	MessageBox(NULL, "マルチキャスト終了！", "警告！", MB_ICONWARNING);
 }
 
 //=============================================================================
