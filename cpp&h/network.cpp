@@ -147,10 +147,7 @@ void CNetwork::Update(void)
 						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 					}
 					m_fRot[nCount] = fData[NUM_KEY_M];
-					CDebugproc::Print("‰ñ“]î•ñ : %.2f\n", m_fRot[nCount]);
 				}
-
-				CDebugproc::Print("ƒL[“ü—Íî•ñ : %d , %d , %d , %d , %d", m_aKeyState[m_nId][NUM_KEY_A], m_aKeyState[m_nId][NUM_KEY_S], m_aKeyState[m_nId][NUM_KEY_W], m_aKeyState[m_nId][NUM_KEY_D], m_aKeyState[m_nId][NUM_KEY_SPACE]);
 			}
 		}
 	}
