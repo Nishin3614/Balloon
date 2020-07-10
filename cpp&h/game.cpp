@@ -103,11 +103,10 @@ void CGame::Init(void)
 	// ポーズの初期化
 	m_pause->Init();
 
-	char data[64];
-	memset(&data, 0, sizeof(data));
-	sprintf(data, "SETPLAY 1");
-
-	pNetwork->SendTCP(data, sizeof(data));
+	if (pNetwork != NULL)
+	{
+		pNetwork->StartUpdate();
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -117,11 +116,10 @@ void CGame::Uninit(void)
 {
 	CNetwork *pNetwork = CManager::GetNetwork();
 
-	char data[64];
-	memset(&data, 0, sizeof(data));
-	sprintf(data, "SETPLAY 0");
-
-	pNetwork->SendTCP(data, sizeof(data));
+	if (pNetwork != NULL)
+	{
+		pNetwork->StopUpdate();
+	}
 
 	// ポーズ
 	if (m_pause != NULL)
