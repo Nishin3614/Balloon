@@ -488,9 +488,9 @@ void CNetwork::StartUpdate(void)
 	if (!m_bUpdate)
 	{// 更新フラグが折れていたとき
 		// マルチスレッドにて更新開始
+		m_bUpdate = true;								// 更新フラグを立てる
 		m_th = std::thread(&CNetwork::Update, this);	// スレッドの作成
 		m_th.detach();									// スレッドの管理を切り離す
-		m_bUpdate = true;								// 更新フラグを立てる
 	}
 }
 
