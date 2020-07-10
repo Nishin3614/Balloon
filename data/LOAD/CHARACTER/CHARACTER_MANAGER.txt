@@ -1,7 +1,7 @@
 data/LOAD/CHARACTER/P_Thunder.txt
 data/LOAD/CHARACTER/P_Zombie.txt
-data/LOAD/CHARACTER/NPC.txt
 data/LOAD/CHARACTER/motion(Balloon_1).txt
 data/LOAD/CHARACTER/motion(Balloon_2).txt
 data/LOAD/CHARACTER/motion(Balloon_3).txt
 data/LOAD/CHARACTER/motion(Balloon_4).txt
+data/LOAD/CHARACTER/NPC.txt

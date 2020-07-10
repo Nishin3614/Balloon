@@ -58,6 +58,10 @@ public:
 		// プレイヤー用 //
 		CHARACTER_P_THUNDER = 0,				// 雷使い
 		CHARACTER_P_ZOMBIE,						// ゾンビ
+		CHARACTER_BALLOON1,
+		CHARACTER_BALLOON2,
+		CHARACTER_BALLOON3,
+		CHARACTER_BALLOON4,
 		CHARACTER_PLAYERMAX,					// プレイヤー用のキャラクター最大数
 		// プレイヤー用 //
 		// 敵用 //
@@ -117,7 +121,7 @@ public:
 	// 必要に応じた動作 //
 	// 設定 //
 	// 位置
-	void SetPos(D3DXVECTOR3 const &pos)				{ m_pos = pos; };			
+	void SetPos(D3DXVECTOR3 const &pos)				{ m_pos = pos; };
 	// 移動量
 	void SetMove(D3DXVECTOR3 const &move)			{ m_move = move; };
 	// 回転
@@ -134,7 +138,7 @@ public:
 	// 親と子の位置
 	D3DXVECTOR3 * GetPartsPos(int const nModelID);
 	// 親と子の行列
-	D3DXMATRIX *GetMatrix(int const nModelID);	
+	D3DXMATRIX *GetMatrix(int const nModelID);
 	// 状態
 	STATE GetState(void) const						{ return m_State; };
 	// キャラクター
@@ -192,7 +196,7 @@ protected:
 	// 重力
 	void FagGravity(void);						// 重力
 	// 目標回転量設定
-	void SetRotDest(D3DXVECTOR3 const &rotDest)		{ m_rotLast = rotDest; };	
+	void SetRotDest(D3DXVECTOR3 const &rotDest)		{ m_rotLast = rotDest; };
 	// 設定 //
 	// 現在のモーション
 	int GetMotion(void) const						{ return m_nMotiontype; };
@@ -201,10 +205,10 @@ protected:
 	// キーカウント
 	int GetKeyInfoCnt(void) const					{ return m_keyinfoCnt; };
 	// 目標回転量取得
-	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };	
+	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };
 
 	// モーションカメラの更新
-	void MotionCamera(void);		
+	void MotionCamera(void);
 	// キャラクター同士の当たり判定
 	bool CharacterCollision(CCharacter * pCharacter);
 	/* 変数 */
@@ -227,7 +231,7 @@ private:
 	void Motion(void);										// モーション
 	void ModelUpdate(void);									// モデルの更新
 	void TrackCamera(void);									// カメラ追尾
-	void Motion_Effect(void);								// モーションエフェクト		
+	void Motion_Effect(void);								// モーションエフェクト
 	void Motion_Obit(void);									// モーション軌跡
 	void BalloonNone(void);									// 風船がない場合
 	/* 変数 */

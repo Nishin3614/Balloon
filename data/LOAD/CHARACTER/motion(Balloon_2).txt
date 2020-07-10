@@ -14,17 +14,27 @@ NUM_MODEL = 11
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonBody.x					# [0]体
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonFace.x					# [1]頭
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonHip.x					# [2]股関節
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonRightShoulder.x		# [3]右腕
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonRightHand.x			# [4]右手
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonLeftShoulder.x			# [5]左腕
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonLeftHand.x				# [6]左手
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonRightThigh.x			# [7]右太もも
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonRightLeg.x				# [8]右足
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonLeftThigh.x			# [9]左太もも
-MODEL_FILENAME = data/MODEL/Balloon_2/BalloonLeftLeg.x				# [10]左足
+MODEL_FILENAME = 32					# [0]体
+MODEL_FILENAME = 33					# [1]頭
+MODEL_FILENAME = 34					# [2]股関節
+MODEL_FILENAME = 35		# [3]右腕
+MODEL_FILENAME = 36			# [4]右手
+MODEL_FILENAME = 37			# [5]左腕
+MODEL_FILENAME = 38				# [6]左手
+MODEL_FILENAME = 41			# [7]右太もも
+MODEL_FILENAME = 42				# [8]右足
+MODEL_FILENAME = 39			# [9]左太もも
+MODEL_FILENAME = 40				# [10]左足
+
+#------------------------------------------------------------------------------
+# キャラクター用当たり判定情報
+#------------------------------------------------------------------------------
+CHARACTER_COLLISION
+	OFFSET = 0.0 50.0 0.0
+	SPHERE
+		RADIUS = 50.0
+	END_SPHERE
+END_CHARACTER_COLLISION
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -56,7 +66,7 @@ CHARACTERSET
 	PARTSSET						# [3]右腕
 		INDEX = 3
 		PARENT = 0					# (親)体
-		POS = -8.0 3.0 3.0
+		POS = -8.5 4.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
@@ -70,7 +80,7 @@ CHARACTERSET
 	PARTSSET						# [5]左腕
 		INDEX = 5
 		PARENT = 0					# (親)体
-		POS = 8.5 3.0 3.0
+		POS = 8.5 4.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
@@ -113,7 +123,392 @@ END_CHARACTERSET
 #========================================
 #
 # モーション情報
-#  [ モーション番号 : 0 ]
+#  [ モーション番号 : 0 ]	待機モーション
+#
+#========================================
+
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << KEY : 0 / 2 >> ---
+		FRAME = 40
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 1.13
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.35
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -1.13
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.31
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+	END_KEYSET
+
+	KEYSET			# --- << KEY : 1 / 2 >> ---
+		FRAME = 40
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.97
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.31
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.97
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.31
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+	END_KEYSET
+END_MOTIONSET
+
+#========================================
+#
+# モーション情報
+#  [ モーション番号 : 0 ]	モーション番号合わせ
+#
+#========================================
+
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << KEY : 0 / 2 >> ---
+		FRAME = 40
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 1.13
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.35
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -1.13
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.31
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+	END_KEYSET
+
+	KEYSET			# --- << KEY : 1 / 2 >> ---
+		FRAME = 40
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.97
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.31
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.97
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.31
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+	END_KEYSET
+END_MOTIONSET
+
+#========================================
+#
+# モーション情報
+#  [ モーション番号 : 0 ]	モーション番号合わせ
+#
+#========================================
+
+MOTIONSET
+	LOOP = 1		# ループするかどうか[0:ループしない / 1:ループする]
+	NUM_KEY = 2		# キー数
+
+	KEYSET			# --- << KEY : 0 / 2 >> ---
+		FRAME = 40
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 1.13
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.35
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -1.13
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.31
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+	END_KEYSET
+
+	KEYSET			# --- << KEY : 1 / 2 >> ---
+		FRAME = 40
+		KEY	# ----- [ 0 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 1 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 2 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = -0.09 0.00 0.00
+		END_KEY
+
+		KEY	# ----- [ 3 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.97
+		END_KEY
+
+		KEY	# ----- [ 4 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.31
+		END_KEY
+
+		KEY	# ----- [ 5 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.97
+		END_KEY
+
+		KEY	# ----- [ 6 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.31
+		END_KEY
+
+		KEY	# ----- [ 7 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+
+		KEY	# ----- [ 8 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 9 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 0.06
+		END_KEY
+
+		KEY	# ----- [ 10 ] -----
+			POS = 0.00 0.00 0.00
+			ROT = 0.00 0.00 -0.06
+		END_KEY
+	END_KEYSET
+END_MOTIONSET
+
+
+#========================================
+#
+# モーション情報
+#  [ モーション番号 : 3 ]	ジャンプ時モーション
 #
 #========================================
 

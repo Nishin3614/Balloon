@@ -14,17 +14,27 @@ NUM_MODEL = 11
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonBody.x					# [0]体
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonFace.x					# [1]頭
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonHip.x					# [2]股関節
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonRightShoulder.x		# [3]右腕
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonRightHand.x			# [4]右手
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonLeftShoulder.x			# [5]左腕
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonLeftHand.x				# [6]左手
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonRightThigh.x			# [7]右太もも
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonRightLeg.x				# [8]右足
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonLeftThigh.x			# [9]左太もも
-MODEL_FILENAME = data/MODEL/Balloon_1/BalloonLeftLeg.x				# [10]左足
+MODEL_FILENAME = 21					# [0]体
+MODEL_FILENAME = 22					# [1]頭
+MODEL_FILENAME = 23					# [2]股関節
+MODEL_FILENAME = 26		# [3]右腕
+MODEL_FILENAME = 27			# [4]右手
+MODEL_FILENAME = 24			# [5]左腕
+MODEL_FILENAME = 25				# [6]左手
+MODEL_FILENAME = 30			# [7]右太もも
+MODEL_FILENAME = 31				# [8]右足
+MODEL_FILENAME = 28			# [9]左太もも
+MODEL_FILENAME = 29				# [10]左足
+
+#------------------------------------------------------------------------------
+# キャラクター用当たり判定情報
+#------------------------------------------------------------------------------
+CHARACTER_COLLISION
+	OFFSET = 0.0 50.0 0.0
+	SPHERE
+		RADIUS = 50.0
+	END_SPHERE
+END_CHARACTER_COLLISION
 
 #------------------------------------------------------------------------------
 # キャラクター情報
