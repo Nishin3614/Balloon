@@ -157,7 +157,6 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	// どのプレイヤー番号を追尾するか
 	// ゲームのカメラのアップデートでそれを指定するかも
 
-
 	// 画面遷移
 	m_fade = CFade::Create(STARTMODE);
 

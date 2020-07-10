@@ -5,8 +5,9 @@
 //
 // ------------------------------------------
 #include "network.h"
-//#include "manager.h"
 #include "debugproc.h"
+#include "renderer.h"
+#include "camera.h"
 
 bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
 bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
@@ -53,6 +54,11 @@ HRESULT CNetwork::Init(void)
 	sprintf(debug, "ans = %d\n", ans);
 	OutputDebugString(debug);
 
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_fRot[nCount] = 0.0f;
+	}
+
 	m_bGame = true;
 
 	return hr;
@@ -96,7 +102,7 @@ void CNetwork::Update(void)
 
 			char debug[1024];
 			int nError = -1;
-			float fData[NUM_KEY_M];
+			float fData[NUM_KEY_M + 1];
 			char cDie[32];
 
 			char cDataText[128];		//文字
@@ -140,6 +146,8 @@ void CNetwork::Update(void)
 					{
 						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 					}
+					m_fRot[nCount] = fData[NUM_KEY_M];
+					CDebugproc::Print("回転情報 : %.2f\n", m_fRot[nCount]);
 				}
 
 				CDebugproc::Print("キー入力情報 : %d , %d , %d , %d , %d", m_aKeyState[m_nId][NUM_KEY_A], m_aKeyState[m_nId][NUM_KEY_S], m_aKeyState[m_nId][NUM_KEY_W], m_aKeyState[m_nId][NUM_KEY_D], m_aKeyState[m_nId][NUM_KEY_SPACE]);
@@ -391,7 +399,11 @@ HRESULT CNetwork::Connect(void)
 bool CNetwork::KeyData(void)
 {
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
+	CRenderer *pRenderer = CManager::GetRenderer();
+	CCamera *pCamera = pRenderer->GetCamera();
 	PLAYERSTATE state;
+
+	D3DXVECTOR3 rot = pCamera->GetRot();
 
 	memset(&state, 0, sizeof(PLAYERSTATE));
 	CNetwork *pNetwork = CManager::GetNetwork();
@@ -400,8 +412,8 @@ bool CNetwork::KeyData(void)
 	{
 		char data[1024];
 
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE));
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE), rot.y);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
 	}
 

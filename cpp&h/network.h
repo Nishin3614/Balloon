@@ -82,6 +82,7 @@ public:
 	bool GetPressKeyboard(int nId, int nKey);
 	bool GetTriggerKeyboard(int nId, int nKey);
 	int GetId(void) { return m_nId; }
+	float GetRot(const int &nId) { return m_fRot[nId]; }
 
 	void Start(void);
 
@@ -102,6 +103,7 @@ private:
 	fd_set m_readfds;
 
 	int m_nId;
+	float m_fRot[MAX_PLAYER];
 
 	static char aIp[32];				// IPアドレス
 	static int nPort;					// ポート番号

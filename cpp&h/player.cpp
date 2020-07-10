@@ -78,6 +78,9 @@ void CPlayer::Uninit(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Update(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+	const int nId = pNetwork->GetId();
+
 	// モーション設定
 	CCharacter::SetMotion(MOTIONTYPE_NEUTRAL);
 	// 選択画面以外なら
@@ -85,10 +88,10 @@ void CPlayer::Update(void)
 	{
 		// キャラクター自体のプレイヤー番号とコントロールしているプレイヤー番号が同じなら
 		// ->行動処理
-		if (m_nPlayerID == CManager::GetPlayerID())
+		if (m_nPlayerID == nId)
 		{
 			// 自キャラの行動処理
-			MyAction();
+			MyAction(m_nPlayerID);
 		}
 		// それ以外のキャラクターの処理
 		else
@@ -98,7 +101,6 @@ void CPlayer::Update(void)
 		}
 	}
 	// キャラクター更新
-	CCharacter::Update();
 	/* プロトタイプ用 */
 	// キャラクターの区域宣言
 	if (CManager::GetPlayerID() != m_nPlayerID)
@@ -110,10 +112,8 @@ void CPlayer::Update(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 自キャラ行動処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CPlayer::MyAction(void)
+void CPlayer::MyAction(const int &nId)
 {
-	CNetwork *pNetwork = CManager::GetNetwork();
-
 	// 自キャラの移動処理
 	MyMove();
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_N))
@@ -128,7 +128,7 @@ void CPlayer::MyAction(void)
 		BalloonCreate();
 	}
 
-	if (m_nPlayerID == pNetwork->GetId())
+	if (m_nPlayerID == nId)
 	{
 		// カメラの処理
 		Camera();
@@ -337,6 +337,8 @@ void CPlayer::OtherAction(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::OtherMove(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
 	bool bMove = false;				// 移動状態
@@ -345,7 +347,7 @@ void CPlayer::OtherMove(void)
 	rot = CCharacter::GetRotDest();								// 目的回転量
 	move = CCharacter::GetMove();								// 移動量
 	// サーバー側からカメラの回転情報を取得する
-	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
+	fRot = pNetwork->GetRot(m_nPlayerID);	// カメラ回転
 	// 移動 //
 	/* ジョイパッド */
 	// パッド用 //
@@ -353,8 +355,6 @@ void CPlayer::OtherMove(void)
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
 	fAngle = 0.0f;			// 角度
-
-	CNetwork *pNetwork = CManager::GetNetwork();
 
 	if (CManager::GetJoy() != NULL)
 	{
