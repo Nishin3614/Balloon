@@ -139,7 +139,7 @@ HRESULT CItem::Load(void)
 {
 	// デバイス取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
-																		// テクスチャの読み込み
+	// テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice, TEXTURE_BULLET, &m_pTex);
 	return S_OK;
 }

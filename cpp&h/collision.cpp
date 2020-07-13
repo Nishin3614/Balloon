@@ -124,7 +124,6 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 	// 自分のオブジェクト情報と相手のオブジェクトの親情報が同じなら
 	// ->関数を抜ける
 	if (this->m_pOwner == NULL ||
-		pCollision->m_pParent == NULL ||
 		this->m_pOwner == pCollision->m_pParent)
 	{
 		return false;

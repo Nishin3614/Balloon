@@ -911,6 +911,31 @@ void CCharacter::Scene_Collision(
 		// 死亡処理
 		BalloonNone();
 	}
+	// オブジェクトタイプがキャラクターなら
+	if (nObjType == CCollision::OBJTYPE_BALLOON)
+	{
+		// 変数宣言
+		D3DXVECTOR3 RefVecA;
+		D3DXVECTOR3 RefVecB;
+		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
+		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
+		// 押し出し処理を入れる
+		// 今回の当たり判定とプレイヤーの位置ポインター管理
+		// 衝突後の速度計算処理
+		CCalculation::SquarColiAfterVec(
+			m_pos,
+			m_move,
+			*pCharacterPos,
+			CharacterMove,
+			1,
+			1,
+			1.0f,
+			1.0f,
+			RefVecA,
+			RefVecB
+		);
+		m_move += RefVecA;
+	}
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
