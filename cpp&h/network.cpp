@@ -128,7 +128,7 @@ void CNetwork::Update(void)
 				OutputDebugString("タイムアウト\n");
 				continue;
 			}
-			
+
 			if (FD_ISSET(m_sockServerToClient, &readfds))
 			{
 				OutputDebugString("受信開始\n");
