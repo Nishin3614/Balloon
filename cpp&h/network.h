@@ -82,8 +82,10 @@ public:
 	bool GetPressKeyboard(int nId, int nKey);
 	bool GetTriggerKeyboard(int nId, int nKey);
 	int GetId(void) { return m_nId; }
+	float GetRot(const int &nId) { return m_fRot[nId]; }
 
-	void Start(void);
+	void StartUpdate(void);
+	void StopUpdate(void);
 
 	static int ConvertDecimalToBinary(int nValue);
 
@@ -102,11 +104,12 @@ private:
 	fd_set m_readfds;
 
 	int m_nId;
+	float m_fRot[MAX_PLAYER];
 
 	static char aIp[32];				// IPアドレス
 	static int nPort;					// ポート番号
 
 	std::thread m_th;
-	bool m_bGame;
+	bool m_bUpdate;
 };
 #endif // !_NETWORK_H_

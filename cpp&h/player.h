@@ -70,7 +70,7 @@ private:
 	/* 構造体 */
 	/* 関数 */
 	void MyMove(void);					// 自キャラ移動処理
-	void MyAction(void);				// 自キャラ行動処理
+	void MyAction(const int &nId);				// 自キャラ行動処理
 	void Camera(void);					// カメラ処理
 	void OtherMove(void);				// 他キャラ移動処理
 	void OtherAction(void);				// 他キャラ行動処理

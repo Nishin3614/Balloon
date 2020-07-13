@@ -1,42 +1,43 @@
-// ------------------------------------------
+//=============================================================================
 //
 // ネットワーク処理 [network.cpp]
 // Author : masayasu wakita
 //
-// ------------------------------------------
+//=============================================================================
 #include "network.h"
-//#include "manager.h"
 #include "debugproc.h"
+#include "renderer.h"
+#include "camera.h"
 
 bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
 bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
 bool m_aKeyStateTrigger[MAX_PLAYER][NUM_KEY_M] = {};		// Trigger
 
-// ------------------------------------------
+//=============================================================================
 // 静的メンバ変数
-// ------------------------------------------
+//=============================================================================
 char CNetwork::aIp[32] = {};
 int CNetwork::nPort = 0;
 
-// ------------------------------------------
+//=============================================================================
 // コンストラクタ
-// ------------------------------------------
+//=============================================================================
 CNetwork::CNetwork()
 {
 	m_nId = -1;
 }
 
-// ------------------------------------------
+//=============================================================================
 // デストラクタ
-// ------------------------------------------
+//=============================================================================
 CNetwork::~CNetwork()
 {
 
 }
 
-// ------------------------------------------
+//=============================================================================
 // 初期化
-// ------------------------------------------
+//=============================================================================
 HRESULT CNetwork::Init(void)
 {
 	HRESULT hr;
@@ -53,25 +54,28 @@ HRESULT CNetwork::Init(void)
 	sprintf(debug, "ans = %d\n", ans);
 	OutputDebugString(debug);
 
-	m_bGame = true;
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_fRot[nCount] = 0.0f;
+	}
+
+	m_bUpdate = false;
 
 	return hr;
 }
 
-// ------------------------------------------
+//=============================================================================
 // 終了
-// ------------------------------------------
+//=============================================================================
 void CNetwork::Uninit(void)
 {
-	m_bGame = false;
-
 	//ソケット(クライアント)の開放
 	closesocket(m_sockClient);
 }
 
-// ------------------------------------------
+//=============================================================================
 // 更新  if ( setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, (const char *),  sizeof(param) )
-// ------------------------------------------
+//=============================================================================
 void CNetwork::Update(void)
 {
 	DWORD dwCurrentTime;		// 現在時刻
@@ -85,7 +89,7 @@ void CNetwork::Update(void)
 	dwFrameCount = 0;
 	dwFPSLastTime = timeGetTime();		// システム時刻をミリ秒単位で取得
 
-	while (m_bGame)
+	while (m_bUpdate)
 	{
 		// DirectXの処理
 		dwCurrentTime = timeGetTime();		// システム時刻を取得
@@ -94,9 +98,11 @@ void CNetwork::Update(void)
 		{
 			dwExecLastTime = dwCurrentTime;	// 処理した時刻を保存
 
+			OutputDebugString("更新開始");
+
 			char debug[1024];
 			int nError = -1;
-			float fData[NUM_KEY_M];
+			float fData[NUM_KEY_M + 1];
 			char cDie[32];
 
 			char cDataText[128];		//文字
@@ -106,9 +112,29 @@ void CNetwork::Update(void)
 			KeyData();
 			OutputDebugString("送信完了\n");
 
-			OutputDebugString("受信開始\n");
-			nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
-			OutputDebugString("受信完了\n");
+			fd_set readfds;
+			FD_ZERO(&readfds);
+			FD_SET(m_sockServerToClient, &readfds);
+
+			struct timeval tv;
+
+			// 指定した秒数でタイムアウトさせます
+			tv.tv_sec = 1;
+			tv.tv_usec = 0;
+
+			nError = select(0, &readfds, NULL, NULL, &tv);
+			if (nError == 0)
+			{
+				OutputDebugString("タイムアウト\n");
+				continue;
+			}
+
+			if (FD_ISSET(m_sockServerToClient, &readfds))
+			{
+				OutputDebugString("受信開始\n");
+				nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
+				OutputDebugString("受信完了\n");
+			}
 
 			if (nError == SOCKET_ERROR)
 			{
@@ -140,17 +166,18 @@ void CNetwork::Update(void)
 					{
 						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 					}
+					m_fRot[nCount] = fData[NUM_KEY_M];
 				}
-
-				CDebugproc::Print("キー入力情報 : %d , %d , %d , %d , %d", m_aKeyState[m_nId][NUM_KEY_A], m_aKeyState[m_nId][NUM_KEY_S], m_aKeyState[m_nId][NUM_KEY_W], m_aKeyState[m_nId][NUM_KEY_D], m_aKeyState[m_nId][NUM_KEY_SPACE]);
 			}
 		}
 	}
+
+	MessageBox(NULL, "マルチキャスト終了！", "警告！", MB_ICONWARNING);
 }
 
-// ------------------------------------------
+//=============================================================================
 // ネットワークの設定データ読み込み
-// ------------------------------------------
+//=============================================================================
 HRESULT CNetwork::LoadConfiguration(void)
 {
 	FILE *pFile;
@@ -205,17 +232,17 @@ HRESULT CNetwork::LoadConfiguration(void)
 	return S_OK;
 }
 
-// ------------------------------------------
+//=============================================================================
 // キーボードの入力状態の取得
-// -----------------------------------------
+//=============================================================================
 PLAYERSTATE CNetwork::GetKeystate(void)
 {
 	return keystate;
 }
 
-// ------------------------------------------
+//=============================================================================
 // 送信(TCP)
-// -----------------------------------------
+//=============================================================================
 bool CNetwork::SendTCP(const char *data, int nSize)
 {
 	int nError;
@@ -230,9 +257,9 @@ bool CNetwork::SendTCP(const char *data, int nSize)
 	return false;
 }
 
-// ------------------------------------------
+//=============================================================================
 // 送信(UDP)
-// -----------------------------------------
+//=============================================================================
 bool CNetwork::SendUDP(const char *data, int nSize)
 {
 	int nError;
@@ -250,9 +277,9 @@ bool CNetwork::SendUDP(const char *data, int nSize)
 	return false;
 }
 
-// ------------------------------------------
+//=============================================================================
 // 受信
-// -----------------------------------------
+//=============================================================================
 bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 {
 	int nError;
@@ -279,9 +306,9 @@ bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 	return false;
 }
 
-// ------------------------------------------
+//=============================================================================
 // クライアントソケットの作成
-// -----------------------------------------
+//=============================================================================
 HRESULT CNetwork::Build(void)
 {
 	WSADATA wsaData;								//winsockの情報
@@ -355,9 +382,9 @@ HRESULT CNetwork::Build(void)
 	return S_OK;
 }
 
-// ------------------------------------------
+//=============================================================================
 // コネクト
-// ------------------------------------------
+//=============================================================================
 HRESULT CNetwork::Connect(void)
 {
 	int val = -1;
@@ -378,52 +405,59 @@ HRESULT CNetwork::Connect(void)
 
 	sprintf(debug, "ID = %d\n", m_nId);
 	OutputDebugString(debug);
-
 	OutputDebugString("サーバとの接続完了\n");
-
-	Start();
 	return S_OK;
 }
 
-// ------------------------------------------
+//=============================================================================
 // キーデータ
-// ------------------------------------------
+//=============================================================================
 bool CNetwork::KeyData(void)
 {
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
+	CRenderer *pRenderer = CManager::GetRenderer();
+	CCamera *pCamera = pRenderer->GetCamera();
 	PLAYERSTATE state;
+
+	D3DXVECTOR3 rot = pCamera->GetRot();
 
 	memset(&state, 0, sizeof(PLAYERSTATE));
 	CNetwork *pNetwork = CManager::GetNetwork();
 
-	if (pNetwork != NULL)
+	if (pKeyboard != NULL)
 	{
-		char data[1024];
+		if (pNetwork != NULL)
+		{
+			char data[1024];
 
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE));
-		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
+			sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+				pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE), rot.y);
+			pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
+		}
 	}
 
 	return false;
 }
 
-// ------------------------------------------
+//=============================================================================
 // キーボードのプレス状態取得
-// ------------------------------------------
+//=============================================================================
 bool CNetwork::GetPressKeyboard(int nId, int nKey)
 {
 	return m_aKeyState[nId][nKey];
 }
 
+//=============================================================================
+// キーボードのトリガー状態取得
+//=============================================================================
 bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
 {
 	return m_aKeyStateTrigger[nId][nKey];
 }
 
-// ------------------------------------------
+//=============================================================================
 // サーバーソケットを作成する
-// ------------------------------------------
+//=============================================================================
 SOCKET CNetwork::createServerSocket(unsigned short port)
 {
 	SOCKET sock = socket(AF_INET, SOCK_DGRAM, 0);
@@ -470,11 +504,29 @@ void CNetwork::ConvertStringToFloat(char* text, const char* delimiter, float* pR
 	}
 }
 
-void CNetwork::Start(void)
+//=============================================================================
+// 更新開始
+//=============================================================================
+void CNetwork::StartUpdate(void)
 {
-	// マルチスレッドにて更新開始
-	m_th = std::thread(&CNetwork::Update, this);
-	m_th.detach();
+	if (!m_bUpdate)
+	{// 更新フラグが折れていたとき
+		// マルチスレッドにて更新開始
+		m_bUpdate = true;								// 更新フラグを立てる
+		m_th = std::thread(&CNetwork::Update, this);	// スレッドの作成
+		m_th.detach();									// スレッドの管理を切り離す
+	}
+}
+
+//=============================================================================
+// 更新停止
+//=============================================================================
+void CNetwork::StopUpdate(void)
+{
+	if (m_bUpdate)
+	{// 更新フラグが立っていた時
+		m_bUpdate = false;
+	}
 }
 
 //=============================================================================
