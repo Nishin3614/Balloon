@@ -533,6 +533,7 @@ void CScene_X::SetCollision(
 	int const & nShapeType,
 	int const &obj,
 	bool const &bPush,
+	bool const &bOpponent,
 	CScene * pParent
 )
 {
@@ -557,7 +558,8 @@ void CScene_X::SetCollision(
 			(CCollision::OBJTYPE)obj,
 			this,
 			pParent,
-			bPush
+			bPush,
+			bOpponent
 		);
 		// 位置情報の更新(行列渡し)
 		m_Collision->GetShape()->PassMatrix(m_mtxWorld);
@@ -571,7 +573,8 @@ void CScene_X::SetCollision(
 			(CCollision::OBJTYPE)obj,
 			this,
 			pParent,
-			bPush
+			bPush,
+			bOpponent
 		);
 		// 位置情報の更新(行列渡し)
 		m_Collision->GetShape()->PassMatrix(m_mtxWorld);
@@ -586,7 +589,8 @@ void CScene_X::SetCollision(
 			(CCollision::OBJTYPE)obj,
 			this,
 			pParent,
-			bPush
+			bPush,
+			bOpponent
 		);
 		// 位置情報の更新(行列渡し)
 		m_Collision->GetShape()->PassMatrix(m_mtxWorld);

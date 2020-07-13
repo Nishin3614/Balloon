@@ -169,6 +169,7 @@ void CBalloon_group::SetPopMaxBalloom(
 			CShape::SHAPETYPE_SPHERE,
 			CCollision::OBJTYPE_BALLOON,
 			false,
+			true,
 			pParent
 		);
 	}
@@ -200,6 +201,7 @@ void CBalloon_group::CreateBalloon_group(
 		m_apBalloon[nCntBalloon_group]->SetCollision(
 			CShape::SHAPETYPE_SPHERE,
 			CCollision::OBJTYPE_BALLOON,
+			false,
 			false,
 			pParent
 		);

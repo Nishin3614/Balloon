@@ -224,6 +224,7 @@ void CCharacter::Init()
 					this,
 					NULL,
 					true,
+					true,
 					&m_pos,
 					&m_posold
 				);
@@ -237,6 +238,7 @@ void CCharacter::Init()
 					CCollision::OBJTYPE_CHARACTER,
 					this,
 					NULL,
+					true,
 					true,
 					&m_pos,
 					&m_posold

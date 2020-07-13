@@ -103,17 +103,14 @@ public:
 		m_DestPosOld = *m_pCorePosOld + m_offset;
 	};
 
-	// 押し出し処理の有り無し取得
-	bool const &GetPush(void) { return m_bPush; };
-	// 押し出し処理の有り無し設定
-	void SetPush(bool const &bPush) { m_bPush = bPush; };
-
 	// 変数 //
 	D3DXVECTOR3 * m_pmove;			// 移動量
 	D3DXVECTOR3 m_DestPos;			// オフセットを足した、最終的な位置情報
 	D3DXVECTOR3 m_DestPosOld;		// オフセットを足した、過去の最終的な位置情報
 	D3DXVECTOR3 * m_pCorePos;		// 位置情報の絶対的変数
 	D3DXVECTOR3 * m_pCorePosOld;	// 過去の位置情報の絶対的変数
+	bool		m_bPush;			// 押し出し処理があるかない
+	bool		m_bOpponentPush;	// 相手を押し出すかどうか
 protected:
 
 private:
@@ -121,7 +118,6 @@ private:
 	D3DXVECTOR3 m_pos;				// 位置情報
 	D3DXVECTOR3 * m_pPosold;		// 過去のポインター位置情報
 	D3DXVECTOR3 m_posold;			// 過去の位置情報
-	bool		m_bPush;			// 押し出し処理があるかない
 	D3DXVECTOR3 m_offset;			// オフセット座標
 };
 
@@ -141,6 +137,7 @@ public:
 		D3DXVECTOR3 const &offset,
 		float const &radius,
 		bool const &bPush = false,
+		bool const &bOpponentPush = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL
 	);
@@ -201,6 +198,7 @@ public:
 		D3DXVECTOR3 const &offset,
 		D3DXVECTOR3 const &size,
 		bool const &bPush = false,
+		bool const &bOpponentPush = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL
 	);
@@ -246,6 +244,7 @@ public:
 		float const & fRadius,
 		float const & fVertical,
 		bool const &bPush = false,
+		bool const &bOpponentPush = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL
 	);

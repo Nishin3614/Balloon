@@ -106,6 +106,7 @@ public:
 		CScene * pScene = NULL,
 		CScene * pParent = NULL,
 		bool const &bPush = false,
+		bool const &bOpponent = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL
 	);
@@ -117,6 +118,7 @@ public:
 		CScene * pScene = NULL,
 		CScene * pParent = NULL,
 		bool const &bPush = false,
+		bool const &bOpponent = false,
 		D3DXVECTOR3 * pPos = NULL,
 		D3DXVECTOR3 * pPosold = NULL
 	);

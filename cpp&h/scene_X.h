@@ -94,7 +94,7 @@ public:
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,
 		bool const &bShadowMap = false
-	);	
+	);
 	// 作成処理(個人管理)
 	static CScene_X * Create_Self(
 		D3DXVECTOR3 const &pos,
@@ -130,6 +130,7 @@ public:
 		int const &nShapeType,
 		int const &obj,
 		bool const &bPush = false,
+		bool const &bOpponent = false,
 		CScene * pParent = NULL
 	);									// 当たり判定設定
 
@@ -149,7 +150,7 @@ private:
 	static void ModelSetting(MODEL_LOAD * pModel_load);
 	/* 変数 */
 	static std::vector<std::unique_ptr<MODEL_LOAD>> m_pModelLoad;	// モデル情報の読み込み用
-	
+
 	D3DXVECTOR3		m_pos;								// 位置情報
 	D3DXVECTOR3		m_rot;								// 回転情報
 	D3DXMATRIX		*m_pParentMtx;						// 親マトリックス
