@@ -66,8 +66,14 @@ void CThunder::Init(void)
 	m_pos = m_pThunder->GetPos();
 
 	// メッシュドームの生成
-	CMeshdome *pMeshDome = CMeshdome::Create(D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z), D3DXVECTOR3(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE), 10, 10,
-		CMeshdome::TYPE_NORMAL, D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CMeshdome *pMeshDome = CMeshdome::Create(
+		D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z),
+		D3DXVECTOR3(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE),
+		10,
+		10,
+		CMeshdome::TYPE_NORMAL,
+		D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// メッシュドームの使用状態
 	pMeshDome->SetUse(true);
@@ -92,6 +98,31 @@ void CThunder::Update(void)
 	float fX_Difference;
 	float fZ_Difference;
 	float fDifference;
+
+	/*
+	g_aExplosion[nCntExplosion].nCounterAnim++;	// カウンター加算
+
+												// 電撃テクスチャー
+	if (g_aExplosion[nCntExplosion].type == EXPLOSIONTYPE_THUNDER)
+	{
+		// 当たり判定
+		CollisionExplosion(nCntExplosion);
+		if (g_aExplosion[nCntExplosion].nCounterAnim % 6 == 0)
+		{
+			// テクスチャ設定
+			SetTexExplosion(pVtx,
+				ANIMATION_SIX_FTEX * g_aExplosion[nCntExplosion].nPatternAnim,
+				ANIMATION_SIX_FTEX + ANIMATION_SIX_FTEX * g_aExplosion[nCntExplosion].nPatternAnim);
+			g_aExplosion[nCntExplosion].nPatternAnim = (g_aExplosion[nCntExplosion].nPatternAnim++) % ANIMATION_SIX;	// 6枚パターン創造
+
+																														// 爆発終了
+			if (g_aExplosion[nCntExplosion].nPatternAnim % ANIMATION_SIX == 0)
+			{
+				g_aExplosion[nCntExplosion].bUse = false;
+			}
+		}
+	}
+	*/
 
 	for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
 	{
@@ -176,7 +207,7 @@ CThunder *CThunder::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// シーン初期化
 	m_pThunder->Init();
 
-	m_pThunder->ManageSetting(LAYER_3DOBJECT2);
+	m_pThunder->ManageSetting(LAYER_3DOBJECT);
 
 	// 値を返す
 	return m_pThunder;
