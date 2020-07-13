@@ -163,7 +163,7 @@ void CMeshdome::Draw(void)
 	if (m_bUse)
 	{
 		// •`‰æó‘Ô
-		CManager::GetRenderer()->SetType(CRenderer::TYPE_CULLBACK);
+		//CManager::GetRenderer()->SetType(CRenderer::TYPE_CULLBACK);
 		// •Ï”éŒ¾
 		LPDIRECT3DDEVICE9 pDevice =		// ƒfƒoƒCƒX‚ÌŽæ“¾
 			CManager::GetRenderer()->GetDevice();
@@ -207,7 +207,7 @@ void CMeshdome::Draw(void)
 		pDevice->SetTexture(
 			0,
 			CTexture_manager::GetTexture(m_nTexId[m_type]));
-
+		// 
 		// ƒ|ƒŠƒSƒ“‚Ì•`‰æ
 		pDevice->DrawIndexedPrimitive(
 			D3DPT_TRIANGLESTRIP,
