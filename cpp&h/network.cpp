@@ -27,6 +27,7 @@ int CNetwork::nPort = 0;
 CNetwork::CNetwork()
 {
 	m_nId = -1;
+	m_bTimeout = false;
 }
 
 //=============================================================================
@@ -100,8 +101,6 @@ void CNetwork::Update(void)
 		{
 			dwExecLastTime = dwCurrentTime;	// 処理した時刻を保存
 
-			OutputDebugString("更新開始");
-
 			char debug[1024];
 			int nError = -1;
 			float fData[NUM_KEY_M + 1 + 3];
@@ -127,15 +126,28 @@ void CNetwork::Update(void)
 			nError = select(0, &readfds, NULL, NULL, &tv);
 			if (nError == 0)
 			{
+				if (!m_bTimeout)
+				{// タイムアウトフラグが立っていなかったとき
+					m_bTimeout = true;				// タイムアウトフラグを立てる
+				}
 				OutputDebugString("タイムアウト\n");
 				continue;
 			}
 
 			if (FD_ISSET(m_sockServerToClient, &readfds))
-			{
+			{// 受信
 				OutputDebugString("受信開始\n");
 				nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
 				OutputDebugString("受信完了\n");
+
+				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+				{
+					if (nCount != m_nId)
+					{
+						CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
+						pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
+					}
+				}
 			}
 
 			if (nError == SOCKET_ERROR)

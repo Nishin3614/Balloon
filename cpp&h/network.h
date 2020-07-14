@@ -107,6 +107,7 @@ private:
 
 	int m_nId;
 	float m_fRot[MAX_PLAYER];
+	bool m_bTimeout;
 
 	static char aIp[32];				// IPアドレス
 	static int nPort;					// ポート番号
