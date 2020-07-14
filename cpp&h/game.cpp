@@ -98,7 +98,7 @@ void CGame::Init(void)
 	// アイテム生成
 	CItem::Create(D3DXVECTOR3(0.0f, 500.0f, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	// 雷生成
-	CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	// スコア生成
 	m_pScore = CScore::Create();
 	// ポーズの生成

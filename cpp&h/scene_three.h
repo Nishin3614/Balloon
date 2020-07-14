@@ -89,6 +89,7 @@ public:
 	{
 		m_nTexType = nTexType;
 	};
+	void SetAnimation(float fTexX, float fTexY, float fTexY2, int nPatternAnim);					// アニメーションの設定
 	// ビルボード状態
 	void SetBillboard(bool const &bBillboard)
 		{ m_bBillboard = bBillboard; };

@@ -561,3 +561,25 @@ void CScene_THREE::Offset_Side_Center(VERTEX_3D * pVtx)
 	pVtx[2].pos = D3DXVECTOR3(-m_size.x * 0.5f,0.0f , -m_size.z * 0.5f);
 	pVtx[3].pos = D3DXVECTOR3(m_size.x * 0.5f,0.0f, -m_size.z * 0.5f);
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// アニメーション生成
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_THREE::SetAnimation(float fTexX, float fTexY, float fTexY2, int nPatternAnim)
+{
+	// 変数宣言
+	VERTEX_3D *pVtx;	// 頂点情報
+
+	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f + nPatternAnim * fTexX, fTexY2);
+	pVtx[1].tex = D3DXVECTOR2(fTexX + nPatternAnim * fTexX, fTexY2);
+	pVtx[2].tex = D3DXVECTOR2(0.0f + nPatternAnim * fTexX, fTexY);
+	pVtx[3].tex = D3DXVECTOR2(fTexX + nPatternAnim * fTexX, fTexY);
+
+	// 頂点データをアンロックする
+	m_pVtxBuff->Unlock();
+}
+

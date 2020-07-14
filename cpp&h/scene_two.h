@@ -83,7 +83,8 @@ public:
 		D3DXVECTOR2 const &first = D3DXVECTOR2(0.0f,0.0f),			// 初期の配置
 		D3DXVECTOR2 const &last = D3DXVECTOR2(1.0f, 1.0f)			// 最後の配置
 	);
-	// テクスチャー設定
+	void SetAnimation(float fTexX, float fTexY, float fTexY2, int nPatternAnim);					// アニメーションの設定
+																									// テクスチャー設定
 	void BindTexture(LPDIRECT3DTEXTURE9 const &p_Tex) { m_pTexture = p_Tex; };
 	// サイズ取得
 	D3DXVECTOR2 const GetSize(void) { return m_size; };

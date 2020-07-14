@@ -356,3 +356,24 @@ void CScene_TWO::SetTex(
 	// アンロック
 	m_pVtxBuff->Unlock();
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// アニメーション生成
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_TWO::SetAnimation(float fTexX, float fTexY, float fTexY2, int nPatternAnim)
+{
+	// 変数宣言
+	VERTEX_2D *pVtx;	// 頂点情報
+
+	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// テクスチャ座標の設定
+	pVtx[0].tex = D3DXVECTOR2(0.0f + nPatternAnim * fTexX, fTexY2);
+	pVtx[1].tex = D3DXVECTOR2(fTexX + nPatternAnim * fTexX, fTexY2);
+	pVtx[2].tex = D3DXVECTOR2(0.0f + nPatternAnim * fTexX, fTexY);
+	pVtx[3].tex = D3DXVECTOR2(fTexX + nPatternAnim * fTexX, fTexY);
+
+	// 頂点データをアンロックする
+	m_pVtxBuff->Unlock();
+}
