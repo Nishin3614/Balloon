@@ -49,6 +49,7 @@ public:
 	virtual void Draw(void);
 	// プレイヤーが死んだときの関数
 	virtual void Die(void);
+	void OtherDie(void);
 	// 当たった後の処理
 	// 引数1:オブジェクトタイプ
 	// 引数2:相手のシーン情報

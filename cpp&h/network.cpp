@@ -103,7 +103,7 @@ void CNetwork::Update(void)
 
 			char debug[1024];
 			int nError = -1;
-			float fData[NUM_KEY_M + 1 + 3];
+			float fData[RECVDATA_MAX];
 			char cDie[32];
 
 			char cDataText[128];		//文字
@@ -126,10 +126,6 @@ void CNetwork::Update(void)
 			nError = select(0, &readfds, NULL, NULL, &tv);
 			if (nError == 0)
 			{
-				if (!m_bTimeout)
-				{// タイムアウトフラグが立っていなかったとき
-					m_bTimeout = true;				// タイムアウトフラグを立てる
-				}
 				OutputDebugString("タイムアウト\n");
 				continue;
 			}
@@ -179,9 +175,23 @@ void CNetwork::Update(void)
 					{
 						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 					}
-					m_fRot[nCount] = fData[NUM_KEY_M];
+					// 回転量の代入
+					m_fRot[nCount] = fData[RECVDATA_ROT];
 
-					m_playerPos[nCount] = D3DXVECTOR3(fData[NUM_KEY_M + 1], fData[NUM_KEY_M + 2], fData[NUM_KEY_M + 3]);
+					// 位置の代入
+					m_playerPos[nCount] = D3DXVECTOR3(fData[RECVDATA_POS_X], fData[RECVDATA_POS_Y], fData[RECVDATA_POS_Z]);
+
+					// 死亡フラグの管理
+					bool bDie = (int)fData[RECVDATA_DIE];
+
+					if (bDie)
+					{// 今回死んでいて
+						if (!m_bDie[nCount])
+						{// 前回死んでいなかったとき
+							CPlayer *pPlayer = CGame::GetPlayer(nCount);
+							m_bDie[nCount] = true;
+						}
+					}
 				}
 			}
 		}
@@ -560,7 +570,7 @@ int CNetwork::ConvertDecimalToBinary(int nValue) {
 	int ans = 0;
 	for (int nCount = 0; nValue > 0; nCount++)
 	{
-		ans = ans + (nValue % 2)*pow(10, nCount);
+		ans = ans + (nValue % 2)*powf(10, nCount);
 		nValue = nValue / 2;
 	}
 	return ans;

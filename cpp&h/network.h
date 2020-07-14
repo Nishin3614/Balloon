@@ -40,6 +40,16 @@ typedef enum
 	SOCKETTYPE_MAX
 } SOCKETTYPE;
 
+typedef enum
+{
+	RECVDATA_ROT = NUM_KEY_M,
+	RECVDATA_POS_X,
+	RECVDATA_POS_Y,
+	RECVDATA_POS_Z,
+	RECVDATA_DIE,
+	RECVDATA_MAX
+} RECVDATA;
+
 // ----------------------------------------------------------------------------------------------------
 //
 // 構造体定義
@@ -90,31 +100,33 @@ public:
 	static int ConvertDecimalToBinary(int nValue);
 
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
+	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
 
 private:
 	SOCKET createServerSocket(unsigned short port);
 	static void ConvertStringToFloat(char* text,const char* delimiter, float* pResult);
 
+	// ネットワーク接続関連
 	SOCKET m_sockClient;								// ソケット(クライアント)
 	SOCKET m_sockClientToServer;						// ソケット(UDP送信用)
 	SOCKET m_sockServerToClient;						// ソケット(UDP受信用)
-
 	struct sockaddr_in m_addrServer;					// ソケットアドレス(サーバ)の情報(TCP送受信)
 	struct sockaddr_in m_addrClientToServer;			// キー送信用ソケット(UDP送信用)
+	fd_set m_readfds;
+	static char aIp[32];					// IPアドレス
+	static int nPort;						// ポート番号
 
 	PLAYERSTATE keystate;
-	fd_set m_readfds;
 
-	int m_nId;
-	float m_fRot[MAX_PLAYER];
-	bool m_bTimeout;
+	// 受信情報関連
+	int m_nId;								// ID
+	float m_fRot[MAX_PLAYER];				// 回転情報
+	bool m_bTimeout;						// タイムアウトフラグ
+	D3DXVECTOR3 m_playerPos[MAX_PLAYER];	// プレイヤー位置情報
+	bool m_bDie[MAX_PLAYER];				// 1つ前の死亡フラグ
 
-	static char aIp[32];				// IPアドレス
-	static int nPort;					// ポート番号
-
-	D3DXVECTOR3 m_playerPos[MAX_PLAYER];
-
-	std::thread m_th;
-	bool m_bUpdate;
+	// マルチスレッド関連
+	std::thread m_th;					// スレッド
+	bool m_bUpdate;						// 更新フラグ
 };
 #endif // !_NETWORK_H_

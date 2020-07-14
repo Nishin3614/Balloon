@@ -110,6 +110,14 @@ void CPlayer::Update(void)
 	{
 		CCharacter::Limit();
 	}
+
+	if (pNetwork != NULL)
+	{
+		if (pNetwork->GetDie(m_nPlayerID))
+		{
+			OtherDie();
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -204,8 +212,8 @@ void CPlayer::MyMove(void)
 */
 
 
-	/* キーボード */
-	// 左
+/* キーボード */
+// 左
 	if (pKeyboard->GetKeyboardPress(DIK_A))
 	{
 		// 移動状態on
@@ -511,18 +519,35 @@ void CPlayer::Draw(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Die(void)
 {
-	// 死亡処理
-	CCharacter::Die();
-	// コントロールする自キャラの場合
-	if (m_nPlayerID == CManager::GetPlayerID())
-	{
+	CNetwork *pNetwork = CManager::GetNetwork();
 
-		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+	if (m_nPlayerID == pNetwork->GetId())
+	{
+		char aDie[64];
+		sprintf(aDie, "DIE %d", pNetwork->GetId());
+		pNetwork->SendTCP(aDie, sizeof(aDie));
+
+		// 死亡処理
+		CCharacter::Die();
+		// コントロールする自キャラの場合
+		if (m_nPlayerID == CManager::GetPlayerID())
 		{
-			// チュートリアルへ
-			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+			{
+				// チュートリアルへ
+				CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			}
 		}
 	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 人形の死亡処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::OtherDie(void)
+{
+	// 死亡処理
+	CCharacter::Die();
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -541,7 +566,7 @@ void CPlayer::Debug(void)
 {
 	if (m_nPlayerID == 0)
 	{
-		if(CManager::GetKeyboard()->GetKeyboardTrigger(DIK_R))
+		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_R))
 		{
 			CCharacter::SetPos(D3DVECTOR3_ZERO);
 		}
