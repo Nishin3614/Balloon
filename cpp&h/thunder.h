@@ -10,7 +10,6 @@
 #include "main.h"
 #include "scene_three.h"
 
-
 // ==========================================================
 // マクロ定義
 // ==========================================================
@@ -53,8 +52,8 @@ private:
 	D3DXVECTOR3 m_move;									// 移動量
 	D3DXCOLOR m_col;									// 色
 
-	int m_nCntEffect;
+	int	m_nCounterAnim;									// アニメーションカウンター
+	int m_nPatternAnim;									// アニメーションパターン
 	float m_fDistance;									// 距離
-
 };
 #endif

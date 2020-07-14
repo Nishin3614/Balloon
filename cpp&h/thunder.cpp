@@ -59,12 +59,17 @@ void CThunder::Init(void)
 	CScene_THREE::SetBillboard(true);
 	CScene_THREE::SetLighting(true);		// ライティング
 	// テクスチャータイプ設定
-	CScene_THREE::SetTexType(22);			// テクスチャー渡し
+	CScene_THREE::SetTexType(23);			// テクスチャー渡し
+	// テクスチャ分割
+	CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
 	// 範囲
 	m_fDistance = MAX_DISTANCE;
+	// アニメーションカウンター初期化
+	m_nCounterAnim = 0;
+	// アニメーションパターン初期化
+	m_nPatternAnim = 0;
 	// ポジション取得
 	m_pos = m_pThunder->GetPos();
-
 	// メッシュドームの生成
 	CMeshdome *pMeshDome = CMeshdome::Create(
 		D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z),
@@ -98,32 +103,18 @@ void CThunder::Update(void)
 	float fX_Difference;
 	float fZ_Difference;
 	float fDifference;
+	// テクスチャ分割
+	//CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
 
-	/*
-	g_aExplosion[nCntExplosion].nCounterAnim++;	// カウンター加算
+	m_nCounterAnim++;	// カウンター加算
 
-												// 電撃テクスチャー
-	if (g_aExplosion[nCntExplosion].type == EXPLOSIONTYPE_THUNDER)
+	// 電撃テクスチャー
+	if (m_nCounterAnim % 6 == 0)
 	{
-		// 当たり判定
-		CollisionExplosion(nCntExplosion);
-		if (g_aExplosion[nCntExplosion].nCounterAnim % 6 == 0)
-		{
-			// テクスチャ設定
-			SetTexExplosion(pVtx,
-				ANIMATION_SIX_FTEX * g_aExplosion[nCntExplosion].nPatternAnim,
-				ANIMATION_SIX_FTEX + ANIMATION_SIX_FTEX * g_aExplosion[nCntExplosion].nPatternAnim);
-			g_aExplosion[nCntExplosion].nPatternAnim = (g_aExplosion[nCntExplosion].nPatternAnim++) % ANIMATION_SIX;	// 6枚パターン創造
+		m_nPatternAnim = (m_nPatternAnim + 1) % 6;
 
-																														// 爆発終了
-			if (g_aExplosion[nCntExplosion].nPatternAnim % ANIMATION_SIX == 0)
-			{
-				g_aExplosion[nCntExplosion].bUse = false;
-			}
-		}
+ 		CScene_THREE::SetAnimation(1.0f / 6.0f, 1.0f, 0.0f, m_nPatternAnim);
 	}
-	*/
-
 	for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
 	{
 		// キャラクターへのポインタ
