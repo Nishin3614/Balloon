@@ -58,10 +58,10 @@ public:
 		// プレイヤー用 //
 		CHARACTER_P_THUNDER = 0,				// 雷使い(仮)
 		CHARACTER_P_ZOMBIE,						// ゾンビ(仮)
-		CHARACTER_BALLOON1,
-		CHARACTER_BALLOON2,
-		CHARACTER_BALLOON3,
-		CHARACTER_BALLOON4,
+		CHARACTER_BALLOON1,						// バルーン1
+		CHARACTER_BALLOON2,						// バルーン2
+		CHARACTER_BALLOON3,						// バルーン3
+		CHARACTER_BALLOON4,						// バルーン4
 		CHARACTER_PLAYERMAX,					// プレイヤー用のキャラクター最大数
 		// プレイヤー用 //
 		// 敵用 //

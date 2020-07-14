@@ -30,6 +30,9 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon::CBalloon() : CScene_X::CScene_X()
 {
+	m_bCollision = false;
+	m_pParentPos = NULL;
+	m_Offsetpos = D3DVECTOR3_ZERO;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -60,6 +63,9 @@ void CBalloon::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon::Update(void)
 {
+	// 位置更新
+	SetPos(m_Offsetpos + *m_pParentPos);
+	// 更新処理
 	CScene_X::Update();
 }
 
@@ -109,7 +115,8 @@ void CBalloon::CollisionDelete(void)
 // 作成処理(シーン管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon * CBalloon::Create(
-	D3DXVECTOR3 const & pos,
+	D3DXVECTOR3 const &pos,
+	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 const & rot,
 	int const & nModelId,
 	bool const & bShadowMap
@@ -122,7 +129,9 @@ CBalloon * CBalloon::Create(
 	// シーン管理設定
 	pBalloon->ManageSetting(CScene::LAYER_3DOBJECT);
 	// 設定
-	pBalloon->SetPos(pos);
+	pBalloon->m_pParentPos = pPos;
+	pBalloon->m_Offsetpos = pos;
+	pBalloon->SetPos(pBalloon->m_Offsetpos + *pBalloon->m_pParentPos);
 	pBalloon->SetRot(rot);
 	pBalloon->SetModelId(nModelId);
 	pBalloon->SetShadowMap(bShadowMap);
@@ -137,7 +146,8 @@ CBalloon * CBalloon::Create(
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon * CBalloon::Create_Self(
-	D3DXVECTOR3 const & pos,
+	D3DXVECTOR3 const &pos,
+	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 const & rot,
 	int const & nModelId,
 	bool const & bShadowMap
@@ -148,6 +158,8 @@ CBalloon * CBalloon::Create_Self(
 	// メモリの生成(初め->基本クラス,後->派生クラス)
 	pBalloon = new CBalloon();
 	// 設定
+	pBalloon->m_pParentPos = pPos;
+	pBalloon->m_Offsetpos = pos;
 	pBalloon->SetPos(pos);
 	pBalloon->SetRot(rot);
 	pBalloon->SetModelId(nModelId);
@@ -162,7 +174,8 @@ CBalloon * CBalloon::Create_Self(
 // 作成処理(個人管理)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 std::unique_ptr<CBalloon> CBalloon::Create_Uni(
-	D3DXVECTOR3 const & pos,
+	D3DXVECTOR3 const &pos,
+	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 const & rot,
 	int const & nModelId,
 	bool const & bShadowMap
@@ -171,6 +184,8 @@ std::unique_ptr<CBalloon> CBalloon::Create_Uni(
 	// 変数宣言
 	std::unique_ptr<CBalloon> pBalloon(new CBalloon);		// シーンXクラス
 	// 設定
+	pBalloon->m_pParentPos = pPos;
+	pBalloon->m_Offsetpos = pos;
 	pBalloon->SetPos(pos);
 	pBalloon->SetRot(rot);
 	pBalloon->SetModelId(nModelId);

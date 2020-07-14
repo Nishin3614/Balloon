@@ -246,7 +246,7 @@ void CCharacter::Init()
 		}
 		// ïóëDê∂ê¨
 		m_pBalloon_group = CBalloon_group::Create(
-			&m_mtxWorld,
+			&m_pos,
 			m_sStatus[m_character].nMaxPopBalloon,
 			this
 		);

@@ -176,7 +176,7 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 		// ->“–‚½‚Á‚½Œã‚Ìˆ—‚ğs‚¤
 		if (pCollision->m_pOwner != NULL)
 		{
-			//pCollision->m_pOwner->Scene_Collision(m_nMyObjectId, m_pOwner);
+			pCollision->m_pOwner->Scene_Collision(m_nMyObjectId, m_pOwner);
 		}
 	}
 	// “–‚½‚è”»’èó‘Ô‚ğ•Ô‚·
