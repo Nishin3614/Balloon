@@ -14,6 +14,7 @@
 #include "meshobit.h"
 #include "ui.h"
 #include "Extrusion.h"
+#include "network.h"
 
 #include "rectcollision.h"
 #include "spherecollision.h"

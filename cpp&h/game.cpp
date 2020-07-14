@@ -47,6 +47,7 @@
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CGame::STATE CGame::m_state = CGame::STATE_NORMAL;		// 状態
+CPlayer *CGame::m_pPlayer[MAX_PLAYER] = {};
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ
@@ -107,8 +108,8 @@ void CGame::Init(void)
 	m_pause->Init();
 
 	if (pNetwork != NULL)
-	{
-		pNetwork->StartUpdate();
+	{// ネットワークが存在していたとき
+		pNetwork->StartUpdate();			// 更新開始
 	}
 }
 
@@ -120,8 +121,8 @@ void CGame::Uninit(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 
 	if (pNetwork != NULL)
-	{
-		pNetwork->StopUpdate();
+	{// ネットワークが存在していたとき
+		pNetwork->StopUpdate();				// 更新停止予約
 	}
 
 	// ポーズ
@@ -151,8 +152,6 @@ void CGame::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Update(void)
 {
-	CNetwork *pNetwork = CManager::GetNetwork();
-
 	// ポーズ状態ならば
 	if (m_state == STATE_PAUSE)
 	{
@@ -242,16 +241,16 @@ void CGame::PauseState(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::PlayerCreate(void)
 {
-	for (int nCntPlayer = 0; nCntPlayer < CONTROLPLAYER_MAX; nCntPlayer++)
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		// プレイヤー1
 		if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_THUNDER)
 		{
-			CP_thunder::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			m_pPlayer[nCntPlayer] = CP_thunder::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
 		}
 		else if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_ZOMBIE)
 		{
-			CP_zombie::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			m_pPlayer[nCntPlayer] = CP_zombie::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
 		}
 	}
 }
