@@ -55,7 +55,7 @@ void CSelect::Init(void)
 	// カメラのタイプ設定
 	CManager::GetRenderer()->GetCamera()->SetType(CCamera::TYPE_FOLLOW);
 	/* 初期化 */
-	/* 作成 */	
+	/* 作成 */
 	// 3Dエフェクトの生成
 	C3DEffect::Create();
 	// 球の設定
@@ -63,6 +63,8 @@ void CSelect::Init(void)
 		10000.0f);
 	// 3Dマップ生成
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
+	// 選択画面のUI生成
+	CUi::LoadCreate(CUi::UITYPE_SELECTCHARACTER);
 	// 選択キャラクターの生成
 	// もし、キャラ選択決定した後に全プレイヤーの
 	CSelectCharacter::Create(

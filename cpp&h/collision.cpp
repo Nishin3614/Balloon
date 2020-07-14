@@ -30,6 +30,9 @@
 // 静的変数
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#ifdef _DEBUG
+int CCollision::nCollisionTime = 0;
+#endif
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ
@@ -83,6 +86,7 @@ void CCollision::Debug(void)
 		posold.y,
 		posold.z
 	);
+	ImGui::Text("nCollisionTime:%d", nCollisionTime);
 }
 
 #endif // _DEBUG
@@ -151,6 +155,13 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 	// ->情報を保存
 	if (bJudg ==  true)
 	{
+
+#ifdef _DEBUG
+		// テスト変数
+		nCollisionTime++;
+#endif // _DEBUG
+
+
 		// 相手の当たり判定状態をtrueへ
 		pCollision->m_bCollision = true;
 		// 相手の番号を代入
@@ -165,7 +176,7 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 		// ->当たった後の処理を行う
 		if (pCollision->m_pOwner != NULL)
 		{
-			pCollision->m_pOwner->Scene_Collision(m_nMyObjectId,m_pOwner);
+			//pCollision->m_pOwner->Scene_Collision(m_nMyObjectId, m_pOwner);
 		}
 	}
 	// 当たり判定状態を返す

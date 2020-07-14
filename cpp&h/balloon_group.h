@@ -82,12 +82,16 @@ public:
 	// 現在の風船グループの最大出現数の取得
 	int const &GetPopMaxBalloon_group(void) { return m_nMaxPopBalloon_group; };
 	// 風船グループが割れる処理
+	// nCntBalloon_group:風船カウント
 	void BreakBalloon_group(int const &nCntBalloon_group);	// 風船グループが割れる処理
+	// 雷で風船を割らせる処理
+	void Thunder_BreakBalloon_group(void);
+
 	// 生成
 	static CBalloon_group * Create(
-		D3DXMATRIX *mtx,							// 行列
-		int const &nPopMaxBalloon_group,					// 風船グループの最大出現数
-		CScene * pParent							// 親情報
+		D3DXMATRIX *mtx,					// 行列
+		int const &nPopMaxBalloon_group,	// 風船グループの最大出現数
+		CScene * pParent					// 親情報
 	);
 	// リソース情報読み込む設定
 	static HRESULT Load(void);					// リソース情報読み込む設定

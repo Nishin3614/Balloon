@@ -22,8 +22,6 @@
 #include "stencilshadow.h"
 #include "balloon_group.h"
 
-
-
 #include "fade.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -858,33 +856,6 @@ void CCharacter::Scene_Collision(
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
-		/*
-		// シーン情報がNULLなら
-		// ->関数を抜ける
-		if (pScene == NULL)
-		{
-			return;
-		}
-		// シーン情報の位置情報と移動情報がNULLなら
-		// ->関数を抜ける
-		if (pScene->Scene_GetPPos() == NULL ||
-			pScene->Scene_GetPMove() == NULL)
-		{
-			return;
-		}
-		// キャラクター同士当たっている
-		// ->バウンド処理
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
-		D3DXVECTOR3 rot = D3DVECTOR3_ZERO;
-		D3DXVECTOR3 diffpos = D3DVECTOR3_ZERO;
-		diffpos = *pScene->Scene_GetPPos() - m_pos;
-		// 相手から見てプレイヤーがいる角度
-		rot.y = (atan2f(diffpos.x, diffpos.z));
-		m_move.x = sinf(rot.y + D3DX_PI) * 2.5f;
-		m_move.z = cosf(rot.y + D3DX_PI) * 2.5f;
-		*/
-
 		// 変数宣言
 		D3DXVECTOR3 RefVecA;
 		D3DXVECTOR3 RefVecB;
@@ -898,13 +869,15 @@ void CCharacter::Scene_Collision(
 			m_move,
 			*pCharacterPos,
 			*pCharacterMove,
-			1,
+			100,
 			1,
 			1.0f,
 			1.0f,
 			RefVecA,
 			RefVecB
 		);
+		//m_move = D3DVECTOR3_ZERO;
+		//*pCharacterMove = D3DVECTOR3_ZERO;
 		m_move += RefVecA;
 		*pCharacterMove += RefVecB;
 
@@ -934,6 +907,7 @@ void CCharacter::Scene_Collision(
 			RefVecA,
 			RefVecB
 		);
+		m_move = D3DVECTOR3_ZERO;
 		m_move += RefVecA;
 	}
 	// オブジェクトタイプがアイテムなら
@@ -1269,6 +1243,15 @@ void CCharacter::UnLoad(void)
 void CCharacter::InitStatic(void)
 {
 	m_nAllCharacter = 0;
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船を強制的に割らせる処理
+// nBreakBalloon:割れる風船の個数
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter::Thunder_BreakBalloon(void)
+{
+	m_pBalloon_group->Thunder_BreakBalloon_group();
 }
 
 #ifdef _DEBUG
