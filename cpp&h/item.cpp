@@ -31,7 +31,7 @@ LPDIRECT3DTEXTURE9 CItem::m_pTex = NULL;
 // ==========================================================
 CItem::CItem() :CScene_THREE()
 {
-
+	m_pCollision = NULL;
 }
 
 // ==========================================================
@@ -55,7 +55,7 @@ void CItem::Init(void)
 	CScene_THREE::SetCol(D3DXCOLOR_CA(1.0f, 1.0f));
 	// シーン3Dの初期化
 	CScene_THREE::Init();
-	CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this,NULL, false,false, &m_pos);
+	m_pCollision = CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this,NULL, false,false, &m_pos);
 	// ビルボード
 	CScene_THREE::SetBillboard(true);
 	CScene_THREE::SetLighting(true);		// ライティング
@@ -168,6 +168,8 @@ void CItem::Scene_Collision(int const & nObjType, CScene * pScene)
 	if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
 		Release();
+		m_pCollision->Release();
+		m_pCollision = NULL;
 	}
 }
 

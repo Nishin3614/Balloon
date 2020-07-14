@@ -58,8 +58,9 @@ public:
 	// ポインター移動量情報の取得
 	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
 
-	// 行列情報設定
-	void SetMatrix(D3DXMATRIX * mtx);			// 行列情報設定
+	// 位置情報設定
+	// pPos:位置情報
+	void SetPPos(D3DXVECTOR3 * pPos);
 	// 風船グループの初期個数を代入
 	void SetBiginBalloon_group(int const &nBringBalloon_group) { m_nBringBalloon_group = nBringBalloon_group; };
 	// 風船グループを持てる個数を変化させる(上昇・現状)
@@ -82,12 +83,16 @@ public:
 	// 現在の風船グループの最大出現数の取得
 	int const &GetPopMaxBalloon_group(void) { return m_nMaxPopBalloon_group; };
 	// 風船グループが割れる処理
+	// nCntBalloon_group:風船カウント
 	void BreakBalloon_group(int const &nCntBalloon_group);	// 風船グループが割れる処理
+	// 雷で風船を割らせる処理
+	void Thunder_BreakBalloon_group(void);
+
 	// 生成
 	static CBalloon_group * Create(
-		D3DXMATRIX *mtx,							// 行列
-		int const &nPopMaxBalloon_group,					// 風船グループの最大出現数
-		CScene * pParent							// 親情報
+		D3DXVECTOR3 *pPos,					// 位置情報
+		int const &nPopMaxBalloon_group,	// 風船グループの最大出現数
+		CScene * pParent					// 親情報
 	);
 	// リソース情報読み込む設定
 	static HRESULT Load(void);					// リソース情報読み込む設定
@@ -97,12 +102,12 @@ protected:
 private:
 	/* 関数 */
 	/* 変数 */
-	std::vector<CBalloon *> m_apBalloon;				// 風船モデル情報
-	D3DXMATRIX *m_mtx;							// 行列情報
-	int m_nPopBalloon_group;							// 現在出現している風船グループの個数
+	std::vector<CBalloon *> m_apBalloon;			// 風船モデル情報
+	D3DXVECTOR3 *m_pPos;							// 位置情報
+	int m_nPopBalloon_group;						// 現在出現している風船グループの個数
 	int m_nBringBalloon_group;						// 現在持っている風船グループの個数
 	int m_nMaxPopBalloon_group;						// 最大出現数の個数
-	float m_fAngleBalloon_group;						// 風船グループの出現する角度(円周率 * 2 / 最大出現数)
+	float m_fAngleBalloon_group;					// 風船グループの出現する角度(円周率 * 2 / 最大出現数)
 };
 
 #endif

@@ -50,6 +50,7 @@ public:
 		UITYPE_TITLEUI_SELECT,
 		UITYPE_TITLEUI_SELECT_BG,
 		UITYPE_TUTORIALUI,
+		UITYPE_SELECTCHARACTER,
 		UITYPE_MAX
 	} UITYPE;
 	// UIの情報格納用型名
@@ -272,18 +273,18 @@ private:
 
 	/* 変数 */
 	static std::vector<UI_LOAD> m_vec_UiLoad[UITYPE_MAX];	// Ui読み込み用変数
-	static bool	m_sta_UiUse[UITYPE_MAX];				// このUIの使用状態
-	static std::vector<std::string> m_vec_String;					// ファイル情報読み書き用
-	CScene_TWO * m_pScene_two;							// シーン2D
-	C2DPresents * m_pPresents;							// 2Dプレゼンツ
-	UITYPE m_Uitype;									// UIタイプ
-	int m_nUi;											// UI
-	
+	static bool	m_sta_UiUse[UITYPE_MAX];					// このUIの使用状態
+	static std::vector<std::string> m_vec_String;			// ファイル情報読み書き用
+	CScene_TWO * m_pScene_two;								// シーン2D
+	C2DPresents * m_pPresents;								// 2Dプレゼンツ
+	UITYPE m_Uitype;										// UIタイプ
+	int m_nUi;												// UI
+
 	// 処理に必要な変数
 	// int型
 	std::vector<int> m_vec_nNumber;							// int情報
 	// bool型
-	std::vector<bool> m_vec_Bool;							// bool情報						
+	std::vector<bool> m_vec_Bool;							// bool情報
 	// シーンクラス
 	std::unique_ptr<CScene> m_pScene;						// シーン情報
 

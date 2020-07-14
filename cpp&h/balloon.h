@@ -57,6 +57,7 @@ public:
 	// 作成処理(シーン管理)
 	static CBalloon * Create(
 		D3DXVECTOR3 const &pos,
+		D3DXVECTOR3 * pPos,
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,
 		bool const &bShadowMap = false
@@ -64,6 +65,7 @@ public:
 	// 作成処理(個人管理)
 	static CBalloon * Create_Self(
 		D3DXVECTOR3 const &pos,
+		D3DXVECTOR3 * pPos,
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,
 		bool const &bShadowMap = false
@@ -71,6 +73,7 @@ public:
 	// 作成処理(個人管理)
 	static std::unique_ptr<CBalloon> Create_Uni(
 		D3DXVECTOR3 const &pos,
+		D3DXVECTOR3 * pPos,
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,
 		int const &nModelId = 0,
 		bool const &bShadowMap = false
@@ -81,7 +84,9 @@ protected:
 private:
 	/* 関数 */
 	/* 変数 */
-	bool m_bCollision;
+	bool m_bCollision;			// あたり判定状態
+	D3DXVECTOR3 *m_pParentPos;	// 位置情報
+	D3DXVECTOR3 m_Offsetpos;	// オフセット位置
 };
 
 #endif

@@ -15,14 +15,18 @@
 // マクロ定義
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define CHARACTER_ICON_FIXEDPOS (400.0f)
+#define CHARACTER_ICON_ORIGINPOS (D3DXVECTOR3(250.0f,658.0f,0.0f))	// キャラクターアイコンの1番目の位置
+#define CHARACTER_ICON_ORIGINPOS_X (250.0f)							// キャラクターアイコンの1番目のX位置
+#define CHARACTER_ICON_ORIGINPOS_Y (658.0f)							// キャラクターアイコンの1番目のY位置
+#define CHARACTER_ICON_SPACE (250.0f)								// キャラクターアイコン同士の位置間隔
+#define CHARACTER_ICON_SIZE (85.0f)									// キャラクターアイコンのサイズ
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // 静的変数宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-int CSelectCharacter::m_SaveCharaType[CONTROLPLAYER_MAX] = {};	// プレイヤーが選んだキャラクタータイプを保存
+int CSelectCharacter::m_SaveCharaType[MAX_PLAYER] = {};	// プレイヤーが選んだキャラクタータイプを保存
 
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -60,8 +64,8 @@ void CSelectCharacter::Init(void)
 	// 選択UI生成
 	m_pSelectUi = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
-		D3DXVECTOR3(CHARACTER_ICON_FIXEDPOS, 600.0f, 0.0f),
-		D3DXVECTOR2(150.0f, 150.0f));
+		CHARACTER_ICON_ORIGINPOS,
+		D3DXVECTOR2(CHARACTER_ICON_SIZE, CHARACTER_ICON_SIZE));
 	// 選択UIのNULLチェック
 	// ->テクスチャー設定
 	if (m_pSelectUi != NULL)
@@ -75,8 +79,8 @@ void CSelectCharacter::Init(void)
 		// 選択アイコン生成
 		m_pSelectIcon[nCntCharacter] = CScene_TWO::Create(
 			CScene_TWO::OFFSET_TYPE_CENTER,
-			D3DXVECTOR3(CHARACTER_ICON_FIXEDPOS * (nCntCharacter + 1), 600.0f, 0.0f),
-			D3DXVECTOR2(100.0f, 100.0f));
+			D3DXVECTOR3(CHARACTER_ICON_ORIGINPOS_X * (nCntCharacter + 1), CHARACTER_ICON_ORIGINPOS_Y, 0.0f),
+			D3DXVECTOR2(CHARACTER_ICON_SIZE, CHARACTER_ICON_SIZE));
 		// テクスチャー未設定
 		//
 		m_pSelectIcon[nCntCharacter]->BindTexture(CTexture_manager::GetTexture(18));
@@ -266,7 +270,7 @@ CSelectCharacter * CSelectCharacter::Create(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::InitStatic(void)
 {
-	for (int nCntSelectChara = 0; nCntSelectChara < CONTROLPLAYER_MAX; nCntSelectChara++)
+	for (int nCntSelectChara = 0; nCntSelectChara < MAX_PLAYER; nCntSelectChara++)
 	{
 		m_SaveCharaType[nCntSelectChara] = 0;
 	}

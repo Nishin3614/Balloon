@@ -40,7 +40,7 @@ CBalloon_group::CBalloon_group() : CScene::CScene()
 	// 初期化
 	m_nPopBalloon_group = 2;
 	m_nBringBalloon_group = 0;
-	m_mtx = NULL;
+	m_pPos = NULL;
 	m_fAngleBalloon_group = 0;
 }
 
@@ -123,21 +123,15 @@ void CBalloon_group::Debug(void)
 #endif // _DEBUG
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 行列情報設定処理
+// 位置情報設定
+// pPos:位置情報
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CBalloon_group::SetMatrix(D3DXMATRIX * mtx)
+void CBalloon_group::SetPPos(
+	D3DXVECTOR3 * pPos	// 位置情報
+)
 {
-	// 行列情報のポインターをコピーする
-	m_mtx = mtx;
-	// 風船の親行列情報設定処理
-	for (int nCntBalloon_group = 0; nCntBalloon_group < (signed)m_apBalloon.size(); nCntBalloon_group++)
-	{
-		// 風船のNULLチェック
-		// ->ループスキップ
-		if (m_apBalloon[nCntBalloon_group] == NULL) continue;
-		// 親行列の設定
-		m_apBalloon[nCntBalloon_group]->SetParentMtx(m_mtx);
-	}
+	// 位置情報のポインターを代入する
+	m_pPos = pPos;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -161,8 +155,9 @@ void CBalloon_group::SetPopMaxBalloom(
 				sinf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS,
 				BALLOON_GROUP_Y,
 				cosf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS),
-				D3DVECTOR3_ZERO,
-				0
+			m_pPos,
+			D3DVECTOR3_ZERO,
+			0
 			));
 		// 当たり判定設定(球)
 		m_apBalloon[nCntBalloon_group]->SetCollision(
@@ -194,6 +189,7 @@ void CBalloon_group::CreateBalloon_group(
 				sinf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS,
 				BALLOON_GROUP_Y,
 				cosf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS),
+			m_pPos,
 			D3DVECTOR3_ZERO,
 			0
 		);
@@ -205,8 +201,6 @@ void CBalloon_group::CreateBalloon_group(
 			false,
 			pParent
 		);
-		// 親行列の設定
-		m_apBalloon[nCntBalloon_group]->SetParentMtx(m_mtx);
 		// 持っている風船グループの個数を減らす
 		m_nBringBalloon_group--;
 		// 出現している風船グループの個数を増やす
@@ -244,9 +238,9 @@ CBalloon * CBalloon_group::GetBalloon(int const & nBalloon_group)
 // 作成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon_group * CBalloon_group::Create(
-	D3DXMATRIX *mtx,			// 行列
+	D3DXVECTOR3 *pPos,					// 位置情報
 	int const &nPopMaxBalloon_group,	// 最大風船グループ数
-	CScene * pParent			// 親情報
+	CScene * pParent					// 親情報
 )
 {
 	// 変数宣言
@@ -257,6 +251,8 @@ CBalloon_group * CBalloon_group::Create(
 	pBalloon_group->ManageSetting(CScene::LAYER_3DOBJECT);
 	// 初期化処理
 	pBalloon_group->Init();
+	// 行列情報設定
+	pBalloon_group->SetPPos(pPos);
 	// 外に出して置ける風船グループの最大個数を設定
 	pBalloon_group->SetPopMaxBalloom(
 		nPopMaxBalloon_group,
@@ -264,8 +260,6 @@ CBalloon_group * CBalloon_group::Create(
 	);
 	// 出現している風船グループの個数に代入する
 	pBalloon_group->m_nPopBalloon_group = nPopMaxBalloon_group;
-	// 行列情報設定
-	pBalloon_group->SetMatrix(mtx);
 	// 生成したオブジェクトを返す
 	return pBalloon_group;
 }
@@ -299,5 +293,28 @@ void CBalloon_group::BreakBalloon_group(int const &nCntBalloon_group)
 		m_apBalloon[nCntBalloon_group] = NULL;
 		// 出現している風船グループの個数を増やす
 		m_nPopBalloon_group--;
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 雷で風船を割らせる処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::Thunder_BreakBalloon_group(void)
+{
+	// 風船を割らせる処理
+	for (int nCntBalloon_group = 0; nCntBalloon_group < (signed)m_apBalloon.size(); nCntBalloon_group++)
+	{
+		// 風船のNULLチェック
+		// ->ループスキップ
+		if (m_apBalloon[nCntBalloon_group] == NULL) continue;
+		// 終了処理
+		m_apBalloon[nCntBalloon_group]->Uninit();
+		// 風船の開放
+		delete m_apBalloon[nCntBalloon_group];
+		m_apBalloon[nCntBalloon_group] = NULL;
+		// 出現している風船グループの個数を増やす
+		m_nPopBalloon_group--;
+		// 一つ風船を割ったら関数を抜ける
+		return;
 	}
 }

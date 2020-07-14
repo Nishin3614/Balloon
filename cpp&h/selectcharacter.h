@@ -79,7 +79,7 @@ protected:
 private:
 	/* 関数 */
 	/* 変数 */
-	static int m_SaveCharaType[CONTROLPLAYER_MAX];					// プレイヤーが選んだキャラクタータイプを保存
+	static int m_SaveCharaType[MAX_PLAYER];					// プレイヤーが選んだキャラクタータイプを保存
 	CP_thunder * m_pThunder;										// プレイヤー(雷)
 	CP_zombie * m_pZombie;											// プレイヤー(ゾンビ)
 	CScene_TWO * m_pSelectUi;										// 選択UI

@@ -100,14 +100,32 @@ void CPlayer::Update(void)
 			OtherAction();
 		}
 	}
+
 	// キャラクター更新
 	CCharacter::Update();
+
 	/* プロトタイプ用 */
 	// キャラクターの区域宣言
 	if (CManager::GetPlayerID() != m_nPlayerID)
 	{
 		CCharacter::Limit();
 	}
+
+	if (pNetwork != NULL)
+	{
+		if (pNetwork->GetDie(m_nPlayerID))
+		{
+			OtherDie();
+		}
+	}
+#ifdef _DEBUG
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
+	{
+		CCharacter::Thunder_BreakBalloon();
+	}
+#endif // _DEBUG
+
+	// テスト
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -202,8 +220,8 @@ void CPlayer::MyMove(void)
 */
 
 
-	/* キーボード */
-	// 左
+/* キーボード */
+// 左
 	if (pKeyboard->GetKeyboardPress(DIK_A))
 	{
 		// 移動状態on
@@ -284,11 +302,17 @@ void CPlayer::MyMove(void)
 	// 風船がNULLではないなら
 	if (CCharacter::GetBalloon() != NULL)
 	{
+		// 風船があるなら
 		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
-			if (pKeyboard->GetKeyboardPress(DIK_SPACE))
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
+				// 移動量yが0未満なら
+				if (move.y < 0.0f)
+				{
+					move.y = 0.0f;
+				}
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
 		}
@@ -480,7 +504,7 @@ void CPlayer::OtherMove(void)
 		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
-			if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
 			{
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
@@ -509,18 +533,35 @@ void CPlayer::Draw(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Die(void)
 {
-	// 死亡処理
-	CCharacter::Die();
-	// コントロールする自キャラの場合
-	if (m_nPlayerID == CManager::GetPlayerID())
-	{
+	CNetwork *pNetwork = CManager::GetNetwork();
 
-		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+	if (m_nPlayerID == pNetwork->GetId())
+	{
+		char aDie[64];
+		sprintf(aDie, "DIE %d", pNetwork->GetId());
+		pNetwork->SendTCP(aDie, sizeof(aDie));
+
+		// 死亡処理
+		CCharacter::Die();
+		// コントロールする自キャラの場合
+		if (m_nPlayerID == CManager::GetPlayerID())
 		{
-			// チュートリアルへ
-			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+			{
+				// チュートリアルへ
+				CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			}
 		}
 	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 人形の死亡処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::OtherDie(void)
+{
+	// 死亡処理
+	CCharacter::Die();
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -539,7 +580,7 @@ void CPlayer::Debug(void)
 {
 	if (m_nPlayerID == 0)
 	{
-		if(CManager::GetKeyboard()->GetKeyboardTrigger(DIK_R))
+		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_R))
 		{
 			CCharacter::SetPos(D3DVECTOR3_ZERO);
 		}

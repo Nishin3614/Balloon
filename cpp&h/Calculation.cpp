@@ -880,7 +880,7 @@ bool CCalculation::SquarColiAfterVec(
 	// 反発率
 	RefRate = (1 + fRes_A * fRes_B);
 	// 衝突軸ベクトル
-	C = ColliPos_A - ColliPos_B;
+	C = ColliPos_B - ColliPos_A;
 	// 衝突軸ベクトルの正規化
 	D3DXVec3Normalize(&C, &C);
 	// 内積

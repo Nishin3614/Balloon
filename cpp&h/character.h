@@ -56,12 +56,12 @@ public:
 	typedef enum
 	{
 		// プレイヤー用 //
-		CHARACTER_P_THUNDER = 0,				// 雷使い
-		CHARACTER_P_ZOMBIE,						// ゾンビ
-		CHARACTER_BALLOON1,
-		CHARACTER_BALLOON2,
-		CHARACTER_BALLOON3,
-		CHARACTER_BALLOON4,
+		CHARACTER_P_THUNDER = 0,				// 雷使い(仮)
+		CHARACTER_P_ZOMBIE,						// ゾンビ(仮)
+		CHARACTER_BALLOON1,						// バルーン1
+		CHARACTER_BALLOON2,						// バルーン2
+		CHARACTER_BALLOON3,						// バルーン3
+		CHARACTER_BALLOON4,						// バルーン4
 		CHARACTER_PLAYERMAX,					// プレイヤー用のキャラクター最大数
 		// プレイヤー用 //
 		// 敵用 //
@@ -160,14 +160,6 @@ public:
 	CBalloon_group * GetBalloon(void) { return m_pBalloon_group; };
 	// カメラ追尾しているID
 	static int GetCameraCharacter(void);
-	/*
-	// ロード・アンロード
-	static void Load(
-		CHARACTER const character,		// キャラクター
-		int const nMaxMotion,			// 最大モーション
-		const char * file_name			// ファイル名
-		);
-		*/
 	// キャラクター全ソースの読み込み
 	static HRESULT Load(void);
 	// キャラクターの情報読み込み
@@ -178,7 +170,8 @@ public:
 	static void UnLoad(void);
 	// キャラクターの静的変数の初期化
 	static void InitStatic(void);
-
+	// 雷で風船を割らせる処理
+	void Thunder_BreakBalloon(void);
 #ifdef _DEBUG
 	virtual void  Debug(void);
 	static void AllDebug(void);
@@ -206,7 +199,6 @@ protected:
 	int GetKeyInfoCnt(void) const					{ return m_keyinfoCnt; };
 	// 目標回転量取得
 	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };
-
 	// モーションカメラの更新
 	void MotionCamera(void);
 	// キャラクター同士の当たり判定

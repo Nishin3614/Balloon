@@ -8,6 +8,8 @@
 #include "debugproc.h"
 #include "renderer.h"
 #include "camera.h"
+#include "player.h"
+#include "game.h"
 
 bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
 bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
@@ -25,6 +27,7 @@ int CNetwork::nPort = 0;
 CNetwork::CNetwork()
 {
 	m_nId = -1;
+	m_bTimeout = false;
 }
 
 //=============================================================================
@@ -98,11 +101,9 @@ void CNetwork::Update(void)
 		{
 			dwExecLastTime = dwCurrentTime;	// 処理した時刻を保存
 
-			OutputDebugString("更新開始");
-
 			char debug[1024];
 			int nError = -1;
-			float fData[NUM_KEY_M + 1];
+			float fData[RECVDATA_MAX];
 			char cDie[32];
 
 			char cDataText[128];		//文字
@@ -119,7 +120,7 @@ void CNetwork::Update(void)
 			struct timeval tv;
 
 			// 指定した秒数でタイムアウトさせます
-			tv.tv_sec = 1;
+			tv.tv_sec = 0;
 			tv.tv_usec = 0;
 
 			nError = select(0, &readfds, NULL, NULL, &tv);
@@ -130,10 +131,19 @@ void CNetwork::Update(void)
 			}
 
 			if (FD_ISSET(m_sockServerToClient, &readfds))
-			{
+			{// 受信
 				OutputDebugString("受信開始\n");
 				nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
 				OutputDebugString("受信完了\n");
+
+				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+				{
+					if (nCount != m_nId)
+					{
+						CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
+						pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
+					}
+				}
 			}
 
 			if (nError == SOCKET_ERROR)
@@ -142,7 +152,6 @@ void CNetwork::Update(void)
 				char aError[64];
 				sprintf(aError, "サーバーに接続失敗!!\n エラーコード : %d", WSAGetLastError());
 				MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
-
 			}
 			else
 			{
@@ -166,13 +175,27 @@ void CNetwork::Update(void)
 					{
 						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 					}
-					m_fRot[nCount] = fData[NUM_KEY_M];
+					// 回転量の代入
+					m_fRot[nCount] = fData[RECVDATA_ROT];
+
+					// 位置の代入
+					m_playerPos[nCount] = D3DXVECTOR3(fData[RECVDATA_POS_X], fData[RECVDATA_POS_Y], fData[RECVDATA_POS_Z]);
+
+					// 死亡フラグの管理
+					bool bDie = (int)fData[RECVDATA_DIE];
+
+					if (bDie)
+					{// 今回死んでいて
+						if (!m_bDie[nCount])
+						{// 前回死んでいなかったとき
+							CPlayer *pPlayer = CGame::GetPlayer(nCount);
+							m_bDie[nCount] = true;
+						}
+					}
 				}
 			}
 		}
 	}
-
-	MessageBox(NULL, "マルチキャスト終了！", "警告！", MB_ICONWARNING);
 }
 
 //=============================================================================
@@ -417,22 +440,33 @@ bool CNetwork::KeyData(void)
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
 	CRenderer *pRenderer = CManager::GetRenderer();
 	CCamera *pCamera = pRenderer->GetCamera();
+	CPlayer *pPlayer = CGame::GetPlayer(m_nId);
 	PLAYERSTATE state;
 
-	D3DXVECTOR3 rot = pCamera->GetRot();
+	D3DXVECTOR3 pos = pPlayer->GetPos();
 
-	memset(&state, 0, sizeof(PLAYERSTATE));
-	CNetwork *pNetwork = CManager::GetNetwork();
-
-	if (pKeyboard != NULL)
+	if (pPlayer != NULL)
 	{
-		if (pNetwork != NULL)
+		if (pCamera != NULL)
 		{
-			char data[1024];
+			D3DXVECTOR3 rot = pCamera->GetRot();
 
-			sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-				pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE), rot.y);
-			pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
+			memset(&state, 0, sizeof(PLAYERSTATE));
+			CNetwork *pNetwork = CManager::GetNetwork();
+
+			if (pKeyboard != NULL)
+			{
+				if (pNetwork != NULL)
+				{
+					char data[1024];
+
+					sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+						pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE),		// キー入力情報
+						rot.y,						// 回転
+						pos.x, pos.y, pos.z);		// 位置
+					pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
+				}
+			}
 		}
 	}
 
@@ -536,7 +570,7 @@ int CNetwork::ConvertDecimalToBinary(int nValue) {
 	int ans = 0;
 	for (int nCount = 0; nValue > 0; nCount++)
 	{
-		ans = ans + (nValue % 2)*pow(10, nCount);
+		ans = ans + (nValue % 2)*powf(10, nCount);
 		nValue = nValue / 2;
 	}
 	return ans;
