@@ -10,7 +10,7 @@
 #include "balloon_group.h"
 #include "ui.h"
 #include "network.h"
-
+#include "manager.h"
 #include "fade.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -111,11 +111,14 @@ void CPlayer::Update(void)
 		CCharacter::Limit();
 	}
 
-	if (pNetwork != NULL)
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		if (pNetwork->GetDie(m_nPlayerID))
+		if (pNetwork != NULL)
 		{
-			OtherDie();
+			if (pNetwork->GetDie(m_nPlayerID))
+			{
+				OtherDie();
+			}
 		}
 	}
 #ifdef _DEBUG

@@ -60,6 +60,7 @@ HRESULT CNetwork::Init(void)
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
 		m_fRot[nCount] = 0.0f;
+		m_bDie[nCount] = false;
 	}
 
 	m_bUpdate = false;
