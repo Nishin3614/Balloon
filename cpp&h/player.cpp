@@ -100,8 +100,10 @@ void CPlayer::Update(void)
 			OtherAction();
 		}
 	}
+
 	// キャラクター更新
 	CCharacter::Update();
+
 	/* プロトタイプ用 */
 	// キャラクターの区域宣言
 	if (CManager::GetPlayerID() != m_nPlayerID)
@@ -287,7 +289,7 @@ void CPlayer::MyMove(void)
 		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
-			if (pKeyboard->GetKeyboardPress(DIK_SPACE))
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
@@ -480,7 +482,7 @@ void CPlayer::OtherMove(void)
 		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
-			if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
 			{
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}

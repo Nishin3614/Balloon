@@ -14,6 +14,7 @@
 // ----------------------------------------------------------------------------------------------------
 #include "main.h"
 #include "keyboard.h"
+#include "manager.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -21,7 +22,6 @@
 //
 // ----------------------------------------------------------------------------------------------------
 #define SCRIPT_NETWORK "network.ini"
-#define MAX_PLAYER 4
 
 typedef enum
 {
@@ -89,6 +89,8 @@ public:
 
 	static int ConvertDecimalToBinary(int nValue);
 
+	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
+
 private:
 	SOCKET createServerSocket(unsigned short port);
 	static void ConvertStringToFloat(char* text,const char* delimiter, float* pResult);
@@ -108,6 +110,8 @@ private:
 
 	static char aIp[32];				// IPアドレス
 	static int nPort;					// ポート番号
+
+	D3DXVECTOR3 m_playerPos[MAX_PLAYER];
 
 	std::thread m_th;
 	bool m_bUpdate;

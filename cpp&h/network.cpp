@@ -8,6 +8,8 @@
 #include "debugproc.h"
 #include "renderer.h"
 #include "camera.h"
+#include "player.h"
+#include "game.h"
 
 bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
 bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
@@ -102,7 +104,7 @@ void CNetwork::Update(void)
 
 			char debug[1024];
 			int nError = -1;
-			float fData[NUM_KEY_M + 1];
+			float fData[NUM_KEY_M + 1 + 3];
 			char cDie[32];
 
 			char cDataText[128];		//文字
@@ -119,7 +121,7 @@ void CNetwork::Update(void)
 			struct timeval tv;
 
 			// 指定した秒数でタイムアウトさせます
-			tv.tv_sec = 1;
+			tv.tv_sec = 0;
 			tv.tv_usec = 0;
 
 			nError = select(0, &readfds, NULL, NULL, &tv);
@@ -128,7 +130,7 @@ void CNetwork::Update(void)
 				OutputDebugString("タイムアウト\n");
 				continue;
 			}
-			
+
 			if (FD_ISSET(m_sockServerToClient, &readfds))
 			{
 				OutputDebugString("受信開始\n");
@@ -142,7 +144,6 @@ void CNetwork::Update(void)
 				char aError[64];
 				sprintf(aError, "サーバーに接続失敗!!\n エラーコード : %d", WSAGetLastError());
 				MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
-
 			}
 			else
 			{
@@ -167,12 +168,12 @@ void CNetwork::Update(void)
 						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
 					}
 					m_fRot[nCount] = fData[NUM_KEY_M];
+
+					m_playerPos[nCount] = D3DXVECTOR3(fData[NUM_KEY_M + 1], fData[NUM_KEY_M + 2], fData[NUM_KEY_M + 3]);
 				}
 			}
 		}
 	}
-
-	MessageBox(NULL, "マルチキャスト終了！", "警告！", MB_ICONWARNING);
 }
 
 //=============================================================================
@@ -417,22 +418,33 @@ bool CNetwork::KeyData(void)
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
 	CRenderer *pRenderer = CManager::GetRenderer();
 	CCamera *pCamera = pRenderer->GetCamera();
+	CPlayer *pPlayer = CGame::GetPlayer(m_nId);
 	PLAYERSTATE state;
 
-	D3DXVECTOR3 rot = pCamera->GetRot();
+	D3DXVECTOR3 pos = pPlayer->GetPos();
 
-	memset(&state, 0, sizeof(PLAYERSTATE));
-	CNetwork *pNetwork = CManager::GetNetwork();
-
-	if (pKeyboard != NULL)
+	if (pPlayer != NULL)
 	{
-		if (pNetwork != NULL)
+		if (pCamera != NULL)
 		{
-			char data[1024];
+			D3DXVECTOR3 rot = pCamera->GetRot();
 
-			sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-				pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE), rot.y);
-			pNetwork->SendUDP(data, sizeof("SAVE_KEY") + sizeof(state));
+			memset(&state, 0, sizeof(PLAYERSTATE));
+			CNetwork *pNetwork = CManager::GetNetwork();
+
+			if (pKeyboard != NULL)
+			{
+				if (pNetwork != NULL)
+				{
+					char data[1024];
+
+					sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+						pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE),		// キー入力情報
+						rot.y,						// 回転
+						pos.x, pos.y, pos.z);		// 位置
+					pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
+				}
+			}
 		}
 	}
 
