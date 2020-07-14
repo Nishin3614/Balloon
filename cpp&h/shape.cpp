@@ -30,6 +30,7 @@ CShape::CShape()
 	m_pPosold = NULL;				// 過去のポインター位置情報
 	m_posold = D3DVECTOR3_ZERO;		// 過去の位置情報
 	m_bPush = false;				// 押し出し処理があるかない
+	m_bOpponentPush = false;		// 相手に押し出し処理を付けるか付けないか
 	m_offset = D3DVECTOR3_ZERO;		// オフセット座標
 	m_pCorePos = &m_pos;			// 位置情報の絶対的変数
 	m_pCorePosOld = &m_posold;		// 過去の位置情報の絶対的変数
@@ -72,6 +73,7 @@ std::unique_ptr<CRectShape> CRectShape::Create(
 	D3DXVECTOR3 const &offset,
 	D3DXVECTOR3 const &size,
 	bool const &bPush,
+	bool const &bOpponentPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 )
@@ -96,8 +98,10 @@ std::unique_ptr<CRectShape> CRectShape::Create(
 	}
 	// 最終的な位置情報の設定
 	pRect->Set_DestPos();
-	// 押し出し処理のありなし
-	pRect->SetPush(bPush);
+	// 押し出し処理のありなし設定
+	pRect->m_bPush = bPush;
+	// 相手に押し出し処理を付けるか付けないか設定
+	pRect->m_bOpponentPush = bOpponentPush;
 	// オフセットの設定
 	pRect->SetOffset(offset);
 	return pRect;
@@ -217,6 +221,7 @@ std::unique_ptr<CSphereShape> CSphereShape::Create(
 	D3DXVECTOR3 const &offset,
 	float const &radius,
 	bool const &bPush,
+	bool const &bOpponentPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 	)
@@ -241,8 +246,10 @@ std::unique_ptr<CSphereShape> CSphereShape::Create(
 	}
 	// 最終的な位置情報の設定
 	pSphere->Set_DestPos();
-	// 押し出し処理のありなし
-	pSphere->SetPush(bPush);
+	// 押し出し処理のありなし設定
+	pSphere->m_bPush = bPush;
+	// 相手に押し出し処理を付けるか付けないか設定
+	pSphere->m_bOpponentPush = bOpponentPush;
 	// 半径の設定
 	pSphere->SetRadius(radius);
 	return pSphere;
@@ -279,7 +286,8 @@ std::unique_ptr<CColumnShape> CColumnShape::Create(
 	D3DXVECTOR3 const &offset,
 	float const & fRadius,
 	float const & fVertical,
-	bool const & bPush,
+	bool const &bPush,
+	bool const &bOpponentPush,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 )
@@ -306,8 +314,10 @@ std::unique_ptr<CColumnShape> CColumnShape::Create(
 	pColum->Set_DestPos();
 	// 半径の設定
 	pColum->SetRadius(fRadius);
-	// 押し出し処理のありなし
-	pColum->SetPush(bPush);
+	// 押し出し処理のありなし設定
+	pColum->m_bPush = bPush;
+	// 相手に押し出し処理を付けるか付けないか設定
+	pColum->m_bOpponentPush = bOpponentPush;
 	// 縦幅の設定
 	pColum->SetVertical(fVertical);
 	return pColum;

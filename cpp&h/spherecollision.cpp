@@ -54,6 +54,8 @@ void CSphereCollision::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSphereCollision::Debug(void)
 {
+	ImGui::Text("----------SphereCollision_Information----------");
+	ImGui::Text("Radius(%.1f)", m_pSphereShape->GetRadius());
 	CDebugproc::Print("----------球の当たり判定情報----------\n");
 	CDebugproc::Print("半径(%.1f)\n", m_pSphereShape->GetRadius());
 	CCollision::Debug();
@@ -102,6 +104,7 @@ CSphereCollision *CSphereCollision::Create(
 	CScene * pOwner,
 	CScene * pParent,
 	bool const &bPush,
+	bool const &bOpponent,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 )
@@ -110,8 +113,9 @@ CSphereCollision *CSphereCollision::Create(
 	CSphereCollision *pSphereCollision;
 	// メモリ確保
 	pSphereCollision = new CSphereCollision();
+	// 球の生成
+	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush,bOpponent, pPos,pPosold));
 	// 球の設定
-	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush, pPos,pPosold));	// 球の形を生成
 	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pSphereCollision->SetOwnScene(pOwner);
 	pSphereCollision->SetParent(pParent);
@@ -131,14 +135,17 @@ std::unique_ptr<CSphereCollision> CSphereCollision::Create_Self(
 	CScene * pOwner,
 	CScene * pParent,
 	bool const &bPush,
+	bool const &bOpponent,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 )
 {
 	// 変数宣言
 	std::unique_ptr<CSphereCollision> pSphereCollision(new CSphereCollision);
-	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush, pPos,pPosold));	// 球の形を生成
-	pSphereCollision->SetObjectID(obj);												// オブジェクト番号設定
+	// 球の形を生成
+	pSphereCollision->m_pSphereShape = std::move(CSphereShape::Create(offset, fRadius,bPush,bOpponent, pPos,pPosold));
+	// 球の設定
+	pSphereCollision->SetObjectID(obj);		// オブジェクト番号設定
 	pSphereCollision->SetOwnScene(pOwner);
 	pSphereCollision->SetParent(pParent);
 	if (pOwner != NULL)

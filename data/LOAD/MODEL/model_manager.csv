@@ -63,3 +63,7 @@ data/MODEL/Balloon_4/BalloonLeftThigh.x
 data/MODEL/Balloon_4/BalloonLeftLeg.x
 data/MODEL/Balloon_4/BalloonRightThigh.x
 data/MODEL/Balloon_4/BalloonRightLeg.x
+data/MODEL/Fish/fishbody.x
+data/MODEL/Fish/fishmouth.x
+data/MODEL/Fish/fishtail.x
+data/MODEL/materials/mountain.x

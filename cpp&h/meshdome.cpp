@@ -36,10 +36,10 @@
 //
 // ----------------------------------------
 // テクスチャーID
-int CMeshdome::m_nTexId[TYPE_MAX] = 
+int CMeshdome::m_nTexId[TYPE_MAX] =
 {
-	0,
-	0
+	22,
+	22
 };
 
 // ----------------------------------------
@@ -163,7 +163,7 @@ void CMeshdome::Draw(void)
 	if (m_bUse)
 	{
 		// 描画状態
-		CManager::GetRenderer()->SetType(CRenderer::TYPE_CULLBACK);
+		//CManager::GetRenderer()->SetType(CRenderer::TYPE_CULLBACK);
 		// 変数宣言
 		LPDIRECT3DDEVICE9 pDevice =		// デバイスの取得
 			CManager::GetRenderer()->GetDevice();
@@ -207,7 +207,7 @@ void CMeshdome::Draw(void)
 		pDevice->SetTexture(
 			0,
 			CTexture_manager::GetTexture(m_nTexId[m_type]));
-
+		//
 		// ポリゴンの描画
 		pDevice->DrawIndexedPrimitive(
 			D3DPT_TRIANGLESTRIP,
@@ -262,7 +262,7 @@ CMeshdome * CMeshdome::Create(
 	// メモリの生成(初め->基本クラス,後->派生クラス)
 	pMeshdome = new CMeshdome();
 	// シーン管理設定
-	pMeshdome->ManageSetting(CScene::LAYER_3DOBJECT);
+	pMeshdome->ManageSetting(CScene::LAYER_3DOBJECT2);
 	// 位置情報
 	pMeshdome->m_pos = pos;
 	// サイズ情報
@@ -434,7 +434,6 @@ void CMeshdome::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 				1.0f / m_nBlock_Width * nCountWidth,
 				1.0f / m_nBlock_Depth * (m_nBlock_Depth - nCountDirect)
 			);
-
 			// ポイント合わせ
 			pVtx++;
 		}

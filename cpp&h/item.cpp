@@ -55,7 +55,7 @@ void CItem::Init(void)
 	CScene_THREE::SetCol(D3DXCOLOR_CA(1.0f, 1.0f));
 	// シーン3Dの初期化
 	CScene_THREE::Init();
-	CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this,NULL, false, &m_pos);
+	CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this,NULL, false,false, &m_pos);
 	// ビルボード
 	CScene_THREE::SetBillboard(true);
 	CScene_THREE::SetLighting(true);		// ライティング
@@ -139,7 +139,7 @@ HRESULT CItem::Load(void)
 {
 	// デバイス取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
-																		// テクスチャの読み込み
+	// テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice, TEXTURE_BULLET, &m_pTex);
 	return S_OK;
 }

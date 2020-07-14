@@ -127,6 +127,7 @@ CRectCollision *CRectCollision::Create(
 	CScene * pOwner,
 	CScene * pParent,
 	bool const &bPush,
+	bool const &bOpponent,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 )
@@ -136,7 +137,7 @@ CRectCollision *CRectCollision::Create(
 	// ƒƒ‚ƒŠŠm•Û
 	pRectCollision = new CRectCollision();
 	// ‹éŒ`‚Ìİ’è
-	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush, pPos, pPosold));
+	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush,bOpponent, pPos, pPosold));
 	pRectCollision->SetObjectID(obj);
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
@@ -159,6 +160,7 @@ std::unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	CScene * pOwner,
 	CScene * pParent,
 	bool const &bPush,
+	bool const &bOpponent,
 	D3DXVECTOR3 * pPos,
 	D3DXVECTOR3 * pPosold
 )
@@ -166,7 +168,7 @@ std::unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	// •Ï”éŒ¾
 	std::unique_ptr<CRectCollision> pRectCollision(new CRectCollision);
 	// ‹éŒ`‚Ìİ’è
-	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush,pPos,pPosold));
+	pRectCollision->m_pRectShape = std::move(CRectShape::Create(offset, size,bPush,bOpponent, pPos,pPosold));
 	pRectCollision->SetObjectID(obj);
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);

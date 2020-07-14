@@ -169,6 +169,7 @@ void CBalloon_group::SetPopMaxBalloom(
 			CShape::SHAPETYPE_SPHERE,
 			CCollision::OBJTYPE_BALLOON,
 			false,
+			true,
 			pParent
 		);
 	}
@@ -200,6 +201,7 @@ void CBalloon_group::CreateBalloon_group(
 		m_apBalloon[nCntBalloon_group]->SetCollision(
 			CShape::SHAPETYPE_SPHERE,
 			CCollision::OBJTYPE_BALLOON,
+			false,
 			false,
 			pParent
 		);
@@ -297,5 +299,28 @@ void CBalloon_group::BreakBalloon_group(int const &nCntBalloon_group)
 		m_apBalloon[nCntBalloon_group] = NULL;
 		// 出現している風船グループの個数を増やす
 		m_nPopBalloon_group--;
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 雷で風船を割らせる処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::Thunder_BreakBalloon_group(void)
+{
+	// 風船を割らせる処理
+	for (int nCntBalloon_group = 0; nCntBalloon_group < (signed)m_apBalloon.size(); nCntBalloon_group++)
+	{
+		// 風船のNULLチェック
+		// ->ループスキップ
+		if (m_apBalloon[nCntBalloon_group] == NULL) continue;
+		// 終了処理
+		m_apBalloon[nCntBalloon_group]->Uninit();
+		// 風船の開放
+		delete m_apBalloon[nCntBalloon_group];
+		m_apBalloon[nCntBalloon_group] = NULL;
+		// 出現している風船グループの個数を増やす
+		m_nPopBalloon_group--;
+		// 一つ風船を割ったら関数を抜ける
+		return;
 	}
 }

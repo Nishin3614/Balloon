@@ -118,6 +118,14 @@ void CPlayer::Update(void)
 			OtherDie();
 		}
 	}
+#ifdef _DEBUG
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
+	{
+		CCharacter::Thunder_BreakBalloon();
+	}
+#endif // _DEBUG
+
+	// テスト
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -294,11 +302,17 @@ void CPlayer::MyMove(void)
 	// 風船がNULLではないなら
 	if (CCharacter::GetBalloon() != NULL)
 	{
+		// 風船があるなら
 		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
 			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
+				// 移動量yが0未満なら
+				if (move.y < 0.0f)
+				{
+					move.y = 0.0f;
+				}
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
 		}

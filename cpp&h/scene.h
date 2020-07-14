@@ -87,8 +87,8 @@ public:
 		int const &nCntScene											// カウントシーン
 	);
 	// レイヤー内のシーン最大数取得
-	static int GetMaxLayer(LAYER const &layer) 
-	{ return (signed)m_pScene[layer].size(); };	
+	static int GetMaxLayer(LAYER const &layer)
+	{ return (signed)m_pScene[layer].size(); };
 	static bool GetUpdateStop(void) { return m_sta_bStop; };			// 静止状態
 	// 設定
 	// シーンの静止
@@ -101,7 +101,7 @@ public:
 	// オブジェクトの更新ストップ状態設定
 	void SetStop(bool const &bStopState)
 	{
-		m_bStop = bStopState; 
+		m_bStop = bStopState;
 	};
 	// オブジェクトの更新ストップ状態取得
 	bool GetStop(void)

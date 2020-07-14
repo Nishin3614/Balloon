@@ -203,6 +203,11 @@ private:
 	int m_nOponentId;						// 当たった時の相手
 	CScene * m_pOwner;						// あたり判定を所有しているシーン情報
 	CScene * m_pParent;						// あたり判定を所有しているオブジェクトの親情報
+
+
+#ifdef _DEBUG
+	static int nCollisionTime;
+#endif
 };
 
 // ----------------------------------------------------------------------------------------------------
