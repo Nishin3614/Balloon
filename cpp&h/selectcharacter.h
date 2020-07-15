@@ -81,6 +81,7 @@ public:
 	// (選択画面の初期化時に関数を呼ぶ)
 	static void InitStatic(void);
 	// プレイヤーが選んだキャラクタータイプを取得
+	int GetCharacterType(void) { return m_CharacterType; }
 	static int GetSaveCharaType(int const &nPlayerID) { return m_SaveCharaType[nPlayerID]; };
 protected:
 private:
