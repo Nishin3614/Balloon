@@ -81,7 +81,10 @@ public:
 	virtual void Update(void) = 0;
 	virtual void Draw(void) = 0;
 #ifdef _DEBUG
+	// デバッグ処理
 	virtual void Debug(void);
+	// あたり判定可視カの設定
+	virtual void Collision_Visible_Set(void) = 0;
 #endif // _DEBUG
 	// 当たった後の処理
 	// 引数1:オブジェクトタイプ
@@ -105,7 +108,6 @@ public:
 	virtual D3DXVECTOR3 * Scene_GetPPosold(void) = 0;
 	// ポインター移動量情報の取得
 	virtual D3DXVECTOR3 * Scene_GetPMove(void) = 0;
-
 	// 判定の有無
 	// 矩形クラスの当たり判定比較
 	virtual bool Judg(CRectShape * const RectShape) = 0;

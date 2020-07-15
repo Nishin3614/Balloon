@@ -45,6 +45,9 @@
 // 前方宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#ifdef _DEBUG
+
+#endif // _DEBUG
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -60,10 +63,12 @@ public:
 	virtual ~CColumnCollision() {};
 	virtual void Init(void) {};
 	virtual void Uninit(void);
-	virtual void Update(void) {};
+	virtual void Update(void);
 	virtual void Draw(void) {};
 #ifdef _DEBUG
 	virtual void Debug(void);
+	// あたり判定可視カの設定
+	virtual void Collision_Visible_Set(void);
 #endif // _DEBUG
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ
@@ -85,7 +90,7 @@ public:
 	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
 	// ポインター移動量情報の取得
 	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
-
+	// 所有している形クラス取得
 	CShape * const GetShape(void) { return m_pColumnShape.get(); };
 	//
 	// 矩形クラスの当たり判定比較
@@ -96,7 +101,6 @@ public:
 	bool Judg(CSphereShape * const SphereShape);
 	// 円柱クラスの当たり判定比較
 	bool Judg(CColumnShape * const ColumnShape);
-	// 設定
 	// 作成処理(シーン管理)
 	static CColumnCollision *Create(
 		float const &fRadius,
@@ -129,6 +133,11 @@ protected:
 private:
 	// 変数宣言
 	std::unique_ptr<CColumnShape> m_pColumnShape;	// 矩形
+#ifdef _DEBUG
+	// あたり判定可視化の変数
+
+#endif // _DEBUG
+
 };
 
 // ----------------------------------------------------------------------------------------------------

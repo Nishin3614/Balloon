@@ -14,6 +14,7 @@
 //
 // ----------------------------------------------------------------------------------------------------
 #include "collision.h"
+#include "meshsphere.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -45,6 +46,9 @@
 // 前方宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#ifdef _DEBUG
+class CMeshsphere;	// メッシュスフィアクラス
+#endif // _DEBUG
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -58,12 +62,14 @@ public:
 	/* 関数 */
 	CSphereCollision();
 	virtual ~CSphereCollision() {};
-	virtual void Init(void) {};
+	virtual void Init(void);
 	virtual void Uninit(void);
-	virtual void Update(void) {};
-	virtual void Draw(void) {};
+	virtual void Update(void);
+	virtual void Draw(void);
 #ifdef _DEBUG
 	virtual void Debug(void);
+	// あたり判定可視カの設定
+	virtual void Collision_Visible_Set(void);
 #endif // _DEBUG
 	// 当たった後の処理
 	// 引数1:オブジェクトタイプ
@@ -126,7 +132,11 @@ protected:
 
 private:
 	// 変数宣言
-	std::unique_ptr<CSphereShape> m_pSphereShape;	// 矩形
+	std::unique_ptr<CSphereShape> m_pSphereShape;	// 球
+#ifdef _DEBUG
+	// あたり判定可視化の変数
+	std::unique_ptr<CMeshsphere> m_uni_pMeshsphere;
+#endif // _DEBUG
 };
 
 // ----------------------------------------------------------------------------------------------------
