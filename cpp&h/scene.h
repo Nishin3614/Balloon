@@ -58,13 +58,21 @@ public:
 #ifdef _DEBUG
 	virtual void Debug(void);											// デバッグ用
 #endif // _DEBUG
-	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	// 自分から当たった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 		) = 0;
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) = 0;
+
 	// ポインター位置情報を取得
 	virtual D3DXVECTOR3 * Scene_GetPPos(void) = 0;
 	// ポインター過去の位置情報を取得

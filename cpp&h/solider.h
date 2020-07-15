@@ -46,16 +46,23 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
 	// 倒した数カウント
 	void EnemyDie(void);
 	// 作成
-	static CSolider * Create(		
+	static CSolider * Create(
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,			// 位置
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);

@@ -45,13 +45,19 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
 	// ポインター過去の位置情報を取得
@@ -87,7 +93,7 @@ private:
 	// int型
 	std::vector<int> m_vec_nNumber;							// int情報
 														// bool型
-	std::vector<bool> m_vec_Bool;							// bool情報						
+	std::vector<bool> m_vec_Bool;							// bool情報
 
 };
 

@@ -40,13 +40,19 @@ public:
 	void Update(void);
 	void Draw(void);
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 
 	// 作成(シーン継承あり)
 	static CCircleshadow * Create(
@@ -57,7 +63,7 @@ public:
 	static void UnLoad(void);							// 破棄
 	// 設定 //
 
-	// 取得 // 
+	// 取得 //
 protected:
 private:
 	/* 関数 */

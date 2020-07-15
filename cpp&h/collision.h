@@ -86,7 +86,15 @@ public:
 	// 当たった後の処理
 	// 引数1:オブジェクトタイプ
 	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	virtual void Scene_MyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	)
+	{};
+	// 当たった後の処理
+	// 引数1:オブジェクトタイプ
+	// 引数2:相手のシーン情報
+	virtual void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	)

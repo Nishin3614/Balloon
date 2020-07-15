@@ -30,17 +30,23 @@ public:
 	void Update(void);
 	void Draw(void);
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// 作成
-	static CModel * Create(void);											
+	static CModel * Create(void);
 	// モデルの情報渡し処理
-	void BindModel(								
+	void BindModel(
 		MODEL_OFFSET const &offset			// モデルのオフセット
 	);
 	// 初期モーションに
@@ -52,7 +58,7 @@ public:
 	void SetMotion(								// モーション
 		KEY const &key,
 		int const nMaxFrame
-	);	
+	);
 protected:
 private:
 	D3DXVECTOR3	m_posDest;			// 目的位置

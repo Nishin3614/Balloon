@@ -46,17 +46,23 @@ public:
 	void Update(void);
 	void Draw(void);
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	void SetNum(int const &nNum);											// 番号設定
 	void SetTex(TEX const &tex);											// テクスチャー番号設定
 	void SetAnim(int const &nRandamTime) {
-		m_nRandamTime = nRandamTime; 
+		m_nRandamTime = nRandamTime;
 		m_bRand = true;
 	};	// ランダム数字切り替え演出時間設定
 	bool &GetAnim(void) { return m_bRand; };
