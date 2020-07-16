@@ -13,6 +13,8 @@
 #include "manager.h"
 #include "fade.h"
 #include "collision.h"
+#include "game.h"
+#include "score.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -583,8 +585,38 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
-
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+		}
+	}
+	// オブジェクトタイプが風船なら
+	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// プレイヤーのスコア加算追加
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+		}
+	}
+	// オブジェクトタイプがキャラクターなら
+	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+														// プレイヤーのスコア加算追加
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_PLAYER);
+		}
 	}
 
 }

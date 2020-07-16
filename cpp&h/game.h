@@ -64,7 +64,8 @@ public:
 	static STATE GetState(void) { return m_state; };					// 状態
 	// プレイヤーの取得
 	static CPlayer *GetPlayer(int nIndex) { return m_pPlayer[nIndex]; }
-
+	// スコアの情報取得
+	CScore *GetScore(void) { return m_pScore; };
 protected:
 private:
 	/* 関数 */

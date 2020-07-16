@@ -44,11 +44,15 @@ CScore::~CScore()
 //=============================================================================
 void CScore::Init(void)
 {
+	// 変数宣言
+	int nNumber;	// 番号
 	m_nScore = 0;
 	for (int nCntScore = 0; nCntScore < MAX_SCORE; nCntScore++)
 	{
 		m_apNumber[nCntScore] = CNumber::Create(0, D3DXVECTOR3(SCORE_POS_X + SCORE_INTERVAL_X * nCntScore, SCORE_POS_Y, 0.0f), CNumber::TEX_SCORE,
 			D3DXVECTOR2(SCORE_SIZE_X, SCORE_SIZE_Y), D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		nNumber = m_nScore % (int)powf(SCORE_INTERVAL, (float)MAX_SCORE - nCntScore) / (int)powf(SCORE_INTERVAL, (float)MAX_SCORE - 1.0f - nCntScore);
+		m_apNumber[nCntScore]->SetNum(nNumber);
 	}
 }
 
@@ -115,22 +119,19 @@ CScore *CScore::Create(void)
 //=============================================================================
 void CScore::AddScore(int nValue)
 {
-	int nCount;
-	int nNumber;
-
-	//m_nScore += nValue;
+	// 変数宣言
+	int nCount;		// カウント
+	int nNumber;	// 番号
+	// スコア加算処理
+	m_nScore += nValue;
 	//m_nRanking = *CRecord::GetLoad(0);
 
-	//for (nCount = 0; nCount < MAX_SCORE; nCount++)
-	//{
-	//	nNumber = m_nRanking % (int)powf(SCORE_INTERVAL, (float)MAX_SCORE - nCount) / (int)powf(SCORE_INTERVAL, (float)MAX_SCORE - 1.0f - nCount);
+	for (nCount = 0; nCount < MAX_SCORE; nCount++)
+	{
+		nNumber = m_nScore % (int)powf(SCORE_INTERVAL, (float)MAX_SCORE - nCount) / (int)powf(SCORE_INTERVAL, (float)MAX_SCORE - 1.0f - nCount);
 
-	//	if (m_nScore <= 0)
-	//	{
-	//		m_nScore = 0;
-	//	}
-	//	m_apNumber[nCount]->SetNumber(nNumber);
-	//}
+		m_apNumber[nCount]->SetNum(nNumber);
+	}
 }
 
 //=============================================================================

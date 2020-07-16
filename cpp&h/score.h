@@ -19,6 +19,12 @@
 #define SCORE_INTERVAL_X (33)			 // 横の感覚
 #define SCORE_INTERVAL (10.0f)			 //
 
+// スコア加算の種類
+#define SCORETYPE_COIN		(100)		// コインのスコア加算
+#define SCORETYPE_BALLOON	(100)		// 風船のスコア加算
+#define SCORETYPE_ENEMY		(500)		// 敵のスコア加算
+#define SCORETYPE_PLAYER	(1000)		// プレイヤーのスコア加算
+
 class CNumber;
 //=============================================================================
 //
