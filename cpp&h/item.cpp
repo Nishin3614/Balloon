@@ -55,7 +55,15 @@ void CItem::Init(void)
 	CScene_THREE::SetCol(D3DXCOLOR_CA(1.0f, 1.0f));
 	// シーン3Dの初期化
 	CScene_THREE::Init();
-	m_pCollision = CSphereCollision::Create(50, D3DVECTOR3_ZERO, CCollision::OBJTYPE_ITEM, this,NULL, false,false, &m_pos);
+	m_pCollision = CSphereCollision::Create(
+		50,
+		D3DVECTOR3_ZERO,
+		CCollision::OBJTYPE_ITEM,
+		this,
+		NULL,
+		false,
+		false,
+		&CScene_THREE::GetPos());
 	// ビルボード
 	CScene_THREE::SetBillboard(true);
 	CScene_THREE::SetLighting(true);		// ライティング

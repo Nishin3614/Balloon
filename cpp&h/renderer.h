@@ -28,7 +28,7 @@
 // ------------------------------------------
 class CDebugproc;
 class CCamera;
-class CLight;	
+class CLight;
 
 // ------------------------------------------
 //
@@ -82,7 +82,7 @@ public:
 #endif // _DEBUG
 	// 描画状態
 	void SetType(TYPE type = TYPE_NORMAL);
-	
+
 	// 情報取得
 	LPDIRECT3DDEVICE9 GetDevice(void);	// デバイス
 	CCamera * GetCamera(void);			// カメラ
@@ -102,10 +102,12 @@ private:
 	// ImGuiのセットアップ
 	void ImGui_SetUp(HWND hWnd);
 	// ImGuiの更新
-	void UpdateImGui(void);	
+	void UpdateImGui(void);
 	ImVec4 m_clear_color;
-z	void DrawFPS(void);					// FPS関数
-#endif	
+	void DrawFPS(void);					// FPS関数
+	// 変数宣言 //
+	static CDebugproc * m_debugproc;
+#endif
 };
 
 #endif // !_RENDERER_H_

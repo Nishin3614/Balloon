@@ -437,7 +437,7 @@ void CRenderer::ImGui_SetUp(HWND hWnd)
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	// ImGuiÇÃäÓñ{ê›íË
 	io.MousePos;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableSetMousePos;     // Enable Keyboard Controls	
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableSetMousePos;     // Enable Keyboard Controls
 	io.FontAllowUserScaling = true;
 	// îwåiêFÇÃê›íË
 	ImGui::StyleColorsDark();
