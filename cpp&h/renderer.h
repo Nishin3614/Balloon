@@ -104,8 +104,7 @@ private:
 	// ImGuiの更新
 	void UpdateImGui(void);	
 	ImVec4 m_clear_color;
-	static CDebugproc * m_debugproc;	// デバッグ表示
-	void DrawFPS(void);					// FPS関数
+z	void DrawFPS(void);					// FPS関数
 #endif	
 };
 

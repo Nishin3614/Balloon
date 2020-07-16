@@ -413,6 +413,7 @@ HRESULT CNetwork::Connect(void)
 {
 	int val = -1;
 	char debug[256];
+	unsigned int nStartTime = 0;
 
 	//サーバに接続
 	val = connect(m_sockClient, (struct sockaddr *)&m_addrServer, sizeof(m_addrServer));
@@ -427,7 +428,13 @@ HRESULT CNetwork::Connect(void)
 	SendTCP("LOAD_ID", sizeof("LOAD_ID"));
 	DataRecv(SOCKETTYPE_CLIENT, (char*)&m_nId, sizeof(int));
 
+	SendTCP("SEED", sizeof("SEED"));
+	DataRecv(SOCKETTYPE_CLIENT, (char*)&nStartTime, sizeof(nStartTime));
+	srand(nStartTime);				// 乱数の種を設定
+
 	sprintf(debug, "ID = %d\n", m_nId);
+	OutputDebugString(debug);
+	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
 	OutputDebugString("サーバとの接続完了\n");
 	return S_OK;
