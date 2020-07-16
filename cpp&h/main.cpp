@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	// メモリリーク検索設定
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	//_CrtSetBreakAlloc(7483378);
-#endif 
+#endif
 	// シード値を時間にする
 	srand((unsigned)time(NULL));
 
@@ -65,7 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	MSG msg;				// メッセージを格納する変数
 
 	DWORD dwCurrentTime;		// 現在時刻
-	DWORD dwExecLastTime;		// 最後に処理した時刻	
+	DWORD dwExecLastTime;		// 最後に処理した時刻
 	DWORD dwFrameCount;
 	DWORD dwFPSLastTime;
 	CManager *pManager = NULL;			// レンダリングクラス
@@ -79,8 +79,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		0,								// 通常は指定しないので0指定
 		0,								// 通常は指定しないので0指定
 		hInstance,						// Windowsの引数のインスタンスハンドル指定
-		LoadIcon(NULL,IDI_APPLICATION),	// タスクバーに使用するアイコン指定					
-		LoadCursor(NULL,IDC_ARROW),		// 使用するマウスカーソル指定						
+		LoadIcon(NULL,IDI_APPLICATION),	// タスクバーに使用するアイコン指定
+		LoadCursor(NULL,IDC_ARROW),		// 使用するマウスカーソル指定
 		(HBRUSH)(COLOR_WINDOW - 1),		// ウィンドウクライアント領域の色設定
 		NULL,							// メニュー指定
 		CLASS_NAME,						// ウィンドウクラスの名前
@@ -100,10 +100,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		CLASS_NAME,					// ウィンドウクラス名
 		WINDOW_NAME,				// ウィンドウ名
 		WS_OVERLAPPEDWINDOW,		// ウィンドウスタイル
-		CW_USEDEFAULT,				// ウィンドウ左上x座標				
-		CW_USEDEFAULT,				// ウィンドウ左上y座標				
-		(rect.right - rect.left),		 // ウィンドウ幅					
-		(rect.bottom - rect.top),		 // ウィンドウ高さ					
+		CW_USEDEFAULT,				// ウィンドウ左上x座標
+		CW_USEDEFAULT,				// ウィンドウ左上y座標
+		(rect.right - rect.left),		 // ウィンドウ幅
+		(rect.bottom - rect.top),		 // ウィンドウ高さ
 		NULL,				 // 親ウィンドウハンドル
 		NULL,				 // メニューもしくは子ウィンドウID
 		hInstance,			 // インスタンスハンドル
@@ -116,7 +116,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	FILE *fp = NULL;
 	freopen_s(&fp, "CONOUT$", "w", stdout);
 	std::cout << "";
-#endif 
+#endif
 
 
 	// マネージャのヌルチェック
@@ -249,7 +249,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	// 左クリック時 //
 	case WM_LBUTTONDOWN:
 		SetFocus(hWnd);
-		break;		
+		break;
 	// キーが押されたときのメッセージ //
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE)

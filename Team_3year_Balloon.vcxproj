@@ -173,6 +173,8 @@
     <ClCompile Include="cpp&amp;h\camera.cpp" />
     <ClCompile Include="cpp&amp;h\cameraconfig.cpp" />
     <ClCompile Include="cpp&amp;h\character.cpp" />
+    <ClCompile Include="cpp&amp;h\character_balloon.cpp" />
+    <ClCompile Include="cpp&amp;h\character_fish.cpp" />
     <ClCompile Include="cpp&amp;h\circleshadow.cpp" />
     <ClCompile Include="cpp&amp;h\collision.cpp" />
     <ClCompile Include="cpp&amp;h\columncollision.cpp" />
@@ -253,6 +255,8 @@
     <ClInclude Include="cpp&amp;h\camera.h" />
     <ClInclude Include="cpp&amp;h\cameraconfig.h" />
     <ClInclude Include="cpp&amp;h\character.h" />
+    <ClInclude Include="cpp&amp;h\character_balloon.h" />
+    <ClInclude Include="cpp&amp;h\character_fish.h" />
     <ClInclude Include="cpp&amp;h\circleshadow.h" />
     <ClInclude Include="cpp&amp;h\collision.h" />
     <ClInclude Include="cpp&amp;h\columncollision.h" />

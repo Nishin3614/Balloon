@@ -31,7 +31,7 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // オーバーロードコンストラクタ(子供用)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CEnemy::CEnemy(CHARACTER const &character) : CCharacter::CCharacter(character)
+CEnemy::CEnemy(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Balloon(character)
 {
 }
 
@@ -48,7 +48,7 @@ CEnemy::~CEnemy()
 void CEnemy::Init(void)
 {
 	// キャラクター初期化
-	CCharacter::Init();
+	CCharacter_Balloon::Init();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ void CEnemy::Init(void)
 void CEnemy::Uninit(void)
 {
 	// キャラクター終了処理
-	CCharacter::Uninit();
+	CCharacter_Balloon::Uninit();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ void CEnemy::Update(void)
 	Ai_Action();
 
 	// キャラクター更新処理
-	CCharacter::Update();
+	CCharacter_Balloon::Update();
 }
 
 
@@ -80,14 +80,14 @@ void CEnemy::Ai_Action(void)
 {
 
 	// AI移動処理
-	//Ai_Move();
+	Ai_Move();
 	// 風船を膨らませる
 	if (CManager::GetJoy() != NULL)
 	{
 		if (CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_B))
 		{
 			// 風船を生成する処理
-			BalloonCreate();
+			CCharacter_Balloon::BalloonCreate();
 		}
 	}
 }
@@ -153,9 +153,9 @@ void CEnemy::Ai_Move(void)
 			bMove = true;
 		}
 		// 風船がNULLではないなら
-		if (CCharacter::GetBalloon() != NULL)
+		if (CCharacter_Balloon::GetBalloon() != NULL)
 		{
-			if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
+			if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 			{
 				// 宙に浮く
 				if (CManager::GetJoy()->GetTrigger(0,CJoypad::KEY_A))
@@ -245,9 +245,9 @@ void CEnemy::Ai_Move(void)
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
 	// 風船がNULLではないなら
-	if (CCharacter::GetBalloon() != NULL)
+	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
-		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
+		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
 			if (CManager::GetKeyboard()->GetKeyboardPress(DIK_O))
@@ -270,12 +270,8 @@ void CEnemy::Ai_Move(void)
 	{
 		move.y = -5.0f;
 	}
-	// 抵抗力
-	move.x *= CCharacter::GetStatus().fMaxInertia;
-	move.z *= CCharacter::GetStatus().fMaxInertia;
 	CCharacter::SetMove(move);
 	CCharacter::SetRotDest(rot);
-
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -284,7 +280,7 @@ void CEnemy::Ai_Move(void)
 void CEnemy::Draw(void)
 {
 	// キャラクター描画処理
-	CCharacter::Draw();
+	CCharacter_Balloon::Draw();
 }
 
 #ifdef _DEBUG
@@ -293,16 +289,28 @@ void CEnemy::Draw(void)
 //-------------------------------------------------------------------------------------------------------------
 void CEnemy::Debug(void)
 {
-	CCharacter::Debug();
+	CCharacter_Balloon::Debug();
 }
 #endif // _DEBUG
 
-//-------------------------------------------------------------------------------------------------------------
-// シーン継承の当たり判定処理
-//-------------------------------------------------------------------------------------------------------------
-void CEnemy::Scene_Collision(int const & nObjType, CScene * pScene)
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たった後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CEnemy::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
-	CCharacter::Scene_Collision(nObjType, pScene);
+	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 相手に当てられた後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CEnemy::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
+{
+	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -311,7 +319,7 @@ void CEnemy::Scene_Collision(int const & nObjType, CScene * pScene)
 void CEnemy::Die(void)
 {
 	CDebugproc::Print("----敵情報----\n");
-	CCharacter::Die();
+	CCharacter_Balloon::Die();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -102,7 +102,8 @@ HRESULT CTexture_manager::Load(void)
 LPDIRECT3DTEXTURE9 CTexture_manager::GetTexture(int const & nTextureId)
 {
 	// テクスチャー上限内
-	if (nTextureId < (signed)m_st_vpTexture.size())
+	if (nTextureId < (signed)m_st_vpTexture.size() &&
+		nTextureId >= 0)
 	{
 		return m_st_vpTexture[nTextureId];
 	}

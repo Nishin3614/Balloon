@@ -161,7 +161,6 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 		nCollisionTime++;
 #endif // _DEBUG
 
-
 		// 相手の当たり判定状態をtrueへ
 		pCollision->m_bCollision = true;
 		// 相手の番号を代入
@@ -170,13 +169,13 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 		// ->当たった後の処理を行う
 		if (m_pOwner != NULL)
 		{
-			m_pOwner->Scene_Collision(pCollision->m_nMyObjectId, pCollision->m_pOwner);
+			m_pOwner->Scene_MyCollision(pCollision->m_nMyObjectId, pCollision->m_pOwner);
 		}
 		// 相手のシーン情報がNULLではないなら
 		// ->当たった後の処理を行う
 		if (pCollision->m_pOwner != NULL)
 		{
-			pCollision->m_pOwner->Scene_Collision(m_nMyObjectId, m_pOwner);
+			pCollision->m_pOwner->Scene_OpponentCollision(m_nMyObjectId, m_pOwner);
 		}
 	}
 	// 当たり判定状態を返す
@@ -717,8 +716,8 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 	}
 
 	// 変数宣言
-	D3DXVECTOR3 posA = *pSphereShapeA->Get_PosCore();	// 位置A
-	D3DXVECTOR3 posB = *pSphereShapeB->Get_PosCore();	// 位置B
+	D3DXVECTOR3 posA = pSphereShapeA->m_DestPos;	// 位置A
+	D3DXVECTOR3 posB = pSphereShapeB->m_DestPos;	// 位置B
 	// 当たっているかどうか
 	bCollision = CCalculation::Collision_Sphere(
 		posA,
@@ -740,7 +739,7 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 		// ベクトルの正規化
 		D3DXVec3Normalize(&vec, &diff);
 		// 押し出し
-		*pSphereShapeA->Get_PPos() = posB + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
+		*pos_A = posB - pSphereShapeA->GetOffset() + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
 		pSphereShapeA->PassPos(D3DVECTOR3_ZERO);
 	}
 	return bCollision;

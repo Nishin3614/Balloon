@@ -54,11 +54,18 @@ public:
 	// 当たった後の処理
 	// 引数1:オブジェクトタイプ
 	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	)
 	{};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
 	// ポインター過去の位置情報を取得
@@ -74,6 +81,7 @@ public:
 	// (選択画面の初期化時に関数を呼ぶ)
 	static void InitStatic(void);
 	// プレイヤーが選んだキャラクタータイプを取得
+	int GetCharacterType(void) { return m_CharacterType; }
 	static int GetSaveCharaType(int const &nPlayerID) { return m_SaveCharaType[nPlayerID]; };
 protected:
 private:

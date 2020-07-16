@@ -41,7 +41,7 @@ public:
 		OFFSET_ID_AWAYSMOKE,		// 吹っ飛びけむり
 		OFFSET_ID_EXPLOSIONSMOKE,	// 爆発けむり
 		OFFSET_ID_SHOCKWAVE,		// 衝撃波
-		OFFSET_ID_GET,				// 
+		OFFSET_ID_GET,				//
 		OFFSET_ID_SPARKS,			// 火花
 		OFFSET_ID_STAR,				// 星空
 		OFFSET_ID_CROSSLINE,		// クロスライン
@@ -130,13 +130,19 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
 	// ポインター過去の位置情報を取得

@@ -17,7 +17,7 @@
 #define SCORE_SIZE_X (33.0f)			 // Xのサイズ
 #define SCORE_SIZE_Y (50.0f)			 // Yのサイズ
 #define SCORE_INTERVAL_X (33)			 // 横の感覚
-#define SCORE_INTERVAL (10.0f)			 // 
+#define SCORE_INTERVAL (10.0f)			 //
 
 class CNumber;
 //=============================================================================
@@ -37,13 +37,19 @@ public:
 	void Update(void);			// 更新
 	void Draw(void);			// 描画
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
 	// ポインター過去の位置情報を取得

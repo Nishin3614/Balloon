@@ -22,7 +22,6 @@ class CExtrusion;
 class CMeshobit;
 class CCollision;
 class CStencilshadow;
-class CBalloon_group;
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 構造体
@@ -55,7 +54,7 @@ public:
 	// キャラクター
 	typedef enum
 	{
-		// プレイヤー用 //
+		// バルーンプレイヤー用 //
 		CHARACTER_P_THUNDER = 0,				// 雷使い(仮)
 		CHARACTER_P_ZOMBIE,						// ゾンビ(仮)
 		CHARACTER_BALLOON1,						// バルーン1
@@ -63,15 +62,17 @@ public:
 		CHARACTER_BALLOON3,						// バルーン3
 		CHARACTER_BALLOON4,						// バルーン4
 		CHARACTER_PLAYERMAX,					// プレイヤー用のキャラクター最大数
-		// プレイヤー用 //
-		// 敵用 //
+		// バルーン敵用 //
 		CHARACTER_NPC = CHARACTER_PLAYERMAX,	// NPC
-		// 敵用 //
+		// 妨害キャラクター用 //
+		CHARACTER_FISH,	// 妨害キャラクター(魚)
 		CHARACTER_MAX,							// キャラクター全体数
 	} CHARACTER;
 
-	// 敵用キャラクター最大数
-#define CHARACTER_ENEMYMAX (CHARACTER_MAX - CHARACTER_PLAYERMAX)	// 敵用キャラクター最大数
+	// バルーン敵用キャラクター最大数
+#define CHARACTER_ENEMYMAX (1)		// バルーン敵用キャラクター最大数
+	// 妨害用キャラクター最大数
+#define CHARACTER_DISTURBANCEMAX (1)	// 敵用キャラクター最大数
 
 	/* 構造体 */
 	// ステータス情報
@@ -104,9 +105,16 @@ public:
 	// キャラクターが死んだとき
 	virtual void Die(void);
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
@@ -116,8 +124,6 @@ public:
 	D3DXVECTOR3 * Scene_GetPPosold(void) { return &m_posold; };
 	// ポインター移動量情報の取得
 	D3DXVECTOR3 * Scene_GetPMove(void) { return &m_move; };
-	// 風船生成
-	void BalloonCreate(void);
 	// 必要に応じた動作 //
 	// 設定 //
 	// 位置
@@ -156,8 +162,6 @@ public:
 		int nMotionID,							// モーションID
 		int nNowKeyCnt = -1						// 現在のキーカウント
 	);
-	// バルーンの情報取得
-	CBalloon_group * GetBalloon(void) { return m_pBalloon_group; };
 	// カメラ追尾しているID
 	static int GetCameraCharacter(void);
 	// キャラクター全ソースの読み込み
@@ -170,8 +174,6 @@ public:
 	static void UnLoad(void);
 	// キャラクターの静的変数の初期化
 	static void InitStatic(void);
-	// 雷で風船を割らせる処理
-	void Thunder_BreakBalloon(void);
 #ifdef _DEBUG
 	virtual void  Debug(void);
 	static void AllDebug(void);
@@ -201,10 +203,13 @@ protected:
 	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };
 	// モーションカメラの更新
 	void MotionCamera(void);
-	// キャラクター同士の当たり判定
-	bool CharacterCollision(CCharacter * pCharacter);
 	/* 変数 */
 	static int						m_nCameraCharacter;		// キャラクターに追尾するID
+	static STATUS					m_sStatus[CHARACTER_MAX];		// キャラクターすべてのスタータス情報
+	D3DXVECTOR3						m_pos;					// 位置
+	D3DXVECTOR3						m_move;					// 移動量
+	D3DXVECTOR3						m_rot;					// 現在回転量
+
 	// 仮
 	STATE							m_State;				// 現状のステータス
 	int								m_nCntState;			// カウントステータス
@@ -216,7 +221,6 @@ protected:
 private:
 	/* 関数 */
 	void Collision(void);									// それぞれの当たり判定
-	void BalloonCollision(CBalloon_group * pBalloon_group);	// 風船との当たり判定
 	void Update_Normal(void);								// 通常時の更新
 	void NextKeyMotion(void);								// 次のモーション
 	void Move(void);										// 移動
@@ -225,7 +229,6 @@ private:
 	void TrackCamera(void);									// カメラ追尾
 	void Motion_Effect(void);								// モーションエフェクト
 	void Motion_Obit(void);									// モーション軌跡
-	void BalloonNone(void);									// 風船がない場合
 	/* 変数 */
 	/* 構造体のスタティックにする */
 	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報
@@ -234,16 +237,12 @@ private:
 	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];	// キャラクターのサイズ
 	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
 	static int						m_NumParts[CHARACTER_MAX];		// 動かすモデル数
-	static STATUS					m_sStatus[CHARACTER_MAX];		// キャラクターすべてのスタータス情報
 	static int						m_nAllCharacter;				// 出現しているキャラクター人数
 	CMeshobit						*m_pMeshobit;					// 軌跡
 	CModel 							*m_pModel;						// モデル
 	CHARACTER						m_character;					// キャラクター
 	D3DXMATRIX						m_mtxWorld;						// 行列
-	D3DXVECTOR3						m_pos;							// 位置
 	D3DXVECTOR3						m_posold;						// 前の位置
-	D3DXVECTOR3						m_move;							// 移動量
-	D3DXVECTOR3						m_rot;							// 現在回転量
 	D3DXVECTOR3						m_rotLast;						// 向きたい方向
 	D3DXVECTOR3						m_rotbetween;					// 回転の差分
 	D3DXVECTOR3						m_size;							// キャラクターのサイズ
@@ -262,7 +261,6 @@ private:
 	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	std::vector<std::unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
 	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
-	CBalloon_group					* m_pBalloon_group;				// 風船グループ情報
 };
 
 #endif

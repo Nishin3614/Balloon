@@ -29,7 +29,8 @@ public:
 	/* 列挙型 */
 	typedef enum
 	{
-		TEXTYPE_WORLD = 0,
+		TEXTYPE_NONE = 0,
+		TEXTYPE_WORLD,
 		TEXTYPE_STAR,
 		TEXTYPE_MAX
 	} TEXTYPE;
@@ -78,7 +79,7 @@ public:
 	/* 関数 */
 	CMeshsphere();
 	~CMeshsphere();
-	// 作成処理(シーン管理)
+	// 生成(シーン管理)
 	static CMeshsphere *Create(
 		D3DXVECTOR3 const &pos,
 		float const &fRadius,
@@ -88,8 +89,18 @@ public:
 		TEXTYPE	const &textype = TEXTYPE_WORLD,
 		int const &nMaxFrame = 0
 	);
-	// 作成処理(個人管理)
+	// 生成(個人管理)
 	static CMeshsphere * Create_Self(
+		D3DXVECTOR3 const &pos,
+		float const &fRadius,
+		int const &nWidthBlock = 10,
+		int const &nHeightBlock = 10,
+		D3DXCOLOR const &col = D3DXCOLOR_INI,
+		TEXTYPE	const &textype = TEXTYPE_WORLD,
+		int const &nMaxFrame = 0
+	);
+	// 作成処理(個人_unique管理)
+	static std::unique_ptr<CMeshsphere> Create_Unique(
 		D3DXVECTOR3 const &pos,
 		float const &fRadius,
 		int const &nWidthBlock = 10,
@@ -106,15 +117,21 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
-	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
+	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_MeshSphere.pos; };
 	// ポインター過去の位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
 	// ポインター移動量情報の取得
@@ -135,6 +152,11 @@ public:
 		int const & nMaxFrame,
 		bool const & bUse
 	);
+	// 色の設定
+	void SetCol(D3DXCOLOR const &col);
+	// 頂点カラーの設定
+	void Set_Vtx_Col(void);
+
 private:
 	/* 関数 */
 	void FrameDelete(void);	// 時間によって消える

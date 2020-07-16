@@ -70,15 +70,24 @@ public:
 	virtual void Draw(void) {};
 #ifdef _DEBUG
 	virtual void Debug(void);
+	// あたり判定可視カの設定
+	virtual void Collision_Visible_Set(void);
+
 #endif // _DEBUG
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
 	// ポインター過去の位置情報を取得

@@ -46,13 +46,19 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
-	virtual void Scene_Collision(
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	) {};
+	// 相手に当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
 	// ポインター過去の位置情報を取得
@@ -63,7 +69,7 @@ public:
 	static HRESULT Load(void);
 	static void UnLoad(void);
 	// 作成
-	static CMeshwall * Create(		
+	static CMeshwall * Create(
 		D3DXVECTOR3 const &pos,		// 位置
 		D3DXVECTOR3 const &size,	// サイズ
 		D3DXVECTOR3 const &rot,		// 回転
@@ -72,7 +78,7 @@ public:
 		int const &nType			// タイプ
 	);
 	// 高さ取得
-	float GetHeight(D3DXVECTOR3 pos);	
+	float GetHeight(D3DXVECTOR3 pos);
 
 protected:
 

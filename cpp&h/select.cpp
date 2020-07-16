@@ -15,6 +15,7 @@
 #include "3Dmap.h"
 #include "camera.h"
 #include "selectcharacter.h"
+#include "network.h"
 
 /* ポーズ */
 #include "pause.h"
@@ -36,6 +37,7 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CSelect::CSelect()
 {
+	m_nRand = 0;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ void CSelect::Init(void)
 	CUi::LoadCreate(CUi::UITYPE_SELECTCHARACTER);
 	// 選択キャラクターの生成
 	// もし、キャラ選択決定した後に全プレイヤーの
-	CSelectCharacter::Create(
+	m_pSelectCharacter = CSelectCharacter::Create(
 		CManager::GetPlayerID(),			// プレイヤー番号
 		D3DXVECTOR3(200.0f, 0.0f, 200.0f)	// 位置
 	);
@@ -97,12 +99,27 @@ void CSelect::Update(void)
 		// 選択画面へ遷移
 		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
 		{
+			CNetwork *pNetwork = CManager::GetNetwork();
+			if (pNetwork != NULL)
+			{
+				char aData[64];
+				sprintf(aData, "CHARACTER_TYPE %d", m_pSelectCharacter->GetCharacterType());
+				pNetwork->SendTCP(aData, sizeof(aData));
+			}
+
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
-				// リザルトへ
+				// ゲームへ
 				pFade->SetFade(CManager::MODE_GAME);
 			}
 		}
+	}
+
+	CDebugproc::Print("Rand = %d\n", m_nRand);
+	int nAnswer = rand() % (100);
+	if (nAnswer > 95)
+	{
+		m_nRand = nAnswer;
 	}
 }
 
