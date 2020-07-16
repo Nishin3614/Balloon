@@ -1,26 +1,24 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// 敵処理 [enemy.cpp]
+// バルーンキャラクター処理 [character_balloon.cpp]
 // Author : KOKI NISHIYAMA
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#include "enemy.h"
-#include "player.h"
-#include "3Dparticle.h"
-#include "game.h"
-#include "circleshadow.h"
-#include "camera.h"
+#include "character_balloon.h"
+#include "input.h"
 #include "balloon_group.h"
+#include "manager.h"
+#include "collision.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // マクロ定義
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define ENEMY_KEYMOVE (1)
-#define ENEMY_G (0.5f)			// 重力
-#define ENEMY_RESISTANCE (0.5f)// 抵抗力
-#define ENEMY_MOTIONFILE "data/LOAD/CHARACTER/buffalo_motion.txt"	// モーションのファイル名
+#define CHARACTER_BALLOON_FRONTFORCE (10)
+#define CHARACTER_BALLOON_G (0.5f)			// 重力
+#define CHARACTER_BALLOON_RESISTANCE (0.5f)// 抵抗力
+#define CHARACTER_BALLOON_MOTIONFILE "data/LOAD/CHARACTER_BALLOON/Tricker.txt"	// モーションのファイル名
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -29,278 +27,176 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// オーバーロードコンストラクタ(子供用)
+// コンストラクタ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CEnemy::CEnemy(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Balloon(character)
+CCharacter_Balloon::CCharacter_Balloon(CHARACTER const &character) : CCharacter::CCharacter(character)
 {
+	m_nCntState = 0;				// ステートカウント
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // デストラクタ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CEnemy::~CEnemy()
+CCharacter_Balloon::~CCharacter_Balloon()
 {
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 初期化処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Init(void)
+void CCharacter_Balloon::Init(void)
 {
 	// キャラクター初期化
-	CCharacter_Balloon::Init();
+	CCharacter::Init();
+	// ゲーム画面なら
+	if (CManager::GetMode() == CManager::MODE_GAME)
+	{
+		// 風船生成
+		m_pBalloon_group = CBalloon_group::Create(
+			&CCharacter::GetPos(),
+			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
+			this
+		);
+		// ステータスの反映 //
+		// 初期風船を持っている個数
+		m_pBalloon_group->SetBiginBalloon_group(CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon);
+	}
+	// 変数宣言
+	D3DXVECTOR3 pos;	// ゲージの配置用
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 終了処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Uninit(void)
+void CCharacter_Balloon::Uninit(void)
 {
-	// キャラクター終了処理
-	CCharacter_Balloon::Uninit();
+	CCharacter::Uninit();
+	// 風船のヌルチェック
+	// ->風船の開放
+	if (m_pBalloon_group != NULL)
+	{
+		m_pBalloon_group = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 更新処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Update(void)
+void CCharacter_Balloon::Update(void)
 {
-	// AIアクション処理
-	Ai_Action();
-
-	// キャラクター更新処理
-	CCharacter_Balloon::Update();
-}
-
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// AIアクション処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Ai_Action(void)
-{
-
-	// AI移動処理
-	Ai_Move();
-	// 風船を膨らませる
-	if (CManager::GetJoy() != NULL)
+#ifdef _DEBUG
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
 	{
-		if (CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_B))
-		{
-			// 風船を生成する処理
-			CCharacter_Balloon::BalloonCreate();
-		}
+		Thunder_BreakBalloon();
 	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// AI移動処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Ai_Move(void)
-{
-	// 変数宣言
-	D3DXVECTOR3 move, rot;			// 移動量、回転
-	bool bMove = false;				// 移動状態
-	float fRot;						// 回転
-
-	// 情報取得
-	rot = CCharacter::GetRotDest();								// 目的回転量
-	move = CCharacter::GetMove();								// 移動量
-	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
-
-	// 移動 //
-	/* ジョイパッド */
-	// パッド用 //
-	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
-	float fMove;			// 移動速度
-	float fAngle;			// スティック角度の計算用変数
-	fAngle = 0.0f;			// 角度
-
-	if (CManager::GetJoy() != NULL)
-	{
-		// ゲームパッドのスティック情報を取得
-		CManager::GetJoy()->GetStickLeft(0, nValueH, nValueV);
-
-		/* プレイヤー移動 */
-		// ゲームパッド移動
-		if (nValueH != 0 || nValueV != 0)
-		{
-			// 角度の計算
-			fAngle = atan2f((float)nValueH, (float)nValueV);
-
-			if (fAngle > D3DX_PI)
-			{
-				fAngle -= D3DX_PI * 2;
-			}
-			else if (fAngle < -D3DX_PI)
-			{
-				fAngle += D3DX_PI * 2;
-			}
-			// 速度の計算
-			if (abs(nValueH) > abs(nValueV))
-			{
-				fMove = (abs(nValueH) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
-			}
-			else
-			{
-				fMove = (abs(nValueV) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
-			}
-			rot.y = fAngle + fRot;
-
-			// スティックの角度によってプレイヤー移動
-			move.x -= sinf(fAngle + fRot) * (fMove);
-			move.z -= cosf(fAngle + fRot) * (fMove);
-			// 移動状態on
-			bMove = true;
-		}
-		// 風船がNULLではないなら
-		if (CCharacter_Balloon::GetBalloon() != NULL)
-		{
-			if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
-			{
-				// 宙に浮く
-				if (CManager::GetJoy()->GetTrigger(0,CJoypad::KEY_A))
-				{
-					move.y += CCharacter::GetStatus().fMaxJump;
-				}
-			}
-		}
-	}
-	/* キーボード */
-	// 左
-	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_J))
-	{
-		// 移動状態on
-		bMove = true;
-		// 奥
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
-		{
-			rot.y = -D3DX_PI * 0.25f + fRot;
-
-			move.x += sinf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 手前
-		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_K))
-		{
-			rot.y = -D3DX_PI * 0.75f + fRot;
-
-			move.x += sinf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 左
-		else
-		{
-			rot.y = -D3DX_PI * 0.5f + fRot;
-			move.x += sinf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-	}
-	// 右
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_L))
-	{
-		// 移動状態on
-		bMove = true;
-
-		// 奥
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
-		{
-			rot.y = D3DX_PI * 0.25f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 手前
-		else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_K))
-		{
-			rot.y = D3DX_PI * 0.75f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 右
-		else
-		{
-			rot.y = D3DX_PI * 0.5f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-	}
-	// 奥に行く
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
-	{
-		// 移動状態on
-		bMove = true;
-		rot.y = D3DX_PI * 0.0f + fRot;
-		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-	}
-	// 手前に行く
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_K))
-	{
-		// 移動状態on
-		bMove = true;
-		rot.y = D3DX_PI * 1.0f + fRot;
-		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-	}
-	// 風船がNULLではないなら
-	if (CCharacter_Balloon::GetBalloon() != NULL)
-	{
-		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
-		{
-			// 宙に浮く
-			if (CManager::GetKeyboard()->GetKeyboardPress(DIK_O))
-			{
-				move.y += CCharacter::GetStatus().fMaxJump;
-			}
-		}
-	}
-	// 移動状態なら
-	if (bMove == true)
-	{
-		CCharacter::SetMotion(MOTIONTYPE_MOVE);
-	}
-	// yの上限設定
-	if (move.y > 10.0f)
-	{
-		move.y = 10.0f;
-	}
-	if (move.y < -5.0f)
-	{
-		move.y = -5.0f;
-	}
-	CCharacter::SetMove(move);
-	CCharacter::SetRotDest(rot);
+#endif // _DEBUG
+	CCharacter::Update();
+	// テスト
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 描画処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Draw(void)
+void CCharacter_Balloon::Draw(void)
 {
-	// キャラクター描画処理
-	CCharacter_Balloon::Draw();
+	// キャラクター描画
+	CCharacter::Draw();
 }
 
-#ifdef _DEBUG
-//-------------------------------------------------------------------------------------------------------------
-// デバッグ表示
-//-------------------------------------------------------------------------------------------------------------
-void CEnemy::Debug(void)
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 死亡処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter_Balloon::Die(void)
 {
-	CCharacter_Balloon::Debug();
+	// 死亡処理
+	CCharacter::Die();
+	// 風船のヌルチェック
+	// ->風船の開放
+	if (m_pBalloon_group != NULL)
+	{
+		m_pBalloon_group->Release();
+		m_pBalloon_group = NULL;
+	}
 }
-#endif // _DEBUG
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 当たった後の処理
 //	nObjType	: オブジェクトタイプ
 //	pScene		: 相手のシーン情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Scene_MyCollision(int const & nObjType, CScene * pScene)
+void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
-	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
+	// キャラクターの当たった後の処理
+	CCharacter::Scene_MyCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがキャラクターなら
+	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	{
+		// 変数宣言
+		D3DXVECTOR3 RefVecA;
+		D3DXVECTOR3 RefVecB;
+		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
+		D3DXVECTOR3 *pCharacterMove = pScene->Scene_GetPMove();
+		// 押し出し処理を入れる
+		// 今回の当たり判定とプレイヤーの位置ポインター管理
+		// 衝突後の速度計算処理
+		CCalculation::SquarColiAfterVec(
+			m_pos,
+			m_move,
+			*pCharacterPos,
+			*pCharacterMove,
+			100,
+			1,
+			1.0f,
+			1.0f,
+			RefVecA,
+			RefVecB
+		);
+		m_move = D3DVECTOR3_ZERO;
+		*pCharacterMove = D3DVECTOR3_ZERO;
+		m_move += RefVecA;
+		*pCharacterMove += RefVecB;
+
+		// 死亡処理
+		BalloonNone();
+	}
+	// オブジェクトタイプが風船なら
+	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	{
+		// 変数宣言
+		D3DXVECTOR3 RefVecA;
+		D3DXVECTOR3 RefVecB;
+		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
+		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
+		// 押し出し処理を入れる
+		// 今回の当たり判定とプレイヤーの位置ポインター管理
+		// 衝突後の速度計算処理
+		CCalculation::SquarColiAfterVec(
+			m_pos,
+			m_move,
+			*pCharacterPos,
+			CharacterMove,
+			1,
+			1,
+			1.0f,
+			1.0f,
+			RefVecA,
+			RefVecB
+		);
+		m_move = D3DVECTOR3_ZERO;
+		m_move += RefVecA;
+	}
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_ITEM)
+	{
+		// プレイヤーのスコア加算追加
+
+
+
+
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -308,31 +204,109 @@ void CEnemy::Scene_MyCollision(int const & nObjType, CScene * pScene)
 //	nObjType	: オブジェクトタイプ
 //	pScene		: 相手のシーン情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
+void CCharacter_Balloon::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
-	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
+	CCharacter::Scene_OpponentCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがキャラクターなら
+	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	{
+		// 死亡処理
+		BalloonNone();
+	}
+	// オブジェクトタイプがキャラクターなら
+	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	{
+		// 変数宣言
+		D3DXVECTOR3 RefVecA;
+		D3DXVECTOR3 RefVecB;
+		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
+		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
+		// 押し出し処理を入れる
+		// 今回の当たり判定とプレイヤーの位置ポインター管理
+		// 衝突後の速度計算処理
+		CCalculation::SquarColiAfterVec(
+			m_pos,
+			m_move,
+			*pCharacterPos,
+			CharacterMove,
+			1,
+			1,
+			1.0f,
+			1.0f,
+			RefVecA,
+			RefVecB
+		);
+		m_move = D3DVECTOR3_ZERO;
+		m_move += RefVecA;
+	}
 }
 
+#ifdef _DEBUG
 //-------------------------------------------------------------------------------------------------------------
-// 死亡処理
+// デバッグ表示
 //-------------------------------------------------------------------------------------------------------------
-void CEnemy::Die(void)
+void CCharacter_Balloon::Debug(void)
 {
-	CDebugproc::Print("----敵情報----\n");
-	CCharacter_Balloon::Die();
+	// キャラクターデバッグ
+	CCharacter::Debug();
+}
+#endif // _DEBUG
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船がない場合
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter_Balloon::BalloonNone(void)
+{
+	// 風船の情報がNULLなら
+	// ->関数を抜ける
+	if (m_pBalloon_group == NULL)
+	{
+		return;
+	}
+	// 出現している風船の数が0の場合
+	// ->キャラクター死亡
+	if (m_pBalloon_group->GetPopBalloon_group() == 0)
+	{
+		Die();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 読み込み処理
+// 風船を生成する処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-HRESULT CEnemy::Load(void)
+void CCharacter_Balloon::BalloonCreate(void)
+{
+	// 所持している風船が0超過なら
+	// ->風船を生成する処理
+	if (m_pBalloon_group->GetBringBalloon_group() > 0)
+	{
+		m_pBalloon_group->CreateBalloon_group(this);
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船を強制的に割らせる処理
+// nBreakBalloon:割れる風船の個数
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CCharacter_Balloon::Thunder_BreakBalloon(void)
+{
+	m_pBalloon_group->Thunder_BreakBalloon_group();
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// リソース情報読み込み処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+HRESULT CCharacter_Balloon::Load(void)
 {
 	return S_OK;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 読み込んだ情報を破棄処理
+// 読み込んだリソース情報を破棄処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEnemy::UnLoad(void)
+void CCharacter_Balloon::UnLoad(void)
 {
 }

@@ -16,6 +16,7 @@
 // テクスチャーID
 int CMeshsphere::m_nTexId[TEXTYPE_MAX] =
 {
+	-1,
 	10,
 	0
 };
@@ -93,6 +94,35 @@ CMeshsphere * CMeshsphere::Create_Self(
 }
 
 //-----------------------------------------------------------------------------
+// 作成処理(個人_unique管理)
+//-----------------------------------------------------------------------------
+std::unique_ptr<CMeshsphere> CMeshsphere::Create_Unique(
+	D3DXVECTOR3 const &pos,		// 位置
+	float const &fRadius,		// 半径
+	int const &nWidthBlock,		// 横数
+	int const &nHeightBlock,	// 縦数
+	D3DXCOLOR const &col,		// カラー
+	TEXTYPE	const &textype,		// テクスチャー
+	int const &nMaxFrame		// フレーム
+)
+{
+	// 変数宣言
+	std::unique_ptr<CMeshsphere> pMeshsphere(new CMeshsphere);
+	// 設定
+	pMeshsphere->m_MeshSphere.pos = pos;
+	pMeshsphere->m_MeshSphere.fRadius = fRadius;
+	pMeshsphere->m_MeshSphere.nWidthBlock = nWidthBlock;
+	pMeshsphere->m_MeshSphere.nHeightBlock = nHeightBlock;
+	pMeshsphere->m_MeshSphere.col = col;
+	pMeshsphere->m_MeshSphere.Textype = textype;
+	pMeshsphere->m_MeshSphere.nMaxFrame = nMaxFrame;
+	// 初期化
+	pMeshsphere->Init();
+	return pMeshsphere;
+}
+
+
+//-----------------------------------------------------------------------------
 // 初期化処理
 //-----------------------------------------------------------------------------
 void CMeshsphere::Init(void)
@@ -135,7 +165,7 @@ void CMeshsphere::Init(void)
 		for (int nCntH = 0; nCntH < m_MeshSphere.nWidthBlock + 1; nCntH++)
 		{
 			//座標
-			pVtx[0].pos.x = sinf(m_MeshSphere.fRot * nCntH) * sinf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;		//カメラみたいな感じで	
+			pVtx[0].pos.x = sinf(m_MeshSphere.fRot * nCntH) * sinf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;		//カメラみたいな感じで
 			pVtx[0].pos.y = cosf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;							//高さ
 			pVtx[0].pos.z = cosf(m_MeshSphere.fRot * nCntH) * sinf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;
 
@@ -218,6 +248,46 @@ void CMeshsphere::Set(
 }
 
 //-----------------------------------------------------------------------------
+// 色設定
+//	col	: 色
+//-----------------------------------------------------------------------------
+void CMeshsphere::SetCol(D3DXCOLOR const & col)
+{
+	// 色設定
+	m_MeshSphere.col = col;
+	// 頂点カラーの設定
+	Set_Vtx_Col();
+}
+
+//-----------------------------------------------------------------------------
+// 色設定
+//	col	: 色
+//-----------------------------------------------------------------------------
+void CMeshsphere::Set_Vtx_Col(void)
+{
+	// 変数宣言
+	VERTEX_3D *pVtx;	// 3D頂点情報
+
+	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_MeshSphere.pVtxBuffMeshSphere->Lock(0, 0, (void**)&pVtx, 0);
+
+	//頂点の情報
+	//縦の個数分カウント
+	for (int nCntV = 0; nCntV < m_MeshSphere.nHeightBlock + 1; nCntV++)
+	{
+		//円の頂点分
+		for (int nCntH = 0; nCntH < m_MeshSphere.nWidthBlock + 1; nCntH++)
+		{
+			pVtx[0].col = m_MeshSphere.col;		//色
+			pVtx++;
+		}
+	}
+
+	//頂点データをアンロック
+	m_MeshSphere.pVtxBuffMeshSphere->Unlock();
+}
+
+//-----------------------------------------------------------------------------
 // フレームによって消える処理
 //-----------------------------------------------------------------------------
 void CMeshsphere::FrameDelete(void)
@@ -251,13 +321,13 @@ void CMeshsphere::Draw(void)
 	// 不使用状態だったら抜ける
 	if (m_MeshSphere.bUse == false)
 	{
-		return;	
+		return;
 	}
 	// 変数宣言
 	LPDIRECT3DDEVICE9	pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
 	D3DXMATRIX			mtxRot, mtxTrans;								// 計算用
 
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);		// 表面(右回り)をカリングする
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);		// カリングoff
 	pDevice->SetRenderState(D3DRS_LIGHTING, false);				// ライティングoff
 
 	// テクスチャの設定
@@ -288,7 +358,7 @@ void CMeshsphere::Draw(void)
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	// ポリゴンの描画	
+	// ポリゴンの描画
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,			//プリミティブの種類
 		0,
 		0,
@@ -355,7 +425,7 @@ void CMeshsphere::SetRadius(float const &fRadius)
 		for (int nCntH = 0; nCntH < m_MeshSphere.nWidthBlock + 1; nCntH++)
 		{
 			//座標
-			pVtx[0].pos.x = sinf(m_MeshSphere.fRot * nCntH) * sinf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;		//カメラみたいな感じで	
+			pVtx[0].pos.x = sinf(m_MeshSphere.fRot * nCntH) * sinf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;		//カメラみたいな感じで
 			pVtx[0].pos.y = cosf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;							//高さ
 			pVtx[0].pos.z = cosf(m_MeshSphere.fRot * nCntH) * sinf(m_MeshSphere.fRot2 * nCntV * 0.5f) * m_MeshSphere.fRadius;
 

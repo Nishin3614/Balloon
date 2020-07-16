@@ -716,8 +716,8 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 	}
 
 	// 変数宣言
-	D3DXVECTOR3 posA = *pSphereShapeA->Get_PosCore();	// 位置A
-	D3DXVECTOR3 posB = *pSphereShapeB->Get_PosCore();	// 位置B
+	D3DXVECTOR3 posA = pSphereShapeA->m_DestPos;	// 位置A
+	D3DXVECTOR3 posB = pSphereShapeB->m_DestPos;	// 位置B
 	// 当たっているかどうか
 	bCollision = CCalculation::Collision_Sphere(
 		posA,
@@ -739,7 +739,7 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 		// ベクトルの正規化
 		D3DXVec3Normalize(&vec, &diff);
 		// 押し出し
-		*pSphereShapeA->Get_PPos() = posB + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
+		*pos_A = posB - pSphereShapeA->GetOffset() + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
 		pSphereShapeA->PassPos(D3DVECTOR3_ZERO);
 	}
 	return bCollision;

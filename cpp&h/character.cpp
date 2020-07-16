@@ -21,7 +21,6 @@
 #include "columncollision.h"
 #include "circleshadow.h"
 #include "stencilshadow.h"
-#include "balloon_group.h"
 
 #include "fade.h"
 
@@ -213,13 +212,26 @@ void CCharacter::Init()
 		// キャラクター当たり判定設定
 		if (m_modelAll[m_character]->pCharacterCollision != NULL)
 		{
+			// 変数宣言
+			CCollision::OBJTYPE objtype = CCollision::OBJTYPE_CHARACTER;	// あたり判定のオブジェクトタイプ
+			// オブジェクト分け
+			// オブジェクトタイプが魚の時
+			if (m_character == CHARACTER_FISH)
+			{
+				objtype = CCollision::OBJTYPE_FISH;
+			}
+			// それ以外
+			else
+			{
+				objtype = CCollision::OBJTYPE_CHARACTER;
+			}
 			// 矩形の当たり判定
 			if (m_modelAll[m_character]->pCharacterCollision->RectInfo)
 			{
 				m_pCharacterCollision = CRectCollision::Create(
 					m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
 					m_modelAll[m_character]->pCharacterCollision->Offset,
-					CCollision::OBJTYPE_CHARACTER,
+					objtype,
 					this,
 					NULL,
 					true,
@@ -234,7 +246,7 @@ void CCharacter::Init()
 				m_pCharacterCollision = CSphereCollision::Create(
 					m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo->fRadius,
 					m_modelAll[m_character]->pCharacterCollision->Offset,
-					CCollision::OBJTYPE_CHARACTER,
+					objtype,
 					this,
 					NULL,
 					true,
@@ -245,15 +257,6 @@ void CCharacter::Init()
 
 			}
 		}
-		// 風船生成
-		m_pBalloon_group = CBalloon_group::Create(
-			&m_pos,
-			m_sStatus[m_character].nMaxPopBalloon,
-			this
-		);
-		// ステータスの反映 //
-		// 初期風船を持っている個数
-		m_pBalloon_group->SetBiginBalloon_group(m_sStatus[m_character].nMaxBalloon);
 	}
 	// シャドウon
 	if (CIRCLESHADOW == true)
@@ -297,12 +300,6 @@ void CCharacter::Uninit(void)
 	if (m_pStencilshadow != NULL)
 	{
 		m_pStencilshadow = NULL;
-	}
-	// 風船のヌルチェック
-	// ->風船の開放
-	if (m_pBalloon_group != NULL)
-	{
-		m_pBalloon_group = NULL;
 	}
 }
 
@@ -624,25 +621,6 @@ void CCharacter::Motion_Obit()
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 風船がない場合
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CCharacter::BalloonNone(void)
-{
-	// 風船の情報がNULLなら
-	// ->関数を抜ける
-	if (m_pBalloon_group == NULL)
-	{
-		return;
-	}
-	// 出現している風船の数が0の場合
-	// ->キャラクター死亡
-	if (m_pBalloon_group->GetPopBalloon_group() == 0)
-	{
-		Die();
-	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // モーションカメラの更新
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::MotionCamera(void)
@@ -670,80 +648,6 @@ void CCharacter::MotionCamera(void)
 	}
 }
 
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// キャラクター同士の当たり判定処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCharacter::CharacterCollision(CCharacter * pCharacter)
-{
-	/*
-	// 変数宣言
-	D3DXVECTOR3 deltaVelocity = m_move - pCharacter->m_move;			// 速さ
-	float fxtMin, fxtMax, fytMin, fytMax, fztMin, fztMax, ftMin, ftMax;																// x,y,zの最小最大の時間、最終的な最小最大の時間
-	fxtMin = (pCharacter->m_pos.x - m_pos.x - m_pCharacterCollision->GetRectShape()->GetSize().x) / deltaVelocity.x;				// x軸についてのtの上限
-	fxtMax = (pCharacter->m_pos.x - m_pos.x + pCharacter->m_pCharacterCollision->GetRectShape()->GetSize().x) / deltaVelocity.x;	// x軸についてのtの下限
-	// 分母の符号が負だった場合の不等号反転への対処
-	if (deltaVelocity.x < 0) {
-		float swap = fxtMin;
-		fxtMin = fxtMax;
-		fxtMax = swap;
-	}
-
-	fytMin = (pCharacter->m_pos.y - m_pos.y - m_pCharacterCollision->GetRectShape()->GetSize().y) / deltaVelocity.y; // y軸についてのtの上限
-	fytMax = (pCharacter->m_pos.y - m_pos.y + pCharacter->m_pCharacterCollision->GetRectShape()->GetSize().y) / deltaVelocity.y; // y軸についてのtの下限
-	// 分母の符号が負だった場合の不等号反転への対処
-	if (deltaVelocity.y < 0) {
-		float swap = fytMin;
-		fytMin = fytMax;
-		fytMax = swap; // fytMinになっていたのをmiyoshiさんの指摘で訂正しました。やっちまったぜ☆
-	}
-
-	fztMin = (pCharacter->m_pos.z - m_pos.z - m_pCharacterCollision->GetRectShape()->GetSize().z) / deltaVelocity.z; // z軸についてのtの上限
-	fztMax = (pCharacter->m_pos.z - m_pos.z + pCharacter->m_pCharacterCollision->GetRectShape()->GetSize().z) / deltaVelocity.z; // z軸についてのtの下限
-	// 分母の符号が負だった場合の不等号反転への対処
-	if (deltaVelocity.z < 0) {
-		float swap = fztMin;
-		fztMin = fztMax;
-		fztMax = swap; // fztMinになっていたのをmizoshiさんの指摘で訂正しました。やっちまったぜ☆
-	}
-
-	// 下限同士、上限同士で範囲を絞り込む
-	ftMin = std::fminf(fxtMin, fytMin);
-	ftMin = std::fminf(ftMin, fztMin);
-	ftMax = std::fmaxf(fxtMax, fytMax);
-	ftMax = std::fmaxf(ftMax, fztMax);
-
-	// ftMin < t < ftMax と 0 < t < 1 に共通範囲があれば衝突
-	if (ftMin < ftMax && ftMin < 1 && 0 < ftMax)
-	{
-		// この下にある速度調整処理用にtの下限が0未満の場合は0に設定
-		ftMin = ftMin < 0 ? 0 : ftMin;
-		fxtMin = fxtMin < 0 ? 0 : fxtMin;
-		fytMin = fytMin < 0 ? 0 : fytMin;
-
-		// x軸方向の衝突の場合、速度のx成分のみを補正
-		if (ftMin == fxtMin)
-		{
-			m_pos.x = m_move.x * ftMin;
-			pCharacter->m_pos.x = pCharacter->m_move.x * ftMin;
-		}
-		// y軸方向の衝突の場合、速度のy成分のみを補正
-		if (ftMin == fytMin)
-		{
-			m_pos.y = m_move.y * ftMin;
-			pCharacter->m_pos.y = pCharacter->m_move.y * ftMin;
-		}
-		// z軸方向の衝突の場合、速度のz成分のみを補正
-		if (ftMin == fztMin)
-		{
-			m_pos.z = m_move.z * ftMin;
-			pCharacter->m_pos.z = pCharacter->m_move.z * ftMin;
-		}
-		// ※ちなみに、お互いに頂点同士が衝突した場合はx成分、y成分の両方を補正している
-		return true;
-	}
-	*/
-	return false;
-}
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 描画処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -823,13 +727,6 @@ void CCharacter::Die(void)
 		m_pCharacterCollision->Release();
 		m_pCharacterCollision = NULL;
 	}
-	// 風船のヌルチェック
-	// ->風船の開放
-	if (m_pBalloon_group != NULL)
-	{
-		m_pBalloon_group->Release();
-		m_pBalloon_group = NULL;
-	}
 	// 総キャラクターが一人だけなら
 	// ->タイトルへフェード
 	if (m_nAllCharacter <= 1)
@@ -857,67 +754,11 @@ void CCharacter::Scene_MyCollision(
 	// オブジェクトタイプがキャラクターなら
 	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
-		// 変数宣言
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
-		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
-		D3DXVECTOR3 *pCharacterMove = pScene->Scene_GetPMove();
-		// 押し出し処理を入れる
-		// 今回の当たり判定とプレイヤーの位置ポインター管理
-		// 衝突後の速度計算処理
-		CCalculation::SquarColiAfterVec(
-			m_pos,
-			m_move,
-			*pCharacterPos,
-			*pCharacterMove,
-			100,
-			1,
-			1.0f,
-			1.0f,
-			RefVecA,
-			RefVecB
-		);
-		m_move = D3DVECTOR3_ZERO;
-		*pCharacterMove = D3DVECTOR3_ZERO;
-		m_move += RefVecA;
-		*pCharacterMove += RefVecB;
 
-		// 死亡処理
-		BalloonNone();
 	}
 	// オブジェクトタイプが風船なら
 	else if (nObjType == CCollision::OBJTYPE_BALLOON)
 	{
-		// 変数宣言
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
-		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
-		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
-		// 押し出し処理を入れる
-		// 今回の当たり判定とプレイヤーの位置ポインター管理
-		// 衝突後の速度計算処理
-		CCalculation::SquarColiAfterVec(
-			m_pos,
-			m_move,
-			*pCharacterPos,
-			CharacterMove,
-			1,
-			1,
-			1.0f,
-			1.0f,
-			RefVecA,
-			RefVecB
-		);
-		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA;
-	}
-	// オブジェクトタイプがアイテムなら
-	else if (nObjType == CCollision::OBJTYPE_ITEM)
-	{
-		// プレイヤーのスコア加算追加
-
-
-
 
 	}
 }
@@ -935,47 +776,12 @@ void CCharacter::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがキャラクターなら
 	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
-		// 死亡処理
-		BalloonNone();
+
 	}
 	// オブジェクトタイプがキャラクターなら
 	else if (nObjType == CCollision::OBJTYPE_BALLOON)
 	{
-		// 変数宣言
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
-		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
-		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
-		// 押し出し処理を入れる
-		// 今回の当たり判定とプレイヤーの位置ポインター管理
-		// 衝突後の速度計算処理
-		CCalculation::SquarColiAfterVec(
-			m_pos,
-			m_move,
-			*pCharacterPos,
-			CharacterMove,
-			1,
-			1,
-			1.0f,
-			1.0f,
-			RefVecA,
-			RefVecB
-		);
-		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA;
-	}
-}
 
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 風船を生成する処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CCharacter::BalloonCreate(void)
-{
-	// 所持している風船が0超過なら
-	// ->風船を生成する処理
-	if (m_pBalloon_group->GetBringBalloon_group() > 0)
-	{
-		m_pBalloon_group->CreateBalloon_group(this);
 	}
 }
 
@@ -1288,15 +1094,6 @@ void CCharacter::UnLoad(void)
 void CCharacter::InitStatic(void)
 {
 	m_nAllCharacter = 0;
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 風船を強制的に割らせる処理
-// nBreakBalloon:割れる風船の個数
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CCharacter::Thunder_BreakBalloon(void)
-{
-	m_pBalloon_group->Thunder_BreakBalloon_group();
 }
 
 #ifdef _DEBUG

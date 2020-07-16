@@ -70,6 +70,9 @@ public:
 	virtual void Draw(void) {};
 #ifdef _DEBUG
 	virtual void Debug(void);
+	// あたり判定可視カの設定
+	virtual void Collision_Visible_Set(void);
+
 #endif // _DEBUG
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ

@@ -12,6 +12,7 @@
 #include "network.h"
 #include "manager.h"
 #include "fade.h"
+#include "collision.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -33,7 +34,7 @@ int	CPlayer::m_All = 0;					// 総数
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CPlayer::CPlayer(CHARACTER const &character) : CCharacter::CCharacter(character)
+CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Balloon(character)
 {
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
@@ -52,8 +53,8 @@ CPlayer::~CPlayer()
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Init(void)
 {
-	// キャラクター初期化
-	CCharacter::Init();
+	// バルーンキャラクター初期化
+	CCharacter_Balloon::Init();
 	// 変数宣言
 	D3DXVECTOR3 pos;	// ゲージの配置用
 
@@ -70,7 +71,7 @@ void CPlayer::Init(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Uninit(void)
 {
-	CCharacter::Uninit();
+	CCharacter_Balloon::Uninit();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -102,7 +103,7 @@ void CPlayer::Update(void)
 	}
 
 	// キャラクター更新
-	CCharacter::Update();
+	CCharacter_Balloon::Update();
 
 	/* プロトタイプ用 */
 	// キャラクターの区域宣言
@@ -124,7 +125,7 @@ void CPlayer::Update(void)
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
 	{
-		CCharacter::Thunder_BreakBalloon();
+		CCharacter_Balloon::Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
 
@@ -147,7 +148,7 @@ void CPlayer::MyAction(const int &nId)
 	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
 	{
 		// 風船を生成する処理
-		BalloonCreate();
+		CCharacter_Balloon::BalloonCreate();
 	}
 
 	if (m_nPlayerID == nId)
@@ -303,10 +304,10 @@ void CPlayer::MyMove(void)
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
 	// 風船がNULLではないなら
-	if (CCharacter::GetBalloon() != NULL)
+	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
 		// 風船があるなら
-		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
+		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
 			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
@@ -502,9 +503,9 @@ void CPlayer::OtherMove(void)
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 	}
 	// 風船がNULLではないなら
-	if (CCharacter::GetBalloon() != NULL)
+	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
-		if (CCharacter::GetBalloon()->GetPopBalloon_group() != 0)
+		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
 			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
@@ -528,7 +529,7 @@ void CPlayer::OtherMove(void)
 void CPlayer::Draw(void)
 {
 	// キャラクター描画
-	CCharacter::Draw();
+	CCharacter_Balloon::Draw();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -545,7 +546,7 @@ void CPlayer::Die(void)
 		pNetwork->SendTCP(aDie, sizeof(aDie));
 
 		// 死亡処理
-		CCharacter::Die();
+		CCharacter_Balloon::Die();
 		// コントロールする自キャラの場合
 		if (m_nPlayerID == CManager::GetPlayerID())
 		{
@@ -564,7 +565,7 @@ void CPlayer::Die(void)
 void CPlayer::OtherDie(void)
 {
 	// 死亡処理
-	CCharacter::Die();
+	CCharacter_Balloon::Die();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -574,7 +575,18 @@ void CPlayer::OtherDie(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
-	CCharacter::Scene_MyCollision(nObjType, pScene);
+	// バルーンキャラクターの当たった後の処理
+	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_ITEM)
+	{
+		// プレイヤーのスコア加算追加
+
+	}
+
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -584,7 +596,8 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
-	CCharacter::Scene_OpponentCollision(nObjType, pScene);
+	// バルーンキャラクターの相手に当てられた後の処理
+	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
 }
 
 #ifdef _DEBUG
@@ -602,7 +615,7 @@ void CPlayer::Debug(void)
 	}
 	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
-	CCharacter::Debug();
+	CCharacter_Balloon::Debug();
 }
 #endif // _DEBUG
 
