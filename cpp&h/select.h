@@ -57,5 +57,6 @@ private:
 	/* ŠÖ” */
 	/* •Ï” */
 	CSelectCharacter *m_pSelectCharacter;
+	int m_nRand;
 };
 #endif
