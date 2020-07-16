@@ -241,14 +241,25 @@ void CGame::PauseState(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::PlayerCreate(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+	char aAns[256];
+	int aData[MAX_PLAYER];
+	char cDie[64];
+
+	memset(&cDie, 0, sizeof(cDie));
+
+	pNetwork->SendTCP("CHARACTER_LOAD", sizeof("CHARACTER_LOAD"));
+	pNetwork->DataRecv(SOCKETTYPE_CLIENT, (char*)&aAns, sizeof(aAns));
+	sscanf(aAns, "%s %d %d %d %d", &cDie, &aData[0], &aData[1], &aData[2], &aData[3]);
+
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
 		// ƒvƒŒƒCƒ„[1
-		if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_THUNDER)
+		if (aData[nCntPlayer] == CPlayer::CHARATYPE_THUNDER)
 		{
 			m_pPlayer[nCntPlayer] = CP_thunder::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
 		}
-		else if (CSelectCharacter::GetSaveCharaType(nCntPlayer) == CPlayer::CHARATYPE_ZOMBIE)
+		else if (aData[nCntPlayer] == CPlayer::CHARATYPE_ZOMBIE)
 		{
 			m_pPlayer[nCntPlayer] = CP_zombie::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
 		}
