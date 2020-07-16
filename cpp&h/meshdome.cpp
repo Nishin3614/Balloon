@@ -262,7 +262,7 @@ CMeshdome * CMeshdome::Create(
 	// メモリの生成(初め->基本クラス,後->派生クラス)
 	pMeshdome = new CMeshdome();
 	// シーン管理設定
-	pMeshdome->ManageSetting(CScene::LAYER_3DOBJECT2);
+	pMeshdome->ManageSetting(CScene::LAYER_DOME);
 	// 位置情報
 	pMeshdome->m_pos = pos;
 	// サイズ情報
