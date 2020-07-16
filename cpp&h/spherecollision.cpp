@@ -109,7 +109,7 @@ void CSphereCollision::Debug(void)
 	{
 		// メッシュスフィアの位置設定
 		m_uni_pMeshsphere->SetPosition(
-			*m_pSphereShape->m_pCorePos
+			m_pSphereShape->m_DestPos
 		);
 	}
 	ImGui::Text("----------SphereCollision_Information----------");
@@ -126,7 +126,7 @@ void CSphereCollision::Collision_Visible_Set(void)
 {
 	// メッシュスフィア
 	m_uni_pMeshsphere = std::move(CMeshsphere::Create_Unique(
-		*m_pSphereShape->m_pCorePos,
+		m_pSphereShape->m_DestPos,
 		m_pSphereShape->GetRadius(),
 		10,
 		10,

@@ -168,8 +168,12 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
 		Release();
-		m_pCollision->Release();
-		m_pCollision = NULL;
+		// あたり判定のNULLチェック
+		if (m_pCollision != NULL)
+		{
+			m_pCollision->Release();
+			m_pCollision = NULL;
+		}
 	}
 }
 
@@ -184,8 +188,12 @@ void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 	if (nObjType == CCollision::OBJTYPE_CHARACTER)
 	{
 		Release();
-		m_pCollision->Release();
-		m_pCollision = NULL;
+		// あたり判定のNULLチェック
+		if (m_pCollision != NULL)
+		{
+			m_pCollision->Release();
+			m_pCollision = NULL;
+		}
 	}
 }
 
