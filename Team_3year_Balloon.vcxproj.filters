@@ -249,6 +249,9 @@
     <ClCompile Include="cpp&amp;h\thunder.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="cpp&amp;h\thunderMulti.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="cpp&amp;h\character_balloon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -494,10 +497,14 @@
     <ClInclude Include="cpp&amp;h\thunder.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="cpp&amp;h\thunderMulti.h">
+=======
     <ClInclude Include="cpp&amp;h\character_balloon.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="cpp&amp;h\character_fish.h">
+>>>>>>> 12ba4cb3eddbd9577462662abff21379369e1374
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

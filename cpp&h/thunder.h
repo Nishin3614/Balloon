@@ -14,7 +14,8 @@
 // マクロ定義
 // ==========================================================
 #define	TEXTURE_THUNDER	"data/TEXTURE/coin.png"			// 読み込むテクスチャファイル名
-#define	MAX_DISTANCE (100)								// 距離
+#define	MAX_DISTANCE	(100)							// 距離
+#define	ANIM_TEX		(1.0f / 6.0f)					// アニメーションテクスチャ
 
 // ==========================================================
 //
@@ -54,6 +55,8 @@ private:
 
 	int	m_nCounterAnim;									// アニメーションカウンター
 	int m_nPatternAnim;									// アニメーションパターン
+	int m_nCntThunder;									// 雷のカウント
 	float m_fDistance;									// 距離
+	bool m_bThunder;									// 雷の状態
 };
 #endif
