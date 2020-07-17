@@ -46,9 +46,19 @@ typedef enum
 	RECVDATA_POS_X,
 	RECVDATA_POS_Y,
 	RECVDATA_POS_Z,
+	RECVDATA_STICK_H,
+	RECVDATA_STICK_V,
+	RECVDATA_RANK,
 	RECVDATA_DIE,
 	RECVDATA_MAX
 } RECVDATA;
+
+typedef enum
+{
+	STICKTYPE_H = 0,
+	STICKTYPE_V,
+	STICKTYPE_MAX
+} STICKTYPE;
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -119,11 +129,17 @@ private:
 	PLAYERSTATE keystate;
 
 	// 受信情報関連
+	bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
+	bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
+	bool m_aKeyStateTrigger[MAX_PLAYER][NUM_KEY_M] = {};		// Trigger
+
 	int m_nId;								// ID
+	int m_nStick[STICKTYPE_MAX];
 	float m_fRot[MAX_PLAYER];				// 回転情報
 	bool m_bTimeout;						// タイムアウトフラグ
 	D3DXVECTOR3 m_playerPos[MAX_PLAYER];	// プレイヤー位置情報
 	bool m_bDie[MAX_PLAYER];				// 1つ前の死亡フラグ
+	int m_nRank[MAX_PLAYER];
 
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド

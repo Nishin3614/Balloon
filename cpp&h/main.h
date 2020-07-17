@@ -19,6 +19,7 @@
 #include "d3dx9.h"
 /* C言語のライブラリ */
 #include <stdlib.h>		// システムヘッダー
+#include <stdbool.h>	// 真偽ヘッダー
 #include <stdio.h>		// 一般的なヘッダー
 #include <time.h>		// タイムヘッダー
 #include <math.h>		// 数学関数ヘッダー

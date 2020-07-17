@@ -43,8 +43,8 @@ public:
 	typedef enum
 	{
 		KEY_X = 0,
-		KEY_Y,
 		KEY_A,
+		KEY_Y,
 		KEY_B,
 		KEY_LEFT_1,
 		KEY_RIGHT_1,
@@ -121,7 +121,7 @@ public:
 	bool const &GetBoolStickLeft(
 		int const &nJoy,			// ジョイパッド番号
 		DIRECTION const &direction	// 方向情報
-	) 
+	)
 	{
 		return m_abStickTrigger[nJoy][direction];
 	};
@@ -146,7 +146,7 @@ private:
 	static BOOL CALLBACK EnumCallback(
 		const DIDEVICEINSTANCE *pdidInstance,
 		VOID *pContext
-	);	
+	);
 	// ゲームパッドの状態設定
 	void SetState(int const & nJoy);
 };
