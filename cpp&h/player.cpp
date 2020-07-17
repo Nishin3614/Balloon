@@ -311,7 +311,7 @@ void CPlayer::MyMove(void)
 		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// ’ˆ‚É•‚‚­
-			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE) || pJoypad->GetTrigger(0, CJoypad::KEY_A) || pJoypad->GetTrigger(0, CJoypad::KEY_X))
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
 				// ˆÚ“®—Êy‚ª0–¢–ž‚È‚ç
 				if (move.y < 0.0f)
@@ -319,6 +319,22 @@ void CPlayer::MyMove(void)
 					move.y = 0.0f;
 				}
 				move.y += CCharacter::GetStatus().fMaxJump;
+			}
+			else
+			{
+				if (pJoypad != NULL)
+				{
+					// ’ˆ‚É•‚‚­
+					if (pJoypad->GetTrigger(0, CJoypad::KEY_A) || pJoypad->GetTrigger(0, CJoypad::KEY_X))
+					{
+						// ˆÚ“®—Êy‚ª0–¢–ž‚È‚ç
+						if (move.y < 0.0f)
+						{
+							move.y = 0.0f;
+						}
+						move.y += CCharacter::GetStatus().fMaxJump;
+					}
+				}
 			}
 		}
 	}
