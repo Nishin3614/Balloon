@@ -46,6 +46,7 @@ typedef enum
 	RECVDATA_POS_X,
 	RECVDATA_POS_Y,
 	RECVDATA_POS_Z,
+	RECVDATA_RANK,
 	RECVDATA_DIE,
 	RECVDATA_MAX
 } RECVDATA;
@@ -124,6 +125,7 @@ private:
 	bool m_bTimeout;						// タイムアウトフラグ
 	D3DXVECTOR3 m_playerPos[MAX_PLAYER];	// プレイヤー位置情報
 	bool m_bDie[MAX_PLAYER];				// 1つ前の死亡フラグ
+	int m_nRank[MAX_PLAYER];
 
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド
