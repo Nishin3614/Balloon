@@ -594,8 +594,10 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
 		}
 	}
-	// オブジェクトタイプが風船なら
-	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	// オブジェクトタイプがプレイヤー風船なら ||
+	// オブジェクトタイプが敵風船なら ||
+	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
+		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
 		// 変数宣言
 		// ネットワーク情報取得
@@ -606,19 +608,41 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 		}
 	}
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	// オブジェクトタイプがプレイヤーなら
+	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
 		// 変数宣言
 		// ネットワーク情報取得
 		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
-														// プレイヤーのスコア加算追加
+		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_PLAYER);
 		}
+		// 死亡処理
+		BalloonNone();
 	}
+	// オブジェクトタイプが敵なら
+	else if (nObjType == CCollision::OBJTYPE_ENEMY)
+	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// プレイヤーのスコア加算追加
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_ENEMY);
+		}
+		// 死亡処理
+		BalloonNone();
 
+	}
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_FISH)
+	{
+		// 死亡
+		Die();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -630,6 +654,30 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
 	// バルーンキャラクターの相手に当てられた後の処理
 	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_FISH)
+	{
+		// 死亡
+		Die();
+	}
+	// オブジェクトタイプが敵なら
+	else if (nObjType == CCollision::OBJTYPE_ENEMY)
+	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// プレイヤーのスコア加算追加
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+		}
+		// 死亡処理
+		BalloonNone();
+
+	}
 }
 
 #ifdef _DEBUG

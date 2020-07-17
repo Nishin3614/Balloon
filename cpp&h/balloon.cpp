@@ -88,7 +88,8 @@ void CBalloon::Scene_MyCollision(
 )
 {
 	// 相手のオブジェクトタイプがキャラクターなら
-	if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	if (nObjType == CCollision::OBJTYPE_PLAYER ||
+		nObjType == CCollision::OBJTYPE_ENEMY)
 	{
 		// 当たっている判定をtrueへ
 		m_bCollision = true;
@@ -106,7 +107,8 @@ void CBalloon::Scene_OpponentCollision(
 )
 {
 	// 相手のオブジェクトタイプがキャラクターなら
-	if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	if (nObjType == CCollision::OBJTYPE_PLAYER ||
+		nObjType == CCollision::OBJTYPE_ENEMY)
 	{
 		// 当たっている判定をtrueへ
 		m_bCollision = true;

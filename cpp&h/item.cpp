@@ -173,7 +173,7 @@ void CItem::Unload(void)
 void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
 	// オブジェクトタイプがキャラクターなら
-	if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
 		Release();
 		// あたり判定のNULLチェック
@@ -193,7 +193,7 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
 	// オブジェクトタイプがキャラクターなら
-	if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
 		Release();
 		// あたり判定のNULLチェック
