@@ -13,10 +13,6 @@
 #include "joypad.h"
 #include "score.h"
 
-bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
-bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
-bool m_aKeyStateTrigger[MAX_PLAYER][NUM_KEY_M] = {};		// Trigger
-
 //=============================================================================
 // 静的メンバ変数
 //=============================================================================
@@ -189,6 +185,9 @@ void CNetwork::Update(void)
 
 					// 死亡フラグの管理
 					bool bDie = (int)fData[RECVDATA_DIE];
+
+					m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
+					m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
 
 					if (bDie)
 					{// 今回死んでいて
@@ -460,6 +459,7 @@ bool CNetwork::KeyData(void)
 	PLAYERSTATE state;
 	memset(&state, 0, sizeof(PLAYERSTATE));
 	CNetwork *pNetwork = CManager::GetNetwork();
+	int stick_H, stick_V;
 
 	D3DXVECTOR3 pos = pPlayer->GetPos();
 
@@ -488,22 +488,43 @@ bool CNetwork::KeyData(void)
 		return false;
 	}
 
+	if (pJoypad == NULL)
+	{
+		stick_H = 0;
+		stick_V = 0;
+	}
+
 	if (pNetwork != NULL)
 	{
 		D3DXVECTOR3 rot = pCamera->GetRot();
 		char data[1024];
 		bool aKeyState[NUM_KEY_M] = {};
 
-		if (pKeyboard->GetKeyboardPress(DIK_SPACE) || pJoypad->GetTrigger(1, CJoypad::KEY_A) || pJoypad->GetTrigger(1, CJoypad::KEY_X))
+		if (pJoypad != NULL)
 		{
-			aKeyState[NUM_KEY_SPACE] = true;
+			pJoypad->GetStickLeft(0, stick_H, stick_V);
+
+			if (pKeyboard->GetKeyboardPress(DIK_SPACE) || pJoypad->GetPress(0, CJoypad::KEY_A) || pJoypad->GetPress(0, CJoypad::KEY_X))
+			{
+				aKeyState[NUM_KEY_SPACE] = true;
+			}
+		}
+		else
+		{
+			if (pKeyboard->GetKeyboardPress(DIK_SPACE))
+			{
+				aKeyState[NUM_KEY_SPACE] = true;
+			}
 		}
 
-		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
 			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
+			stick_H,					// スティックH
+			stick_V,					// スティックV
 			rot.y,						// 回転
 			pos.x, pos.y, pos.z,		// 位置
-			pScore->GetScore()
+			pScore->GetScore()			// スコア
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}

@@ -15,6 +15,7 @@
 #include "collision.h"
 #include "game.h"
 #include "score.h"
+#include "joypad.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -175,11 +176,11 @@ void CPlayer::MyMove(void)
 	move = CCharacter::GetMove();								// 移動量
 	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
+	CJoypad *pJoypad = CManager::GetJoy();
 
 	// 移動 //
 	/* ジョイパッド */
 	// パッド用 //
-	/*
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
@@ -223,8 +224,6 @@ void CPlayer::MyMove(void)
 			bMove = true;
 		}
 	}
-*/
-
 
 /* キーボード */
 // 左
@@ -312,7 +311,7 @@ void CPlayer::MyMove(void)
 		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// 宙に浮く
-			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE) || pJoypad->GetTrigger(0, CJoypad::KEY_A) || pJoypad->GetTrigger(0, CJoypad::KEY_X))
 			{
 				// 移動量yが0未満なら
 				if (move.y < 0.0f)
