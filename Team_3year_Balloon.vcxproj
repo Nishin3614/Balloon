@@ -192,6 +192,7 @@
     <ClCompile Include="cpp&amp;h\ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="cpp&amp;h\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="cpp&amp;h\input.cpp" />
+    <ClCompile Include="cpp&amp;h\invisible.cpp" />
     <ClCompile Include="cpp&amp;h\item.cpp" />
     <ClCompile Include="cpp&amp;h\joypad.cpp" />
     <ClCompile Include="cpp&amp;h\keyboard.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="cpp&amp;h\ImGui\imstb_textedit.h" />
     <ClInclude Include="cpp&amp;h\ImGui\imstb_truetype.h" />
     <ClInclude Include="cpp&amp;h\input.h" />
+    <ClInclude Include="cpp&amp;h\invisible.h" />
     <ClInclude Include="cpp&amp;h\item.h" />
     <ClInclude Include="cpp&amp;h\joypad.h" />
     <ClInclude Include="cpp&amp;h\keyboard.h" />

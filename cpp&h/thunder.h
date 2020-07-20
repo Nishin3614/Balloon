@@ -19,6 +19,13 @@
 
 // ==========================================================
 //
+// 前方宣言
+//
+// ==========================================================
+class CMeshdome;
+
+// ==========================================================
+//
 // クラスの定義
 //
 // ==========================================================
@@ -45,6 +52,8 @@ private:
 
 	static CThunder *m_pThunder;
 
+	CMeshdome *m_pMeshDome;								// メッシュドームへのポインタ
+
 	D3DXVECTOR3	m_vtxMin;								// 最小値
 	D3DXVECTOR3	m_vtxMax;								// 最大値
 	D3DXVECTOR3 m_pos;									// 位置
@@ -56,6 +65,7 @@ private:
 	int	m_nCounterAnim;									// アニメーションカウンター
 	int m_nPatternAnim;									// アニメーションパターン
 	int m_nCntThunder;									// 雷のカウント
+	int m_nCntDraw;										// 雷の描画カウント
 	float m_fDistance;									// 距離
 	bool m_bThunder;									// 雷の状態
 };
