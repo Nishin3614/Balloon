@@ -35,7 +35,7 @@
 #define CHARACTER_STATUS_FILE ("data/LOAD/STATUS/status_manager_Character.csv")	// ステータスファイル名
 #define CHARACTER_INFO_FILE ("data/LOAD/CHARACTER/CHARACTER_MANAGER.txt")		// キャラクターファイル名
 #define CIRCLESHADOW (true)														// 円形のシャドウにするかしないか
-#define REFLECTION_COEFFICIENT (1)	// 反発係数
+#define REFLECTION_COEFFICIENT (1)												// 反発係数
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -213,17 +213,22 @@ void CCharacter::Init()
 		if (m_modelAll[m_character]->pCharacterCollision != NULL)
 		{
 			// 変数宣言
-			CCollision::OBJTYPE objtype = CCollision::OBJTYPE_CHARACTER;	// あたり判定のオブジェクトタイプ
+			CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER;	// あたり判定のオブジェクトタイプ
 			// オブジェクト分け
 			// オブジェクトタイプが魚の時
 			if (m_character == CHARACTER_FISH)
 			{
 				objtype = CCollision::OBJTYPE_FISH;
 			}
+			// オブジェクトタイプがNPCの時
+			else if (m_character == CHARACTER_NPC)
+			{
+				objtype = CCollision::OBJTYPE_ENEMY;
+			}
 			// それ以外
 			else
 			{
-				objtype = CCollision::OBJTYPE_CHARACTER;
+				objtype = CCollision::OBJTYPE_PLAYER;
 			}
 			// 矩形の当たり判定
 			if (m_modelAll[m_character]->pCharacterCollision->RectInfo)
@@ -748,19 +753,6 @@ void CCharacter::Scene_MyCollision(
 	CScene * pScene
 )
 {
-	// シーン情報がNULLなら
-	// ->関数を抜ける
-	if (pScene == NULL) return;
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
-	{
-
-	}
-	// オブジェクトタイプが風船なら
-	else if (nObjType == CCollision::OBJTYPE_BALLOON)
-	{
-
-	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -770,19 +762,6 @@ void CCharacter::Scene_MyCollision(
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
-	// シーン情報がNULLなら
-	// ->関数を抜ける
-	if (pScene == NULL) return;
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
-	{
-
-	}
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_BALLOON)
-	{
-
-	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

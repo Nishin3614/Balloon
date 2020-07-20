@@ -139,6 +139,7 @@ void CBalloon_group::SetPPos(
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon_group::SetPopMaxBalloom(
 	int const & nPopMaxBaloon,
+	int const & nObjType,
 	CScene * pParent
 )
 {
@@ -162,7 +163,7 @@ void CBalloon_group::SetPopMaxBalloom(
 		// 当たり判定設定(球)
 		m_apBalloon[nCntBalloon_group]->SetCollision(
 			CShape::SHAPETYPE_SPHERE,
-			CCollision::OBJTYPE_BALLOON,
+			nObjType,
 			false,
 			true,
 			pParent
@@ -174,6 +175,7 @@ void CBalloon_group::SetPopMaxBalloom(
 // 風船グループを生成処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon_group::CreateBalloon_group(
+	int const & nObjType,
 	CScene * pParent
 )
 {
@@ -196,7 +198,7 @@ void CBalloon_group::CreateBalloon_group(
 		// 当たり判定設定(球)
 		m_apBalloon[nCntBalloon_group]->SetCollision(
 			CShape::SHAPETYPE_SPHERE,
-			CCollision::OBJTYPE_BALLOON,
+			nObjType,
 			false,
 			false,
 			pParent
@@ -240,6 +242,7 @@ CBalloon * CBalloon_group::GetBalloon(int const & nBalloon_group)
 CBalloon_group * CBalloon_group::Create(
 	D3DXVECTOR3 *pPos,					// 位置情報
 	int const &nPopMaxBalloon_group,	// 最大風船グループ数
+	int const &nObjType,				// オブジェクトタイプ
 	CScene * pParent					// 親情報
 )
 {
@@ -256,6 +259,7 @@ CBalloon_group * CBalloon_group::Create(
 	// 外に出して置ける風船グループの最大個数を設定
 	pBalloon_group->SetPopMaxBalloom(
 		nPopMaxBalloon_group,
+		nObjType,
 		pParent
 	);
 	// 出現している風船グループの個数に代入する

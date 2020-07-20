@@ -66,7 +66,6 @@ void CCharacter_Fish::Update(void)
 {
 	// AIアクション処理
 	Ai_Action();
-
 	// キャラクター更新処理
 	CCharacter::Update();
 }
@@ -133,6 +132,48 @@ void CCharacter_Fish::Scene_OpponentCollision(int const & nObjType, CScene * pSc
 void CCharacter_Fish::Die(void)
 {
 	CCharacter::Die();
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 生成(シーン管理)処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CCharacter_Fish * CCharacter_Fish::Create(D3DXVECTOR3 const & pos, D3DXVECTOR3 const & rot)
+{
+	// 変数宣言
+	CCharacter_Fish * pCharacter_Fish;
+	// メモリの生成(初め->基本クラス,後->派生クラス)
+	pCharacter_Fish = new CCharacter_Fish();
+	// シーン管理設定
+	pCharacter_Fish->ManageSetting(CScene::LAYER_CHARACTER);
+	// 設定
+	pCharacter_Fish->SetPos(pos);
+	pCharacter_Fish->SetRot(rot);
+	pCharacter_Fish->SetRotDest(rot);
+	// 初期化処理
+	pCharacter_Fish->Init();
+	// 設定
+	// 生成したオブジェクトを返す
+	return pCharacter_Fish;
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 生成(個人管理)処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CCharacter_Fish * CCharacter_Fish::Create_Self(D3DXVECTOR3 const & pos, D3DXVECTOR3 const & rot)
+{
+	// 変数宣言
+	CCharacter_Fish * pCharacter_Fish;
+	// メモリの生成(初め->基本クラス,後->派生クラス)
+	pCharacter_Fish = new CCharacter_Fish();
+	// 設定
+	pCharacter_Fish->SetPos(pos);
+	pCharacter_Fish->SetRot(rot);
+	pCharacter_Fish->SetRotDest(rot);
+	// 初期化処理
+	pCharacter_Fish->Init();
+	// 設定
+	// 生成したオブジェクトを返す
+	return pCharacter_Fish;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

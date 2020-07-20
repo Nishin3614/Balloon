@@ -51,15 +51,25 @@ void CCharacter_Balloon::Init(void)
 	// ゲーム画面なら
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
+		// 変数宣言
+		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
+		// キャラクタータイプがNPCなら
+		if (CCharacter::GetCharacter() == CCharacter::CHARACTER_NPC)
+		{
+			objtype = CCollision::OBJTYPE_ENEMY_BALLOON;
+		}
 		// 風船生成
 		m_pBalloon_group = CBalloon_group::Create(
 			&CCharacter::GetPos(),
 			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
+			objtype,
 			this
 		);
 		// ステータスの反映 //
 		// 初期風船を持っている個数
-		m_pBalloon_group->SetBiginBalloon_group(CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon);
+		m_pBalloon_group->SetBiginBalloon_group(
+			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon
+		);
 	}
 	// 変数宣言
 	D3DXVECTOR3 pos;	// ゲージの配置用
@@ -132,7 +142,7 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 	// ->関数を抜ける
 	if (pScene == NULL) return;
 	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
 		// 変数宣言
 		D3DXVECTOR3 RefVecA;
@@ -162,8 +172,10 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		// 死亡処理
 		BalloonNone();
 	}
-	// オブジェクトタイプが風船なら
-	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	// オブジェクトタイプがプレイヤー風船なら ||
+	// オブジェクトタイプが敵風船なら ||
+	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
+		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
 		// 変数宣言
 		D3DXVECTOR3 RefVecA;
@@ -188,15 +200,6 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		m_move = D3DVECTOR3_ZERO;
 		m_move += RefVecA;
 	}
-	// オブジェクトタイプがアイテムなら
-	else if (nObjType == CCollision::OBJTYPE_ITEM)
-	{
-		// プレイヤーのスコア加算追加
-
-
-
-
-	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -210,14 +213,16 @@ void CCharacter_Balloon::Scene_OpponentCollision(int const & nObjType, CScene * 
 	// シーン情報がNULLなら
 	// ->関数を抜ける
 	if (pScene == NULL) return;
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	// オブジェクトタイプがプレイヤーなら
+	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
 		// 死亡処理
 		BalloonNone();
 	}
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	// オブジェクトタイプがプレイヤー風船なら ||
+	// オブジェクトタイプが敵風船なら ||
+	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
+		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
 		// 変数宣言
 		D3DXVECTOR3 RefVecA;
@@ -283,7 +288,16 @@ void CCharacter_Balloon::BalloonCreate(void)
 	// ->風船を生成する処理
 	if (m_pBalloon_group->GetBringBalloon_group() > 0)
 	{
-		m_pBalloon_group->CreateBalloon_group(this);
+		// 変数宣言
+		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
+		// キャラクタータイプがNPCなら
+		if (CCharacter::GetCharacter() == CCharacter::CHARACTER_NPC)
+		{
+			objtype = CCollision::OBJTYPE_ENEMY_BALLOON;
+		}
+		m_pBalloon_group->CreateBalloon_group(
+			objtype,
+			this);
 	}
 }
 

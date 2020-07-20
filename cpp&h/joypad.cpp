@@ -142,7 +142,7 @@ void CJoypad::Uninit(void)
 	for (int nCnt = 0; nCnt < MAX_GAMEPAD; nCnt++)
 	{
 		// 入力デバイス(キーボード)の開放
-		if (m_pJoyDevice[nCnt]!= NULL)
+		if (m_pJoyDevice[nCnt] != NULL)
 		{
 			m_pJoyDevice[nCnt]->Unacquire();	// キーボードへのアクセス権を開放
 			m_pJoyDevice[nCnt]->Release();

@@ -77,10 +77,14 @@ public:
 	// 外に出して置ける風船グループの最大個数を設定
 	void SetPopMaxBalloom(
 		int const &nPopMaxBaloon = 2,
+		int const &nObjType = 0,
 		CScene * pParent = NULL
 	);
 	// 風船グループを生成
-	void CreateBalloon_group(CScene * pParent);
+	void CreateBalloon_group(
+		int const & nObjType,
+		CScene * pParent
+	);
 	// 風船情報取得
 	CBalloon * GetBalloon(int const &nBalloon_group);	// 風船の情報取得
 	// 風船グループを持っている個数を取得
@@ -99,6 +103,7 @@ public:
 	static CBalloon_group * Create(
 		D3DXVECTOR3 *pPos,					// 位置情報
 		int const &nPopMaxBalloon_group,	// 風船グループの最大出現数
+		int const &nObjType,				// オブジェクトタイプ
 		CScene * pParent					// 親情報
 	);
 	// リソース情報読み込む設定

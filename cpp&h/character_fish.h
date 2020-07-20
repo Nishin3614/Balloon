@@ -33,7 +33,7 @@ public:
 	virtual void Update(void);
 	virtual void Draw(void);
 #ifdef _DEBUG
-	void Debug(void);
+	virtual void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ
@@ -51,6 +51,18 @@ public:
 	);
 	// 魚キャラクターが死んだときの関数
 	virtual void Die(void);
+	// 生成処理(シーン管理)
+	//	pos	: 位置
+	//	rot	: 回転
+	static CCharacter_Fish * Create(
+		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
+		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
+	);			// 作成
+				// 生成処理(個人管理)
+	static CCharacter_Fish * Create_Self(
+		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
+		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
+	);
 	static HRESULT Load(void);								// 読み込み
 	static void UnLoad(void);								// UnLoadする
 protected:

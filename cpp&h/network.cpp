@@ -10,10 +10,8 @@
 #include "camera.h"
 #include "player.h"
 #include "game.h"
-
-bool m_aKeyState[MAX_PLAYER][NUM_KEY_M] = {};				//キーボードの入力情報ワーク
-bool m_aKeyStateOld[MAX_PLAYER][NUM_KEY_M] = {};			// 前のキーボード入力情報ワーク
-bool m_aKeyStateTrigger[MAX_PLAYER][NUM_KEY_M] = {};		// Trigger
+#include "joypad.h"
+#include "score.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -182,8 +180,14 @@ void CNetwork::Update(void)
 					// 位置の代入
 					m_playerPos[nCount] = D3DXVECTOR3(fData[RECVDATA_POS_X], fData[RECVDATA_POS_Y], fData[RECVDATA_POS_Z]);
 
+					// ランクの代入
+					m_nRank[nCount] = (int)fData[RECVDATA_RANK];
+
 					// 死亡フラグの管理
 					bool bDie = (int)fData[RECVDATA_DIE];
+
+					m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
+					m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
 
 					if (bDie)
 					{// 今回死んでいて
@@ -446,39 +450,86 @@ HRESULT CNetwork::Connect(void)
 bool CNetwork::KeyData(void)
 {
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
+	CJoypad *pJoypad = CManager::GetJoy();
 	CRenderer *pRenderer = CManager::GetRenderer();
 	CCamera *pCamera = pRenderer->GetCamera();
 	CPlayer *pPlayer = CGame::GetPlayer(m_nId);
+	CGame *pGame = CManager::GetGame();
+	CScore *pScore = pGame->GetScore();
 	PLAYERSTATE state;
+	memset(&state, 0, sizeof(PLAYERSTATE));
+	CNetwork *pNetwork = CManager::GetNetwork();
+	int stick_H, stick_V;
 
 	D3DXVECTOR3 pos = pPlayer->GetPos();
 
-	if (pPlayer != NULL)
+	if (pPlayer == NULL)
 	{
-		if (pCamera != NULL)
-		{
-			D3DXVECTOR3 rot = pCamera->GetRot();
-
-			memset(&state, 0, sizeof(PLAYERSTATE));
-			CNetwork *pNetwork = CManager::GetNetwork();
-
-			if (pKeyboard != NULL)
-			{
-				if (pNetwork != NULL)
-				{
-					char data[1024];
-
-					sprintf(data, "SAVE_KEY %d %d %d %d %d %d %f %f %f %f", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
-						pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), pKeyboard->GetKeyboardPress(DIK_SPACE),		// キー入力情報
-						rot.y,						// 回転
-						pos.x, pos.y, pos.z);		// 位置
-					pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
-				}
-			}
-		}
+		return false;
 	}
 
-	return false;
+	if (pCamera == NULL)
+	{
+		return false;
+	}
+
+	if (pKeyboard == NULL)
+	{
+		return false;
+	}
+
+	if (pGame == NULL)
+	{
+		return false;
+	}
+
+	if (pScore == NULL)
+	{
+		return false;
+	}
+
+	if (pJoypad == NULL)
+	{
+		stick_H = 0;
+		stick_V = 0;
+	}
+
+	if (pNetwork != NULL)
+	{
+		D3DXVECTOR3 rot = pCamera->GetRot();
+		char data[1024];
+		bool aKeyState[NUM_KEY_M] = {};
+
+		if (pJoypad != NULL)
+		{
+			pJoypad->GetStickLeft(0, stick_H, stick_V);
+
+			if (pKeyboard->GetKeyboardPress(DIK_SPACE) || pJoypad->GetPress(0, CJoypad::KEY_A) || pJoypad->GetPress(0, CJoypad::KEY_X))
+			{
+				aKeyState[NUM_KEY_SPACE] = true;
+			}
+		}
+		else
+		{
+			if (pKeyboard->GetKeyboardPress(DIK_SPACE))
+			{
+				aKeyState[NUM_KEY_SPACE] = true;
+			}
+		}
+
+		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
+		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
+			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
+			stick_H,					// スティックH
+			stick_V,					// スティックV
+			rot.y,						// 回転
+			pos.x, pos.y, pos.z,		// 位置
+			pScore->GetScore()			// スコア
+		);
+		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
+	}
+
+	return true;
 }
 
 //=============================================================================

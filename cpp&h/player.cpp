@@ -15,6 +15,7 @@
 #include "collision.h"
 #include "game.h"
 #include "score.h"
+#include "joypad.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -175,11 +176,11 @@ void CPlayer::MyMove(void)
 	move = CCharacter::GetMove();								// 移動量
 	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
+	CJoypad *pJoypad = CManager::GetJoy();
 
 	// 移動 //
 	/* ジョイパッド */
 	// パッド用 //
-	/*
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
@@ -223,8 +224,6 @@ void CPlayer::MyMove(void)
 			bMove = true;
 		}
 	}
-*/
-
 
 /* キーボード */
 // 左
@@ -320,6 +319,22 @@ void CPlayer::MyMove(void)
 					move.y = 0.0f;
 				}
 				move.y += CCharacter::GetStatus().fMaxJump;
+			}
+			else
+			{
+				if (pJoypad != NULL)
+				{
+					// 宙に浮く
+					if (pJoypad->GetTrigger(0, CJoypad::KEY_A) || pJoypad->GetTrigger(0, CJoypad::KEY_X))
+					{
+						// 移動量yが0未満なら
+						if (move.y < 0.0f)
+						{
+							move.y = 0.0f;
+						}
+						move.y += CCharacter::GetStatus().fMaxJump;
+					}
+				}
 			}
 		}
 	}
@@ -594,8 +609,10 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
 		}
 	}
-	// オブジェクトタイプが風船なら
-	else if (nObjType == CCollision::OBJTYPE_BALLOON)
+	// オブジェクトタイプがプレイヤー風船なら ||
+	// オブジェクトタイプが敵風船なら ||
+	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
+		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
 		// 変数宣言
 		// ネットワーク情報取得
@@ -606,19 +623,41 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 		}
 	}
-	// オブジェクトタイプがキャラクターなら
-	else if (nObjType == CCollision::OBJTYPE_CHARACTER)
+	// オブジェクトタイプがプレイヤーなら
+	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
 		// 変数宣言
 		// ネットワーク情報取得
 		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
-														// プレイヤーのスコア加算追加
+		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_PLAYER);
 		}
+		// 死亡処理
+		BalloonNone();
 	}
+	// オブジェクトタイプが敵なら
+	else if (nObjType == CCollision::OBJTYPE_ENEMY)
+	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// プレイヤーのスコア加算追加
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_ENEMY);
+		}
+		// 死亡処理
+		BalloonNone();
 
+	}
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_FISH)
+	{
+		// 死亡
+		Die();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -630,6 +669,30 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
 	// バルーンキャラクターの相手に当てられた後の処理
 	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがアイテムなら
+	else if (nObjType == CCollision::OBJTYPE_FISH)
+	{
+		// 死亡
+		Die();
+	}
+	// オブジェクトタイプが敵なら
+	else if (nObjType == CCollision::OBJTYPE_ENEMY)
+	{
+		// 変数宣言
+		// ネットワーク情報取得
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// プレイヤーのスコア加算追加
+		if (m_nPlayerID == pNetwork->GetId())
+		{
+			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+		}
+		// 死亡処理
+		BalloonNone();
+
+	}
 }
 
 #ifdef _DEBUG

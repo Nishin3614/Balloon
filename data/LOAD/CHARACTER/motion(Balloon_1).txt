@@ -59,7 +59,7 @@ CHARACTERSET
 	PARTSSET						# [2]å“ä÷êﬂ
 		INDEX = 2
 		PARENT = 0					# (êe)ëÃ
-		POS = 0.0 -8.0.0 0.0
+		POS = 0.0 -8.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
