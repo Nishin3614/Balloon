@@ -38,8 +38,8 @@
 // テクスチャーID
 int CMeshdome::m_nTexId[TYPE_MAX] =
 {
-	22,
-	22
+	25,
+	0
 };
 
 // ----------------------------------------
@@ -141,7 +141,7 @@ void CMeshdome::Update(void)
 				// テクスチャーの設定
 				pVtx[0].tex = pVtx[0].tex +
 					D3DXVECTOR2(
-						1.0f / m_nBlock_Width * 0.1f,
+						1.0f / m_nBlock_Width * 0.02f,
 						0.0f);
 				// 色設定
 				pVtx[0].col = m_col;
@@ -216,6 +216,7 @@ void CMeshdome::Draw(void)
 			m_nNumberVertex,
 			0,
 			m_nNumPolygon);
+
 		// 描画状態
 		CManager::GetRenderer()->SetType(CRenderer::TYPE_CULLNORMAL);
 	}

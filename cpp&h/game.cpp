@@ -202,7 +202,7 @@ void CGame::Update(void)
 	}
 
 	// ÉeÉXÉg
-	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_T))
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
 	{
 		// óãê∂ê¨
 		CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
