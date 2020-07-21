@@ -79,13 +79,16 @@ private:
 	/* 構造体 */
 	/* 関数 */
 	void MyMove(void);					// 自キャラ移動処理
-	void MyAction(const int &nId);				// 自キャラ行動処理
+	void MyAction(const int &nId);		// 自キャラ行動処理
 	void Camera(void);					// カメラ処理
 	void OtherMove(void);				// 他キャラ移動処理
 	void OtherAction(void);				// 他キャラ行動処理
+	void FishApponent(void);			// 魚が出現
+
 	/* 変数 */
 	static int	m_All;					// 総数
 	D3DXVECTOR3	m_posold;				// 前の位置
 	int m_nPlayerID;					// 番号
+	int m_nCntFishApponent;				// 魚出現カウント
 };
 #endif

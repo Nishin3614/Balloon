@@ -38,7 +38,7 @@
 // ------------------------------------------
 #define ONEPLAYER_STAGE		(5)
 #define DOUBLEPLAYER_STAGE	(5)
-#define DERAY_TIME			(X) (X * 60)
+#define DERAY_TIME(X)		(X * 60)
 #define MAX_PLAYER			(4)
 
 // ------------------------------------------

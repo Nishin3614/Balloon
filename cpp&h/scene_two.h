@@ -73,6 +73,16 @@ public:
 	);
 	// 頂点カラー設定
 	void Set_Vtx_Col(VERTEX_2D * pVtx = NULL);
+	// 頂点カラー設定(右の色と左の色)
+	void Set_Vtx_Col2(
+		D3DXCOLOR const &col_r,		// 右の色
+		D3DXCOLOR const &col_l,		// 左の色
+		VERTEX_2D * pVtx = NULL);	// 2D頂点情報
+									// 頂点カラー設定(上の色と下の色)
+	void Set_Vtx_Col3(
+		D3DXCOLOR const &col_o,		// 上の色
+		D3DXCOLOR const &col_u,		// 下の色
+		VERTEX_2D * pVtx = NULL);	// 2D頂点情報
 	// オフセット設定
 	void SetOffset(OFFSET_TYPE const &type) { m_offsetType = type; };
 	// サイズ設定
@@ -83,7 +93,7 @@ public:
 	void SetRot(float const &frot) { m_rot = frot; };
 	// 色設定
 	void SetCol(
-		D3DXCOLOR const &col) { m_col = col; };	
+		D3DXCOLOR const &col) { m_col = col; };
 	// テクスチャー設定
 	void SetTex(
 		D3DXVECTOR2 const &first = D3DXVECTOR2(0.0f,0.0f),			// 初期の配置
@@ -124,7 +134,7 @@ public:
 		OFFSET_TYPE const & type,
 		D3DXVECTOR3 const & pos,
 		D3DXVECTOR2 const & size,
-		float const & frot, 
+		float const & frot,
 		D3DXCOLOR const & col
 	);
 
@@ -137,7 +147,7 @@ private:
 	/* 関数 */
 	void Offset_Center(VERTEX_2D *pVtx);	// オフセットがセンター
 	void Offset_Left(VERTEX_2D *pVtx);		// オフセットが左
-	
+
 	/* 変数 */
 	LPDIRECT3DTEXTURE9 m_pTexture;			// テクスチャへのポインタ
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファへのポインタ
