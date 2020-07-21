@@ -70,7 +70,7 @@ public:
 	void Debug(void);
 #endif
 	// 風船がない場合
-	void BalloonNone(void);
+	bool BalloonNone(void);
 	// 風船を生成する処理
 	void BalloonCreate(void);
 	// 風船を強制的に割らせる処理

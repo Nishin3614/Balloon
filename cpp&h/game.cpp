@@ -170,13 +170,15 @@ void CGame::Update(void)
 		}
 	}
 
-	CFade *pFade = CManager::GetFade();
+#ifdef _DEBUG
+	// 情報取得
+	CFade *pFade = CManager::GetFade();	// フェード情報
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
 		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_1))
+		if (CManager::GetKeyboard()->GetKeyboardPress(TESTPLAY_NUMBER1))
 		{
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
@@ -190,7 +192,7 @@ void CGame::Update(void)
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
 		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_2))
+		if (CManager::GetKeyboard()->GetKeyboardPress(TESTPLAY_NUMBER2))
 		{
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
@@ -207,6 +209,8 @@ void CGame::Update(void)
 		// 雷生成
 		CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
+
+#endif // _DEBUG
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
