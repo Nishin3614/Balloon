@@ -536,7 +536,7 @@ void CPlayer::OtherMove(void)
 	{
 		CCharacter::SetMotion(MOTIONTYPE_MOVE);
 	}
-	CCharacter::SetMove(move);
+	//CCharacter::SetMove(move);
 	CCharacter::SetRotDest(rot);
 }
 
@@ -567,11 +567,12 @@ void CPlayer::Die(void)
 		// コントロールする自キャラの場合
 		if (m_nPlayerID == CManager::GetPlayerID())
 		{
-			if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
-			{
-				// チュートリアルへ
-				CManager::GetFade()->SetFade(CManager::MODE_GAME);
-			}
+			//if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+			//{
+			//	// チュートリアルへ
+			//	CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			//}
+			OutputDebugString("あうとー！");
 		}
 	}
 }
