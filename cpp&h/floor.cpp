@@ -24,7 +24,7 @@
 // ----------------------------------------
 #define FLOOR_ROTMOVE (0.01f)		// 角度の移動量
 #define FLOOR_SIZE (100.0f)			// サイズ
-#define FLOOR_ANGLE (D3DX_PI / 1.0f)	// 湾曲の角度
+#define FLOOR_ANGLE (1.0f)	// 湾曲の角度
 
 // ----------------------------------------
 //
@@ -145,10 +145,10 @@ void CFloor::Init(void)
 				D3DXVECTOR3(
 					m_OriginBlock.x +
 					(m_size.x * nCountWidth),
-					m_OriginBlock.y + 
-					cosf(fYRadian) * m_size.y,
+					m_OriginBlock.y,
 					m_OriginBlock.z -
 					(m_size.z * nCountDirect));
+
 			// カラーの設定
 			pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 

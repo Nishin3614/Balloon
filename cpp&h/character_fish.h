@@ -65,6 +65,7 @@ public:
 	);
 	static HRESULT Load(void);								// “Ç‚İ‚İ
 	static void UnLoad(void);								// UnLoad‚·‚é
+
 protected:
 	/* —ñ‹“Œ^ */
 	/* •Ï” */
