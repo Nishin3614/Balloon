@@ -161,6 +161,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cpp&amp;h\2Deffect.cpp" />
+    <ClCompile Include="cpp&amp;h\2Dgauge.cpp" />
     <ClCompile Include="cpp&amp;h\2Dpresents.cpp" />
     <ClCompile Include="cpp&amp;h\3Deffect.cpp" />
     <ClCompile Include="cpp&amp;h\3Dline.cpp" />
@@ -244,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp&amp;h\2Deffect.h" />
+    <ClInclude Include="cpp&amp;h\2Dgauge.h" />
     <ClInclude Include="cpp&amp;h\2Dpresents.h" />
     <ClInclude Include="cpp&amp;h\3Deffect.h" />
     <ClInclude Include="cpp&amp;h\3Dline.h" />
