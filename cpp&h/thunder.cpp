@@ -20,6 +20,14 @@
 #include "meshdome.h"
 
 // ==========================================================
+//
+// マクロ定義
+//
+// ==========================================================
+#define COUNT_DRAW (600)
+#define RELEASE_DRAW (1200)
+
+// ==========================================================
 // 静的メンバー変数の初期化
 // ==========================================================
 CThunder *CThunder::m_pThunder = NULL;
@@ -71,22 +79,24 @@ void CThunder::Init(void)
 	m_nPatternAnim = 0;
 	// 雷のカウント初期化
 	m_nCntThunder = 0;
+	// 雷の描画カウント初期化
+	m_nCntDraw = 0;
 	// 雷の状態を初期化
 	m_bThunder = true;
 	// ポジション取得
 	m_pos = m_pThunder->GetPos();
 	// メッシュドームの生成
-	CMeshdome *pMeshDome = CMeshdome::Create(
+	m_pMeshDome = CMeshdome::Create(
 		D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z),
 		D3DXVECTOR3(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE),
 		10,
 		10,
 		CMeshdome::TYPE_NORMAL,
-		D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// メッシュドームの使用状態
-	pMeshDome->SetUse(true);
+	m_pMeshDome->SetUse(true);
 }
 
 // ==========================================================
@@ -112,68 +122,81 @@ void CThunder::Update(void)
 	// テクスチャ分割
 	//CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
 
-	m_nCounterAnim++;	// カウンター加算
-
+	// カウンター加算
+	m_nCounterAnim++;
 	m_nCntThunder++;
+	m_nCntDraw++;
 
-	if (m_nCntThunder % 50 == 0)
-	{
-		CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
-			D3DXVECTOR3(100.0f, 500.0f, 0.0f));
-	}
 
-	if (m_nCntThunder % 20 == 0)
+	if (m_nCntDraw >= COUNT_DRAW)
 	{
-		CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
-			D3DXVECTOR3(100.0f, 500.0f, 0.0f));
-	}
-	// 電撃テクスチャー
-	if (m_nCounterAnim % 6 == 0)
-	{
-		m_nPatternAnim = (m_nPatternAnim + 1) % 6;
-
- 		CScene_THREE::SetAnimation(ANIM_TEX, 1.0f, 0.0f, m_nPatternAnim);
-	}
-	
-	if (m_nPatternAnim == 5)
-	{
-		m_bThunder = false;
-		
-	}
-	for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
-	{
-		// キャラクターへのポインタ
-		CCharacter *pCharacter = (CCharacter*)CScene::GetScene(CScene::LAYER_CHARACTER, nCnt);
-
-		if (pCharacter != NULL)
+		if (m_nCntThunder % 50 == 0)
 		{
-			// キャラクターのポジション取得
-			D3DXVECTOR3 charaPos = pCharacter->GetPos();
+			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
+				D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		}
 
-			// 前回のポジション設定
-			m_posOld = m_pos;
+		if (m_nCntThunder % 20 == 0)
+		{
+			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
+				D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		}
 
-			// 敵とプレイヤーのⅩ座標差分
-			fX_Difference = m_pos.x - charaPos.x;
+		//// 電撃テクスチャー
+		//if (m_nCounterAnim % 6 == 0)
+		//{
+		//	m_nPatternAnim = (m_nPatternAnim + 1) % 6;
 
-			// 敵とプレイヤーのZ座標差分
-			fZ_Difference = m_pos.z - charaPos.z;
+	 //		CScene_THREE::SetAnimation(ANIM_TEX, 1.0f, 0.0f, m_nPatternAnim);
+		//}
+		//
+		//if (m_nPatternAnim == 5)
+		//{
+		//	m_bThunder = false;
+		//	
+		//}
+		for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
+		{
+			// キャラクターへのポインタ
+			CCharacter *pCharacter = (CCharacter*)CScene::GetScene(CScene::LAYER_CHARACTER, nCnt);
 
-			// 敵とプレイヤーの一定距離
-			fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
-
-			// プレイヤーが一定距離に近づいたら
-			if (fDifference < m_fDistance)
+			if (pCharacter != NULL)
 			{
-				// パーティクル生成
-				C3DParticle::Create(
-					C3DParticle::OFFSET_ID_CROSSLINE,
-					charaPos
-				);
-				// キャラクター消滅
-				pCharacter->Release();
+				// キャラクターのポジション取得
+				D3DXVECTOR3 charaPos = pCharacter->GetPos();
+
+				// 前回のポジション設定
+				m_posOld = m_pos;
+
+				// 敵とプレイヤーのⅩ座標差分
+				fX_Difference = m_pos.x - charaPos.x;
+
+				// 敵とプレイヤーのZ座標差分
+				fZ_Difference = m_pos.z - charaPos.z;
+
+				// 敵とプレイヤーの一定距離
+				fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
+
+				// プレイヤーが一定距離に近づいたら
+				if (fDifference < m_fDistance)
+				{
+					// パーティクル生成
+					C3DParticle::Create(
+						C3DParticle::OFFSET_ID_CROSSLINE,
+						charaPos
+					);
+					// キャラクター消滅
+					pCharacter->Release();
+				}
 			}
 		}
+	}
+
+	if (m_nCntDraw >= RELEASE_DRAW)
+	{
+		// メッシュドームの使用状態
+		m_pMeshDome->SetUse(false);
+		Release();
 	}
 }
 
@@ -187,7 +210,7 @@ void CThunder::Draw(void)
 		CManager::GetRenderer()->GetDevice();
 
 	D3DXMATRIX mtxRot, mtxTrans;
-	if (m_bThunder == true)
+	if (m_bThunder == false)
 	{
 		// 描画
 		CScene_THREE::Draw();
