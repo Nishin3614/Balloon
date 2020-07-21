@@ -8,6 +8,7 @@
 /* 描画 */
 #include "p_thunder.h"
 #include "p_zombie.h"
+#include "invisible.h"
 #include "scene_two.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -37,6 +38,7 @@ CSelectCharacter::CSelectCharacter() : CScene::CScene()
 	// 初期化
 	m_pThunder = NULL;
 	m_pZombie = NULL;
+	m_pInvisible = NULL;
 	m_CharacterType = 0;
 	m_PlayerID = 0;
 	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_PLAYERMAX; nCntCharacter++)
@@ -61,6 +63,8 @@ void CSelectCharacter::Init(void)
 	m_pThunder = CP_thunder::Create_Self(m_PlayerID, m_pos);
 	// プレイヤー(ゾンビ)
 	m_pZombie = CP_zombie::Create_Self(m_PlayerID, m_pos);
+	// プレイヤー(透明)
+	m_pInvisible = CInvisible::Create_Self(m_PlayerID, m_pos);
 	// 選択UI生成
 	m_pSelectUi = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
@@ -117,6 +121,14 @@ void CSelectCharacter::Uninit(void)
 		m_pZombie->Uninit();
 		delete m_pZombie;
 		m_pZombie = NULL;
+	}
+	// プレイヤー(透明)がNULLではないなら
+	// ->終了処理
+	if (m_pInvisible != NULL)
+	{
+		m_pInvisible->Uninit();
+		delete m_pInvisible;
+		m_pInvisible = NULL;
 	}
 	// 選択UIのNULLチェック
 	// ->終了処理
@@ -195,6 +207,15 @@ void CSelectCharacter::Update(void)
 			m_pZombie->Update();
 		}
 		break;
+		// プレイヤー(透明)
+	case 2:
+		// プレイヤー(透明)がNULLではないなら
+		// ->更新処理
+		if (m_pInvisible != NULL)
+		{
+			m_pInvisible->Update();
+		}
+		break;
 	default:
 		break;
 	}
@@ -233,6 +254,15 @@ void CSelectCharacter::Draw(void)
 		if (m_pZombie != NULL)
 		{
 			m_pZombie->Draw();
+		}
+		break;
+		// プレイヤー(透明)
+	case 2:
+		// プレイヤー(透明)がNULLではないなら
+		// ->描画処理
+		if (m_pInvisible != NULL)
+		{
+			m_pInvisible->Draw();
 		}
 		break;
 	default:

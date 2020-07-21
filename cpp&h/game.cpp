@@ -11,6 +11,7 @@
 #include "floor.h"
 #include "p_thunder.h"
 #include "p_zombie.h"
+#include "invisible.h"
 #include "meshobit.h"
 #include "meshdome.h"
 #include "meshsphere.h"
@@ -262,14 +263,18 @@ void CGame::PlayerCreate(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// ƒvƒŒƒCƒ„[1
-		if (aData[nCntPlayer] == CPlayer::CHARATYPE_THUNDER)
+		switch (aData[nCntPlayer])
 		{
+		case CPlayer::CHARATYPE_THUNDER:
 			m_pPlayer[nCntPlayer] = CP_thunder::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
-		}
-		else if (aData[nCntPlayer] == CPlayer::CHARATYPE_ZOMBIE)
-		{
+			break;
+
+		case CPlayer::CHARATYPE_ZOMBIE:
 			m_pPlayer[nCntPlayer] = CP_zombie::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			break;
+		case CPlayer::CHARATYPE_INVISIBLE:
+			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			break;
 		}
 	}
 }
