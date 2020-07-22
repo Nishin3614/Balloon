@@ -112,18 +112,16 @@ void CSelect::Update(void)
 					sprintf(aData, "READY %d", 1);
 					pNetwork->SendTCP(aData, sizeof(aData));
 					m_bReady = true;
+					m_pSelectCharacter->SetReady(m_bReady);
 				}
 			}
 		}
 		else
 		{// €”õŠ®—¹‚µ‚Ä‚¢‚½‚Æ‚«
-			char aAns[256];
-			pNetwork->DataRecv(SOCKETTYPE_CLIENT, aAns, sizeof(aAns));
-
-			if (strcmp(aAns, "START") == 0)
+			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 			{
-				// ƒQ[ƒ€‚Ö
-				pFade->SetFade(CManager::MODE_GAME);
+				m_bReady = false;
+				m_pSelectCharacter->SetReady(m_bReady);
 			}
 		}
 	}

@@ -85,6 +85,7 @@ public:
 	// プレイヤーが選んだキャラクタータイプを取得
 	int GetCharacterType(void) { return m_CharacterType; }
 	static int GetSaveCharaType(int const &nPlayerID) { return m_SaveCharaType[nPlayerID]; };
+	void SetReady(bool bValue) { m_bReady = bValue; }
 protected:
 private:
 	/* 関数 */
@@ -95,9 +96,11 @@ private:
 	CInvisible * m_pInvisible;										// プレイヤー(透明)
 	CAttackUP * m_pAttackUP;										// プレイヤー(アタックアップ)
 	CScene_TWO * m_pSelectUi;										// 選択UI
+	CScene_TWO * m_pCheckUi;										// 確定UI
 	CScene_TWO * m_pSelectIcon[CCharacter::CHARACTER_PLAYERMAX];	// キャラクター選択アイコン
 	int m_CharacterType;											// キャラクタータイプ
 	int m_PlayerID;													// プレイヤー番号
 	D3DXVECTOR3 m_pos;												// 位置
+	bool m_bReady;													// 準備完了フラグ
 };
 #endif

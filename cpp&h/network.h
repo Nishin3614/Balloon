@@ -109,6 +109,7 @@ public:
 	void StopUpdate(void);
 
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
+	int GetRank(int nIndex) { return m_nRank[nIndex]; }
 	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
 
 private:

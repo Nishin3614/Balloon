@@ -18,6 +18,7 @@
 #include "joypad.h"
 #include "character_fish.h"
 #include "2Dgauge.h"
+#include "rank.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -32,11 +33,13 @@ int	CPlayer::m_All = 0;					// 総数
 CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Balloon(character)
 {
 	m_p2DMPGauge = NULL;			// MPゲージ
+	m_pRank = NULL;					// 現在順位
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
 	m_nCntFishApponent = 0;			// 魚出現カウント
 	m_nMP = 0;						// MP
+	m_nRank = -1;					// ランキングの初期化
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -87,6 +90,13 @@ void CPlayer::Init(void)
 				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
 				D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
 		}
+
+		m_pRank = CRank::Create();
+
+		if (m_pRank != NULL)
+		{
+			m_pRank->SetPos(m_pos);
+		}
 	}
 }
 
@@ -101,6 +111,10 @@ void CPlayer::Uninit(void)
 	if (m_p2DMPGauge != NULL)
 	{
 		m_p2DMPGauge = NULL;
+	}
+	if (m_pRank != NULL)
+	{
+		m_pRank = NULL;
 	}
 }
 
@@ -144,12 +158,26 @@ void CPlayer::Update(void)
 
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
+		if (m_pRank != NULL)
+		{
+			if (m_nRank != pNetwork->GetRank(m_nPlayerID))
+			{
+				m_nRank = pNetwork->GetRank(m_nPlayerID);
+				m_pRank->SetAnimation(1.0f / 4, 1.0f, 0.0f, m_nRank - 1);
+			}
+		}
+
 		if (pNetwork != NULL)
 		{
 			if (pNetwork->GetDie(m_nPlayerID))
 			{
 				OtherDie();
 			}
+		}
+
+		if (m_pRank != NULL)
+		{
+			m_pRank->SetPos(D3DXVECTOR3(m_pos.x, m_pos.y + 120.0f, m_pos.z));
 		}
 	}
 #ifdef _DEBUG
@@ -248,8 +276,8 @@ void CPlayer::MyMove(void)
 		}
 	}
 
-/* キーボード */
-// 左
+	/* キーボード */
+	// 左
 	if (pKeyboard->GetKeyboardPress(DIK_A))
 	{
 		// 移動状態on
@@ -623,19 +651,22 @@ void CPlayer::Die(void)
 {
 	CNetwork *pNetwork = CManager::GetNetwork();
 
-	if (m_nPlayerID == pNetwork->GetId())
-	{
-		char aDie[64];
-		sprintf(aDie, "DIE %d", pNetwork->GetId());
-		pNetwork->SendTCP(aDie, sizeof(aDie));
+	char aDie[64];
+	sprintf(aDie, "DIE %d", pNetwork->GetId());
+	pNetwork->SendTCP(aDie, sizeof(aDie));
 
-		// 死亡処理
-		CCharacter_Balloon::Die();
-		// コントロールする自キャラの場合
-		if (m_nPlayerID == CManager::GetPlayerID())
-		{
-			OutputDebugString("あうとー！");
-		}
+	if (m_pRank != NULL)
+	{
+		m_pRank->Release();
+		m_pRank = NULL;
+	}
+
+	// 死亡処理
+	CCharacter_Balloon::Die();
+	// コントロールする自キャラの場合
+	if (m_nPlayerID == CManager::GetPlayerID())
+	{
+		OutputDebugString("あうとー！");
 	}
 }
 

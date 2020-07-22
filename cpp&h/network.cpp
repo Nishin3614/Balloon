@@ -116,10 +116,13 @@ void CNetwork::Update(void)
 				continue;
 			}
 
-			if (FD_ISSET(m_sockServerToClient, &readfds))
-			{// 受信
-				// キー入力情報の更新
-				UpdateUDP();
+			if (CManager::GetMode() == CManager::MODE_GAME)
+			{
+				if (FD_ISSET(m_sockServerToClient, &readfds))
+				{// 受信
+					// キー入力情報の更新
+					UpdateUDP();
+				}
 			}
 
 			if (FD_ISSET(m_sockClient, &readfds))
@@ -370,6 +373,8 @@ HRESULT CNetwork::Connect(void)
 	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
 	OutputDebugString("サーバとの接続完了\n");
+
+	StartUpdate();
 	return S_OK;
 }
 
@@ -389,8 +394,6 @@ bool CNetwork::KeyData(void)
 	memset(&state, 0, sizeof(PLAYERSTATE));
 	CNetwork *pNetwork = CManager::GetNetwork();
 	int stick_H, stick_V;
-
-	D3DXVECTOR3 pos = pPlayer->GetPos();
 
 	if (pPlayer == NULL)
 	{
@@ -422,6 +425,8 @@ bool CNetwork::KeyData(void)
 		stick_H = 0;
 		stick_V = 0;
 	}
+
+	D3DXVECTOR3 pos = pPlayer->GetPos();
 
 	if (pNetwork != NULL)
 	{
@@ -661,6 +666,14 @@ bool CNetwork::UpdateTCP(void)
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
 			// チュートリアルへ
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+		}
+	}
+	else if (strcmp(cHeadText, "GAME_START") == 0)
+	{
+		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+		{// フェードしていないとき
+		 // チュートリアルへ
 			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
 	}

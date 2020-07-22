@@ -32,6 +32,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+ 	static CRank *Create(void);
+
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
