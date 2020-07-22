@@ -243,3 +243,6 @@ ModelManifest.xml
 
 imgui.ini
 *.ini
+*.iobj
+*.ipdb
+*.exe

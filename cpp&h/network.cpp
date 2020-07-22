@@ -316,11 +316,11 @@ bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 	switch (type)
 	{
 	case SOCKETTYPE_CLIENT:
-		//クライアントへデータ(ID)送信
+		//サーバーからデータ受信
 		nError = recv(m_sockClient, data, nSize, 0);
 		break;
 	case SOCKETTYPE_GAME:
-		//クライアントへデータ(ID)送信
+		//サーバーからデータ受信
 		nError = recv(m_sockClientToServer, data, nSize, 0);
 		break;
 	}
@@ -331,7 +331,8 @@ bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 		MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
 		return false;
 	}
-	return false;
+
+	return true;
 }
 
 //=============================================================================
