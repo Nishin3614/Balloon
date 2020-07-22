@@ -9,8 +9,6 @@
 #include "number.h"
 #include "fade.h"
 #include "floor.h"
-#include "p_thunder.h"
-#include "p_zombie.h"
 #include "meshobit.h"
 #include "meshdome.h"
 #include "meshsphere.h"
@@ -31,6 +29,10 @@
 #include "thunder.h"
 #include "selectcharacter.h"
 #include "character_fish.h"
+#include "invisible.h"
+#include "revival.h"
+#include "speedUP.h"
+#include "attackUP.h"
 
 /* ポーズ */
 #include "pause.h"
@@ -170,13 +172,15 @@ void CGame::Update(void)
 		}
 	}
 
-	CFade *pFade = CManager::GetFade();
+#ifdef _DEBUG
+	// 情報取得
+	CFade *pFade = CManager::GetFade();	// フェード情報
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
 		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_1))
+		if (CManager::GetKeyboard()->GetKeyboardPress(TESTPLAY_NUMBER1))
 		{
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
@@ -190,7 +194,7 @@ void CGame::Update(void)
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
 		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_2))
+		if (CManager::GetKeyboard()->GetKeyboardPress(TESTPLAY_NUMBER2))
 		{
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
@@ -202,12 +206,13 @@ void CGame::Update(void)
 	}
 
 	// テスト
-	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_T))
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
 	{
 		// 雷生成
 		CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 
+#endif // _DEBUG
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -262,14 +267,21 @@ void CGame::PlayerCreate(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
-		// プレイヤー1
-		if (aData[nCntPlayer] == CPlayer::CHARATYPE_THUNDER)
+		switch (aData[nCntPlayer])
 		{
-			m_pPlayer[nCntPlayer] = CP_thunder::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
-		}
-		else if (aData[nCntPlayer] == CPlayer::CHARATYPE_ZOMBIE)
-		{
-			m_pPlayer[nCntPlayer] = CP_zombie::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+		case CPlayer::CHARATYPE_SPEED_UP:
+			m_pPlayer[nCntPlayer] = CSpeedUP::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			break;
+
+		case CPlayer::CHARATYPE_REVIVAL:
+			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			break;
+		case CPlayer::CHARATYPE_INVISIBLE:
+			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			break;
+		case CPlayer::CHARATYPE_ATTACK_UP:
+			m_pPlayer[nCntPlayer] = CAttackUP::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			break;
 		}
 	}
 }

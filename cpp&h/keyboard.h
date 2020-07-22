@@ -24,6 +24,20 @@
 // ------------------------------------------
 #define	NUM_KEY_MAX			(256)	// キーの最大数
 
+#ifdef _DEBUG
+#define TESTPLAY_NUMBER1 (DIK_1)	// チュートリアルに強制遷移
+#define TESTPLAY_NUMBER2 (DIK_2)
+#define TESTPLAY_NUMBER3 (DIK_3)
+#define TESTPLAY_NUMBER4 (DIK_4)
+#define TESTPLAY_NUMBER5 (DIK_5)
+#define TESTPLAY_NUMBER6 (DIK_6)
+#define TEXTPLAY_NUMBER7 (DIK_7)
+#define TEXTPLAY_NUMBER8 (DIK_8)
+#define TEXTPLAY_NUMBER9 (DIK_9)
+#define TEXTPLAY_NUMBER0 (DIK_0)
+
+#endif // _DEBUG
+
 // ------------------------------------------
 //
 // 前方宣言

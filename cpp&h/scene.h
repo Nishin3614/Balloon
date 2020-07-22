@@ -90,6 +90,11 @@ public:
 		int const &nCntScene,											// カウントシーン
 		CScene &														// クラス型情報
 	);
+	static CScene * GetScene(
+		LAYER const & layer,
+		int const & nCntScene,
+		char const * cName										// クラス型情報
+	);
 	// シーン情報取得(レイヤー指定)
 	static CScene * GetScene(
 		LAYER const &layer,												// レイヤー

@@ -16,16 +16,27 @@
 #include "game.h"
 #include "score.h"
 #include "joypad.h"
+#include "character_fish.h"
+#include "2Dgauge.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // マクロ定義
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define PLAYER_FRONTFORCE (10)
-#define PLAYER_G (0.5f)			// 重力
-#define PLAYER_RESISTANCE (0.5f)// 抵抗力
-#define PLAYER_MOTIONFILE "data/LOAD/PLAYER/Tricker.txt"	// モーションのファイル名
+#define PLAYER_FRONTFORCE		(10)
+#define PLAYER_G				(0.5f)								// 重力
+#define PLAYER_RESISTANCE		(0.5f)								// 抵抗力
+#define PLAYER_MOTIONFILE		"data/LOAD/PLAYER/Tricker.txt"		// モーションのファイル名
+#define PLAYER_FALL				(-20.0f)							// 落ちる位置条件
+#define PLAYER_UI_MP_POS		(D3DXVECTOR3(78.5f, 690.0f, 0.0f))	// UI_MPの位置
+#define PLAYER_MPMAX			(10000)								// MPの最大値
+#define FISH_APPONENTPOS		(50.0f)								// 魚出現位置
+#define FISH_APPONENTTIME		(100)								// 魚出現タイム
+#define MPUP_EVERY				(1)									// マイフレームMPUP
+#define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
+#define MPUP_ENEMY_KNOCKDOWN	(1000)								// 敵を倒したときのMPUP
+#define MPUP_PLAYER_KNOCKDOWN	(1000)								// プレイヤーを倒したときのMPUP
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -39,9 +50,12 @@ int	CPlayer::m_All = 0;					// 総数
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Balloon(character)
 {
+	m_p2DMPGauge = NULL;			// MPゲージ
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
+	m_nCntFishApponent = 0;			// 魚出現カウント
+	m_nMP = 0;						// MP
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -56,6 +70,9 @@ CPlayer::~CPlayer()
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Init(void)
 {
+	// 変数宣言
+	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク
+	const int nId = pNetwork->GetId();				// 自分のIDを取得
 	// バルーンキャラクター初期化
 	CCharacter_Balloon::Init();
 	// 変数宣言
@@ -67,6 +84,29 @@ void CPlayer::Init(void)
 		CCharacter::GetPos() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
 		CCharacter::GetRot() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f)
 	);
+	// モードがゲームなら
+	if (CManager::GetMode() == CManager::MODE_GAME)
+	{
+		// キャラクター自体のプレイヤー番号とコントロールしているプレイヤー番号が同じなら
+		// ->ゲージ生成
+		if (m_nPlayerID == nId)
+		{
+			// MPゲージの生成
+			m_p2DMPGauge = C2DGauge::Create(
+				PLAYER_UI_MP_POS,
+				D3DXVECTOR2(500.0f, 25.0f),
+				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+			);
+			// MPゲージの変化定数を設定
+			m_p2DMPGauge->SetConstance((float)PLAYER_MPMAX);
+			// MPゲージの変化定数を設定
+			m_p2DMPGauge->BeginGauge((float)m_nMP);
+			// MPゲージのメインカラー設定
+			m_p2DMPGauge->SetMainCol(
+				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+				D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -74,7 +114,13 @@ void CPlayer::Init(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Uninit(void)
 {
+	// キャラクターの終了処理
 	CCharacter_Balloon::Uninit();
+	// MPゲージの開放
+	if (m_p2DMPGauge != NULL)
+	{
+		m_p2DMPGauge = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -132,7 +178,8 @@ void CPlayer::Update(void)
 	}
 #endif // _DEBUG
 
-	// テスト
+	// 魚出現処理
+	FishApponent();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -142,23 +189,18 @@ void CPlayer::MyAction(const int &nId)
 {
 	// 自キャラの移動処理
 	MyMove();
-	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_N))
-	{
-		D3DXVECTOR3 &move = CCharacter::GetMove();
-		move.y += 1.0f;
-	}
 	// 風船を膨らませる
 	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
 	{
 		// 風船を生成する処理
 		CCharacter_Balloon::BalloonCreate();
 	}
-
-	if (m_nPlayerID == nId)
-	{
-		// カメラの処理
-		Camera();
-	}
+	// カメラの処理
+	Camera();
+	// MP上げ処理(マイフレーム)
+	MpUp(MPUP_EVERY);
+	// MPゲージの変化定数を設定
+	m_p2DMPGauge->ChangeGauge((float)m_nMP);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -370,12 +412,56 @@ void CPlayer::Camera(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// MPアップ状態
+//	nMpUp	: MP上げ
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::MpUp(
+	int const &nMpUp	// MP上げ
+)
+{
+	// MPを上げる
+	m_nMP += nMpUp;
+	// 上限を超えたら最大MP分代入
+	if (m_nMP > PLAYER_MPMAX)
+	{
+		m_nMP = PLAYER_MPMAX;
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 他キャラ行動処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::OtherAction(void)
 {
 	// 他キャラの移動処理
 	OtherMove();
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 魚出現処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::FishApponent(void)
+{
+	// プレイヤーの位置が指定した位置以下なら
+	if (CCharacter::GetPos().y >= FISH_APPONENTPOS)
+	{
+		// 出現カウント
+		if (m_nCntFishApponent == FISH_APPONENTTIME)
+		{
+			// 魚生成
+			CCharacter_Fish::Create(CCharacter::GetPos());
+			// 魚出現カウント初期化処理
+			m_nCntFishApponent = 0;
+		}
+		// 魚出現カウントアップ
+		m_nCntFishApponent++;
+	}
+	// それ以外
+	else
+	{
+		// 魚出現カウント初期化処理
+		m_nCntFishApponent = 0;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -621,22 +707,33 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
+			// スコア加算処理
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+			// MP上げ処理(風船)
+			MpUp(MPUP_BREAKBALLOON);
 		}
 	}
 	// オブジェクトタイプがプレイヤーなら
 	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
+		// やること
+		// スコア加算とMP加算の場所
+		// ここではない
+		// 自分が死んだ時ではなく、相手が死んだときに加算
+
+
 		// 変数宣言
 		// ネットワーク情報取得
 		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// 死亡処理
+		BalloonNone();
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_PLAYER);
+			// MP上げ処理(プレイヤー)
+			MpUp(MPUP_PLAYER_KNOCKDOWN);
 		}
-		// 死亡処理
-		BalloonNone();
 	}
 	// オブジェクトタイプが敵なら
 	else if (nObjType == CCollision::OBJTYPE_ENEMY)
@@ -644,14 +741,15 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// 変数宣言
 		// ネットワーク情報取得
 		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
+		// 死亡処理
+		BalloonNone();
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_ENEMY);
+			// MP上げ処理(敵)
+			MpUp(MPUP_ENEMY_KNOCKDOWN);
 		}
-		// 死亡処理
-		BalloonNone();
-
 	}
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_FISH)
@@ -692,7 +790,6 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		}
 		// 死亡処理
 		BalloonNone();
-
 	}
 }
 
@@ -709,9 +806,23 @@ void CPlayer::Debug(void)
 			CCharacter::SetPos(D3DVECTOR3_ZERO);
 		}
 	}
+	// MP全回復
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(TESTPLAY_NUMBER3))
+	{
+		// MP全回復
+		m_nMP = PLAYER_MPMAX;
+		// MPゲージのNULLチェック
+		if (m_p2DMPGauge != NULL)
+		{
+			// ゲージを変える
+			m_p2DMPGauge->ChangeGauge((float)m_nMP);
+		}
+	}
 	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter_Balloon::Debug();
+
+
 }
 #endif // _DEBUG
 

@@ -21,6 +21,7 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 前方宣言
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class C2DGauge;		// 2Dゲージクラス
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // クラス
@@ -36,8 +37,10 @@ public:
 	// ---------キャラクタータイプ---------- //
 	typedef enum
 	{
-		CHARATYPE_THUNDER = 0,
-		CHARATYPE_ZOMBIE,
+		CHARATYPE_SPEED_UP = 0,
+		CHARATYPE_REVIVAL,
+		CHARATYPE_INVISIBLE,
+		CHARATYPE_ATTACK_UP,
 		CHARATYPE_MAX
 	} CHARATYPE;
 	/* 関数 */
@@ -73,18 +76,27 @@ public:
 #endif // _DEBUG
 	static HRESULT Load(void);			// 読み込み
 	static void UnLoad(void);			// UnLoadする
+	// MP上げ処理
+	//	nMpUp	: MP上げ値
+	void MpUp(int const & nMpUp);
+
 protected:
 private:
 	/* 構造体 */
 	/* 関数 */
 	void MyMove(void);					// 自キャラ移動処理
-	void MyAction(const int &nId);				// 自キャラ行動処理
+	void MyAction(const int &nId);		// 自キャラ行動処理
 	void Camera(void);					// カメラ処理
 	void OtherMove(void);				// 他キャラ移動処理
 	void OtherAction(void);				// 他キャラ行動処理
+	void FishApponent(void);			// 魚が出現
+
 	/* 変数 */
 	static int	m_All;					// 総数
+	C2DGauge	*m_p2DMPGauge;			// MPゲージ
 	D3DXVECTOR3	m_posold;				// 前の位置
 	int m_nPlayerID;					// 番号
+	int m_nCntFishApponent;				// 魚出現カウント
+	int m_nMP;							// MP
 };
 #endif

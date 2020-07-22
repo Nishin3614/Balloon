@@ -260,7 +260,8 @@ private:
 	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
 	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
 	std::vector<std::unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
-	CStencilshadow					* m_pStencilshadow;				// ステンシルシャドウ
+	CStencilshadow					* m_pStencilshadow;
+	// ステンシルシャドウ
 };
 
 #endif
