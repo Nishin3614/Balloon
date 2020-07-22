@@ -109,28 +109,15 @@ void CSelect::Update(void)
 				sprintf(aData, "READY %d", 1);
 				pNetwork->SendTCP(aData, sizeof(aData));
 			}
-
-			if (pFade->GetFade() == CFade::FADE_NONE)
-			{
-				// ゲームへ
-				pFade->SetFade(CManager::MODE_GAME);
-			}
 		}
-	}
 
-	char aAns[256];
-	pNetwork->DataRecv(SOCKETTYPE_CLIENT, aAns, sizeof(aAns));
+		char aAns[256];
+		pNetwork->DataRecv(SOCKETTYPE_CLIENT, aAns, sizeof(aAns));
 
-	if (strcmp(aAns, "START") == 0)
-	{
-		// フェードしていないとき
-		if (pFade->GetFade() == CFade::FADE_NONE)
+		if (strcmp(aAns, "START") == 0)
 		{
-			if (pFade->GetFade() == CFade::FADE_NONE)
-			{
-				// ゲームへ
-				pFade->SetFade(CManager::MODE_GAME);
-			}
+			// ゲームへ
+			pFade->SetFade(CManager::MODE_GAME);
 		}
 	}
 
