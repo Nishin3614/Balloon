@@ -38,6 +38,7 @@
 CSelect::CSelect()
 {
 	m_nRand = 0;
+	m_bReady = false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -97,27 +98,33 @@ void CSelect::Update(void)
 	// ƒtƒF[ƒh‚µ‚Ä‚¢‚È‚¢‚Æ‚«
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
-		// ‘I‘ð‰æ–Ê‚Ö‘JˆÚ
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
-		{
-			if (pNetwork != NULL)
+		if (!m_bReady)
+		{// €”õ’†‚¾‚Á‚½‚Æ‚«
+			// ‘I‘ð‰æ–Ê‚Ö‘JˆÚ
+			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 			{
-				char aData[64];
-				sprintf(aData, "CHARACTER_TYPE %d", m_pSelectCharacter->GetCharacterType());
-				pNetwork->SendTCP(aData, sizeof(aData));
+				if (pNetwork != NULL)
+				{
+					char aData[64];
+					sprintf(aData, "CHARACTER_TYPE %d", m_pSelectCharacter->GetCharacterType());
+					pNetwork->SendTCP(aData, sizeof(aData));
 
-				sprintf(aData, "READY %d", 1);
-				pNetwork->SendTCP(aData, sizeof(aData));
+					sprintf(aData, "READY %d", 1);
+					pNetwork->SendTCP(aData, sizeof(aData));
+					m_bReady = true;
+				}
 			}
 		}
+		else
+		{// €”õŠ®—¹‚µ‚Ä‚¢‚½‚Æ‚«
+			char aAns[256];
+			pNetwork->DataRecv(SOCKETTYPE_CLIENT, aAns, sizeof(aAns));
 
-		char aAns[256];
-		pNetwork->DataRecv(SOCKETTYPE_CLIENT, aAns, sizeof(aAns));
-
-		if (strcmp(aAns, "START") == 0)
-		{
-			// ƒQ[ƒ€‚Ö
-			pFade->SetFade(CManager::MODE_GAME);
+			if (strcmp(aAns, "START") == 0)
+			{
+				// ƒQ[ƒ€‚Ö
+				pFade->SetFade(CManager::MODE_GAME);
+			}
 		}
 	}
 
