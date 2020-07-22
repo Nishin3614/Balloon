@@ -38,6 +38,7 @@
 CSelect::CSelect()
 {
 	m_nRand = 0;
+	m_bReady = false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -92,22 +93,34 @@ void CSelect::Uninit(void)
 void CSelect::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
+	CNetwork *pNetwork = CManager::GetNetwork();
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
-		// 選択画面へ遷移
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
-		{
-			CNetwork *pNetwork = CManager::GetNetwork();
-			if (pNetwork != NULL)
+		if (!m_bReady)
+		{// 準備中だったとき
+			// 選択画面へ遷移
+			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 			{
-				char aData[64];
-				sprintf(aData, "CHARACTER_TYPE %d", m_pSelectCharacter->GetCharacterType());
-				pNetwork->SendTCP(aData, sizeof(aData));
-			}
+				if (pNetwork != NULL)
+				{
+					char aData[64];
+					sprintf(aData, "CHARACTER_TYPE %d", m_pSelectCharacter->GetCharacterType());
+					pNetwork->SendTCP(aData, sizeof(aData));
 
-			if (pFade->GetFade() == CFade::FADE_NONE)
+					sprintf(aData, "READY %d", 1);
+					pNetwork->SendTCP(aData, sizeof(aData));
+					m_bReady = true;
+				}
+			}
+		}
+		else
+		{// 準備完了していたとき
+			char aAns[256];
+			pNetwork->DataRecv(SOCKETTYPE_CLIENT, aAns, sizeof(aAns));
+
+			if (strcmp(aAns, "START") == 0)
 			{
 				// ゲームへ
 				pFade->SetFade(CManager::MODE_GAME);

@@ -58,5 +58,6 @@ private:
 	/* •Ï” */
 	CSelectCharacter *m_pSelectCharacter;
 	int m_nRand;
+	bool m_bReady;
 };
 #endif
