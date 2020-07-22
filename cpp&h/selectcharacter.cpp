@@ -6,9 +6,10 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "selectcharacter.h"
 /* ï`âÊ */
-#include "p_thunder.h"
-#include "p_zombie.h"
+#include "speedUP.h"
+#include "revival.h"
 #include "invisible.h"
+#include "attackUP.h"
 #include "scene_two.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,9 +37,10 @@ int CSelectCharacter::m_SaveCharaType[MAX_PLAYER] = {};	// ÉvÉåÉCÉÑÅ[Ç™ëIÇÒÇæÉLÉ
 CSelectCharacter::CSelectCharacter() : CScene::CScene()
 {
 	// èâä˙âª
-	m_pThunder = NULL;
-	m_pZombie = NULL;
+	m_pSpeedUP = NULL;
+	m_pRevival = NULL;
 	m_pInvisible = NULL;
+	m_pAttackUP = NULL;
 	m_CharacterType = 0;
 	m_PlayerID = 0;
 	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_PLAYERMAX; nCntCharacter++)
@@ -59,12 +61,14 @@ CSelectCharacter::~CSelectCharacter()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::Init(void)
 {
-	// ÉvÉåÉCÉÑÅ[(óã)
-	m_pThunder = CP_thunder::Create_Self(m_PlayerID, m_pos);
-	// ÉvÉåÉCÉÑÅ[(É]ÉìÉr)
-	m_pZombie = CP_zombie::Create_Self(m_PlayerID, m_pos);
+	// ÉvÉåÉCÉÑÅ[(ÉXÉsÅ[ÉhÉAÉbÉv)
+	m_pSpeedUP = CSpeedUP::Create_Self(m_PlayerID, m_pos);
+	// ÉvÉåÉCÉÑÅ[(ïúäà)
+	m_pRevival = CRevival::Create_Self(m_PlayerID, m_pos);
 	// ÉvÉåÉCÉÑÅ[(ìßñæ)
 	m_pInvisible = CInvisible::Create_Self(m_PlayerID, m_pos);
+	// ÉvÉåÉCÉÑÅ[(ÉAÉ^ÉbÉNÉAÉbÉv)
+	m_pAttackUP = CAttackUP::Create_Self(m_PlayerID, m_pos);
 	// ëIëUIê∂ê¨
 	m_pSelectUi = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
@@ -106,21 +110,21 @@ void CSelectCharacter::Init(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::Uninit(void)
 {
-	// ÉvÉåÉCÉÑÅ[(óã)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+	// ÉvÉåÉCÉÑÅ[(ÉXÉsÅ[ÉhÉAÉbÉv)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 	// ->èIóπèàóù
-	if (m_pThunder != NULL)
+	if (m_pSpeedUP != NULL)
 	{
-		m_pThunder->Uninit();
-		delete m_pThunder;
-		m_pThunder = NULL;
+		m_pSpeedUP->Uninit();
+		delete m_pSpeedUP;
+		m_pSpeedUP = NULL;
 	}
-	// ÉvÉåÉCÉÑÅ[(É]ÉìÉr)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+	// ÉvÉåÉCÉÑÅ[(ïúäà)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 	// ->èIóπèàóù
-	if (m_pZombie != NULL)
+	if (m_pRevival != NULL)
 	{
-		m_pZombie->Uninit();
-		delete m_pZombie;
-		m_pZombie = NULL;
+		m_pRevival->Uninit();
+		delete m_pRevival;
+		m_pRevival = NULL;
 	}
 	// ÉvÉåÉCÉÑÅ[(ìßñæ)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 	// ->èIóπèàóù
@@ -129,6 +133,14 @@ void CSelectCharacter::Uninit(void)
 		m_pInvisible->Uninit();
 		delete m_pInvisible;
 		m_pInvisible = NULL;
+	}
+	// ÉvÉåÉCÉÑÅ[(ÉAÉ^ÉbÉNÉAÉbÉv)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+	// ->èIóπèàóù
+	if (m_pAttackUP != NULL)
+	{
+		m_pAttackUP->Uninit();
+		delete m_pAttackUP;
+		m_pAttackUP = NULL;
 	}
 	// ëIëUIÇÃNULLÉ`ÉFÉbÉN
 	// ->èIóπèàóù
@@ -189,22 +201,22 @@ void CSelectCharacter::Update(void)
 	// ÉvÉåÉCÉÑÅ[ÇÃçXêV
 	switch (m_CharacterType)
 	{
-		// ÉvÉåÉCÉÑÅ[(óã)
+		// ÉvÉåÉCÉÑÅ[(ÉXÉsÅ[ÉhÉAÉbÉv)
 	case 0:
-		// ÉvÉåÉCÉÑÅ[(óã)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+		// ÉvÉåÉCÉÑÅ[(ÉXÉsÅ[ÉhÉAÉbÉv)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 		// ->çXêVèàóù
-		if (m_pThunder != NULL)
+		if (m_pSpeedUP != NULL)
 		{
-			m_pThunder->Update();
+			m_pSpeedUP->Update();
 		}
 		break;
-		// ÉvÉåÉCÉÑÅ[(É]ÉìÉr)
+		// ÉvÉåÉCÉÑÅ[(ïúäà)
 	case 1:
-		// ÉvÉåÉCÉÑÅ[(É]ÉìÉr)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+		// ÉvÉåÉCÉÑÅ[(ïúäà)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 		// ->çXêVèàóù
-		if (m_pZombie != NULL)
+		if (m_pRevival != NULL)
 		{
-			m_pZombie->Update();
+			m_pRevival->Update();
 		}
 		break;
 		// ÉvÉåÉCÉÑÅ[(ìßñæ)
@@ -214,6 +226,14 @@ void CSelectCharacter::Update(void)
 		if (m_pInvisible != NULL)
 		{
 			m_pInvisible->Update();
+		}
+		break;
+	case 3:
+		// ÉvÉåÉCÉÑÅ[(ÉAÉ^ÉbÉNÉAÉbÉv)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+		// ->çXêVèàóù
+		if (m_pAttackUP != NULL)
+		{
+			m_pAttackUP->Update();
 		}
 		break;
 	default:
@@ -238,22 +258,22 @@ void CSelectCharacter::Draw(void)
 {
 	switch (m_CharacterType)
 	{
-		// ÉvÉåÉCÉÑÅ[(óã)
+		// ÉvÉåÉCÉÑÅ[(ÉXÉsÅ[ÉhÉAÉbÉv)
 	case 0:
-		// ÉvÉåÉCÉÑÅ[(óã)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+		// ÉvÉåÉCÉÑÅ[(ÉXÉsÅ[ÉhÉAÉbÉv)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 		// ->ï`âÊèàóù
-		if (m_pThunder != NULL)
+		if (m_pSpeedUP != NULL)
 		{
-			m_pThunder->Draw();
+			m_pSpeedUP->Draw();
 		}
 		break;
-		// ÉvÉåÉCÉÑÅ[(É]ÉìÉr)
+		// ÉvÉåÉCÉÑÅ[(ïúäà)
 	case 1:
-		// ÉvÉåÉCÉÑÅ[(É]ÉìÉr)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+		// ÉvÉåÉCÉÑÅ[(ïúäà)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
 		// ->ï`âÊèàóù
-		if (m_pZombie != NULL)
+		if (m_pRevival != NULL)
 		{
-			m_pZombie->Draw();
+			m_pRevival->Draw();
 		}
 		break;
 		// ÉvÉåÉCÉÑÅ[(ìßñæ)
@@ -263,6 +283,14 @@ void CSelectCharacter::Draw(void)
 		if (m_pInvisible != NULL)
 		{
 			m_pInvisible->Draw();
+		}
+		break;
+	case 3:
+		// ÉvÉåÉCÉÑÅ[(ÉAÉ^ÉbÉNÉAÉbÉv)Ç™NULLÇ≈ÇÕÇ»Ç¢Ç»ÇÁ
+		// ->çXêVèàóù
+		if (m_pAttackUP != NULL)
+		{
+			m_pAttackUP->Draw();
 		}
 		break;
 	default:

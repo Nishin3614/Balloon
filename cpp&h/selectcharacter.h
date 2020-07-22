@@ -27,9 +27,10 @@
 // 前方宣言
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CP_thunder;			// 雷
-class CP_zombie;			// ゾンビ
+class CSpeedUP;				// スピードアップ
+class CRevival;				// 復活
 class CInvisible;			// 透明
+class CAttackUP;			// アタックアップ
 class CScene_TWO;			// シーン2D
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,9 +90,10 @@ private:
 	/* 関数 */
 	/* 変数 */
 	static int m_SaveCharaType[MAX_PLAYER];							// プレイヤーが選んだキャラクタータイプを保存
-	CP_thunder * m_pThunder;										// プレイヤー(雷)
-	CP_zombie * m_pZombie;											// プレイヤー(ゾンビ)
+	CSpeedUP * m_pSpeedUP;											// プレイヤー(スピードアップ)
+	CRevival * m_pRevival;											// プレイヤー(復活)
 	CInvisible * m_pInvisible;										// プレイヤー(透明)
+	CAttackUP * m_pAttackUP;										// プレイヤー(アタックアップ)
 	CScene_TWO * m_pSelectUi;										// 選択UI
 	CScene_TWO * m_pSelectIcon[CCharacter::CHARACTER_PLAYERMAX];	// キャラクター選択アイコン
 	int m_CharacterType;											// キャラクタータイプ
