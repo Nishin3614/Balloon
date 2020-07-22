@@ -1,11 +1,11 @@
 // ==========================================================
 //
-// プレイヤー(透明)処理 [invisible.h]
+// プレイヤー(復活)処理 [revival.h]
 // Author : RYOUMA INOUE
 //
 // ==========================================================
-#ifndef _INVISIBLE_H_
-#define _INVISIBLE_H_
+#ifndef _REVIVAL_H_
+#define _REVIVAL_H_
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -22,7 +22,7 @@
 // ==========================================================
 // クラス
 // ==========================================================
-class CInvisible : public CPlayer
+class CRevival : public CPlayer
 {
 public:
 	// ---------モーションタイプ---------- //
@@ -31,8 +31,8 @@ public:
 		MOTIONTYPE_MAX = CPlayer::MOTIONTYPE_MAX
 	} MOTIONTYPE;
 	/* 関数 */
-	CInvisible();
-	~CInvisible();
+	CRevival();
+	~CRevival();
 	void Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -57,13 +57,13 @@ public:
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
 	// 生成処理(シーン管理)
-	static CInvisible * Create(
+	static CRevival * Create(
 		int const &nPlayerID,
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);			// 作成
 				// 生成処理(個人管理)
-	static CInvisible * Create_Self(
+	static CRevival * Create_Self(
 		int const &nPlayerID,
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
@@ -76,6 +76,6 @@ private:
 	/* 関数 */
 
 	/* 変数 */
-	bool m_bInvisible;					// 透明かどうか
+	bool m_bRevival;					// 復活するかどうか
 };
 #endif

@@ -167,6 +167,7 @@
     <ClCompile Include="cpp&amp;h\3Dline.cpp" />
     <ClCompile Include="cpp&amp;h\3Dmap.cpp" />
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp" />
+    <ClCompile Include="cpp&amp;h\attackUP.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
     <ClCompile Include="cpp&amp;h\balloon_group.cpp" />
     <ClCompile Include="cpp&amp;h\bgdome.cpp" />
@@ -212,15 +213,14 @@
     <ClCompile Include="cpp&amp;h\network.cpp" />
     <ClCompile Include="cpp&amp;h\networkKeyboard.cpp" />
     <ClCompile Include="cpp&amp;h\number.cpp" />
-    <ClCompile Include="cpp&amp;h\p_thunder.cpp" />
     <ClCompile Include="cpp&amp;h\pause.cpp" />
     <ClCompile Include="cpp&amp;h\pause_ui.cpp" />
     <ClCompile Include="cpp&amp;h\player.cpp" />
-    <ClCompile Include="cpp&amp;h\p_zombie.cpp" />
     <ClCompile Include="cpp&amp;h\ranking.cpp" />
     <ClCompile Include="cpp&amp;h\rectcollision.cpp" />
     <ClCompile Include="cpp&amp;h\renderer.cpp" />
     <ClCompile Include="cpp&amp;h\result.cpp" />
+    <ClCompile Include="cpp&amp;h\revival.cpp" />
     <ClCompile Include="cpp&amp;h\scene.cpp" />
     <ClCompile Include="cpp&amp;h\scene_load.cpp" />
     <ClCompile Include="cpp&amp;h\scene_three.cpp" />
@@ -233,6 +233,7 @@
     <ClCompile Include="cpp&amp;h\shape.cpp" />
     <ClCompile Include="cpp&amp;h\solider.cpp" />
     <ClCompile Include="cpp&amp;h\sound.cpp" />
+    <ClCompile Include="cpp&amp;h\speedUP.cpp" />
     <ClCompile Include="cpp&amp;h\spherecollision.cpp" />
     <ClCompile Include="cpp&amp;h\stencilshadow.cpp" />
     <ClCompile Include="cpp&amp;h\texture_manager.cpp" />
@@ -251,6 +252,7 @@
     <ClInclude Include="cpp&amp;h\3Dline.h" />
     <ClInclude Include="cpp&amp;h\3Dmap.h" />
     <ClInclude Include="cpp&amp;h\3Dparticle.h" />
+    <ClInclude Include="cpp&amp;h\attackUP.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />
     <ClInclude Include="cpp&amp;h\balloon_group.h" />
     <ClInclude Include="cpp&amp;h\bgdome.h" />
@@ -307,6 +309,7 @@
     <ClInclude Include="cpp&amp;h\rectcollision.h" />
     <ClInclude Include="cpp&amp;h\renderer.h" />
     <ClInclude Include="cpp&amp;h\result.h" />
+    <ClInclude Include="cpp&amp;h\revival.h" />
     <ClInclude Include="cpp&amp;h\scene.h" />
     <ClInclude Include="cpp&amp;h\scene_load.h" />
     <ClInclude Include="cpp&amp;h\scene_three.h" />
@@ -319,6 +322,7 @@
     <ClInclude Include="cpp&amp;h\shape.h" />
     <ClInclude Include="cpp&amp;h\solider.h" />
     <ClInclude Include="cpp&amp;h\sound.h" />
+    <ClInclude Include="cpp&amp;h\speedUP.h" />
     <ClInclude Include="cpp&amp;h\spherecollision.h" />
     <ClInclude Include="cpp&amp;h\stencilshadow.h" />
     <ClInclude Include="cpp&amp;h\texture_manager.h" />

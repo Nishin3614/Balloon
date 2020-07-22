@@ -37,8 +37,10 @@ public:
 	// ---------キャラクタータイプ---------- //
 	typedef enum
 	{
-		CHARATYPE_THUNDER = 0,
-		CHARATYPE_ZOMBIE,
+		CHARATYPE_SPEED_UP = 0,
+		CHARATYPE_REVIVAL,
+		CHARATYPE_INVISIBLE,
+		CHARATYPE_ATTACK_UP,
 		CHARATYPE_MAX
 	} CHARATYPE;
 	/* 関数 */
