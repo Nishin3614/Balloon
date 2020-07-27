@@ -51,6 +51,7 @@ int			CCharacter::m_NumParts[CHARACTER_MAX] = {};			// 動かすキャラクター数
 int			CCharacter::m_NumModel[CHARACTER_MAX] = {};			// 最大キャラクター数
 int			CCharacter::m_nCameraCharacter = 0;					// キャラクターに追尾するID
 int			CCharacter::m_nAllCharacter = 0;					// 出現しているキャラクター人数
+float		CCharacter::m_fAlpha = 0.0f;						// 透明度
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // オーバーローバーコンストラクタ処理
@@ -695,9 +696,18 @@ void CCharacter::Draw(void)
 		// ヌルチェック
 		if (&m_pModel[nCntModel] != NULL)
 		{
+			// モデルの描画
 			m_pModel[nCntModel].Draw();
+
+			// キャラクター
+			if (m_character == CHARACTER_BALLOON3)
+			{
+				// 透明度設定
+				m_pModel[nCntModel].SetAlpha(m_fAlpha);
+			}
 		}
 	}
+
 	// モーション軌跡更新
 	Motion_Obit();
 }

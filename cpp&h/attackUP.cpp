@@ -14,7 +14,7 @@
 // ==========================================================
 #define INVISIBLE_FRONTFORCE (10)
 #define INVISIBLE_G (0.5f)			// èdóÕ
-#define INVISIBLE_RESISTANCE (0.5f)// íÔçRóÕ
+#define INVISIBLE_RESISTANCE (0.5f)	// íÔçRóÕ
 
 // ==========================================================
 //

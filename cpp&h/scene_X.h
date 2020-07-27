@@ -121,12 +121,13 @@ public:
 	// モデル情報の開放
 	static HRESULT UnLoadModel(void);
 	// 設定
-	void SetPos(D3DXVECTOR3 const &pos) { m_pos = pos; };						// 位置
-	void SetRot(D3DXVECTOR3 const &rot) { m_rot = rot; };						// 回転
-	void SetModelId(int const &nModelId) { m_nModelId = nModelId; };			// モデル番号
-	void SetShadowMap(bool const &bShadow) { m_bShadowMap = bShadow; };			// モデル番号
-	void SetCollision(void);													// 当たり判定
-	void SetParentMtx(D3DXMATRIX * ParentMax) { m_pParentMtx = ParentMax; };	// 親マトリックスの設定
+	void SetPos(D3DXVECTOR3 const &pos) { m_pos = pos; };							// 位置
+	void SetRot(D3DXVECTOR3 const &rot) { m_rot = rot; };							// 回転
+	void SetModelId(int const &nModelId) { m_nModelId = nModelId; };				// モデル番号
+	void SetShadowMap(bool const &bShadow) { m_bShadowMap = bShadow; };				// モデル番号
+	void SetCollision(void);														// 当たり判定
+	void SetParentMtx(D3DXMATRIX * ParentMax) { m_pParentMtx = ParentMax; };		// 親マトリックスの設定
+	void SetModelAlpha(float fModelAlpha) { m_fModelAlpha = fModelAlpha; }			// マトリックスの透明度
 	// 当たり判定設定
 	// nShapeType:0:矩形、1:球、2:円柱
 	// obj:オブジェクトタイプ
@@ -163,8 +164,8 @@ private:
 	D3DXMATRIX		m_mtxWorld;							// ワールドマトリックス
 	int				m_nModelId;							// モデル番号
 	bool			m_bShadowMap;						// シャドウマッピングにするかしないか
-	float			m_fModelAlpha;						// モデルのアルファ値
 	float			m_fShadowAlpha;						// 影のα値
+	float			m_fModelAlpha;						// モデルのアルファ値
 	CScene_THREE *	m_pShadow;							// まる影
 	CExtrusion		*m_pExtrusion;						// 押し出し
 	CCollision		*m_Collision;						// 当たり判定

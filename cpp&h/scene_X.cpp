@@ -48,7 +48,7 @@ CScene_X::CScene_X() : CScene::CScene()
 	m_rot = D3DVECTOR3_ZERO;	// 回転情報
 	m_nModelId = 0;				// プレイヤー(雷)番号
 	m_fShadowAlpha = 1.0f;		// 影のα値
-	m_fModelAlpha = 1.0f;		// プレイヤー(雷)のα値
+	m_fModelAlpha = 1.0f;		// プレイヤーのα値
 	m_bShadowMap = false;		// シャドウマッピングにするかしないか
 	m_pExtrusion = NULL;		// 当たり判定
 	m_pParentMtx = NULL;		// 親マトリックス

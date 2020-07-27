@@ -71,6 +71,8 @@ public:
 	void SetPlayerID(int const &nPlayerID) { m_nPlayerID = nPlayerID; };
 	// プレイヤー番号の取得
 	int const &GetPlayerID(void) { return m_nPlayerID; };
+	// MPのフラグ取得
+	bool const &GetMPMax(void) { return m_bMPMax; }
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
@@ -98,5 +100,7 @@ private:
 	int m_nPlayerID;					// 番号
 	int m_nCntFishApponent;				// 魚出現カウント
 	int m_nMP;							// MP
+	bool m_bMPMax;						// MPが最大かどうか
+	bool m_bResetMP;					// MPをリセット
 };
 #endif
