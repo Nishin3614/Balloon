@@ -652,7 +652,7 @@ void CPlayer::Die(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 
 	char aDie[64];
-	sprintf(aDie, "DIE %d", pNetwork->GetId());
+ 	sprintf(aDie, "DIE %d", pNetwork->GetId());
 	pNetwork->SendTCP(aDie, sizeof(aDie));
 
 	if (m_pRank != NULL)
