@@ -100,7 +100,7 @@ void CGame::Init(void)
 	// プレイヤー生成
 	PlayerCreate();
 	// キャラクター魚生成
-	CCharacter_Fish::Create();
+	// CCharacter_Fish::Create();
 	// アイテム生成
 	CItem::Create(D3DXVECTOR3(0.0f, 500.0f, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	// スコア生成

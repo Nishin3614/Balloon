@@ -13,9 +13,7 @@
 // マクロ定義
 //
 // ==========================================================
-#define INVISIBLE_FRONTFORCE (10)
-#define INVISIBLE_G (0.5f)			// 重力
-#define INVISIBLE_RESISTANCE (0.5f)// 抵抗力
+#define INVISIBLE (0.3f)
 
 // ==========================================================
 //
@@ -84,7 +82,7 @@ void CInvisible::Draw(void)
 
 	if (m_bInvisible == true)
 	{
-		CCharacter::SetAlpha(0.3f);
+		CCharacter::SetAlpha(INVISIBLE);
 	}
 	else
 	{
