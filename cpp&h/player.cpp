@@ -18,25 +18,7 @@
 #include "joypad.h"
 #include "character_fish.h"
 #include "2Dgauge.h"
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//
-// マクロ定義
-//
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define PLAYER_FRONTFORCE		(10)
-#define PLAYER_G				(0.5f)								// 重力
-#define PLAYER_RESISTANCE		(0.5f)								// 抵抗力
-#define PLAYER_MOTIONFILE		"data/LOAD/PLAYER/Tricker.txt"		// モーションのファイル名
-#define PLAYER_FALL				(-20.0f)							// 落ちる位置条件
-#define PLAYER_UI_MP_POS		(D3DXVECTOR3(78.5f, 690.0f, 0.0f))	// UI_MPの位置
-#define PLAYER_MPMAX			(10000)								// MPの最大値
-#define FISH_APPONENTPOS		(50.0f)								// 魚出現位置
-#define FISH_APPONENTTIME		(100)								// 魚出現タイム
-#define MPUP_EVERY				(1)									// マイフレームMPUP
-#define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
-#define MPUP_ENEMY_KNOCKDOWN	(1000)								// 敵を倒したときのMPUP
-#define MPUP_PLAYER_KNOCKDOWN	(1000)								// プレイヤーを倒したときのMPUP
+#include "rank.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -51,6 +33,7 @@ int	CPlayer::m_All = 0;					// 総数
 CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Balloon(character)
 {
 	m_p2DMPGauge = NULL;			// MPゲージ
+	m_pRank = NULL;					// 現在順位
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
@@ -58,6 +41,7 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 	m_nMP = 0;						// MP
 	m_bMPMax = false;				// MPが最大かどうか
 	m_bResetMP = false;				// MPをリセット
+	m_nRank = -1;					// ランキングの初期化
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,6 +92,13 @@ void CPlayer::Init(void)
 				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
 				D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
 		}
+
+		m_pRank = CRank::Create();
+
+		if (m_pRank != NULL)
+		{
+			m_pRank->SetPos(m_pos);
+		}
 	}
 }
 
@@ -122,6 +113,10 @@ void CPlayer::Uninit(void)
 	if (m_p2DMPGauge != NULL)
 	{
 		m_p2DMPGauge = NULL;
+	}
+	if (m_pRank != NULL)
+	{
+		m_pRank = NULL;
 	}
 }
 
@@ -165,12 +160,26 @@ void CPlayer::Update(void)
 
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
+		if (m_pRank != NULL)
+		{
+			if (m_nRank != pNetwork->GetRank(m_nPlayerID))
+			{
+				m_nRank = pNetwork->GetRank(m_nPlayerID);
+				m_pRank->SetAnimation(1.0f / 4, 1.0f, 0.0f, m_nRank - 1);
+			}
+		}
+
 		if (pNetwork != NULL)
 		{
 			if (pNetwork->GetDie(m_nPlayerID))
 			{
 				OtherDie();
 			}
+		}
+
+		if (m_pRank != NULL)
+		{
+			m_pRank->SetPos(D3DXVECTOR3(m_pos.x, m_pos.y + 120.0f, m_pos.z));
 		}
 	}
 #ifdef _DEBUG
@@ -269,8 +278,8 @@ void CPlayer::MyMove(void)
 		}
 	}
 
-/* キーボード */
-// 左
+	/* キーボード */
+	// 左
 	if (pKeyboard->GetKeyboardPress(DIK_A))
 	{
 		// 移動状態on
@@ -649,7 +658,7 @@ void CPlayer::OtherMove(void)
 	{
 		CCharacter::SetMotion(MOTIONTYPE_MOVE);
 	}
-	CCharacter::SetMove(move);
+	//CCharacter::SetMove(move);
 	CCharacter::SetRotDest(rot);
 }
 
@@ -669,23 +678,22 @@ void CPlayer::Die(void)
 {
 	CNetwork *pNetwork = CManager::GetNetwork();
 
-	if (m_nPlayerID == pNetwork->GetId())
-	{
-		char aDie[64];
-		sprintf(aDie, "DIE %d", pNetwork->GetId());
-		pNetwork->SendTCP(aDie, sizeof(aDie));
+	char aDie[64];
+	sprintf(aDie, "DIE %d", pNetwork->GetId());
+	pNetwork->SendTCP(aDie, sizeof(aDie));
 
-		// 死亡処理
-		CCharacter_Balloon::Die();
-		// コントロールする自キャラの場合
-		if (m_nPlayerID == CManager::GetPlayerID())
-		{
-			if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
-			{
-				// チュートリアルへ
-				CManager::GetFade()->SetFade(CManager::MODE_GAME);
-			}
-		}
+	if (m_pRank != NULL)
+	{
+		m_pRank->Release();
+		m_pRank = NULL;
+	}
+
+	// 死亡処理
+	CCharacter_Balloon::Die();
+	// コントロールする自キャラの場合
+	if (m_nPlayerID == CManager::GetPlayerID())
+	{
+		OutputDebugString("あうとー！");
 	}
 }
 

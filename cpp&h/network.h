@@ -43,13 +43,12 @@ typedef enum
 typedef enum
 {
 	RECVDATA_ROT = NUM_KEY_M,
+	RECVDATA_STICK_H,
+	RECVDATA_STICK_V,
 	RECVDATA_POS_X,
 	RECVDATA_POS_Y,
 	RECVDATA_POS_Z,
-	RECVDATA_STICK_H,
-	RECVDATA_STICK_V,
 	RECVDATA_RANK,
-	RECVDATA_DIE,
 	RECVDATA_MAX
 } RECVDATA;
 
@@ -104,12 +103,13 @@ public:
 	int GetId(void) { return m_nId; }
 	float GetRot(const int &nId) { return m_fRot[nId]; }
 
+	bool UpdateUDP(void);
+	bool UpdateTCP(void);
 	void StartUpdate(void);
 	void StopUpdate(void);
 
-	static int ConvertDecimalToBinary(int nValue);
-
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
+	int GetRank(int nIndex) { return m_nRank[nIndex]; }
 	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
 
 private:

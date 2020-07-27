@@ -70,7 +70,7 @@ void CTitle::Update(void)
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
 		// ƒQ[ƒ€‚Ö‘JˆÚ
-		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
+		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 		{
 			if (pNetwork != NULL)
 			{

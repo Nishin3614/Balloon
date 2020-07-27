@@ -12,6 +12,7 @@
 #include "game.h"
 #include "joypad.h"
 #include "score.h"
+#include "fade.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -43,17 +44,8 @@ HRESULT CNetwork::Init(void)
 {
 	HRESULT hr;
 	hr = Build();					// ソケットの生成
-	char debug[256];
 
 	OutputDebugString("クライアント構築完了\n");
-
-	int ans = ConvertDecimalToBinary(100);
-	sprintf(debug, "ans = %d\n", ans);
-	OutputDebugString(debug);
-
-	ans = 100 & 15;
-	sprintf(debug, "ans = %d\n", ans);
-	OutputDebugString(debug);
 
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
@@ -100,13 +92,7 @@ void CNetwork::Update(void)
 		{
 			dwExecLastTime = dwCurrentTime;	// 処理した時刻を保存
 
-			char debug[1024];
 			int nError = -1;
-			float fData[RECVDATA_MAX];
-			char cDie[32];
-
-			char cDataText[128];		//文字
-			char cPlayerData[MAX_PLAYER][128];		//比較
 
 			OutputDebugString("送信開始\n");
 			KeyData();
@@ -115,6 +101,7 @@ void CNetwork::Update(void)
 			fd_set readfds;
 			FD_ZERO(&readfds);
 			FD_SET(m_sockServerToClient, &readfds);
+			FD_SET(m_sockClient, &readfds);
 
 			struct timeval tv;
 
@@ -129,75 +116,19 @@ void CNetwork::Update(void)
 				continue;
 			}
 
-			if (FD_ISSET(m_sockServerToClient, &readfds))
+			if (CManager::GetMode() == CManager::MODE_GAME)
+			{
+				if (FD_ISSET(m_sockServerToClient, &readfds))
+				{// 受信
+					// キー入力情報の更新
+					UpdateUDP();
+				}
+			}
+
+			if (FD_ISSET(m_sockClient, &readfds))
 			{// 受信
-				OutputDebugString("受信開始\n");
-				nError = recv(m_sockServerToClient, debug, sizeof(debug), 0);
-				OutputDebugString("受信完了\n");
-
-				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-				{
-					if (nCount != m_nId)
-					{
-						CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
-						pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
-					}
-				}
-			}
-
-			if (nError == SOCKET_ERROR)
-			{
-				// ソケットの作成に失敗したとき
-				char aError[64];
-				sprintf(aError, "サーバーに接続失敗!!\n エラーコード : %d", WSAGetLastError());
-				MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
-			}
-			else
-			{
-				sscanf(debug, "%s %s %s %s %s", &cDie, &cPlayerData[0], &cPlayerData[1], &cPlayerData[2], &cPlayerData[3]);
-
-				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-				{
-					ConvertStringToFloat(cPlayerData[nCount], ",", fData);
-
-					for (int nCntkey = 0; nCntkey < NUM_KEY_M; nCntkey++)
-					{
-						m_aKeyStateOld[nCount][nCntkey] = m_aKeyState[nCount][nCntkey];
-					}
-
-					for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
-					{
-						m_aKeyState[nCount][nCntKey] = fData[nCntKey];
-					}
-
-					for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
-					{
-						m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
-					}
-					// 回転量の代入
-					m_fRot[nCount] = fData[RECVDATA_ROT];
-
-					// 位置の代入
-					m_playerPos[nCount] = D3DXVECTOR3(fData[RECVDATA_POS_X], fData[RECVDATA_POS_Y], fData[RECVDATA_POS_Z]);
-
-					// ランクの代入
-					m_nRank[nCount] = (int)fData[RECVDATA_RANK];
-
-					// 死亡フラグの管理
-					bool bDie = (int)fData[RECVDATA_DIE];
-
-					m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
-					m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
-
-					if (bDie)
-					{// 今回死んでいて
-						if (!m_bDie[nCount])
-						{// 前回死んでいなかったとき
-							CPlayer *pPlayer = CGame::GetPlayer(nCount);
-							m_bDie[nCount] = true;
-						}
-					}
-				}
+				// サーバーコマンドの更新
+				UpdateTCP();
 			}
 		}
 	}
@@ -316,11 +247,11 @@ bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 	switch (type)
 	{
 	case SOCKETTYPE_CLIENT:
-		//クライアントへデータ(ID)送信
+		//サーバーからデータ受信
 		nError = recv(m_sockClient, data, nSize, 0);
 		break;
 	case SOCKETTYPE_GAME:
-		//クライアントへデータ(ID)送信
+		//サーバーからデータ受信
 		nError = recv(m_sockClientToServer, data, nSize, 0);
 		break;
 	}
@@ -331,7 +262,8 @@ bool CNetwork::DataRecv(SOCKETTYPE type, char *data, int nSize)
 		MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
 		return false;
 	}
-	return false;
+
+	return true;
 }
 
 //=============================================================================
@@ -441,6 +373,8 @@ HRESULT CNetwork::Connect(void)
 	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
 	OutputDebugString("サーバとの接続完了\n");
+
+	StartUpdate();
 	return S_OK;
 }
 
@@ -460,8 +394,6 @@ bool CNetwork::KeyData(void)
 	memset(&state, 0, sizeof(PLAYERSTATE));
 	CNetwork *pNetwork = CManager::GetNetwork();
 	int stick_H, stick_V;
-
-	D3DXVECTOR3 pos = pPlayer->GetPos();
 
 	if (pPlayer == NULL)
 	{
@@ -494,6 +426,8 @@ bool CNetwork::KeyData(void)
 		stick_V = 0;
 	}
 
+	D3DXVECTOR3 pos = pPlayer->GetPos();
+
 	if (pNetwork != NULL)
 	{
 		D3DXVECTOR3 rot = pCamera->GetRot();
@@ -517,6 +451,9 @@ bool CNetwork::KeyData(void)
 			}
 		}
 
+		int nScore;
+		nScore = pScore->GetNowScore();
+
 		// ID, Wキー, Aキー, Sキー, Dキー, SPACEキー, スティックH, スティックV, 回転情報, 位置X, 位置Y, 位置Z, スコア
 		sprintf(data, "SAVE_KEY %d %d %d %d %d %d %d %d %f %f %f %f %d", m_nId, pKeyboard->GetKeyboardPress(DIK_W), pKeyboard->GetKeyboardPress(DIK_A),
 			pKeyboard->GetKeyboardPress(DIK_S), pKeyboard->GetKeyboardPress(DIK_D), aKeyState[NUM_KEY_SPACE],		// キー入力情報
@@ -524,7 +461,7 @@ bool CNetwork::KeyData(void)
 			stick_V,					// スティックV
 			rot.y,						// 回転
 			pos.x, pos.y, pos.z,		// 位置
-			pScore->GetScore()			// スコア
+			nScore						// スコア
 		);
 		pNetwork->SendUDP(data, sizeof("SAVE_KEY") + 1024);
 	}
@@ -598,6 +535,153 @@ void CNetwork::ConvertStringToFloat(char* text, const char* delimiter, float* pR
 }
 
 //=============================================================================
+// UDPから送られてくる情報の整理(キー情報)
+//=============================================================================
+bool CNetwork::UpdateUDP(void)
+{
+	char aData[1024];
+	float fData[RECVDATA_MAX];
+	char cPlayerData[MAX_PLAYER][128];		//比較
+	char cDie[32];
+
+	int nError = -1;
+	OutputDebugString("受信開始\n");
+	nError = recv(m_sockServerToClient, aData, sizeof(aData), 0);
+	OutputDebugString("受信完了\n");
+
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		if (nCount != m_nId)
+		{
+			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
+			pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
+		}
+	}
+
+	if (nError == SOCKET_ERROR)
+	{
+		// ソケットの作成に失敗したとき
+		char aError[64];
+		sprintf(aError, "サーバーに接続失敗!!\n エラーコード : %d", WSAGetLastError());
+		MessageBox(NULL, aError, "警告！", MB_ICONWARNING);
+	}
+	else
+	{
+		sscanf(aData, "%s %s %s %s %s", &cDie, &cPlayerData[0], &cPlayerData[1], &cPlayerData[2], &cPlayerData[3]);
+
+		for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+		{
+			ConvertStringToFloat(cPlayerData[nCount], ",", fData);
+
+			for (int nCntkey = 0; nCntkey < NUM_KEY_M; nCntkey++)
+			{
+				m_aKeyStateOld[nCount][nCntkey] = m_aKeyState[nCount][nCntkey];
+			}
+
+			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
+			{
+				m_aKeyState[nCount][nCntKey] = fData[nCntKey];
+			}
+
+			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
+			{
+				m_aKeyStateTrigger[nCount][nCntKey] = (m_aKeyStateOld[nCount][nCntKey] ^ m_aKeyState[nCount][nCntKey]) & m_aKeyState[nCount][nCntKey];
+			}
+			// 回転量の代入
+			m_fRot[nCount] = fData[RECVDATA_ROT];
+
+			// 位置の代入
+			m_playerPos[nCount] = D3DXVECTOR3(fData[RECVDATA_POS_X], fData[RECVDATA_POS_Y], fData[RECVDATA_POS_Z]);
+
+			// ランクの代入
+			m_nRank[nCount] = (int)fData[RECVDATA_RANK];
+
+			m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
+			m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
+		}
+	}
+
+	return true;
+}
+
+//=============================================================================
+// サーバー命令の処理
+//=============================================================================
+bool CNetwork::UpdateTCP(void)
+{
+	char aFunc[256];
+	int nError;
+
+	char cDataText[128];		//文字
+	char cHeadText[128];		//比較
+
+	memset(cDataText, 0, 128);
+	memset(cHeadText, 0, 128);
+
+	memset(aFunc, 0, 256);
+	nError = recv(m_sockClient, &aFunc[0], 256, 0);
+
+	sscanf(aFunc, "%s %s", &cHeadText, &cDataText);
+
+	// 接続確認
+	if (WSAGetLastError() == WSAEWOULDBLOCK)
+	{
+		printf("まだ来ない");
+	}
+	else if (nError == 0 || nError == -1) {
+		//切断が発生
+		printf("サーバーと通信切断!!!\n");
+		closesocket(m_sockClient);
+		m_sockClient = NULL;
+		return false;
+	}
+
+	//ロードだったら
+	if (strcmp(cHeadText, "KILL") == 0)
+	{
+		char aDie[64];
+		int nDeath = -1;		// 誰が?
+		int nKill = -1;			// 誰に?
+
+		sscanf(aFunc, "%s %d %d", &aDie, &nDeath, &nKill);
+
+		CPlayer *pPlayer = CGame::GetPlayer(nDeath);
+
+		if (pPlayer != NULL)
+		{
+			pPlayer->Die();
+		}
+
+		if (m_nId == nKill)
+		{// 自分がキラーだったとき
+			pPlayer = CGame::GetPlayer(m_nId);
+			if (pPlayer != NULL)
+			{
+				pPlayer->MpUp(MPUP_PLAYER_KNOCKDOWN);
+			}
+		}
+	}
+	else if (strcmp(cHeadText, "GAME_END") == 0)
+	{
+		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+		{// フェードしていないとき
+			// チュートリアルへ
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+		}
+	}
+	else if (strcmp(cHeadText, "GAME_START") == 0)
+	{
+		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+		{// フェードしていないとき
+		 // チュートリアルへ
+			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+		}
+	}
+
+	return true;
+}
+
+//=============================================================================
 // 更新開始
 //=============================================================================
 void CNetwork::StartUpdate(void)
@@ -620,17 +704,4 @@ void CNetwork::StopUpdate(void)
 	{// 更新フラグが立っていた時
 		m_bUpdate = false;
 	}
-}
-
-//=============================================================================
-// 2進数変換
-//=============================================================================
-int CNetwork::ConvertDecimalToBinary(int nValue) {
-	int ans = 0;
-	for (int nCount = 0; nValue > 0; nCount++)
-	{
-		ans = ans + (nValue % 2)*powf(10, nCount);
-		nValue = nValue / 2;
-	}
-	return ans;
 }
