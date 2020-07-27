@@ -192,6 +192,8 @@ protected:
 	void FagGravity(void);						// 重力
 	// 目標回転量設定
 	void SetRotDest(D3DXVECTOR3 const &rotDest)		{ m_rotLast = rotDest; };
+	// 透明度の設定
+	static void SetAlpha(float fAlpha) { m_fAlpha = fAlpha; }
 	// 設定 //
 	// 現在のモーション
 	int GetMotion(void) const						{ return m_nMotiontype; };
@@ -232,12 +234,13 @@ private:
 	/* 変数 */
 	/* 構造体のスタティックにする */
 	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報
-	static std::vector<int>				m_modelId[CHARACTER_MAX];		// モデル番号
+	static std::vector<int>				m_modelId[CHARACTER_MAX];	// モデル番号
 	static CModel_info				*m_model_info[CHARACTER_MAX];	// モデル情報
 	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];	// キャラクターのサイズ
 	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
 	static int						m_NumParts[CHARACTER_MAX];		// 動かすモデル数
 	static int						m_nAllCharacter;				// 出現しているキャラクター人数
+	static float					m_fAlpha;						// アルファ値
 	CMeshobit						*m_pMeshobit;					// 軌跡
 	CModel 							*m_pModel;						// モデル
 	CHARACTER						m_character;					// キャラクター
@@ -255,7 +258,6 @@ private:
 	int								m_nIdAttackKey;					// 攻撃用のキーID
 	int								m_nIDWho;						// 敵か味方か
 	float							m_fLength;						// 攻撃の当たり範囲
-	float							m_fAlpha;						// アルファ値
 	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
 	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
 	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定

@@ -39,6 +39,8 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 	m_All++;						// 総数
 	m_nCntFishApponent = 0;			// 魚出現カウント
 	m_nMP = 0;						// MP
+	m_bMPMax = false;				// MPが最大かどうか
+	m_bResetMP = false;				// MPをリセット
 	m_nRank = -1;					// ランキングの初期化
 }
 
@@ -428,13 +430,38 @@ void CPlayer::MpUp(
 	int const &nMpUp	// MP上げ
 )
 {
-	// MPを上げる
-	m_nMP += nMpUp;
-	// 上限を超えたら最大MP分代入
-	if (m_nMP > PLAYER_MPMAX)
+	if (m_bResetMP == false)
 	{
-		m_nMP = PLAYER_MPMAX;
+		// MPを上げる
+		m_nMP += nMpUp;
+		// 上限を超えたら最大MP分代入
+		if (m_nMP > PLAYER_MPMAX)
+		{
+			m_nMP = PLAYER_MPMAX;
+		}
+		// MPがマックスだったら
+		if (m_nMP == PLAYER_MPMAX)
+		{
+			// リセット開始
+			m_bResetMP = true;
+			// 状態変化
+			m_bMPMax = true;
+		}
 	}
+	else
+	{
+		// MPを上げる
+		m_nMP -= 100;
+		// MPがマックスだったら
+		if (m_nMP == 0)
+		{
+			// MP状態の初期化
+			m_bMPMax = false;
+			// リセット終了
+			m_bResetMP = false;
+		}
+	}
+
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

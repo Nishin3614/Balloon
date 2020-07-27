@@ -6,6 +6,7 @@
 // ==========================================================
 #include "invisible.h"
 #include "manager.h"
+#include "character.h"
 
 // ==========================================================
 //
@@ -62,13 +63,12 @@ void CInvisible::Update(void)
 {
 	CPlayer::Update();
 
-	// ÉQÅ[ÉÄÇ÷ëJà⁄
-	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
+	if (CPlayer::GetMPMax() == true)
 	{
 		// èÛë‘ïœâª
 		m_bInvisible = true;
 	}
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_O))
+	else
 	{
 		// èÛë‘ïœâª
 		m_bInvisible = false;
@@ -80,9 +80,15 @@ void CInvisible::Update(void)
 // ==========================================================
 void CInvisible::Draw(void)
 {
-	if (m_bInvisible == false)
+	CPlayer::Draw();
+
+	if (m_bInvisible == true)
 	{
-		CPlayer::Draw();
+		CCharacter::SetAlpha(0.3f);
+	}
+	else
+	{
+		CCharacter::SetAlpha(1.0f);
 	}
 }
 
