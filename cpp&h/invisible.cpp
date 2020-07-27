@@ -6,15 +6,14 @@
 // ==========================================================
 #include "invisible.h"
 #include "manager.h"
+#include "character.h"
 
 // ==========================================================
 //
 // É}ÉNÉçíËã`
 //
 // ==========================================================
-#define INVISIBLE_FRONTFORCE (10)
-#define INVISIBLE_G (0.5f)			// èdóÕ
-#define INVISIBLE_RESISTANCE (0.5f)// íÔçRóÕ
+#define INVISIBLE (0.3f)
 
 // ==========================================================
 //
@@ -62,13 +61,12 @@ void CInvisible::Update(void)
 {
 	CPlayer::Update();
 
-	// ÉQÅ[ÉÄÇ÷ëJà⁄
-	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_I))
+	if (CPlayer::GetMPMax() == true)
 	{
 		// èÛë‘ïœâª
 		m_bInvisible = true;
 	}
-	else if (CManager::GetKeyboard()->GetKeyboardPress(DIK_O))
+	else
 	{
 		// èÛë‘ïœâª
 		m_bInvisible = false;
@@ -80,9 +78,15 @@ void CInvisible::Update(void)
 // ==========================================================
 void CInvisible::Draw(void)
 {
-	if (m_bInvisible == false)
+	CPlayer::Draw();
+
+	if (m_bInvisible == true)
 	{
-		CPlayer::Draw();
+		CCharacter::SetAlpha(INVISIBLE);
+	}
+	else
+	{
+		CCharacter::SetAlpha(1.0f);
 	}
 }
 

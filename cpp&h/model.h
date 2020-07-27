@@ -59,6 +59,10 @@ public:
 		KEY const &key,
 		int const nMaxFrame
 	);
+
+	// 透明度設定
+	void SetAlpha(float fAlpha) { m_fAlpha = fAlpha; }
+
 protected:
 private:
 	D3DXVECTOR3	m_posDest;			// 目的位置
@@ -67,5 +71,6 @@ private:
 	D3DXVECTOR3	m_rotDiff;			// 差回転
 	int			m_nFrame;			// フレーム
 	int			m_nParent;			// 親番号
+	float		m_fAlpha;			// 透明度
 };
 #endif
