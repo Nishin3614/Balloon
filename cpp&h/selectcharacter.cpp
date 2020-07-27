@@ -41,8 +41,10 @@ CSelectCharacter::CSelectCharacter() : CScene::CScene()
 	m_pRevival = NULL;
 	m_pInvisible = NULL;
 	m_pAttackUP = NULL;
+	m_pCheckUi = NULL;
 	m_CharacterType = 0;
 	m_PlayerID = 0;
+	m_bReady = false;
 	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_PLAYERMAX; nCntCharacter++)
 	{
 		m_pSelectIcon[nCntCharacter] = NULL;
@@ -81,6 +83,7 @@ void CSelectCharacter::Init(void)
 		// テクスチャー設定
 		m_pSelectUi->BindTexture(CTexture_manager::GetTexture(13));
 	}
+
 	// それぞれの選択アイコン
 	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_PLAYERMAX; nCntCharacter++)
 	{
@@ -150,6 +153,14 @@ void CSelectCharacter::Uninit(void)
 		//m_pSelectUi->Release();
 		m_pSelectUi = NULL;
 	}
+	// キャラクター確定UIのNULLチェック
+	// ->終了処理
+	if (m_pCheckUi != NULL)
+	{
+		// 終了処理
+		//m_pSelectUi->Release();
+		m_pCheckUi = NULL;
+	}
 	// それぞれの選択アイコン
 	// ->終了処理
 	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_PLAYERMAX; nCntCharacter++)
@@ -170,26 +181,54 @@ void CSelectCharacter::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::Update(void)
 {
-	// 右が入力されたら
-	// ->キャラクター番号が加算
-	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_RIGHT))
+	if (!m_bReady)
 	{
-		m_CharacterType++;
+		if (m_pCheckUi != NULL)
+		{
+			m_pCheckUi->Release();
+			m_pCheckUi = NULL;
+		}
+		// 右が入力されたら
+		// ->キャラクター番号が加算
+		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_RIGHT))
+		{
+			m_CharacterType++;
+		}
+		// 左が入力されたら
+		// ->キャラクター番号が減算
+		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
+		{
+			m_CharacterType--;
+		}
+		// 範囲設定
+		if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
+		{
+			m_CharacterType = 0;
+		}
+		else if (m_CharacterType < 0)
+		{
+			m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
+		}
 	}
-	// 左が入力されたら
-	// ->キャラクター番号が減算
-	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
+	else
 	{
-		m_CharacterType--;
-	}
-	// 範囲設定
-	if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
-	{
-		m_CharacterType = 0;
-	}
-	else if (m_CharacterType < 0)
-	{
-		m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
+		if (m_pCheckUi == NULL)
+		{
+			m_pCheckUi = CScene_TWO::Create(
+				CScene_TWO::OFFSET_TYPE_CENTER,
+				CHARACTER_ICON_ORIGINPOS,
+				D3DXVECTOR2(CHARACTER_ICON_SIZE, CHARACTER_ICON_SIZE));
+			// 選択UIのNULLチェック
+			// ->テクスチャー設定
+			if (m_pCheckUi != NULL)
+			{
+				// テクスチャー設定
+				m_pCheckUi->BindTexture(CTexture_manager::GetTexture(27));
+				// 選択UIの位置設定
+				m_pCheckUi->SetPosition(m_pSelectIcon[m_CharacterType]->GetPosition());
+				m_pCheckUi->Set_Vtx_Pos();
+			}
+		}
 	}
 #ifdef _DEBUG
 	CDebugproc::Print("キャラクター選択:%d\n", m_CharacterType);
@@ -248,7 +287,6 @@ void CSelectCharacter::Update(void)
 		m_pSelectUi->SetPosition(m_pSelectIcon[m_CharacterType]->GetPosition());
 		m_pSelectUi->Set_Vtx_Pos();
 	}
-
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

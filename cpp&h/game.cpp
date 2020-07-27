@@ -33,6 +33,7 @@
 #include "revival.h"
 #include "speedUP.h"
 #include "attackUP.h"
+#include "rank.h"
 
 /* ポーズ */
 #include "pause.h"
@@ -108,11 +109,6 @@ void CGame::Init(void)
 	m_pause = new CPause();
 	// ポーズの初期化
 	m_pause->Init();
-
-	if (pNetwork != NULL)
-	{// ネットワークが存在していたとき
-		pNetwork->StartUpdate();			// 更新開始
-	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
