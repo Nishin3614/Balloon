@@ -115,10 +115,8 @@ void CBalloon_group::Draw(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon_group::Debug(void)
 {
-	/*
 	CDebugproc::Print("所持している風船グループの数[%d]\n", m_nBringBalloon_group);
 	CDebugproc::Print("出現している風船グループの数[%d]\n", m_nPopBalloon_group);
-	*/
 }
 #endif // _DEBUG
 
@@ -185,7 +183,7 @@ void CBalloon_group::CreateBalloon_group(
 		// 風船のNULLチェック
 		// ->ループスキップ
 		if (m_apBalloon[nCntBalloon_group] != NULL) continue;
-		// プレイヤー(雷)生成
+		// 風船生成
 		m_apBalloon[nCntBalloon_group] = CBalloon::Create_Self(
 			D3DXVECTOR3(
 				sinf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS,

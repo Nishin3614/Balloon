@@ -55,9 +55,7 @@ public:
 	typedef enum
 	{
 		// バルーンプレイヤー用 //
-		CHARACTER_P_THUNDER = 0,				// 雷使い(仮)
-		CHARACTER_P_ZOMBIE,						// ゾンビ(仮)
-		CHARACTER_BALLOON1,						// バルーン1
+		CHARACTER_BALLOON1 = 0,					// バルーン1
 		CHARACTER_BALLOON2,						// バルーン2
 		CHARACTER_BALLOON3,						// バルーン3
 		CHARACTER_BALLOON4,						// バルーン4
@@ -258,7 +256,6 @@ private:
 	int								m_nFrame;						// フレームカウント
 	int								m_nMotionFrame;					// 一つのモーションのカウント
 	int								m_nIdAttackKey;					// 攻撃用のキーID
-	int								m_nIDWho;						// 敵か味方か
 	float							m_fLength;						// 攻撃の当たり範囲
 	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
 	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
