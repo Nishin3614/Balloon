@@ -63,6 +63,8 @@ void CRevival::Update(void)
 	{
 		// ó‘Ô•Ï‰»
 		m_bRevival = true;
+
+		CCharacter_Balloon::BalloonCreate();
 	}
 	else
 	{
