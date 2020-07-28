@@ -58,6 +58,17 @@ void CRevival::Uninit(void)
 void CRevival::Update(void)
 {
 	CPlayer::Update();
+
+	if (CPlayer::GetMPMax() == true)
+	{
+		// ó‘Ô•Ï‰»
+		m_bRevival = true;
+	}
+	else
+	{
+		// ó‘Ô•Ï‰»
+		m_bRevival = false;
+	}
 }
 
 // ==========================================================

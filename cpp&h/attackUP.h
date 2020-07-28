@@ -76,6 +76,6 @@ private:
 	/* 関数 */
 
 	/* 変数 */
-	bool m_bSpeedUP;					// スピードアップするかどうか
+	bool m_bAttackUP;					// アタックアップするかどうか
 };
 #endif
