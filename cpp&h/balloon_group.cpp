@@ -295,7 +295,7 @@ void CBalloon_group::BreakBalloon_group(int const &nCntBalloon_group)
 		m_apBalloon[nCntBalloon_group]->Uninit();
 		delete m_apBalloon[nCntBalloon_group];
 		m_apBalloon[nCntBalloon_group] = NULL;
-		// 出現している風船グループの個数を増やす
+		// 出現している風船グループの個数を減らす
 		m_nPopBalloon_group--;
 	}
 }
