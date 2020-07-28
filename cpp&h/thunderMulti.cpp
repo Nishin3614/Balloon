@@ -87,10 +87,6 @@ void CThunderMulti::Update(void)
 {
 	CScene_THREE::Update();
 
-	// 距離計算用
-	float fX_Difference;
-	float fZ_Difference;
-	float fDifference;
 	// テクスチャ分割
 	//CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
 
