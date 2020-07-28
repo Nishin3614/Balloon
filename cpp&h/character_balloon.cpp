@@ -15,10 +15,7 @@
 // マクロ定義
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define CHARACTER_BALLOON_FRONTFORCE (10)
-#define CHARACTER_BALLOON_G (0.5f)			// 重力
-#define CHARACTER_BALLOON_RESISTANCE (0.5f)// 抵抗力
-#define CHARACTER_BALLOON_MOTIONFILE "data/LOAD/CHARACTER_BALLOON/Tricker.txt"	// モーションのファイル名
+#define CHARACTER_BALLOON_GRAVITY		(0.1f)			// キャラクターバルーンにかかる重力
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -97,9 +94,13 @@ void CCharacter_Balloon::Update(void)
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
 	{
+		// 雷に当たった時の挙動処理
 		Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
+	// キャラクターの重力加算処理
+	CCharacter::AddGravity(CHARACTER_BALLOON_GRAVITY);
+	// キャラクターの更新処理
 	CCharacter::Update();
 	// テスト
 }
