@@ -64,6 +64,9 @@ void CPlayer::Init(void)
 	// 変数宣言
 	D3DXVECTOR3 pos;	// ゲージの配置用
 
+	// 移動量代入
+	m_fMoveNow = CCharacter::GetStatus().fMaxMove;
+
 	// カメラの初期化
 	// カメラの注視点設定
 	CManager::GetRenderer()->GetCamera()->SetPosR(
@@ -262,11 +265,11 @@ void CPlayer::MyMove(void)
 			// 速度の計算
 			if (abs(nValueH) > abs(nValueV))
 			{
-				fMove = (abs(nValueH) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
+				fMove = (abs(nValueH) * m_fMoveNow) / 1024.0f;
 			}
 			else
 			{
-				fMove = (abs(nValueV) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
+				fMove = (abs(nValueV) * m_fMoveNow) / 1024.0f;
 			}
 			rot.y = fAngle + fRot;
 
@@ -289,23 +292,23 @@ void CPlayer::MyMove(void)
 		{
 			rot.y = -D3DX_PI * 0.25f + fRot;
 
-			move.x += sinf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = -D3DX_PI * 0.75f + fRot;
 
-			move.x += sinf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
 		}
 		// 左
 		else
 		{
 			rot.y = -D3DX_PI * 0.5f + fRot;
-			move.x += sinf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
 		}
 	}
 	// 右
@@ -319,24 +322,24 @@ void CPlayer::MyMove(void)
 		{
 			rot.y = D3DX_PI * 0.25f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = D3DX_PI * 0.75f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
 		}
 		// 右
 		else
 		{
 			rot.y = D3DX_PI * 0.5f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+			move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
 		}
 	}
 	// 奥に行く
@@ -345,8 +348,8 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		bMove = true;
 		rot.y = D3DX_PI * 0.0f + fRot;
-		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+		move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+		move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
 	}
 	// 手前に行く
 	else if (pKeyboard->GetKeyboardPress(DIK_S))
@@ -354,8 +357,8 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		bMove = true;
 		rot.y = D3DX_PI * 1.0f + fRot;
-		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+		move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+		move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
 	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
