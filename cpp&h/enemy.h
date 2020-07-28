@@ -7,8 +7,6 @@
 #ifndef _ENEMY_H_
 #define _ENEMY_H_
 
-#define _CRT_SECURE_NO_WARNINGS
-
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // インクルードファイル
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,15 +22,40 @@
 class CEnemy : public CCharacter_Balloon
 {
 public:
+	/* 列挙型 */
+	typedef enum
+	{
+		AIACTION_STAND = 0,		// 立っている状態(他に何もしていない)
+		AIACTION_JUMP,			// ジャンプしている状態
+		AIACTION_BALLOON_NONE	// 出現している風船がすべて割られている状態
+	} AIACTION;
+
+	/* 構造体 */
+	// ジャンプ変数
+	typedef struct JUMP_VARIABLE
+	{
+		// コンストラクタ
+		JUMP_VARIABLE()
+		{
+			nCoolTime = 0;	// クーリングタイム
+		}
+		int nCoolTime;	// クーリングタイム
+	} JUMP_VARIABLE;
 	/* 関数 */
-	// 自分自身用
+	// コンストラクタ
 	CEnemy(CHARACTER const &character);
+	// デストラクタ
 	virtual ~CEnemy();
+	// 初期化処理
 	virtual void Init(void);
+	// 終了処理
 	virtual void Uninit(void);
+	// 更新処理
 	virtual void Update(void);
+	// 描画処理
 	virtual void Draw(void);
 #ifdef _DEBUG
+	// デバッグ処理
 	void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
@@ -63,6 +86,10 @@ private:
 	void Ai_Action(void);
 	// AI移動処理
 	void Ai_Move(void);
+	// AI行動_ジャンプ状態
+	void AiAction_Jump(void);
 	/* 変数 */
+	JUMP_VARIABLE	m_Jump;	// ジャンプ用変数
+	AIACTION		m_AI;	// AI状態
 };
 #endif
