@@ -42,7 +42,7 @@ void CAttackUP::Init(void)
 	CPlayer::Init();
 
 	// ó‘Ô‚Ì‰Šú‰»
-	m_bSpeedUP = false;
+	m_bAttackUP = false;
 }
 
 // ==========================================================
@@ -59,6 +59,17 @@ void CAttackUP::Uninit(void)
 void CAttackUP::Update(void)
 {
 	CPlayer::Update();
+
+	if (CPlayer::GetMPMax() == true)
+	{
+		// ó‘Ô•Ï‰»
+		m_bAttackUP = true;
+	}
+	else
+	{
+		// ó‘Ô•Ï‰»
+		m_bAttackUP = false;
+	}
 }
 
 // ==========================================================

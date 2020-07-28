@@ -12,6 +12,7 @@
 // É}ÉNÉçíËã`
 //
 // ==========================================================
+#define SPEED_UP (8.0f)
 
 // ==========================================================
 //
@@ -58,6 +59,19 @@ void CSpeedUP::Uninit(void)
 void CSpeedUP::Update(void)
 {
 	CPlayer::Update();
+
+	if (CPlayer::GetMPMax() == true)
+	{
+		// èÛë‘ïœâª
+		m_bSpeedUP = true;
+		SetMoveNow(SPEED_UP);
+	}
+	else
+	{
+		// èÛë‘ïœâª
+		m_bSpeedUP = false;
+		SetMoveNow(CCharacter::GetStatus().fMaxMove);
+	}
 }
 
 // ==========================================================

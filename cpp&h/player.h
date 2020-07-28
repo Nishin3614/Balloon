@@ -89,6 +89,8 @@ public:
 	int const &GetPlayerID(void) { return m_nPlayerID; };
 	// MPのフラグ取得
 	bool const &GetMPMax(void) { return m_bMPMax; }
+	// 移動量の設定
+	void const SetMoveNow(float fMoveNow) { m_fMoveNow = fMoveNow; }
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
@@ -120,5 +122,6 @@ private:
 	int m_nMP;							// MP
 	bool m_bMPMax;						// MPが最大かどうか
 	bool m_bResetMP;					// MPをリセット
+	float m_fMoveNow;					// 現在の移動量
 };
 #endif
