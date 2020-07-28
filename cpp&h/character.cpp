@@ -426,10 +426,9 @@ void CCharacter::Move(void)
 	}
 	// 移動
 	// 抵抗力
-	m_move.y -= 0.1f;
 	m_move.x *= CCharacter::GetStatus().fMaxInertia;
 	m_move.z *= CCharacter::GetStatus().fMaxInertia;
-
+	// 上限処理
 	Limit();
 
 	// キャラクターの当たり判定がNULLではないなら

@@ -125,6 +125,8 @@ public:
 	// ポインター移動量情報の取得
 	D3DXVECTOR3 * Scene_GetPMove(void) { return &m_move; };
 	// 必要に応じた動作 //
+	// 重力
+	void AddGravity(float const &fGravity)			{ m_move.y -= fGravity; };
 	// 設定 //
 	// 位置
 	void SetPos(D3DXVECTOR3 const &pos)				{ m_pos = pos; };
