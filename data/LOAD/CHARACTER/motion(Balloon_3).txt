@@ -30,9 +30,9 @@ MODEL_FILENAME = 51				# [10]左足
 # キャラクター用当たり判定情報
 #------------------------------------------------------------------------------
 CHARACTER_COLLISION
-	OFFSET = 0.0 50.0 0.0
+	OFFSET = 0.0 40.0 0.0
 	SPHERE
-		RADIUS = 50.0
+		RADIUS = 40.0
 	END_SPHERE
 END_CHARACTER_COLLISION
 

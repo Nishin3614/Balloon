@@ -158,7 +158,7 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 			m_move,
 			*pCharacterPos,
 			*pCharacterMove,
-			100,
+			1,
 			1,
 			1.0f,
 			1.0f,

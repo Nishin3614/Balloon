@@ -26,10 +26,6 @@ public:
 	// ---------モーションタイプ---------- //
 	typedef enum
 	{
-		/* コンボ1 */
-		MOTIONTYPE_DIAGONALCUT = CCharacter::MOTIONTYPE_MAX,
-		/* コンボ2 */
-		MOTIONTYPE_REVERSESIDE,
 		MOTIONTYPE_MAX
 	} MOTIONTYPE;
 

@@ -394,11 +394,6 @@ void CPlayer::MyMove(void)
 			}
 		}
 	}
-	// ˆÚ“®ó‘Ô‚È‚ç
-	if (bMove == true)
-	{
-		CCharacter::SetMotion(MOTIONTYPE_MOVE);
-	}
 	// y‚ÌãŒÀİ’è
 	if (move.y > 10.0f)
 	{
@@ -655,11 +650,6 @@ void CPlayer::OtherMove(void)
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
 		}
-	}
-	// ˆÚ“®ó‘Ô‚È‚ç
-	if (bMove == true)
-	{
-		CCharacter::SetMotion(MOTIONTYPE_MOVE);
 	}
 	//CCharacter::SetMove(move);
 	CCharacter::SetRotDest(rot);
