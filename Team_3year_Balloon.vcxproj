@@ -199,6 +199,7 @@
     <ClCompile Include="cpp&amp;h\joypad.cpp" />
     <ClCompile Include="cpp&amp;h\keyboard.cpp" />
     <ClCompile Include="cpp&amp;h\keyconfig.cpp" />
+    <ClCompile Include="cpp&amp;h\lake.cpp" />
     <ClCompile Include="cpp&amp;h\light.cpp" />
     <ClCompile Include="cpp&amp;h\load.cpp" />
     <ClCompile Include="cpp&amp;h\main.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="cpp&amp;h\joypad.h" />
     <ClInclude Include="cpp&amp;h\keyboard.h" />
     <ClInclude Include="cpp&amp;h\keyconfig.h" />
+    <ClInclude Include="cpp&amp;h\lake.h" />
     <ClInclude Include="cpp&amp;h\light.h" />
     <ClInclude Include="cpp&amp;h\load.h" />
     <ClInclude Include="cpp&amp;h\main.h" />
