@@ -640,3 +640,43 @@ CScene_X::MODEL_LOAD * CScene_X::GetModelLoad(int const & nModelId)
 	}
 	return m_pModelLoad[nModelId].get();
 }
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// スクリプトを読み込む
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_X::LoadScrept(char* add)
+{
+	FILE *pFile = NULL;											// ファイル
+	char cReadText[128] = {};									// 文字
+	char cHeadText[128] = {};									// 比較
+	float fData[7];												// 答え
+	CScene_X *pObject = NULL;
+
+	pFile = fopen(add, "r");									// ファイルを開くまたは作る
+
+	if (pFile != NULL)											// ファイルが読み込めた場合
+	{
+		fgets(cReadText, sizeof(cReadText), pFile);				// 行を飛ばす
+		fgets(cReadText, sizeof(cReadText), pFile);				// 行を飛ばす
+		fgets(cReadText, sizeof(cReadText), pFile);				// 行を飛ばす
+
+		while (strcmp(cHeadText, "End") != 0)
+		{
+			std::string Data = cReadText;
+			std::vector<std::string> splitData = CCalculation::split(Data, ',');
+
+			pObject = CScene_X::Create(D3DXVECTOR3((float)atof(splitData[LOADTYPE_POS_X].c_str()), (float)atof(splitData[LOADTYPE_POS_Y].c_str()), (float)atof(splitData[LOADTYPE_POS_Z].c_str())),
+									D3DXVECTOR3((float)atof(splitData[LOADTYPE_ROT_X].c_str()), (float)atof(splitData[LOADTYPE_ROT_Y].c_str()), (float)atof(splitData[LOADTYPE_ROT_Z].c_str())),
+									atoi(splitData[LOADTYPE_ADD].c_str()));
+
+			fgets(cReadText, sizeof(cReadText), pFile);									// 行を飛ばす
+			sscanf(cReadText, "%s", &cHeadText);
+		}
+
+		fclose(pFile);					// ファイルを閉じる
+	}
+	else
+	{
+		MessageBox(NULL, "モデル情報のアクセス失敗！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
+	}
+}

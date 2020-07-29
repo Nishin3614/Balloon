@@ -65,6 +65,7 @@ void CTitle::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
 	CNetwork *pNetwork = CManager::GetNetwork();
+	CJoypad *pJoypad = CManager::GetJoy();
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
@@ -81,6 +82,17 @@ void CTitle::Update(void)
 						// チュートリアルへ
 						pFade->SetFade(CManager::MODE_TUTORIAL);
 					}
+				}
+			}
+		}
+
+		if (pJoypad != NULL)
+		{
+			if (pJoypad->GetTrigger(0, CJoypad::KEY_START) || pJoypad->GetTrigger(0, CJoypad::KEY_A))
+			{
+				if (pNetwork->Connect() == S_OK)
+				{
+					pFade->SetFade(CManager::MODE_TUTORIAL);
 				}
 			}
 		}

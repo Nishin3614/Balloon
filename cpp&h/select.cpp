@@ -94,6 +94,7 @@ void CSelect::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
 	CNetwork *pNetwork = CManager::GetNetwork();
+	CJoypad *pJoypad = CManager::GetJoy();
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
@@ -115,6 +116,24 @@ void CSelect::Update(void)
 					m_pSelectCharacter->SetReady(m_bReady);
 				}
 			}
+
+			if (pJoypad != NULL)
+			{
+				if (pJoypad->GetTrigger(0, CJoypad::KEY_A))
+				{
+					if (pNetwork != NULL)
+					{
+						char aData[64];
+						sprintf(aData, "CHARACTER_TYPE %d", m_pSelectCharacter->GetCharacterType());
+						pNetwork->SendTCP(aData, sizeof(aData));
+
+						sprintf(aData, "READY %d", 1);
+						pNetwork->SendTCP(aData, sizeof(aData));
+						m_bReady = true;
+						m_pSelectCharacter->SetReady(m_bReady);
+					}
+				}
+			}
 		}
 		else
 		{// 準備完了していたとき
@@ -122,6 +141,15 @@ void CSelect::Update(void)
 			{
 				m_bReady = false;
 				m_pSelectCharacter->SetReady(m_bReady);
+			}
+
+			if (pJoypad != NULL)
+			{
+				if (pJoypad->GetTrigger(0, CJoypad::KEY_A))
+				{
+					m_bReady = false;
+					m_pSelectCharacter->SetReady(m_bReady);
+				}
 			}
 		}
 	}

@@ -47,7 +47,7 @@ void CLake::Init(void)
 	// オフセットタイプ設定
 	CScene_THREE::SetOffsetType(OFFSET_TYPE_VERTICAL_CENTER);
 	// 色の設定
-	CScene_THREE::SetCol(D3DXCOLOR_CA(1.0f, 1.0f));
+	CScene_THREE::SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
 	// シーン3Dの初期化
 	CScene_THREE::Init();
 	// ビルボード

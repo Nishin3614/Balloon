@@ -645,7 +645,7 @@ void CPlayer::OtherMove(void)
 		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
 		{
 			// ’ˆ‚É•‚‚­
-			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE) || CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_A))
+			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
 			{
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
