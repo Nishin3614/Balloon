@@ -37,21 +37,21 @@ CHARACTERSET
 	PARTSSET						# [0]ëÃ
 		INDEX = 0
 		PARENT = -1					# (êe)NULL
-		POS = 0.0 0.0 0.0
+		POS = 0.0 80.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET						# [1]ì™
 		INDEX = 1
 		PARENT = 0					# (êe)ëÃ
-		POS = 0.0 0.0 0.0
+		POS = 0.0 -14.8 -44.6
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 	
 	PARTSSET						# [2]å“ä÷êﬂ
 		INDEX = 2
 		PARENT = 0					# (êe)ëÃ
-		POS = 0.0 0.0 0.0
+		POS =  -9.7 8.7 -5.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 END_CHARACTERSET
