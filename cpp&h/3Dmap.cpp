@@ -137,6 +137,59 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// スクリプト読み込み
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void C3DMap::LoadScript(char* Add)
+{
+	FILE *pFile = NULL;																	// ファイル
+	char cReadText[128];															// 文字
+	char cHeadText[128];															// 比較
+	CFloor *pFloor = NULL;
+
+	pFile = fopen(Add, "r");				// ファイルを開くまたは作る
+
+	if (pFile != NULL)						//ファイルが読み込めた場合
+	{
+		while (strcmp(cHeadText, "End") != 0)
+		{
+			fgets(cReadText, sizeof(cReadText), pFile);									//最初の行を飛ばす
+			sscanf(cReadText, "%s", &cHeadText);
+
+			if (strcmp(cHeadText, "pos") == 0)
+			{
+				fgets(cReadText, sizeof(cReadText), pFile);								//最初の行を飛ばす
+				sscanf(cReadText, "%s", &cHeadText);
+
+				std::string Data = cReadText;
+				std::vector<std::string> vsvec_Contens;		// テキストデータ格納用
+
+				vsvec_Contens = CCalculation::split(Data, ',');
+
+				fgets(cReadText, sizeof(cReadText), pFile);								//行を飛ばす
+
+				// 床の作成
+				pFloor = CFloor::Create(D3DXVECTOR3((float)atof(vsvec_Contens[0].c_str()), (float)atof(vsvec_Contens[1].c_str()), (float)atof(vsvec_Contens[2].c_str())),
+					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
+					D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+					50.0f,
+					50.0f,
+					7);
+
+				pFloor->vertexMove(pFile);										// 頂点情報の作成(ファイルから)
+			}
+
+			pFloor = NULL;
+		}
+
+		fclose(pFile);																// ファイルを閉じる
+	}
+	else
+	{
+		MessageBox(NULL, "地面情報のアクセス失敗！", "WARNING", MB_ICONWARNING);	// メッセージボックスの生成
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // リソース情報読み込む設定
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 HRESULT C3DMap::Load(void)

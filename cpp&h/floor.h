@@ -61,10 +61,14 @@ public:
 	) {};
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
+	void Scene_SetPos(D3DXVECTOR3 &pos) { m_pos = pos; };
 	// ポインター過去の位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
 	// ポインター移動量情報の取得
 	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
+
+	// 頂点移動処理
+	void vertexMove(FILE *pFile);
 
 	static HRESULT Load(void);
 	static void UnLoad(void);
@@ -82,6 +86,8 @@ protected:
 
 private:
 	/* 関数 */
+	void CalculationNormalize(void);
+
 	/* 変数 */
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;					// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9	m_pIndex;					// インデックスバッファのポインタ
