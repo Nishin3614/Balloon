@@ -46,7 +46,11 @@ HRESULT CTitle::Init()
 	// 2Dエフェクトの生成
 	C2DEffect::Create();
 	// 3Dパーティクル生成
-	//C3DParticle::Create(C3DParticle::particle_id_)
+	C3DParticle::Create(
+		C3DParticle::PARTICLE_ID_BALLOON,
+		//D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f),
+		D3DVECTOR3_ZERO,
+		true);
 	// 初期化
 	return S_OK;
 }

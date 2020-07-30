@@ -47,6 +47,7 @@ public:
 		PARTICLE_ID_CENTERRANDAMLINE,	// 中心ランダムライン
 		PARTICLE_ID_ONELINE,			// 一つライン
 		PARTICLE_ID_CONCENTLINE,		// コネクトライン
+		PARTICLE_ID_BALLOON,			// 風船
 		PARTICLE_ID_MAX,
 	} PARTICLE_ID;
 	/* 構造体 */
@@ -163,7 +164,8 @@ public:
 	//	origin		: 初期位置
 	static C3DParticle * Create(
 		PARTICLE_ID const	&ParticleId,	// パーティクル番号
-		D3DXVECTOR3 const	&origin			// 初期位置
+		D3DXVECTOR3 const	&origin,		// 初期位置
+		bool		const	&b2D = false	// 2D描画状態
 	);
 	// 全リソース情報の読み込み
 	static HRESULT Load(void);
