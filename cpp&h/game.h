@@ -77,6 +77,7 @@ private:
 	CPause * m_pause;					// ポーズ
 	CScore * m_pScore;					// スコア
 	static CPlayer * m_pPlayer[MAX_PLAYER];
+	int m_nWatchingId;					// 観戦するプレイヤーID
 
 	std::thread th;
 };

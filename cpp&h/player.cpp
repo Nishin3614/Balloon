@@ -27,6 +27,7 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 int	CPlayer::m_All = 0;					// 総数
+bool CPlayer::m_bDie[MAX_PLAYER] = {};
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -103,6 +104,8 @@ void CPlayer::Init(void)
 		{
 			m_pRank->SetPos(m_pos);
 		}
+
+		m_bDie[m_nPlayerID] = false;
 	}
 }
 
@@ -210,10 +213,10 @@ void CPlayer::MyAction(const int &nId)
 		// 風船を生成する処理
 		CCharacter_Balloon::BalloonCreate();
 	}
-	// カメラの処理
-	Camera();
 	// MP上げ処理(マイフレーム)
 	MpUp(MPUP_EVERY);
+	// カメラの更新
+	Camera();
 	// MPゲージの変化定数を設定
 	m_p2DMPGauge->ChangeGauge((float)m_nMP);
 }
@@ -242,6 +245,10 @@ void CPlayer::MyMove(void)
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
 	fAngle = 0.0f;			// 角度
+
+	char aDebug[256];
+	sprintf(aDebug, "POS_Y : %f\n", m_pos.y);
+	OutputDebugString(aDebug);
 
 	if (CManager::GetJoy() != NULL)
 	{
@@ -498,7 +505,7 @@ void CPlayer::OtherAction(void)
 void CPlayer::FishApponent(void)
 {
 	// プレイヤーの位置が指定した位置以下なら
-	if (CCharacter::GetPos().y >= FISH_APPONENTPOS)
+	if (CCharacter::GetPos().y <= FISH_APPONENTPOS)
 	{
 		// 出現カウント
 		if (m_nCntFishApponent == FISH_APPONENTTIME)
@@ -653,7 +660,7 @@ void CPlayer::Die(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 
 	char aDie[64];
- 	sprintf(aDie, "DIE %d", pNetwork->GetId());
+	sprintf(aDie, "DIE %d", pNetwork->GetId());
 	pNetwork->SendTCP(aDie, sizeof(aDie));
 
 	if (m_pRank != NULL)
@@ -667,7 +674,7 @@ void CPlayer::Die(void)
 	// コントロールする自キャラの場合
 	if (m_nPlayerID == CManager::GetPlayerID())
 	{
-		OutputDebugString("あうとー！");
+		m_bDie[m_nPlayerID] = true;			// 死亡フラグを立てる
 	}
 }
 
@@ -689,6 +696,9 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
 	// キャラクター情報取得
 	CCharacter::CHARACTER character = CCharacter::GetCharacter();
+	// 変数宣言
+	// ネットワーク情報取得
+	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 	// バルーンキャラクターの当たった後の処理
 	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
 	// シーン情報がNULLなら
@@ -697,9 +707,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
-		// 変数宣言
-		// ネットワーク情報取得
-		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
@@ -728,9 +735,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
-		// 変数宣言
-		// ネットワーク情報取得
-		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
@@ -766,9 +770,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// 自分が死んだ時ではなく、相手が死んだときに加算
 
 
-		// 変数宣言
-		// ネットワーク情報取得
-		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{

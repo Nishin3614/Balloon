@@ -153,7 +153,7 @@ void CThunder::Update(void)
 		//if (m_nPatternAnim == 5)
 		//{
 		//	m_bThunder = false;
-		//	
+		//
 		//}
 		for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
 		{
@@ -182,7 +182,7 @@ void CThunder::Update(void)
 				{
 					// パーティクル生成
 					C3DParticle::Create(
-						C3DParticle::OFFSET_ID_CROSSLINE,
+						C3DParticle::PARTICLE_ID_CROSSLINE,
 						charaPos
 					);
 					// キャラクター消滅

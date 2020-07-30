@@ -200,7 +200,8 @@ void CBalloon_group::CreateBalloon_group(
 			nObjType,
 			false,
 			false,
-			pParent
+			pParent,
+			BALLOON_OFFSET_POS
 		);
 		// 持っている風船グループの個数を減らす
 		m_nBringBalloon_group--;

@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// 3Dパーティクルの処理[particle.h]
-// Author : Nishiyama koki
+// 3Dパーティクルの処理[3Dparticle.h]
+// Author : Nishiyama Koki
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -9,18 +9,27 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "3Dparticle.h"
 #include "3Deffect.h"
+#include "2Deffect.h"
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// マクロ定義
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#define PARTICLE_FILEPATH ("data/LOAD/ParticleInfo.txt")	// ファイルパス
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 静的メンバ変数の初期化
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-C3DParticle::PARTICLE_OFFSET C3DParticle::m_ParticleOffset[C3DParticle::OFFSET_ID_MAX] = {};
+C3DParticle::PARTICLE_INFO *C3DParticle::m_ParticleOffset[C3DParticle::PARTICLE_ID_MAX] = {};
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 C3DParticle::C3DParticle() : CScene()
 {
-	m_nFlameCount = 0;
+	m_offsetID = C3DParticle::PARTICLE_ID_NONE;	// オフセットID
+	m_b2D = false;								// 2D描画状態
+	m_nFrameCount = 0;							// フレームのカウント
+	m_Origin = D3DVECTOR3_ZERO;					// 原点
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,14 +40,14 @@ C3DParticle::~C3DParticle()
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 初期化
+// 初期化処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DParticle::Init(void)
 {
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 終了
+// 終了処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DParticle::Uninit(void)
 {
@@ -46,131 +55,157 @@ void C3DParticle::Uninit(void)
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 更新
+// 更新処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DParticle::Update(void)
 {
-
-	m_nFlameCount++;
-	if (m_nFlameCount > m_ParticleOffset[m_offsetID].nFrame)
+	// フレームカウントアップ
+	m_nFrameCount++;
+	// フレームカウントがパーティクル情報のフレームを超えたら
+	if (m_nFrameCount > m_ParticleOffset[m_offsetID]->nFrame)
 	{
-		m_nFlameCount = 0;
+		// フレームカウント初期化
+		m_nFrameCount = 0;
+		// 開放処理
 		Release();
 	}
+	// それ以外
 	else
 	{
 		// 変数宣言
-		D3DXVECTOR3	move = D3DVECTOR3_ZERO;		// 移動量
-		D3DXVECTOR3	pos = D3DVECTOR3_ZERO;		// 位置
-		D3DXVECTOR3 rot = D3DVECTOR3_ZERO;		// 回転
-		D3DXVECTOR2	size = D3DVECTOR2_ZERO;		// サイズ
-		D3DXCOLOR	col = D3DXCOLOR_INI;		// 色
-		D3DXVECTOR3	posRand = D3DVECTOR3_ZERO;	// 位置ランダム
-		int			nLife = 0;					// ライフ
-		int			nColRand = 0;				// 色のランダム
-		float		fSpeed = 0;					// 速度
-		float		fAngle[3];					// 角度
-		fAngle[0] = 0;
-		fAngle[1] = 0;
-		fAngle[2] = 0;
+		D3DXVECTOR3	move		= D3DVECTOR3_ZERO;	// 移動量
+		D3DXVECTOR3	pos			= D3DVECTOR3_ZERO;	// 位置
+		D3DXVECTOR3 rot			= D3DVECTOR3_ZERO;	// 回転
+		D3DXVECTOR2	size		= D3DVECTOR2_ZERO;	// サイズ
+		D3DXCOLOR	col			= D3DXCOLOR_INI;	// 色
+		D3DXVECTOR3	posRand		= D3DVECTOR3_ZERO;	// 位置ランダム
+		int			nLife		= 0;				// ライフ
+		int			nColRand	= 0;				// 色のランダム
+		int			nRand = 0;						// ランダム値
+		float		fSpeed		= 0;				// 速度
+		float		fAngle[3];						// 角度
+		// 初期化
+		fAngle[0] = 0;	// 角度0
+		fAngle[1] = 0;	// 角度1
+		fAngle[2] = 0;	// 角度2
 
-		// 設定数ループ
-		for (int nCntEffect = 0; nCntEffect < m_ParticleOffset[m_offsetID].nNumber; nCntEffect++)
+		// エフェクトの個数ループ
+		for (int nCntEffect = 0; nCntEffect < m_ParticleOffset[m_offsetID]->nNumber; nCntEffect++)
 		{
 			/* カラー設定 */
-			col = m_ParticleOffset[m_offsetID].Col;
-			if (m_ParticleOffset[m_offsetID].bRedRand)
+			col = m_ParticleOffset[m_offsetID]->Col;
+			if (m_ParticleOffset[m_offsetID]->bRedRand)
 			{
-				nColRand = rand() % (int)(col.r * 10);
-				col.r = (float)nColRand / 10;
+				// ランダム値取得
+				nRand = (int)(col.r * 10);
+				if (nRand > 0)
+				{
+					nColRand = rand() % nRand;
+					col.r = (float)nColRand / 10;
+				}
 			}
-			if (m_ParticleOffset[m_offsetID].bGreenRand)
+			if (m_ParticleOffset[m_offsetID]->bGreenRand)
 			{
-				nColRand = rand() % (int)(col.g * 10);
-				col.g = (float)nColRand / 10;
+				// ランダム値取得
+				nRand = (int)(col.g * 10);
+				if (nRand > 0)
+				{
+					nColRand = rand() % nRand;
+					col.g = (float)nColRand / 10;
+				}
 			}
-			if (m_ParticleOffset[m_offsetID].bBlueRand)
+			if (m_ParticleOffset[m_offsetID]->bBlueRand)
 			{
-				nColRand = rand() % (int)(col.b * 10);
-				col.b = (float)nColRand / 10;
+				// ランダム値取得
+				nRand = (int)(col.b * 10);
+				if (nRand > 0)
+				{
+					nColRand = rand() % nRand;
+					col.b = (float)nColRand / 10;
+				}
 			}
-			if (m_ParticleOffset[m_offsetID].bAlphaRand)
+			if (m_ParticleOffset[m_offsetID]->bAlphaRand)
 			{
-				nColRand = rand() % (int)(col.a * 10);
-				col.a = (float)nColRand / 10;
+				// ランダム値取得
+				nRand = (int)(col.a * 10);
+				if (nRand > 0)
+				{
+					nColRand = rand() % nRand;
+					col.a = (float)nColRand / 10;
+				}
 			}
 
 			/* 半径設定 */
 			// 読み込んだサイズを代入
-			size = m_ParticleOffset[m_offsetID].Size;
+			size = m_ParticleOffset[m_offsetID]->Size;
 			// ランダムで設定した分加算
-			if (m_ParticleOffset[m_offsetID].SizeXRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->SizeXRand.nMax > 0)
 			{
-				size.x += (float)(rand() % m_ParticleOffset[m_offsetID].SizeXRand.nMax + m_ParticleOffset[m_offsetID].SizeXRand.nMin);
+				size.x += (float)(rand() % m_ParticleOffset[m_offsetID]->SizeXRand.nMax + m_ParticleOffset[m_offsetID]->SizeXRand.nMin);
 			}
-			if (m_ParticleOffset[m_offsetID].SizeYRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->SizeYRand.nMax > 0)
 			{
-				size.y += (float)(rand() % m_ParticleOffset[m_offsetID].SizeYRand.nMax + m_ParticleOffset[m_offsetID].SizeXRand.nMin);
+				size.y += (float)(rand() % m_ParticleOffset[m_offsetID]->SizeYRand.nMax + m_ParticleOffset[m_offsetID]->SizeXRand.nMin);
 			}
 			/* ライフ設定 */
-			nLife = m_ParticleOffset[m_offsetID].nLife;
+			nLife = m_ParticleOffset[m_offsetID]->nLife;
 			// ランダムのライフを設定
-			if (m_ParticleOffset[m_offsetID].nLifeRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->nLifeRand.nMax > 0)
 			{
-			nLife +=
-				(rand() % m_ParticleOffset[m_offsetID].nLifeRand.nMax +
-					m_ParticleOffset[m_offsetID].nLifeRand.nMin);
+				nLife +=
+					(rand() % m_ParticleOffset[m_offsetID]->nLifeRand.nMax +
+						m_ParticleOffset[m_offsetID]->nLifeRand.nMin);
 			}
 
 			/* 速度の設定 */
-			fSpeed = m_ParticleOffset[m_offsetID].fSpeed;
+			fSpeed = m_ParticleOffset[m_offsetID]->fSpeed;
 			// ランダムのスピード設定
-			if (m_ParticleOffset[m_offsetID].nSpeedRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->nSpeedRand.nMax > 0)
 			{
 				fSpeed +=
-					(float)(rand() % m_ParticleOffset[m_offsetID].nSpeedRand.nMax +
-						m_ParticleOffset[m_offsetID].nSpeedRand.nMin);
+					(float)(rand() % m_ParticleOffset[m_offsetID]->nSpeedRand.nMax +
+						m_ParticleOffset[m_offsetID]->nSpeedRand.nMin);
 			}
 
 			/* 角度の設定 */
-			fAngle[0] = m_ParticleOffset[m_offsetID].Rot.x;
-			fAngle[1] = m_ParticleOffset[m_offsetID].Rot.y;
-			fAngle[2] = m_ParticleOffset[m_offsetID].Rot.z;
+			fAngle[0] = m_ParticleOffset[m_offsetID]->Rot.x;
+			fAngle[1] = m_ParticleOffset[m_offsetID]->Rot.y;
+			fAngle[2] = m_ParticleOffset[m_offsetID]->Rot.z;
 			// ランダムの角度設定
-			if (m_ParticleOffset[m_offsetID].nAngleRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->nAngleRand.nMax > 0)
 			{
 				fAngle[0] +=
-					(rand() % m_ParticleOffset[m_offsetID].nAngleRand.nMax +
-						m_ParticleOffset[m_offsetID].nAngleRand.nMin)*0.01f;
+					(rand() % m_ParticleOffset[m_offsetID]->nAngleRand.nMax +
+						m_ParticleOffset[m_offsetID]->nAngleRand.nMin)*0.01f;
 				fAngle[1] +=
-					(rand() % m_ParticleOffset[m_offsetID].nAngleRand.nMax +
-						m_ParticleOffset[m_offsetID].nAngleRand.nMin)*0.01f;
+					(rand() % m_ParticleOffset[m_offsetID]->nAngleRand.nMax +
+						m_ParticleOffset[m_offsetID]->nAngleRand.nMin)*0.01f;
 				fAngle[2] +=
-					(rand() % m_ParticleOffset[m_offsetID].nAngleRand.nMax +
-						m_ParticleOffset[m_offsetID].nAngleRand.nMin)*0.01f;
+					(rand() % m_ParticleOffset[m_offsetID]->nAngleRand.nMax +
+						m_ParticleOffset[m_offsetID]->nAngleRand.nMin)*0.01f;
 			}
 
 			/* 位置設定 */
 			// ランダムの角度設定
-			if (m_ParticleOffset[m_offsetID].PosXRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->PosXRand.nMax > 0)
 			{
-				posRand.x = (float)(rand() % m_ParticleOffset[m_offsetID].PosXRand.nMax + m_ParticleOffset[m_offsetID].PosXRand.nMin);
+				posRand.x = (float)(rand() % m_ParticleOffset[m_offsetID]->PosXRand.nMax + m_ParticleOffset[m_offsetID]->PosXRand.nMin);
 			}
-			if (m_ParticleOffset[m_offsetID].PosYRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->PosYRand.nMax > 0)
 			{
-				posRand.y = (float)(rand() % m_ParticleOffset[m_offsetID].PosYRand.nMax + m_ParticleOffset[m_offsetID].PosYRand.nMin);
+				posRand.y = (float)(rand() % m_ParticleOffset[m_offsetID]->PosYRand.nMax + m_ParticleOffset[m_offsetID]->PosYRand.nMin);
 			}
-			if (m_ParticleOffset[m_offsetID].PosZRand.nMax > 0)
+			if (m_ParticleOffset[m_offsetID]->PosZRand.nMax > 0)
 			{
-				posRand.z = (float)(rand() % m_ParticleOffset[m_offsetID].PosZRand.nMax + m_ParticleOffset[m_offsetID].PosZRand.nMin);
+				posRand.z = (float)(rand() % m_ParticleOffset[m_offsetID]->PosZRand.nMax + m_ParticleOffset[m_offsetID]->PosZRand.nMin);
 			}
 
 			// 位置
 			pos =
 			{
-				posRand.x + m_ParticleOffset[m_offsetID].Pos.x,
-				posRand.y + m_ParticleOffset[m_offsetID].Pos.y,
-				posRand.z + m_ParticleOffset[m_offsetID].Pos.z
+				posRand.x + m_ParticleOffset[m_offsetID]->Pos.x,
+				posRand.y + m_ParticleOffset[m_offsetID]->Pos.y,
+				posRand.z + m_ParticleOffset[m_offsetID]->Pos.z
 			};
 
 			/* 移動量設定 */
@@ -180,102 +215,77 @@ void C3DParticle::Update(void)
 				cosf(fAngle[0])*cosf(fAngle[2])*fSpeed,
 				cosf(fAngle[0])*sinf(fAngle[1])*fSpeed
 			};
+			// 2D描画状態なら
+			if (m_b2D)
+			{
+				// 2Dエフェクト生成
+				C2DEffect::Set2DEffect(
+					(C2DEffect::EFFECT_TYPE)m_ParticleOffset[m_offsetID]->nEffectType,
+					m_ParticleOffset[m_offsetID]->nEffectTexType,
+					pos + m_Origin,
+					D3DXVECTOR3(
+						fAngle[0],
+						fAngle[1],
+						fAngle[2]
+					),
+					move,
+					col,
+					size,
+					nLife,
+					m_ParticleOffset[m_offsetID]->Blend
+				);
 
-			C3DEffect::Set3DEffect(
-				(C3DEffect::EFFECT_TYPE)m_ParticleOffset[m_offsetID].nEffeType,
-				m_ParticleOffset[m_offsetID].nEffeTexType,
-				pos + m_Origin,
-				D3DXVECTOR3(
-					fAngle[0],
-					fAngle[1],
-					fAngle[2]
-				),
-				move,
-				col,
-				size,
-				nLife
-			);
+			}
+			// それ以外
+			else
+			{
+				// 3Dエフェクト生成
+				C3DEffect::Set3DEffect(
+					(C3DEffect::EFFECT_TYPE)m_ParticleOffset[m_offsetID]->nEffectType,
+					m_ParticleOffset[m_offsetID]->nEffectTexType,
+					pos + m_Origin,
+					D3DXVECTOR3(
+						fAngle[0],
+						fAngle[1],
+						fAngle[2]
+					),
+					move,
+					col,
+					size,
+					nLife,
+					m_ParticleOffset[m_offsetID]->Blend
+				);
+			}
 		}
 	}
 }
-/*
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// カラー
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Col(void)
-{
-}
 
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// サイズ
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Size(void)
-{
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ライフ
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Life(void)
-{
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// スピード
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Speed(void)
-{
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 角度
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Angle(void)
-{
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 位置
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Pos(void)
-{
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 移動量
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::Update_Move(void)
-{
-}
-*/
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 描画
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DParticle::Draw(void)
 {
+
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 生成
+//	ParticleId	: パーティクル番号
+//	origin		: 初期位置
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-C3DParticle * C3DParticle::Create(PARTICLE_OFFSET_ID OffsetID, CONST D3DXVECTOR3 origin)
+C3DParticle * C3DParticle::Create(
+	PARTICLE_ID const	&ParticleId,	// パーティクル番号
+	D3DXVECTOR3 const	&origin			// 初期位置
+)
 {
 	// 変数宣言
 	C3DParticle *p3DParticle = new C3DParticle;
 	// シーン管理設定
 	p3DParticle->ManageSetting(CScene::LAYER_3DPARTICLE);
 	// 設定
-	p3DParticle->SetParticle(OffsetID);
+	p3DParticle->SetParticle(ParticleId);
 	p3DParticle->SetOrigin(origin);
 	return p3DParticle;
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// パーティクルの設定
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::SetParticle(PARTICLE_OFFSET_ID OffsetID)
-{
-	m_offsetID = OffsetID;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -288,17 +298,18 @@ HRESULT C3DParticle::Load(void)
 	char cRead[128];				// 読み込み用
 	char cComp[128];				// 比較用
 	char cEmpty[128];				// 要らないもの用
+	char cName[64];					// パーティクル名
 	int nCntError = 0;				// エラー用
 	int nCntOffset = 0;				// オフセットのカウント
-	
-	// 一時保存用
-	// ファイルが開かれていなかったら
-	if ((pFile = fopen("data/LOAD/ParticleInfo.txt", "r")) == NULL)
+	int nId = 0;					// パーティクル番号
+									// 一時保存用
+									// ファイルが開かれていなかったら
+	if ((pFile = fopen(PARTICLE_FILEPATH, "r")) == NULL)
 	{
-		CCalculation::Messanger("data/LOAD/ParticleInfo.txtのテキストがありません");
+		CCalculation::Messanger("パーティクルcppのLOAD関数->ファイル名が存在しません。");
 		return E_FAIL;
 	}
-
+	// スクリプトが読み込まれるまでループ
 	while (strcmp(cComp, "SCRIPT") != 0)
 	{
 		// 1行読み込む
@@ -311,11 +322,11 @@ HRESULT C3DParticle::Load(void)
 		if (nCntError > 1048576)
 		{// エラー
 			nCntError = 0;
-			CCalculation::Messanger("スクリプトがありません");
+			CCalculation::Messanger("パーティクルcppのLOAD関数->テキスト内に「SCRIPT」が存在しません。");
 			return E_FAIL;
 		}
 	}
-
+	// エンドスクリプトが読み込まれるまでループ
 	while (strcmp(cComp, "END_SCRIPT") != 0)
 	{// END_SCRIPTまでループ
 	 // 1行読み込む
@@ -329,419 +340,349 @@ HRESULT C3DParticle::Load(void)
 		{// エラー
 			nCntError = 0;
 			fclose(pFile);
-			CCalculation::Messanger("エンドスクリプトがありません");
+			CCalculation::Messanger("パーティクルcppのLOAD関数->テキスト内に「END_SCRIPT」が存在しません。");
 			return E_FAIL;
+		}
+		// # が読み込まれたら
+		else if (strcmp(cComp, "#") == 0)
+		{
+			// 位置xの最大値と最小値を代入
+			sscanf(cRead, "%s [%d] %s", &cEmpty,
+				&nId,
+				&cName
+			);
 		}
 		else if (strcmp(cComp, "OFFSET") == 0)
 		{
+			// パーティクルオフセットの情報確保
+			m_ParticleOffset[nCntOffset] = new PARTICLE_INFO;
+			// パーティクル名の初期化
+			cName[0] = '\0';
 			while (strcmp(cComp, "END_OFFSET") != 0)
 			{
 				// 1行読み込む
 				fgets(cRead, sizeof(cRead), pFile);
 				// 読み込んど文字列代入
 				sscanf(cRead, "%s", &cComp);
-				if (strcmp(cComp, "IF") == 0)
+				// セット位置が来たら
+				// ->入る
+				if (strcmp(cComp, "SET_POSRAND") == 0)
 				{
-					// 読み込んど文字列代入
-					sscanf(cRead, "%s %s", &cEmpty, &cComp);
-					/* 位置ランダム */
-					if (strcmp(cComp, "POSRAND") == 0)
+					// エンドセット位置がくるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_POSRAND") != 0)
 					{
-						// 読み込んど文字列代入
-						sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty , &cComp);
-						if (strcmp(cComp, "NULL") != 0)
-						{
-							while (strcmp(cComp, "}") != 0)
-							{
-								// 1行読み込む
-								fgets(cRead, sizeof(cRead), pFile);
-								// 読み込んど文字列代入
-								sscanf(cRead, "%s", &cComp);
-
-								if (strcmp(cComp, "POSX") == 0)
-								{
-									sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
-										&m_ParticleOffset[nCntOffset].PosXRand.nMax,
-										&m_ParticleOffset[nCntOffset].PosXRand.nMin
-									);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "POSY") == 0)
-								{
-									sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
-										&m_ParticleOffset[nCntOffset].PosYRand.nMax,
-										&m_ParticleOffset[nCntOffset].PosYRand.nMin
-									);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "POSZ") == 0)
-								{
-									sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
-										&m_ParticleOffset[nCntOffset].PosZRand.nMax,
-										&m_ParticleOffset[nCntOffset].PosZRand.nMin
-									);
-									// 文字列の初期化
-									cComp[0] = '\0';
-									cRead[0] = '\0';
-								}
-							}
-							// 文字列の初期化
-							cComp[0] = '\0';
-						}
 						// 文字列の初期化
 						cComp[0] = '\0';
-					}
-					/* 色ランダム */
-					else if (strcmp(cComp, "COLRAND") == 0)
-					{
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
 						// 読み込んど文字列代入
-						sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-						if (strcmp(cComp, "NULL") != 0)
+						sscanf(cRead, "%s", &cComp);
+						// 位置xが読み込まれたら
+						if (strcmp(cComp, "POSX") == 0)
 						{
-							// 初期化
-							m_ParticleOffset[nCntOffset].Col.r = 1.0f;
-							m_ParticleOffset[nCntOffset].Col.g = 1.0f;
-							m_ParticleOffset[nCntOffset].Col.b = 1.0f;
-							m_ParticleOffset[nCntOffset].Col.a = 1.0f;
-
-							while (strcmp(cComp, "}") != 0)
-							{
-								// 1行読み込む
-								fgets(cRead, sizeof(cRead), pFile);
-								// 読み込んど文字列代入
-								sscanf(cRead, "%s", &cComp);
-								if (strcmp(cComp, "RED") == 0)
-								{
-									// ランダム状態に
-									m_ParticleOffset[nCntOffset].bRedRand = true;
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "GREEN") == 0)
-								{
-									// ランダム状態に
-									m_ParticleOffset[nCntOffset].bGreenRand = true;
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "BLUE") == 0)
-								{
-									// ランダム状態に
-									m_ParticleOffset[nCntOffset].bBlueRand = true;
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "ALPHA") == 0)
-								{
-									// ランダム状態に
-									m_ParticleOffset[nCntOffset].bAlphaRand = true;
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-							}
-							// 文字列の初期化
-							cComp[0] = '\0';
+							// 位置xの最大値と最小値を代入
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->PosXRand.nMax,
+								&m_ParticleOffset[nCntOffset]->PosXRand.nMin
+							);
 						}
-						// 文字列の初期化
-						cComp[0] = '\0';
-					}
-					else if (strcmp(cComp, "SIZERAND") == 0)
-					{
-						// 読み込んど文字列代入
-						sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-						if (strcmp(cComp, "NULL") != 0)
+						// 位置yが読み込まれたら
+						else if (strcmp(cComp, "POSY") == 0)
 						{
-							while (strcmp(cComp, "}") != 0)
-							{
-								// 1行読み込む
-								fgets(cRead, sizeof(cRead), pFile);
-								// 読み込んど文字列代入
-								sscanf(cRead, "%s", &cComp);
-
-								if (strcmp(cComp, "SIZEX") == 0)
-								{
-									sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].SizeXRand.nMax, &m_ParticleOffset[nCntOffset].SizeXRand.nMin);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "SIZEY") == 0)
-								{
-									sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].SizeYRand.nMax, &m_ParticleOffset[nCntOffset].SizeYRand.nMin);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-							}
-							// 文字列の初期化
-							cComp[0] = '\0';
+							// 位置yの最大値と最小値を代入
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->PosYRand.nMax,
+								&m_ParticleOffset[nCntOffset]->PosYRand.nMin
+							);
 						}
-						// 文字列の初期化
-						cComp[0] = '\0';
-					}
-					else if (strcmp(cComp, "ANGLERAND") == 0)
-					{
-						// 読み込んど文字列代入
-						sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-						if (strcmp(cComp, "NULL") != 0)
+						// 位置zが読み込まれたら
+						else if (strcmp(cComp, "POSZ") == 0)
 						{
-							while (strcmp(cComp, "}") != 0)
-							{
-								// 1行読み込む
-								fgets(cRead, sizeof(cRead), pFile);
-								// 読み込んど文字列代入
-								sscanf(cRead, "%s", &cComp);
-								if (strcmp(cComp, "MAX") == 0)
-								{
-									sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].nAngleRand.nMax);
-									// 文字列の初期化
-									cComp[0] = '\0';
-
-								}
-								else if (strcmp(cComp, "MIN") == 0)
-								{
-									sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].nAngleRand.nMin);
-									// 文字列の初期化
-									cComp[0] = '\0';
-
-								}
-							}
-							// 文字列の初期化
-							cComp[0] = '\0';
+							// 位置zの最大値と最小値を代入
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->PosZRand.nMax,
+								&m_ParticleOffset[nCntOffset]->PosZRand.nMin
+							);
 						}
-						// 文字列の初期化
-						cComp[0] = '\0';
-					}
-					else if (strcmp(cComp, "SPEEDRAND") == 0)
-					{
-						// 読み込んど文字列代入
-						sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-						if (strcmp(cComp, "NULL") != 0)
-						{
-							while (strcmp(cComp, "}") != 0)
-							{
-								// 1行読み込む
-								fgets(cRead, sizeof(cRead), pFile);
-								// 読み込んど文字列代入
-								sscanf(cRead, "%s", &cComp);
-								if (strcmp(cComp, "MAX") == 0)
-								{
-									sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].nSpeedRand.nMax);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "MIN") == 0)
-								{
-									sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].nSpeedRand.nMin);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-							}
-							// 文字列の初期化
-							cComp[0] = '\0';
-						}
-						// 文字列の初期化
-						cComp[0] = '\0';
-					}
-					else if (strcmp(cComp, "LIFERAND") == 0)
-					{
-						// 読み込んど文字列代入
-						sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-						if (strcmp(cComp, "NULL") != 0)
-						{
-							while (strcmp(cComp, "}") != 0)
-							{
-								// 1行読み込む
-								fgets(cRead, sizeof(cRead), pFile);
-								// 読み込んど文字列代入
-								sscanf(cRead, "%s", &cComp);
-								if (strcmp(cComp, "MAX") == 0)
-								{
-									sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].nLifeRand.nMax);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-								else if (strcmp(cComp, "MIN") == 0)
-								{
-									sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty, &m_ParticleOffset[nCntOffset].nLifeRand.nMin);
-									// 文字列の初期化
-									cComp[0] = '\0';
-								}
-							}
-							// 文字列の初期化
-							cComp[0] = '\0';
-						}
-						// 文字列の初期化
-						cComp[0] = '\0';
 					}
 				}
+				// セット色が来たら
+				// ->入る
+				else if (strcmp(cComp, "SET_COLRAND") == 0)
+				{
+					// エンドセットサイズがくるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_COLRAND") != 0)
+					{
+						// 文字列の初期化
+						cComp[0] = '\0';
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
+						// 読み込んど文字列代入
+						sscanf(cRead, "%s", &cComp);
+						// 赤
+						if (strcmp(cComp, "RED") == 0)
+						{
+							m_ParticleOffset[nCntOffset]->bRedRand = true;
+						}
+						// 緑
+						else if (strcmp(cComp, "GREEN") == 0)
+						{
+							m_ParticleOffset[nCntOffset]->bGreenRand = true;
+						}
+						// 青
+						else if (strcmp(cComp, "BLUE") == 0)
+						{
+							m_ParticleOffset[nCntOffset]->bBlueRand = true;
+						}
+						// 透明度
+						else if (strcmp(cComp, "ALPHA") == 0)
+						{
+							m_ParticleOffset[nCntOffset]->bAlphaRand = true;
+						}
+					}
+				}
+				// セットサイズが来たら
+				// ->入る
+				else if (strcmp(cComp, "SET_SIZERAND") == 0)
+				{
+					// エンドセットサイズがくるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_SIZERAND") != 0)
+					{
+						// 文字列の初期化
+						cComp[0] = '\0';
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
+						// 読み込んど文字列代入
+						sscanf(cRead, "%s", &cComp);
+						// サイズx
+						if (strcmp(cComp, "SIZEX") == 0)
+						{
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->SizeXRand.nMax,
+								&m_ParticleOffset[nCntOffset]->SizeXRand.nMin
+							);
+						}
+						// サイズy
+						else if (strcmp(cComp, "SIZEY") == 0)
+						{
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->SizeYRand.nMax,
+								&m_ParticleOffset[nCntOffset]->SizeYRand.nMin
+							);
+						}
+					}
+				}
+				// セット角度が来たら
+				// ->入る
+				else if (strcmp(cComp, "SET_ANGLERAND") == 0)
+				{
+					// エンドセット角度がくるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_ANGLERAND") != 0)
+					{
+						// 文字列の初期化
+						cComp[0] = '\0';
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
+						// 読み込んど文字列代入
+						sscanf(cRead, "%s", &cComp);
+						// 最大角度
+						if (strcmp(cComp, "MAX") == 0)
+						{
+							sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->nAngleRand.nMax
+							);
+						}
+						// 最小角度
+						else if (strcmp(cComp, "MIN") == 0)
+						{
+							sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->nAngleRand.nMin
+							);
+						}
+					}
+				}
+				// セットスピードが来たら
+				// ->入る
+				else if (strcmp(cComp, "SET_SPEEDRAND") == 0)
+				{
+					// エンドセットスピードが読み込まれるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_SPEEDRAND") != 0)
+					{
+						// 文字列の初期化
+						cComp[0] = '\0';
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
+						// 読み込んど文字列代入
+						sscanf(cRead, "%s", &cComp);
+						// 最大スピードが読み込まれるまで
+						if (strcmp(cComp, "MAX") == 0)
+						{
+							// スピードランダムの最大値を代入
+							sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->nSpeedRand.nMax
+							);
+						}
+						// 最小スピードが読み込まれるまで
+						else if (strcmp(cComp, "MIN") == 0)
+						{
+							// スピードランダムの最小値を代入
+							sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->nSpeedRand.nMin
+							);
+						}
+					}
+				}
+				// セットライフランダムが来たら
+				// ->入る
+				else if (strcmp(cComp, "SET_LIFERAND") == 0)
+				{
+					// エンドセットライフランダムがくるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_LIFERAND") != 0)
+					{
+						// 文字列の初期化
+						cComp[0] = '\0';
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
+						// 読み込んど文字列代入
+						sscanf(cRead, "%s", &cComp);
+						// 最大ライフ
+						if (strcmp(cComp, "MAX") == 0)
+						{
+							sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->nLifeRand.nMax
+							);
+						}
+						// 最小ライフ
+						else if (strcmp(cComp, "MIN") == 0)
+						{
+							sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->nLifeRand.nMin
+							);
+						}
+					}
+				}
+				// 位置が読み込まれたら
 				else if (strcmp(cComp, "POS") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %f %f %f", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].Pos.x,
-							&m_ParticleOffset[nCntOffset].Pos.y,
-							&m_ParticleOffset[nCntOffset].Pos.z);
-					}
-
+					// 位置情報の代入
+					sscanf(cRead, "%s %s %f %f %f", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->Pos.x,
+						&m_ParticleOffset[nCntOffset]->Pos.y,
+						&m_ParticleOffset[nCntOffset]->Pos.z);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
-				else if (strcmp(cComp, "ANGLE") == 0)
+				// 回転が読み込まれたら
+				else if (strcmp(cComp, "ROT") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %f %f %f", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].Rot.x,
-							&m_ParticleOffset[nCntOffset].Rot.y,
-							&m_ParticleOffset[nCntOffset].Rot.z);
-					}
-
+					// 回転情報の代入
+					sscanf(cRead, "%s %s %f %f %f", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->Rot.x,
+						&m_ParticleOffset[nCntOffset]->Rot.y,
+						&m_ParticleOffset[nCntOffset]->Rot.z);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// 色が読み込まれたら
 				else if (strcmp(cComp, "COL") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %f %f %f %f", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].Col.r,
-							&m_ParticleOffset[nCntOffset].Col.g,
-							&m_ParticleOffset[nCntOffset].Col.b,
-							&m_ParticleOffset[nCntOffset].Col.a);
-					}
-
+					// 色情報の代入
+					sscanf(cRead, "%s %s %f %f %f %f", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->Col.r,
+						&m_ParticleOffset[nCntOffset]->Col.g,
+						&m_ParticleOffset[nCntOffset]->Col.b,
+						&m_ParticleOffset[nCntOffset]->Col.a);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// サイズが読み込まれたら
 				else if (strcmp(cComp, "SIZE") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %f %f",
-							&cEmpty, 
-							&cEmpty,
-							&m_ParticleOffset[nCntOffset].Size.x,
-							&m_ParticleOffset[nCntOffset].Size.y
-							);
-
-					}
+					// サイズの代入
+					sscanf(cRead, "%s %s %f %f",
+						&cEmpty,
+						&cEmpty,
+						&m_ParticleOffset[nCntOffset]->Size.x,
+						&m_ParticleOffset[nCntOffset]->Size.y
+					);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// スピードが読み込まれたら
 				else if (strcmp(cComp, "SPEED") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %f", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].fSpeed);
-					}
+					// スピードの代入
+					sscanf(cRead, "%s %s %f", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->fSpeed);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// ライフが読み込まれたら
 				else if (strcmp(cComp, "LIFE") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].nLife);
-					}
+					// ライフの代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->nLife);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
-
+				// フレームが読み込まれたら
 				else if (strcmp(cComp, "FRAME") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].nFrame);
-					}
+					// フレームの代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->nFrame);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// 番号が読み込まれたら
 				else if (strcmp(cComp, "NUMBER") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].nNumber);
-					}
+					// 番号の代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->nNumber);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// テクスチャータイプが読み込まれたら
 				else if (strcmp(cComp, "TEXTYPE") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].nEffeTexType);
-					}
+					// テクスチャータイプの代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->nEffectTexType);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
-				else if (strcmp(cComp, "EFFETYPE") == 0)
+				// エフェクトタイプが読み込まれたら
+				else if (strcmp(cComp, "EFFECTTYPE") == 0)
 				{
-					// 文字列の初期化
-					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].nEffeType);
-					}
+					// エフェクトタイプの代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->nEffectType);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// パーティクルタイプが読み込まれたら
 				else if (strcmp(cComp, "PARTICLETYPE") == 0)
 				{
+					// パーティクルタイプの代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->type);
 					// 文字列の初期化
 					cComp[0] = '\0';
-					sscanf(cRead, "%s %s %s", &cEmpty, &cEmpty, &cComp);
-
-					if (strcmp(cComp, "NULL") != 0)
-					{
-						sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-							&m_ParticleOffset[nCntOffset].type);
-					}
+				}
+				// ブレンドタイプが読み込まれたら
+				else if (strcmp(cComp, "BLEND") == 0)
+				{
+					// パーティクルタイプの代入
+					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->Blend);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
@@ -755,23 +696,37 @@ HRESULT C3DParticle::Load(void)
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 開放
+// 全リソース情報の開放
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DParticle::Unload(void)
 {
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 原点位置の設定
+// パーティクル番号設定
+//	ParticleId	: パーティクル番号
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DParticle::SetOrigin(CONST D3DXVECTOR3 & Origin)
+void C3DParticle::SetParticle(
+	PARTICLE_ID const	&ParticleId	// パーティクル番号
+)
 {
-	m_Origin = Origin;
+	m_offsetID = ParticleId;
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 初期位置設定
+//	origin	: 初期位置
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void C3DParticle::SetOrigin(
+	D3DXVECTOR3 const	&origin		// 初期位置
+)
+{
+	m_Origin = origin;
 }
 
 #ifdef _DEBUG
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// デバッグ表示
+// デバッグ処理
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DParticle::Debug(void)
 {

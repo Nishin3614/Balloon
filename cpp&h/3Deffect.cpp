@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// パーティクルの処理[particle.h]
+// 3Dエフェクトの処理[3Deffect.h]
 // Author : Nishiyama koki
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -8,33 +8,21 @@
 // インクルードファイル
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "3Deffect.h"
-#include "manager.h"
-
-#define EFFECT_FILENAME "data/LOAD/EffectInfo.txt"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // マクロ定義
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define BASEANGLE (D3DX_PI * 0.25f)
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 静的メンバ変数の初期化
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-LPDIRECT3DVERTEXBUFFER9	C3DEffect::m_pVtxBuff = NULL;
-C3DEffect::EFFECT		C3DEffect::m_aEffect[EFFECT_MAX] = {};
-int						C3DEffect::m_nNumTextureMax = 0;
-int						C3DEffect::m_nTexId[EFFECT_TYPE_MAX] = 
-{
-	0,
-	1,
-	3,
-	2
-};	// テクスチャーID
+LPDIRECT3DVERTEXBUFFER9	C3DEffect::m_pVtxBuff = NULL;			// バッファ情報
+CEffect::EFFECT			C3DEffect::m_aEffect[EFFECT_MAX] = {};	// エフェクト情報
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 引数ありのコンストラクタ
+// コンストラクタ
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-C3DEffect::C3DEffect() :CScene()
+C3DEffect::C3DEffect() :CEffect()
 {
 }
 
@@ -46,7 +34,7 @@ C3DEffect::~C3DEffect()
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 初期化
+// 初期化処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Init(void)
 {
@@ -54,26 +42,30 @@ void C3DEffect::Init(void)
 	LPDIRECT3DDEVICE9	pDevice;					// デバイスのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
 
-	// 値の初期化
-	this->InitValues();
+	// エフェクトの初期化
+	CEffect::Init();
+	// 変数の初期化
+	CEffect::InitValues(&m_aEffect[0]);
 	// 頂点情報作成
-	this->MakeVertex(pDevice);
+	MakeVertex(pDevice);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 終了
+// 終了処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Uninit(void)
 {
+	// バッファ情報のNULLチェック
 	if (m_pVtxBuff != NULL)
 	{
+		// バッファ情報の開放
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 更新
+// 更新処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Update(void)
 {
@@ -81,129 +73,80 @@ void C3DEffect::Update(void)
 	VERTEX_3D *pVtx;				// 頂点情報のポインタ
 	C3DEffect::EFFECT *pEffect;		// エフェクトのポインタ
 	// ポインタの初期化
-	pEffect = &C3DEffect::m_aEffect[0];
+	pEffect = &m_aEffect[0];
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 最大数分ループ
-	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++, pVtx+=4)
+	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++, pVtx += 4)
 	{
 		// 使用フラグがオフの時
-		if (pEffect->bUse == false)
+		// ->ループスキップ
+		if (!pEffect->bUse)
 		{
 			continue;
 		}
-		// 使用中のやつの更新
-		if (this->UpdateLife(pVtx, pEffect) == false)
+		// ライフ更新
+		// ->ループスキップ
+		if (!CEffect::UpdateLife(pEffect))
 		{
 			continue;
 		}
 		// 移動の更新
-		this->UpdateMove(pVtx, pEffect);
+		CEffect::UpdateMove(pEffect);
 		// 頂点情報の更新
-		this->UpdateVetex(pVtx, pEffect);
+		CEffect::UpdateVetex(pEffect);
+		// 位置更新
+		pEffect->pos += pEffect->move;
+		// 頂点サイズの設定
+		SetVartexSize(pVtx, pEffect);
+		// 頂点カラーの設定
+		SetVetexColor(pVtx, pEffect);
 	}
 	// 頂点データをアンロックする
 	m_pVtxBuff->Unlock();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ライフの更新
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool C3DEffect::UpdateLife(VERTEX_3D *pVtx, EFFECT * pEffect)
-{
-	if (pEffect->nLife < 0)
-	{
-		// ライフが0になったとき
-		pEffect->bUse = false;
-		return false;
-	}
-	else
-	{
-		// ライフを減らすw
-		pEffect->nLife--;
-		return true;
-	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点の更新
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool C3DEffect::UpdateVetex(VERTEX_3D * pVtx, EFFECT * pEffect)
-{
-	// 半径を変化させる
-	pEffect->size -= pEffect->sizeValue;
-	// 角度を変化させる
-	//pEffect->rot.y += (rand() % 10) * 0.01f;
-	//CCalculation::Rot_One_Limit(pEffect->rot.y);
-	pEffect->fAngle += (rand() % 10) * 0.01f;
-	CCalculation::Rot_One_Limit(pEffect->fAngle);
-	SetVartexSize(pVtx, pEffect);
-	// アルファ値を変化させる
-	pEffect->col.a -= pEffect->fAlphaValue;
-	SetVetexColor(pVtx, pEffect);
-	return true;
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 移動の更新
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DEffect::UpdateMove(VERTEX_3D * pVtx, EFFECT * pEffect)
-{
-	switch (pEffect->EffectType)
-	{
-	case C3DEffect::EFFECT_TYPE_EXPLOSION:
-		// 慣性
-		pEffect->move.x += (0 - pEffect->move.x)*0.2f;
-		pEffect->move.y += (0 - pEffect->move.y)*0.2f;
-		pEffect->move.z += (0 - pEffect->move.z)*0.2f;
-		break;
-	case C3DEffect::EFFECT_TYPE_SPARK:
-		break;
-	case C3DEffect::EFFECT_TYPE_LINE:
-
-		break;
-	default:
-		break;
-	}
-	// 位置情報の更新
-	pEffect->pos += pEffect->move;
-
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 描画
+// 描画処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Draw(void)
 {
 	// 変数宣言
 	LPDIRECT3DDEVICE9	pDevice;					// デバイスのポインタ
-	D3DXMATRIX mtxRot, mtxTrans, mtxView;			// 計算用マトリックス
+	D3DXMATRIX
+		mtxRot,										// 回転行列
+		mtxTrans,									// 位置行列
+		mtxView,									// ビュー行列
+		mtxWorld;									// ワールド行列
+
 	C3DEffect::EFFECT *pEffect;						// エフェクトのポインタ
 
 	pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
 	pEffect = &m_aEffect[0];						// ポインタの初期化
 
-	// 3Dエフェクト用描画変化
-	CManager::GetRenderer()->SetType(CRenderer::TYPE_3DEFFECT_ON);
+													// ライティングモード無効
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	//Zバッファ　有効　無効
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, D3DZB_FALSE);
 
 	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++)
 	{
 		if (pEffect->bUse == true)
 		{
+			// 合成演算設定
+			CManager::GetRenderer()->SetBlend(pEffect->BlendType);
 			// ワールドマトリックスの初期化
-			D3DXMatrixIdentity(&pEffect->mtxWorld);
+			D3DXMatrixIdentity(&mtxWorld);
 
 			// マトリックスビューの取得
 			pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-			
 			// ビルボード
 			CCalculation::SetBillboard(
-				&pEffect->mtxWorld,
+				&mtxWorld,
 				&mtxView
 			);
-			
 			// 回転を反映
 			D3DXMatrixRotationYawPitchRoll(
 				&mtxRot,
@@ -211,8 +154,8 @@ void C3DEffect::Draw(void)
 				pEffect->rot.x,
 				pEffect->rot.z);
 			D3DXMatrixMultiply(
-				&pEffect->mtxWorld,
-				&pEffect->mtxWorld,
+				&mtxWorld,
+				&mtxWorld,
 				&mtxRot);
 			// 位置を反映
 			D3DXMatrixTranslation(
@@ -221,12 +164,12 @@ void C3DEffect::Draw(void)
 				pEffect->pos.y,
 				pEffect->pos.z);
 			D3DXMatrixMultiply(
-				&pEffect->mtxWorld,
-				&pEffect->mtxWorld,
+				&mtxWorld,
+				&mtxWorld,
 				&mtxTrans);
 
 			// ワールドマトリックスの設定
-			pDevice->SetTransform(D3DTS_WORLD, &pEffect->mtxWorld);
+			pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
 			// 頂点バッファをデータストリームにバインド
 			pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -235,40 +178,21 @@ void C3DEffect::Draw(void)
 			pDevice->SetFVF(FVF_VERTEX_3D);
 
 			// テクスチャの設定
-			pDevice->SetTexture(0, CTexture_manager::GetTexture(m_nTexId[pEffect->EffectType]));
+			pDevice->SetTexture(0, CTexture_manager::GetTexture(pEffect->nTexType));
 			// ポリゴンの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCount * 4, 2);
 		}
 	}
-	// 3Dエフェクト用描画変化
-	CManager::GetRenderer()->SetType(CRenderer::TYPE_3DEFFECT_OFF);
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 値の初期化
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DEffect::InitValues(void)
-{
-	// 変数宣言
-	C3DEffect::EFFECT *pEffect;		// エフェクトのポインタ
-	// ポインタの初期化
-	pEffect = &C3DEffect::m_aEffect[0];
-
-	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++)
-	{	// 最大数分ループ
-		pEffect->pos			= D3DVECTOR3_ZERO;				// 位置
-		pEffect->rot			= D3DVECTOR3_ZERO;				// 回転量
-		pEffect->move			= D3DVECTOR3_ZERO;				// 移動量
-		pEffect->col			= D3DXCOLOR_INI;				// 色
-		pEffect->size			= D3DVECTOR2_ZERO;				// サイズ
-		pEffect->sizeValue		= D3DVECTOR2_ZERO;				// 半径の変化値
-		pEffect->fAngle			= 0.0f;							// 角度
-		pEffect->fAlphaValue	= 0.0f;							// アルファ値の変化値
-		pEffect->nLife			= 0;							// 持ち時間
-		pEffect->nTexType		= 0;							// テクスチャの種類
-		pEffect->bUse			= false;						// 使用しているかどうか
-		pEffect->EffectType		= C3DEffect::EFFECT_TYPE_NONE;	// エフェクトの種類
-	}
+	// 合成演算設定
+	CManager::GetRenderer()->SetBlend(CRenderer::BLEND_TRANSLUCENT);
+	//アルファテスト戻す
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	//Zバッファ　有効
+	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, D3DZB_TRUE);
+	// ライティングモード有効
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	// レンダーステート(通常ブレンド処理)
+	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -292,8 +216,10 @@ HRESULT C3DEffect::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	// エフェクトループ
 	for (int nCntEffect = 0; nCntEffect < EFFECT_MAX; nCntEffect++, pVtx += 4)
 	{
+		// 頂点サイズ設定
 		SetVartexSize(pVtx, NULL, &nCntEffect);
 
 		// 法線ベクトル
@@ -319,17 +245,25 @@ HRESULT C3DEffect::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点サイズの設定
+// 頂点サイズ設定
+//	pVtx	: 2D頂点情報
+//	pEffect	: エフェクト情報
+//	nIndex	: 番号情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DEffect::SetVartexSize(VERTEX_3D * pVtx, EFFECT * pEffect, const int * nIndex)
+void C3DEffect::SetVartexSize(
+	VERTEX_3D * pVtx,	// 2D頂点情報
+	EFFECT * pEffect,	// エフェクト情報
+	const int * nIndex	// 番号情報
+)
 {
+	// 番号情報のNULLチェック
 	if (nIndex != NULL)
 	{
 		// 変数宣言
 		C3DEffect::EFFECT *pLocalEffect;					// エフェクトのポインタ
 		pLocalEffect = &C3DEffect::m_aEffect[*nIndex];		// ポインタの初期化
 
-		// 頂点の設定
+		// 頂点座標の設定
 		pVtx[0].pos.x = -sinf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
 		pVtx[0].pos.y = -cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.y;
 		pVtx[0].pos.z = -cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
@@ -344,9 +278,10 @@ void C3DEffect::SetVartexSize(VERTEX_3D * pVtx, EFFECT * pEffect, const int * nI
 		pVtx[3].pos.z = cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
 		return;
 	}
+	// エフェクトの情報のNULLチェック
 	if (pEffect != NULL)
 	{
-		// 頂点の設定
+		// 頂点座標の設定
 		pVtx[0].pos.x = -sinf(BASEANGLE + pEffect->fAngle) * pEffect->size.x;
 		pVtx[0].pos.y = -cosf(BASEANGLE + pEffect->fAngle) * pEffect->size.y;
 		pVtx[0].pos.z = -cosf(BASEANGLE + pEffect->fAngle) * pEffect->size.x;
@@ -365,23 +300,34 @@ void C3DEffect::SetVartexSize(VERTEX_3D * pVtx, EFFECT * pEffect, const int * nI
 
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点カラーの設定
+// 頂点カラー設定
+//	pVtx	: 2D頂点情報
+//	pEffect	: エフェクト情報
+//	nIndex	: 番号情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DEffect::SetVetexColor(VERTEX_3D * pVtx, EFFECT * pEffect, const int * nIndex)
+void C3DEffect::SetVetexColor(
+	VERTEX_3D * pVtx,	// 2D頂点情報
+	EFFECT * pEffect,	// エフェクト情報
+	const int * nIndex	// 番号情報
+)
 {
+	// 番号情報のNULLチェック
 	if (nIndex != NULL)
 	{
 		// 変数宣言
 		C3DEffect::EFFECT *pLocalEffect;					// エフェクトのポインタ
 		pLocalEffect = &C3DEffect::m_aEffect[*nIndex];		// ポインタの初期化
 
+		// 頂点カラーの設定
 		pVtx[0].col =
 			pVtx[1].col =
 			pVtx[2].col =
 			pVtx[3].col = pLocalEffect->col;
 	}
+	// エフェクト情報のNULLチェック
 	if (pEffect != NULL)
 	{
+		// 頂点カラーの設定
 		pVtx[0].col =
 			pVtx[1].col =
 			pVtx[2].col =
@@ -390,7 +336,7 @@ void C3DEffect::SetVetexColor(VERTEX_3D * pVtx, EFFECT * pEffect, const int * nI
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 生成
+// 生成処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 C3DEffect * C3DEffect::Create(void)
 {
@@ -404,32 +350,36 @@ C3DEffect * C3DEffect::Create(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 削除
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DEffect::Delete(int nCntIndex)
-{
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// エフェクトの設定
+// 3Dエフェクトの設定
+//	EffectType	: エフェクトタイプ
+//	nTexType	: テクスチャータイプ
+//	pos			: 位置
+//	rot			: 回転
+//	move		: 移動量
+//	col			: 色
+//	size		: サイズ
+//	nLife		: ライフ
+//	Blend		: ブレンドタイプ
+//	sizeValue	: サイズ変化
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Set3DEffect(
-	EFFECT_TYPE EffectType, 
-	int nTexType,
-	D3DXVECTOR3 pos, 
-	D3DXVECTOR3 rot,
-	D3DXVECTOR3 move, 
-	D3DXCOLOR col,
-	D3DXVECTOR2 size,
-	int nLife,
-	D3DXVECTOR2 sizeValue
+	EFFECT_TYPE const &EffectType,										// エフェクトタイプ
+	int const &nTexType,												// テクスチャータイプ
+	D3DXVECTOR3 const &pos,												// 位置
+	D3DXVECTOR3 const &rot,												// 回転
+	D3DXVECTOR3 const &move,											// 移動量
+	D3DXCOLOR const &col,												// 色
+	D3DXVECTOR2 const &size,											// サイズ
+	int const &nLife,													// ライフ
+	CRenderer::BLEND const &Blend,										// ブレンドタイプ
+	D3DXVECTOR2 const &sizeValue										// サイズ変化
 )
 {
 	// 変数宣言
 	C3DEffect::EFFECT *pEffect;			// エフェクトのポインタ
 	pEffect = &C3DEffect::m_aEffect[0];	// ポインタの初期化
 
-	// 最大数ループ
+	// エフェクトループ
 	for (int nCntEffect = 0; nCntEffect < EFFECT_MAX; nCntEffect++, pEffect++)
 	{
 		// 使用フラグオフの個体の時
@@ -455,6 +405,8 @@ void C3DEffect::Set3DEffect(
 			pEffect->pos = pos;
 			// 回転の設定
 			pEffect->rot = rot;
+			// ブレンドタイプ設定
+			pEffect->BlendType = Blend;
 			// 頂点位置の設定
 			SetVartexSize(pVtx, pEffect);
 			// 色の設定
@@ -463,11 +415,11 @@ void C3DEffect::Set3DEffect(
 			SetVetexColor(pVtx, pEffect);
 			// アルファ変化値の設定
 			pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
-			if (pEffect->nTexType == 1)
+			if (pEffect->EffectType == 1)
 			{
 				// 半径変化値の設定
-				pEffect->sizeValue.x = -50.0f;
-				pEffect->sizeValue.y = -50.0f;
+				pEffect->sizeValue.x += 50.0f;
+				pEffect->sizeValue.y += 50.0f;
 			}
 			else
 			{
@@ -491,15 +443,7 @@ void C3DEffect::Set3DEffect(
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 HRESULT C3DEffect::Load(void)
 {
-	// テクスチャファイル名の取得
-	return C3DEffect::LoadTextureFile();
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// テクスチャファイル名の読み込み
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-HRESULT C3DEffect::LoadTextureFile(void)
-{
+	// 成功を返す
 	return S_OK;
 }
 
@@ -508,6 +452,7 @@ HRESULT C3DEffect::LoadTextureFile(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Unload(void)
 {
+
 }
 
 #ifdef _DEBUG
@@ -516,5 +461,6 @@ void C3DEffect::Unload(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DEffect::Debug(void)
 {
+
 }
 #endif // _DEBUG

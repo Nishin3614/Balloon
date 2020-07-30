@@ -299,7 +299,6 @@ void CFloor::vertexMove(FILE *pFile)
 	VERTEX_3D *pVtx;
 	char cReadText[128];															// 文字
 	char cHeadText[128];															// 比較
-	float aData[7];																	// 答え
 
 	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);

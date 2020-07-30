@@ -212,36 +212,13 @@ void CCharacter_Balloon::Scene_OpponentCollision(int const & nObjType, CScene * 
 	// オブジェクトタイプがプレイヤーなら
 	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
-		// 死亡処理
-		BalloonNone();
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
 	// オブジェクトタイプが敵風船なら ||
 	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
-		// 変数宣言
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
-		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
-		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
-		// 押し出し処理を入れる
-		// 今回の当たり判定とプレイヤーの位置ポインター管理
-		// 衝突後の速度計算処理
-		CCalculation::SquarColiAfterVec(
-			m_pos,
-			m_move,
-			*pCharacterPos,
-			CharacterMove,
-			1,
-			1,
-			1.0f,
-			1.0f,
-			RefVecA,
-			RefVecB
-		);
-		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA* 5.0f;
+
 	}
 }
 
