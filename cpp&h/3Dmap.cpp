@@ -171,8 +171,8 @@ void C3DMap::LoadScript(char* Add)
 				pFloor = CFloor::Create(D3DXVECTOR3((float)atof(vsvec_Contens[0].c_str()), (float)atof(vsvec_Contens[1].c_str()), (float)atof(vsvec_Contens[2].c_str())),
 					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
 					D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-					50.0f,
-					50.0f,
+					50,
+					50,
 					7);
 
 				pFloor->vertexMove(pFile);										// 頂点情報の作成(ファイルから)
