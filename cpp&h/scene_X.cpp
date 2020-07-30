@@ -650,7 +650,6 @@ void CScene_X::LoadScrept(char* add)
 	FILE *pFile = NULL;											// ファイル
 	char cReadText[128] = {};									// 文字
 	char cHeadText[128] = {};									// 比較
-	float fData[7];												// 答え
 	CScene_X *pObject = NULL;
 
 	pFile = fopen(add, "r");									// ファイルを開くまたは作る

@@ -666,6 +666,9 @@ void CPlayer::OtherDie(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
+	// 変数宣言
+	// ネットワーク情報取得
+	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 	// バルーンキャラクターの当たった後の処理
 	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
 	// シーン情報がNULLなら
@@ -674,9 +677,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
-		// 変数宣言
-		// ネットワーク情報取得
-		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
@@ -688,9 +688,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
-		// 変数宣言
-		// ネットワーク情報取得
-		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
@@ -709,9 +706,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// 自分が死んだ時ではなく、相手が死んだときに加算
 
 
-		// 変数宣言
-		// ネットワーク情報取得
-		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
