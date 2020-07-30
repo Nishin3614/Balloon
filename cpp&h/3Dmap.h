@@ -131,6 +131,7 @@ public:
 	void Debug(void);
 #endif // _DEBUG
 	static HRESULT LoadCreate(MAP const &map);					// 読み込んだ情報を生成
+	static void LoadScript(char* Add);
 	static HRESULT Load(void);						// リソース情報読み込む設定
 	// マネージャーの読み込み
 	static HRESULT ManagerLoad(void);
