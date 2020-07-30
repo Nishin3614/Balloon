@@ -1,11 +1,11 @@
 // ==========================================================
 //
-// プレイヤー(アタックアップ)処理 [attackUP.h]
+// プレイヤー(スコアアップ)処理 [scoreUP.h]
 // Author : RYOUMA INOUE
 //
 // ==========================================================
-#ifndef _ATTACKUP_H_
-#define _ATTACKUP_H_
+#ifndef _SCOREUP_H_
+#define _SCOREUP_H_
 
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -22,7 +22,7 @@
 // ==========================================================
 // クラス
 // ==========================================================
-class CAttackUP : public CPlayer
+class CScoreUP : public CPlayer
 {
 public:
 	// ---------モーションタイプ---------- //
@@ -31,8 +31,8 @@ public:
 		MOTIONTYPE_MAX = CPlayer::MOTIONTYPE_MAX
 	} MOTIONTYPE;
 	/* 関数 */
-	CAttackUP();
-	~CAttackUP();
+	CScoreUP();
+	~CScoreUP();
 	void Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -57,25 +57,26 @@ public:
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
 	// 生成処理(シーン管理)
-	static CAttackUP * Create(
+	static CScoreUP * Create(
 		int const &nPlayerID,
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);			// 作成
 				// 生成処理(個人管理)
-	static CAttackUP * Create_Self(
+	static CScoreUP * Create_Self(
 		int const &nPlayerID,
 		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,
 		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
 	);
 	static HRESULT Load(void);			// 読み込み
 	static void UnLoad(void);			// UnLoadする
+	static bool GetScoreUP(void) { return m_bScoreUP; }	// 状態取得
 protected:
 private:
 	/* 構造体 */
 	/* 関数 */
 
 	/* 変数 */
-	bool m_bAttackUP;					// アタックアップするかどうか
+	static bool m_bScoreUP;					// スキルアップするかどうか
 };
 #endif

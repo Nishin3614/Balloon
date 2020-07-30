@@ -19,6 +19,7 @@
 #include "character_fish.h"
 #include "2Dgauge.h"
 #include "rank.h"
+#include "scoreUP.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -448,7 +449,7 @@ void CPlayer::MpUp(
 	}
 	else
 	{
-		// MPを上げる
+		// MPを下げる
 		m_nMP -= 100;
 		// MPがマックスだったら
 		if (m_nMP == 0)
@@ -680,7 +681,24 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+			// キャラクターが一致したら
+			if (CCharacter::GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+			{
+				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+			}
+			// キャラクターが一致したら
+			if (CCharacter::GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+			{
+				// 状態
+				if (CScoreUP::GetScoreUP() == true)
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+				}
+				else
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+				}
+			}
 		}
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
@@ -691,8 +709,25 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			// スコア加算処理
-			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+			// キャラクターが一致したら
+			if (CCharacter::GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+			{
+				// スコア加算処理
+				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+			}
+			// キャラクターが一致したら
+			if (CCharacter::GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+			{
+				// 状態
+				if (CScoreUP::GetScoreUP() == true)
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON * 2);
+				}
+				else
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+				}
+			}
 			// MP上げ処理(風船)
 			MpUp(MPUP_BREAKBALLOON);
 		}
@@ -774,7 +809,25 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+			// キャラクターが一致したら
+			if (CCharacter::GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+			{
+				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+			}
+			// キャラクターが一致したら
+			if (CCharacter::GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+			{
+				// 状態
+				if (CScoreUP::GetScoreUP() == true)
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+				}
+				else
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+				}
+			}
+
 		}
 		// 死亡処理
 		BalloonNone();
