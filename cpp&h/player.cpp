@@ -27,6 +27,7 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 int	CPlayer::m_All = 0;					// 総数
+bool CPlayer::m_bDie[MAX_PLAYER] = {};
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -103,6 +104,8 @@ void CPlayer::Init(void)
 		{
 			m_pRank->SetPos(m_pos);
 		}
+
+		m_bDie[m_nPlayerID] = false;
 	}
 }
 
@@ -210,10 +213,10 @@ void CPlayer::MyAction(const int &nId)
 		// 風船を生成する処理
 		CCharacter_Balloon::BalloonCreate();
 	}
-	// カメラの処理
-	Camera();
 	// MP上げ処理(マイフレーム)
 	MpUp(MPUP_EVERY);
+	// カメラの更新
+	Camera();
 	// MPゲージの変化定数を設定
 	m_p2DMPGauge->ChangeGauge((float)m_nMP);
 }
@@ -242,6 +245,10 @@ void CPlayer::MyMove(void)
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
 	fAngle = 0.0f;			// 角度
+
+	char aDebug[256];
+	sprintf(aDebug, "POS_Y : %f\n", m_pos.y);
+	OutputDebugString(aDebug);
 
 	if (CManager::GetJoy() != NULL)
 	{
@@ -633,7 +640,7 @@ void CPlayer::Die(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 
 	char aDie[64];
- 	sprintf(aDie, "DIE %d", pNetwork->GetId());
+	sprintf(aDie, "DIE %d", pNetwork->GetId());
 	pNetwork->SendTCP(aDie, sizeof(aDie));
 
 	if (m_pRank != NULL)
@@ -647,7 +654,7 @@ void CPlayer::Die(void)
 	// コントロールする自キャラの場合
 	if (m_nPlayerID == CManager::GetPlayerID())
 	{
-		OutputDebugString("あうとー！");
+		m_bDie[m_nPlayerID] = true;			// 死亡フラグを立てる
 	}
 }
 

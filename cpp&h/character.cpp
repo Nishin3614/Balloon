@@ -531,12 +531,6 @@ void CCharacter::Limit(void)
 		m_pos.z = 950;
 		m_move.z = 0.0f;
 	}
-	// yÇÃêßå¿
-	if (m_pos.y < -100.0f)
-	{
-		m_pos.y = -100.0f;
-		m_move.y = 0.0f;
-	}
 	if (m_pos.y > 1000.0f)
 	{
 		m_pos.y = 1000.0f;
