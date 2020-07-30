@@ -32,7 +32,7 @@
 #include "invisible.h"
 #include "revival.h"
 #include "speedUP.h"
-#include "attackUP.h"
+#include "scoreUP.h"
 #include "rank.h"
 #include "lake.h"
 
@@ -282,8 +282,8 @@ void CGame::PlayerCreate(void)
 		case CPlayer::CHARATYPE_INVISIBLE:
 			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
 			break;
-		case CPlayer::CHARATYPE_ATTACK_UP:
-			m_pPlayer[nCntPlayer] = CAttackUP::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+		case CPlayer::CHARATYPE_SCORE_UP:
+			m_pPlayer[nCntPlayer] = CScoreUP::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
 			break;
 		}
 	}

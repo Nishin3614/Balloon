@@ -1,10 +1,10 @@
 // ==========================================================
 //
-// プレイヤー(アタックアップ)処理 [attackUP.cpp]
+// プレイヤー(スコアアップ)処理 [scoreUP.cpp]
 // Author : RYOUMA INOUE
 //
 // ==========================================================
-#include "attackUP.h"
+#include "scoreUP.h"
 #include "manager.h"
 
 // ==========================================================
@@ -19,36 +19,37 @@
 // 静的変数宣言
 //
 // ==========================================================
+bool CScoreUP::m_bScoreUP = false;
 
 // ==========================================================
 // コンストラクタ処理
 // ==========================================================
-CAttackUP::CAttackUP() : CPlayer::CPlayer(CHARACTER_BALLOON4)
+CScoreUP::CScoreUP() : CPlayer::CPlayer(CHARACTER_BALLOON4)
 {
 }
 
 // ==========================================================
 // デストラクタ処理
 // ==========================================================
-CAttackUP::~CAttackUP()
+CScoreUP::~CScoreUP()
 {
 }
 
 // ==========================================================
 // 初期化処理
 // ==========================================================
-void CAttackUP::Init(void)
+void CScoreUP::Init(void)
 {
 	CPlayer::Init();
 
 	// 状態の初期化
-	m_bAttackUP = false;
+	m_bScoreUP = false;
 }
 
 // ==========================================================
 // 終了処理
 // ==========================================================
-void CAttackUP::Uninit(void)
+void CScoreUP::Uninit(void)
 {
 	CPlayer::Uninit();
 }
@@ -56,26 +57,26 @@ void CAttackUP::Uninit(void)
 // ==========================================================
 // 更新処理
 // ==========================================================
-void CAttackUP::Update(void)
+void CScoreUP::Update(void)
 {
 	CPlayer::Update();
 
 	if (CPlayer::GetMPMax() == true)
 	{
 		// 状態変化
-		m_bAttackUP = true;
+		m_bScoreUP = true;
 	}
 	else
 	{
 		// 状態変化
-		m_bAttackUP = false;
+		m_bScoreUP = false;
 	}
 }
 
 // ==========================================================
 // 描画処理
 // ==========================================================
-void CAttackUP::Draw(void)
+void CScoreUP::Draw(void)
 {
 	CPlayer::Draw();
 }
@@ -83,7 +84,7 @@ void CAttackUP::Draw(void)
 // ==========================================================
 // 死んだときの処理
 // ==========================================================
-void CAttackUP::Die(void)
+void CScoreUP::Die(void)
 {
 	CPlayer::Die();
 }
@@ -92,7 +93,7 @@ void CAttackUP::Die(void)
 // ==========================================================
 // デバッグ表示
 // ==========================================================
-void CAttackUP::Debug(void)
+void CScoreUP::Debug(void)
 {
 	CPlayer::Debug();
 }
@@ -103,7 +104,7 @@ void CAttackUP::Debug(void)
 //	nObjType	: オブジェクトタイプ
 //	pScene		: 相手のシーン情報
 // ==========================================================
-void CAttackUP::Scene_MyCollision(int const & nObjType, CScene * pScene)
+void CScoreUP::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
 	CPlayer::Scene_MyCollision(nObjType, pScene);
 }
@@ -113,7 +114,7 @@ void CAttackUP::Scene_MyCollision(int const & nObjType, CScene * pScene)
 //	nObjType	: オブジェクトタイプ
 //	pScene		: 相手のシーン情報
 // ==========================================================
-void CAttackUP::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
+void CScoreUP::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
 	CPlayer::Scene_OpponentCollision(nObjType, pScene);
 }
@@ -121,57 +122,57 @@ void CAttackUP::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 // ==========================================================
 // 生成処理(シーン管理)
 // ==========================================================
-CAttackUP * CAttackUP::Create(
+CScoreUP * CScoreUP::Create(
 	int const &nPlayerID,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR3 const & rot
 )
 {
 	// 変数宣言
-	CAttackUP * pAttackUP;
+	CScoreUP * pScoreUP;
 	// メモリの生成(初め->基本クラス,後->派生クラス)
-	pAttackUP = new CAttackUP();
+	pScoreUP = new CScoreUP();
 	// シーン管理設定
-	pAttackUP->ManageSetting(CScene::LAYER_CHARACTER);
+	pScoreUP->ManageSetting(CScene::LAYER_CHARACTER);
 	// 設定
-	pAttackUP->SetPlayerID(nPlayerID);
-	pAttackUP->SetPos(pos);
-	pAttackUP->SetRot(rot);
-	pAttackUP->SetRotDest(rot);
+	pScoreUP->SetPlayerID(nPlayerID);
+	pScoreUP->SetPos(pos);
+	pScoreUP->SetRot(rot);
+	pScoreUP->SetRotDest(rot);
 	// 初期化処理
-	pAttackUP->Init();
+	pScoreUP->Init();
 	// 生成したオブジェクトを返す
-	return pAttackUP;
+	return pScoreUP;
 }
 
 // ==========================================================
 // 生成処理(個人管理)
 // ==========================================================
-CAttackUP * CAttackUP::Create_Self(
+CScoreUP * CScoreUP::Create_Self(
 	int const &nPlayerID,
 	D3DXVECTOR3 const & pos,
 	D3DXVECTOR3 const & rot
 )
 {
 	// 変数宣言
-	CAttackUP * pAttackUP;
+	CScoreUP * pScoreUP;
 	// メモリの生成(初め->基本クラス,後->派生クラス)
-	pAttackUP = new CAttackUP();
+	pScoreUP = new CScoreUP();
 	// 設定
-	pAttackUP->SetPlayerID(nPlayerID);
-	pAttackUP->SetPos(pos);
-	pAttackUP->SetRot(rot);
-	pAttackUP->SetRotDest(rot);
+	pScoreUP->SetPlayerID(nPlayerID);
+	pScoreUP->SetPos(pos);
+	pScoreUP->SetRot(rot);
+	pScoreUP->SetRotDest(rot);
 	// 初期化処理
-	pAttackUP->Init();
+	pScoreUP->Init();
 	// 生成したオブジェクトを返す
-	return pAttackUP;
+	return pScoreUP;
 }
 
 // ==========================================================
 // リソース情報読み込み処理
 // ==========================================================
-HRESULT CAttackUP::Load(void)
+HRESULT CScoreUP::Load(void)
 {
 	return S_OK;
 }
@@ -179,7 +180,7 @@ HRESULT CAttackUP::Load(void)
 // ==========================================================
 // 読み込んだリソース情報を破棄処理
 // ==========================================================
-void CAttackUP::UnLoad(void)
+void CScoreUP::UnLoad(void)
 {
 
 }
