@@ -43,8 +43,8 @@ public:
 	typedef enum
 	{
 		KEY_X = 0,
-		KEY_A,
 		KEY_Y,
+		KEY_A,
 		KEY_B,
 		KEY_LEFT_1,
 		KEY_RIGHT_1,

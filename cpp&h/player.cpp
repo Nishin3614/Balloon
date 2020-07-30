@@ -517,49 +517,8 @@ void CPlayer::OtherMove(void)
 	// 移動 //
 	/* ジョイパッド */
 	// パッド用 //
-	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
 	float fMove;			// 移動速度
-	float fAngle;			// スティック角度の計算用変数
-	fAngle = 0.0f;			// 角度
 
-	if (CManager::GetJoy() != NULL)
-	{
-		// ゲームパッドのスティック情報を取得
-		CManager::GetJoy()->GetStickLeft(0, nValueH, nValueV);
-
-		/* プレイヤー移動 */
-		// ゲームパッド移動
-		if (nValueH != 0 || nValueV != 0)
-		{
-			// 角度の計算
-			fAngle = atan2f((float)nValueH, (float)nValueV);
-
-			if (fAngle > D3DX_PI)
-			{
-				fAngle -= D3DX_PI * 2;
-			}
-			else if (fAngle < -D3DX_PI)
-			{
-				fAngle += D3DX_PI * 2;
-			}
-			// 速度の計算
-			if (abs(nValueH) > abs(nValueV))
-			{
-				fMove = (abs(nValueH) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
-			}
-			else
-			{
-				fMove = (abs(nValueV) * CCharacter::GetStatus().fMaxMove) / 1024.0f;
-			}
-			rot.y = fAngle + fRot;
-
-			// スティックの角度によってプレイヤー移動
-			move.x -= sinf(fAngle + fRot) * (fMove);
-			move.z -= cosf(fAngle + fRot) * (fMove);
-			// 移動状態on
-			bMove = true;
-		}
-	}
 	/* キーボード */
 	// 左
 	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
@@ -651,7 +610,8 @@ void CPlayer::OtherMove(void)
 			}
 		}
 	}
-	//CCharacter::SetMove(move);
+
+	// 回転をセット
 	CCharacter::SetRotDest(rot);
 }
 

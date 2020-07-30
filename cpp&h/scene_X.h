@@ -60,6 +60,18 @@ public:
 		D3DXVECTOR3			vtxMaxMaterials;		// モデル情報の位置の最大値
 		D3DXVECTOR3			size;					// サイズ
 	} MODEL_LOAD;
+	// 列挙体定義
+	typedef enum
+	{
+		LOADTYPE_ADD = 0,
+		LOADTYPE_POS_X,
+		LOADTYPE_POS_Y,
+		LOADTYPE_POS_Z,
+		LOADTYPE_ROT_X,
+		LOADTYPE_ROT_Y,
+		LOADTYPE_ROT_Z,
+		LOADTYPE_MAX
+	} LOADTYPE;
 
 	/* 関数 */
 	CScene_X();
@@ -148,10 +160,11 @@ public:
 	D3DXVECTOR3 &GetRot(void) { return m_rot; };								// 回転
 	D3DXMATRIX &GetMatrix(void) { return m_mtxWorld; };							// マトリックス情報
 	// 当たり判定状態取得
-	bool const GetbCollision(void);													// 当たり判定状態
+	bool const GetbCollision(void);												// 当たり判定状態
 	// 当たり判定の情報を取得
 	CCollision * GetCollision(void);
 	static MODEL_LOAD * GetModelLoad(int const &nModelId);						// モデル情報取得
+	static void LoadScrept(char* add);
 protected:
 private:
 	/* 関数 */

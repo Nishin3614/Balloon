@@ -64,6 +64,7 @@ void CTutorial::Uninit(void)
 void CTutorial::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
+	CJoypad *pJoypad = CManager::GetJoy();
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
@@ -74,6 +75,14 @@ void CTutorial::Update(void)
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// チュートリアルへ
+				pFade->SetFade(CManager::MODE_SELECT);
+			}
+		}
+
+		if (pJoypad != NULL)
+		{
+			if (pJoypad->GetTrigger(0, CJoypad::KEY_START) || pJoypad->GetTrigger(0, CJoypad::KEY_A))
+			{
 				pFade->SetFade(CManager::MODE_SELECT);
 			}
 		}

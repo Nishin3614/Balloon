@@ -73,18 +73,14 @@ void CFloor::Init(void)
 	// 変数宣言
 	VERTEX_3D *pVtx;						// 頂点情報へのポイント
 	WORD * pIdx;							// インデックスデータへのポインタ
-	D3DXVECTOR3 VecA, VecB;					// ベクトル
 	int nCountDirect;						// 縦のカウント
 	int nCountWidth;						// 横のカウント
 	int nCntBlock = 0;						// ブロックカウント
 	float fYAngle;							// yの角度
 	float fYRadian;							// yのラジアン値
-	D3DXVECTOR3 *pCross;					// ポリゴンの外積
 	// 情報取得
 	LPDIRECT3DDEVICE9 pDevice =				// デバイス
 		CManager::GetRenderer()->GetDevice();
-	pCross =								// メモリ確保
-		new D3DXVECTOR3[m_nBlock_Width * m_nBlock_Depth * 2];
 
 	// ブロック描画の原点の初期設定
 	m_OriginBlock = D3DXVECTOR3(
@@ -159,81 +155,10 @@ void CFloor::Init(void)
 			pVtx++;
 		}
 	}
-	pVtx -= m_nNumberVertex;
-	// ポリゴンごとの法線の設定
-	for (int nCntDepth = 0; nCntDepth < m_nBlock_Depth; nCntDepth++, nCntBlock++)
-	{
-		for (int nCntWidth = 0; nCntWidth < m_nBlock_Width; nCntWidth++, nCntBlock++)
-		{
-			// ベクトル
-			VecA = pVtx[nCntBlock + m_nBlock_Width + 2].pos - pVtx[nCntBlock].pos;
-			VecB = pVtx[nCntBlock + m_nBlock_Width + 1].pos - pVtx[nCntBlock].pos;
-			// 外積計算
-			pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2] = CCalculation::Cross_product(VecA, VecB);
-			// 正規化
-			D3DXVec3Normalize(&pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2], &pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2]);
-			// ベクトル
-			VecA = pVtx[nCntBlock + 1].pos - pVtx[nCntBlock].pos;
-			VecB = pVtx[nCntBlock + m_nBlock_Width + 2].pos - pVtx[nCntBlock].pos;
-			// 外積計算
-			pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1] = CCalculation::Cross_product(VecA, VecB);
-			// 正規化
-			D3DXVec3Normalize(&pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1], &pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1]);
-			// 左上
-			pVtx[nCntBlock].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2] + pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1];
-			// 右上
-			pVtx[nCntBlock + 1].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1];
-			// 左下
-			pVtx[nCntBlock + m_nBlock_Width + 1].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2];
-			// 右下
-			pVtx[nCntBlock + m_nBlock_Width + 2].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2] + pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1];
-		}
-	}
-	nCntBlock = 0;
-	// 頂点法線の設定
-	for (int nCntDepth = 0; nCntDepth < m_nBlock_Depth + 1; nCntDepth++, nCntBlock++)
-	{
-		for (int nCntWidth = 0; nCntWidth < m_nBlock_Width + 1; nCntWidth++, nCntBlock++)
-		{
-			// 最初
-			if (nCntDepth == 0 && nCntWidth == 0)
-			{
-				pVtx[0].nor /= 2;
-			}
-			// 最後
-			else if (nCntDepth == m_nBlock_Depth && nCntWidth == m_nBlock_Width)
-			{
-				pVtx[0].nor /= 2;
-			}
-			// 1行の列の最後
-			else if (nCntDepth == 0 && nCntWidth == m_nBlock_Width)
-			{
-			}
-			// 最後行の列の最初
-			else if (nCntDepth == m_nBlock_Depth && nCntWidth == 0)
-			{
-			}
-			// 最初の行または最後の行
-			else if (nCntDepth == 0 || nCntDepth == m_nBlock_Depth)
-			{
-				pVtx[0].nor /= 3;
-			}
-			// 最初の列または最後の列
-			else if (nCntWidth == 0 || nCntWidth == m_nBlock_Width)
-			{
-				pVtx[0].nor /= 3;
-			}
-			// それ以外
-			else
-			{
-				pVtx[0].nor /= 6;
-			}
-			pVtx++;
-		}
-	}
-
 	// アンロック
 	m_pVtxBuff->Unlock();
+
+	CalculationNormalize();
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタ
 	m_pIndex->Lock(0, 0, (void **)&pIdx, 0);
@@ -275,8 +200,6 @@ void CFloor::Init(void)
 
 	// アンロック
 	m_pIndex->Unlock();
-	delete[] pCross;
-	pCross = NULL;
 }
 
 // ----------------------------------------
@@ -367,6 +290,54 @@ void CFloor::Debug(void)
 {
 }
 #endif // _DEBUG
+
+// ----------------------------------------
+// 頂点移動
+// ----------------------------------------
+void CFloor::vertexMove(FILE *pFile)
+{
+	VERTEX_3D *pVtx;
+	char cReadText[128];															// 文字
+	char cHeadText[128];															// 比較
+	float aData[7];																	// 答え
+
+	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nDepth = 0; nDepth < m_nBlock_Depth + 1; nDepth++)
+	{
+		for (int nWide = 0; nWide < m_nBlock_Width + 1; nWide++)
+		{
+			if (pFile != NULL)
+			{
+
+				fgets(cReadText, sizeof(cReadText), pFile);							// データから1行取得
+				sscanf(cReadText, "%s", &cHeadText);								// 行を読み込む
+
+				std::string Data = cReadText;
+				std::vector<std::string> vsvec_Contens;		// テキストデータ格納用
+
+				vsvec_Contens = CCalculation::split(Data, ',');
+
+				//頂点座標の設定
+				pVtx[0].pos = D3DXVECTOR3((float)atof(vsvec_Contens[0].c_str()), (float)atof(vsvec_Contens[1].c_str()), (float)atof(vsvec_Contens[2].c_str()));			// データを当てはめる
+
+				D3DXCOLOR col = D3DXCOLOR((float)atof(vsvec_Contens[3].c_str()), (float)atof(vsvec_Contens[4].c_str()), (float)atof(vsvec_Contens[5].c_str()), (float)atof(vsvec_Contens[6].c_str()));
+
+				//頂点カラー
+				pVtx[0].col = col;	// データを当てはめる
+			}
+
+			pVtx++;
+		}
+	}
+
+	//頂点データのアンロック
+	m_pVtxBuff->Unlock();
+
+	// 法線の再計算
+	CalculationNormalize();
+}
 
 // ----------------------------------------
 // 読み込み処理
@@ -506,4 +477,98 @@ float CFloor::GetHeight(D3DXVECTOR3 &pos)
 	m_pVtxBuff->Unlock();
 	// 高さを返す
 	return 0.0f;
+}
+
+// ----------------------------------------
+// 面の法線を求める
+// ----------------------------------------
+void CFloor::CalculationNormalize(void)
+{
+	// 変数宣言
+	VERTEX_3D *pVtx;						// 頂点情報へのポイント
+	int nCntBlock = 0;						// ブロックカウント
+	D3DXVECTOR3 VecA, VecB;					// ベクトル
+	D3DXVECTOR3 *pCross;					// ポリゴンの外積
+
+	pCross =								// メモリ確保
+		new D3DXVECTOR3[m_nBlock_Width * m_nBlock_Depth * 2];
+
+	//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// ポリゴンごとの法線の設定
+	for (int nCntDepth = 0; nCntDepth < m_nBlock_Depth; nCntDepth++, nCntBlock++)
+	{
+		for (int nCntWidth = 0; nCntWidth < m_nBlock_Width; nCntWidth++, nCntBlock++)
+		{
+			// ベクトル
+			VecA = pVtx[nCntBlock + m_nBlock_Width + 2].pos - pVtx[nCntBlock].pos;
+			VecB = pVtx[nCntBlock + m_nBlock_Width + 1].pos - pVtx[nCntBlock].pos;
+			// 外積計算
+			pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2] = CCalculation::Cross_product(VecA, VecB);
+			// 正規化
+			D3DXVec3Normalize(&pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2], &pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2]);
+			// ベクトル
+			VecA = pVtx[nCntBlock + 1].pos - pVtx[nCntBlock].pos;
+			VecB = pVtx[nCntBlock + m_nBlock_Width + 2].pos - pVtx[nCntBlock].pos;
+			// 外積計算
+			pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1] = CCalculation::Cross_product(VecA, VecB);
+			// 正規化
+			D3DXVec3Normalize(&pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1], &pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1]);
+			// 左上
+			pVtx[nCntBlock].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2] + pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1];
+			// 右上
+			pVtx[nCntBlock + 1].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1];
+			// 左下
+			pVtx[nCntBlock + m_nBlock_Width + 1].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2];
+			// 右下
+			pVtx[nCntBlock + m_nBlock_Width + 2].nor += pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2] + pCross[nCntWidth * 2 + nCntDepth * m_nBlock_Width * 2 + 1];
+		}
+	}
+	// 頂点法線の設定
+	for (int nCntDepth = 0; nCntDepth < m_nBlock_Depth + 1; nCntDepth++)
+	{
+		for (int nCntWidth = 0; nCntWidth < m_nBlock_Width + 1; nCntWidth++)
+		{
+			// 最初
+			if (nCntDepth == 0 && nCntWidth == 0)
+			{
+				pVtx[0].nor /= 2;
+			}
+			// 最後
+			else if (nCntDepth == m_nBlock_Depth && nCntWidth == m_nBlock_Width)
+			{
+				pVtx[0].nor /= 2;
+			}
+			// 1行の列の最後
+			else if (nCntDepth == 0 && nCntWidth == m_nBlock_Width)
+			{
+			}
+			// 最後行の列の最初
+			else if (nCntDepth == m_nBlock_Depth && nCntWidth == 0)
+			{
+			}
+			// 最初の行または最後の行
+			else if (nCntDepth == 0 || nCntDepth == m_nBlock_Depth)
+			{
+				pVtx[0].nor /= 3;
+			}
+			// 最初の列または最後の列
+			else if (nCntWidth == 0 || nCntWidth == m_nBlock_Width)
+			{
+				pVtx[0].nor /= 3;
+			}
+			// それ以外
+			else
+			{
+				pVtx[0].nor /= 6;
+			}
+			pVtx++;
+		}
+	}
+
+	//頂点データのアンロック
+	m_pVtxBuff->Unlock();
+	delete[] pCross;
+	pCross = NULL;
 }
