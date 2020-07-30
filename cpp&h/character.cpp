@@ -712,6 +712,9 @@ void CCharacter::Die(void)
 		C3DParticle::PARTICLE_ID_CROSSLINE,
 		m_pos
 	);
+	// 死ぬ音
+	CManager::GetSound()->PlaySound(CSound::LABEL_SE_KERSPLASH1);
+
 	// 総キャラクターカウントダウン
 	m_nAllCharacter--;
 
