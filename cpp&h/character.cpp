@@ -572,7 +572,7 @@ void CCharacter::Motion_Effect(void)
 		);
 		// パーティクルの生成
 		C3DParticle::Create(
-			(C3DParticle::PARTICLE_OFFSET_ID)m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nParticleType,
+			(C3DParticle::PARTICLE_ID)m_modelAll[m_character]->pMotion[m_nMotiontype]->KeyInfo[m_keyinfoCnt].v_MotionEffect.at(nCntMotionEffect).nParticleType,
 			pos);
 	}
 }
@@ -715,7 +715,7 @@ void CCharacter::Die(void)
 	}
 	// パーティクル生成
 	C3DParticle::Create(
-		C3DParticle::OFFSET_ID_CROSSLINE,
+		C3DParticle::PARTICLE_ID_CROSSLINE,
 		m_pos
 	);
 	// 総キャラクターカウントダウン

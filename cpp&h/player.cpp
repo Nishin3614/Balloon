@@ -478,7 +478,7 @@ void CPlayer::OtherAction(void)
 void CPlayer::FishApponent(void)
 {
 	// プレイヤーの位置が指定した位置以下なら
-	if (CCharacter::GetPos().y >= FISH_APPONENTPOS)
+	if (CCharacter::GetPos().y <= FISH_APPONENTPOS)
 	{
 		// 出現カウント
 		if (m_nCntFishApponent == FISH_APPONENTTIME)

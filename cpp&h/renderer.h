@@ -69,6 +69,21 @@ public:
 		TYPE_MAX
 	} TYPE;
 
+	// 合成演算
+	typedef enum
+	{
+		BLEND_NORMAL = 0,		// 通常
+		BLEND_TRANSLUCENT,		// 半透明
+		BLEND_ADD,				// 加算合成
+		BLEND_ADD_TRANSLUCENT,	// 加算半透明
+		BLEND_SUBTRACTION,		// 減算
+		BLEND_MULTIPUL1,		// 乗算1
+		BLEND_MULTIPUL2,		// 乗算2
+		BLEND_SCREEN,			// スクリーン
+		BLEND_REVERSE,			// リバース
+		BLEND_MAX				// 最大数
+	} BLEND;
+
 	/* 関数 */
 	CRenderer();
 	~CRenderer();
@@ -82,7 +97,11 @@ public:
 #endif // _DEBUG
 	// 描画状態
 	void SetType(TYPE type = TYPE_NORMAL);
-
+	// 合成処理
+	//	blend	: 合成演算
+	void SetBlend(
+		BLEND const &blend = BLEND_TRANSLUCENT	// 合成演算
+	);
 	// 情報取得
 	LPDIRECT3DDEVICE9 GetDevice(void);	// デバイス
 	CCamera * GetCamera(void);			// カメラ

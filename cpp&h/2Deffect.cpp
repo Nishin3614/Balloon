@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// パーティクルの処理[particle.h]
+// 2Dエフェクトの処理[2Deffect.cpp]
 // Author : Nishiyama koki
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -8,31 +8,22 @@
 // インクルードファイル
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "2Deffect.h"
-#include "manager.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // マクロ定義
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define BASEANGLE (D3DX_PI * 0.25f)
+#define ORIGIN_POS	(D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f))	// 初期位置
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 静的メンバ変数の初期化
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-LPDIRECT3DVERTEXBUFFER9	C2DEffect::m_pVtxBuff = NULL;
-C2DEffect::EFFECT		C2DEffect::m_aEffect[EFFECT_MAX] = {};
-int						C2DEffect::m_nNumTextureMax = 0;
-int						C2DEffect::m_nTexId[EFFECT_TYPE_MAX] = 
-{
-	0,
-	1,
-	3,
-	2
-};	// テクスチャーID
+LPDIRECT3DVERTEXBUFFER9	C2DEffect::m_pVtxBuff = NULL;			// バッファ情報
+CEffect::EFFECT			C2DEffect::m_aEffect[EFFECT_MAX] = {};	// エフェクト情報
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 引数ありのコンストラクタ
+// コンストラクタ
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-C2DEffect::C2DEffect() :CScene()
+C2DEffect::C2DEffect() :CEffect()
 {
 }
 
@@ -44,134 +35,81 @@ C2DEffect::~C2DEffect()
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 初期化
+// 初期化処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DEffect::Init(void)
 {
 	// 変数宣言
 	LPDIRECT3DDEVICE9	pDevice;					// デバイスのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
-
-	// 値の初期化
-	this->InitValues();
+													// エフェクトの初期化
+	CEffect::Init();
+	// 変数の初期化
+	CEffect::InitValues(&m_aEffect[0]);
 	// 頂点情報作成
-	this->MakeVertex(pDevice);
+	MakeVertex(pDevice);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 終了
+// 終了処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DEffect::Uninit(void)
 {
+	// バッファ情報のNULLチェック
 	if (m_pVtxBuff != NULL)
 	{
+		// バッファ情報の開放
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 更新
+// 更新処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DEffect::Update(void)
 {
 	// 変数定義
 	VERTEX_2D *pVtx;				// 頂点情報のポインタ
 	C2DEffect::EFFECT *pEffect;		// エフェクトのポインタ
-	// ポインタの初期化
-	pEffect = &C2DEffect::m_aEffect[0];
+									// ポインタの初期化
+	pEffect = &m_aEffect[0];
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	// 最大数分ループ
-	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++, pVtx+=4)
+	// エフェクトループ
+	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++, pVtx += 4)
 	{
 		// 使用フラグがオフの時
-		if (pEffect->bUse == false)
+		// ->ループスキップ
+		if (!pEffect->bUse)
 		{
 			continue;
 		}
-		// 使用中のやつの更新
-		if (this->UpdateLife(pVtx, pEffect) == false)
+		// ライフ更新
+		// ->ループスキップ
+		if (!CEffect::UpdateLife(pEffect))
 		{
 			continue;
 		}
 		// 移動の更新
-		this->UpdateMove(pVtx, pEffect);
+		CEffect::UpdateMove(pEffect);
 		// 頂点情報の更新
-		this->UpdateVetex(pVtx, pEffect);
+		CEffect::UpdateVetex(pEffect);
+		// 位置更新
+		pEffect->pos -= pEffect->move;
+		// 頂点サイズの設定
+		SetVartexSize(pVtx, pEffect);
+		// 頂点カラーの設定
+		SetVetexColor(pVtx, pEffect);
 	}
 	// 頂点データをアンロックする
 	m_pVtxBuff->Unlock();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ライフの更新
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool C2DEffect::UpdateLife(VERTEX_2D *pVtx, EFFECT * pEffect)
-{
-	if (pEffect->nLife < 0)
-	{
-		// ライフが0になったとき
-		pEffect->bUse = false;
-		return false;
-	}
-	else
-	{
-		// ライフを減らすw
-		pEffect->nLife--;
-		return true;
-	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点の更新
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool C2DEffect::UpdateVetex(VERTEX_2D * pVtx, EFFECT * pEffect)
-{
-	// 半径を変化させる
-	pEffect->size -= pEffect->sizeValue;
-	// 角度を変化させる
-	//pEffect->rot.y += (rand() % 10) * 0.01f;
-	//CCalculation::Rot_One_Limit(pEffect->rot.y);
-	pEffect->fAngle += (rand() % 10) * 0.01f;
-	CCalculation::Rot_One_Limit(pEffect->fAngle);
-	SetVartexSize(pVtx, pEffect);
-	// アルファ値を変化させる
-	pEffect->col.a -= pEffect->fAlphaValue;
-	SetVetexColor(pVtx, pEffect);
-	return true;
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 移動の更新
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C2DEffect::UpdateMove(VERTEX_2D * pVtx, EFFECT * pEffect)
-{
-	switch (pEffect->EffectType)
-	{
-	case C2DEffect::EFFECT_TYPE_EXPLOSION:
-		// 慣性
-		pEffect->move.x += (0 - pEffect->move.x)*0.2f;
-		pEffect->move.y += (0 - pEffect->move.y)*0.2f;
-		pEffect->move.z += (0 - pEffect->move.z)*0.2f;
-		break;
-	case C2DEffect::EFFECT_TYPE_SPARK:
-		break;
-	case C2DEffect::EFFECT_TYPE_LINE:
-
-		break;
-	default:
-		break;
-	}
-	// 位置情報の更新
-	pEffect->pos += pEffect->move;
-
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 描画
+// 描画処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DEffect::Draw(void)
 {
@@ -183,15 +121,18 @@ void C2DEffect::Draw(void)
 	pEffect = &m_aEffect[0];						// ポインタの初期化
 
 
+	// エフェクトループ
 	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++)
 	{
 		if (pEffect->bUse == true)
 		{
+			// 合成演算設定
+			CManager::GetRenderer()->SetBlend(pEffect->BlendType);
 			// 頂点バッファをデータストリームにバインド
 			pDevice->SetStreamSource(
 				0,
 				m_pVtxBuff,
-				0, 
+				0,
 				sizeof(VERTEX_2D)
 			);
 
@@ -199,48 +140,27 @@ void C2DEffect::Draw(void)
 			pDevice->SetFVF(FVF_VERTEX_2D);
 
 			// テクスチャの設定
-			pDevice->SetTexture(0, CTexture_manager::GetTexture(m_nTexId[pEffect->EffectType]));
+			pDevice->SetTexture(0, CTexture_manager::GetTexture(pEffect->nTexType));
 			// ポリゴンの描画
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCount * 4, 2);
 		}
 	}
+	// 合成演算設定
+	CManager::GetRenderer()->SetBlend(CRenderer::BLEND_TRANSLUCENT);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 値の初期化
+// 頂点作成
+//	pDevice	: デバイス情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C2DEffect::InitValues(void)
+HRESULT C2DEffect::MakeVertex(
+	LPDIRECT3DDEVICE9 pDevice	// デバイス情報
+)
 {
 	// 変数宣言
-	C2DEffect::EFFECT *pEffect;		// エフェクトのポインタ
-	// ポインタの初期化
-	pEffect = &C2DEffect::m_aEffect[0];
+	VERTEX_2D *pVtx;							// 頂点情報
 
-	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++)
-	{	// 最大数分ループ
-		pEffect->pos			= D3DVECTOR3_ZERO;				// 位置
-		pEffect->rot			= D3DVECTOR3_ZERO;				// 回転量
-		pEffect->move			= D3DVECTOR3_ZERO;				// 移動量
-		pEffect->col			= D3DXCOLOR_INI;				// 色
-		pEffect->size			= D3DVECTOR2_ZERO;				// サイズ
-		pEffect->sizeValue		= D3DVECTOR2_ZERO;				// 半径の変化値
-		pEffect->fAngle			= 0.0f;							// 角度
-		pEffect->fAlphaValue	= 0.0f;							// アルファ値の変化値
-		pEffect->nLife			= 0;							// 持ち時間
-		pEffect->bUse			= false;						// 使用しているかどうか
-		pEffect->EffectType		= C2DEffect::EFFECT_TYPE_NONE;	// エフェクトの種類
-	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点の作成
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-HRESULT C2DEffect::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
-{
-	// 変数宣言
-	VERTEX_2D *pVtx;							// 頂点情報のポインタ
-
-	// オブジェクトの頂点バッファを生成
+												// オブジェクトの頂点バッファを生成
 	if (FAILED(pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * EFFECT_MAX,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
@@ -255,6 +175,7 @@ HRESULT C2DEffect::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	for (int nCntEffect = 0; nCntEffect < EFFECT_MAX; nCntEffect++, pVtx += 4)
 	{
+		// 頂点サイズ設定
 		SetVartexSize(pVtx, NULL, &nCntEffect);
 
 		// 頂点
@@ -276,52 +197,76 @@ HRESULT C2DEffect::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 	// 頂点データをアンロックする
 	m_pVtxBuff->Unlock();
 
+	// 成功を返す
 	return S_OK;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点サイズの設定
+// 頂点サイズ設定
+//	pVtx	: 2D頂点情報
+//	pEffect	: エフェクト情報
+//	nIndex	: 番号情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C2DEffect::SetVartexSize(VERTEX_2D * pVtx, EFFECT * pEffect, const int * nIndex)
+void C2DEffect::SetVartexSize(
+	VERTEX_2D *pVtx,	// 2D頂点情報
+	EFFECT *pEffect,	// エフェクト情報
+	const int *nIndex	// 番号情報
+)
 {
+	// 番号情報のNULLチェック
 	if (nIndex != NULL)
 	{
 		// 変数宣言
 		C2DEffect::EFFECT *pLocalEffect;					// エフェクトのポインタ
 		pLocalEffect = &C2DEffect::m_aEffect[*nIndex];		// ポインタの初期化
 
-		// 頂点の設定
-		pVtx[0].pos.x = -sinf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
-		pVtx[0].pos.y = -cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.y;
-		pVtx[1].pos.x = -sinf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.x;
-		pVtx[1].pos.y = cosf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.y;
-		pVtx[2].pos.x = sinf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.x;
-		pVtx[2].pos.y = -cosf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.y;
-		pVtx[3].pos.x = sinf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
-		pVtx[3].pos.y = cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.y;
-		return;
+															// 頂点の設定
+		pVtx[0].pos = ORIGIN_POS + pLocalEffect->pos;
+		pVtx[0].pos.x += -sinf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
+		pVtx[0].pos.y += -cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.y;
+		pVtx[1].pos = ORIGIN_POS + pLocalEffect->pos;
+		pVtx[1].pos.x += sinf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.x;
+		pVtx[1].pos.y += -cosf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.y;
+		pVtx[2].pos = ORIGIN_POS + pLocalEffect->pos;
+		pVtx[2].pos.x += -sinf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.x;
+		pVtx[2].pos.y += cosf(BASEANGLE - pLocalEffect->fAngle) * pLocalEffect->size.y;
+		pVtx[3].pos = ORIGIN_POS + pLocalEffect->pos;
+		pVtx[3].pos.x += sinf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
+		pVtx[3].pos.y += cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.y;
 	}
-	if (pEffect != NULL)
+	// エフェクト情報のNULLチェック
+	else if (pEffect != NULL)
 	{
 		// 頂点の設定
-		pVtx[0].pos.x = -sinf(BASEANGLE + pEffect->fAngle) * pEffect->size.x;
-		pVtx[0].pos.y = -cosf(BASEANGLE + pEffect->fAngle) * pEffect->size.y;
-		pVtx[1].pos.x = -sinf(BASEANGLE - pEffect->fAngle) * pEffect->size.x;
-		pVtx[1].pos.y = cosf(BASEANGLE - pEffect->fAngle) * pEffect->size.y;
-		pVtx[2].pos.x = sinf(BASEANGLE - pEffect->fAngle) * pEffect->size.x;
-		pVtx[2].pos.y = -cosf(BASEANGLE - pEffect->fAngle) * pEffect->size.y;
-		pVtx[3].pos.x = sinf(BASEANGLE + pEffect->fAngle) * pEffect->size.x;
-		pVtx[3].pos.y = cosf(BASEANGLE + pEffect->fAngle) * pEffect->size.y;
-		return;
+		pVtx[0].pos = ORIGIN_POS + pEffect->pos;
+		pVtx[0].pos.x += -sinf(BASEANGLE + pEffect->fAngle) * pEffect->size.x;
+		pVtx[0].pos.y += -cosf(BASEANGLE + pEffect->fAngle) * pEffect->size.y;
+		pVtx[1].pos = ORIGIN_POS + pEffect->pos;
+		pVtx[1].pos.x += sinf(BASEANGLE - pEffect->fAngle) * pEffect->size.x;
+		pVtx[1].pos.y += -cosf(BASEANGLE - pEffect->fAngle) * pEffect->size.y;
+		pVtx[2].pos = ORIGIN_POS + pEffect->pos;
+		pVtx[2].pos.x += -sinf(BASEANGLE - pEffect->fAngle) * pEffect->size.x;
+		pVtx[2].pos.y += cosf(BASEANGLE - pEffect->fAngle) * pEffect->size.y;
+		pVtx[3].pos = ORIGIN_POS + pEffect->pos;
+		pVtx[3].pos.x += sinf(BASEANGLE + pEffect->fAngle) * pEffect->size.x;
+		pVtx[3].pos.y += cosf(BASEANGLE + pEffect->fAngle) * pEffect->size.y;
 	}
 }
 
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 頂点カラーの設定
+// 頂点カラー設定
+//	pVtx	: 2D頂点情報
+//	pEffect	: エフェクト情報
+//	nIndex	: 番号情報
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C2DEffect::SetVetexColor(VERTEX_2D * pVtx, EFFECT * pEffect, const int * nIndex)
+void C2DEffect::SetVetexColor(
+	VERTEX_2D *pVtx,	// 2D頂点情報
+	EFFECT *pEffect,	// エフェクト情報
+	const int *nIndex	// 番号情報
+)
 {
+	// 番号情報のNULLチェック
 	if (nIndex != NULL)
 	{
 		// 変数宣言
@@ -333,7 +278,8 @@ void C2DEffect::SetVetexColor(VERTEX_2D * pVtx, EFFECT * pEffect, const int * nI
 			pVtx[2].col =
 			pVtx[3].col = pLocalEffect->col;
 	}
-	if (pEffect != NULL)
+	// エフェクト情報のNULLチェック
+	else if (pEffect != NULL)
 	{
 		pVtx[0].col =
 			pVtx[1].col =
@@ -343,7 +289,27 @@ void C2DEffect::SetVetexColor(VERTEX_2D * pVtx, EFFECT * pEffect, const int * nI
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 生成
+// 位置上限処理
+//	pEffect	: エフェクト情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void C2DEffect::Pos_Limit(
+	EFFECT *pEffect		// エフェクト情報
+)
+{
+	// 位置xの上限を超えたら
+	if (pEffect->pos.x < -pEffect->size.x || pEffect->pos.x >(SCREEN_WIDTH + pEffect->size.x))
+	{
+		pEffect->bUse = false;
+	}
+	// 位置yの上限を超えたら
+	if (pEffect->pos.y < -pEffect->size.y || pEffect->pos.y >(SCREEN_HEIGHT + pEffect->size.y))
+	{
+		pEffect->bUse = false;
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 生成処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 C2DEffect * C2DEffect::Create(void)
 {
@@ -357,32 +323,36 @@ C2DEffect * C2DEffect::Create(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 削除
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C2DEffect::Delete(int nCntIndex)
-{
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// エフェクトの設定
+// 全体の設定
+//	EffectType	: エフェクトタイプ
+//	nTexType	: テクスチャータイプ
+//	pos			: 位置
+//	rot			: 回転
+//	move		: 移動量
+//	col			: 色
+//	size		: サイズ
+//	nLife		: ライフ
+//	Blend		: ブレンドタイプ
+//	sizeValue	: サイズ変化
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DEffect::Set2DEffect(
-	EFFECT_TYPE EffectType, 
-	int nTexType,
-	D3DXVECTOR3 pos, 
-	D3DXVECTOR3 rot,
-	D3DXVECTOR3 move, 
-	D3DXCOLOR col,
-	D3DXVECTOR2 size,
-	int nLife,
-	D3DXVECTOR2 sizeValue
+	EFFECT_TYPE const &EffectType,					// エフェクトタイプ
+	int const &nTexType,							// テクスチャータイプ
+	D3DXVECTOR3 const &pos,							// 位置
+	D3DXVECTOR3 const &rot,							// 回転
+	D3DXVECTOR3 const &move,						// 移動量
+	D3DXCOLOR const &col,							// 色
+	D3DXVECTOR2 const &size,						// サイズ
+	int const &nLife,								// ライフ
+	CRenderer::BLEND const &Blend,					// ブレンドタイプ
+	D3DXVECTOR2 const &sizeValue					// サイズ変化
 )
 {
 	// 変数宣言
 	C2DEffect::EFFECT *pEffect;			// エフェクトのポインタ
 	pEffect = &C2DEffect::m_aEffect[0];	// ポインタの初期化
 
-	// 最大数ループ
+										// 最大数ループ
 	for (int nCntEffect = 0; nCntEffect < EFFECT_MAX; nCntEffect++, pEffect++)
 	{
 		// 使用フラグオフの個体の時
@@ -390,7 +360,7 @@ void C2DEffect::Set2DEffect(
 		{
 			// 変数定義
 			VERTEX_2D *pVtx;		// 頂点ポインタ
-			//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+									//頂点データの範囲をロックし、頂点バッファへのポインタを取得
 			m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 			// 頂点ポインタの更新
 			pVtx += nCntEffect * 4;
@@ -408,29 +378,54 @@ void C2DEffect::Set2DEffect(
 			pEffect->pos = pos;
 			// 回転の設定
 			pEffect->rot = rot;
+			// ブレンド設定
+			pEffect->BlendType = Blend;
 			// 頂点位置の設定
 			SetVartexSize(pVtx, pEffect);
 			// 色の設定
 			pEffect->col = col;
 			// 頂点カラーの設定
 			SetVetexColor(pVtx, pEffect);
-			// アルファ変化値の設定
-			pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
-			if (pEffect->nTexType == 1)
+			// 使用フラグをオン
+			pEffect->bUse = true;
+			// エフェクトタイプ
+			switch (pEffect->EffectType)
 			{
-				// 半径変化値の設定
-				pEffect->sizeValue.x = -50.0f;
-				pEffect->sizeValue.y = -50.0f;
-			}
-			else
-			{
+				// 爆発
+			case CEffect::EFFECT_TYPE_EXPLOSION:
 				// サイズx変化値の設定
 				pEffect->sizeValue.x = pEffect->size.x / pEffect->nLife;
 				// サイズy変化値の設定
 				pEffect->sizeValue.y = pEffect->size.y / pEffect->nLife;
+				// アルファ変化値の設定
+				pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
+				break;
+				// 花火
+			case CEffect::EFFECT_TYPE_SPARK:
+				// サイズx変化値の設定
+				pEffect->sizeValue.x = pEffect->size.x / pEffect->nLife;
+				// サイズy変化値の設定
+				pEffect->sizeValue.y = pEffect->size.y / pEffect->nLife;
+				// アルファ変化値の設定
+				pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
+				break;
+				// 線
+			case CEffect::EFFECT_TYPE_LINE:
+				// サイズx変化値の設定
+				pEffect->sizeValue.x = pEffect->size.x / pEffect->nLife;
+				// サイズy変化値の設定
+				pEffect->sizeValue.y = pEffect->size.y / pEffect->nLife;
+				// アルファ変化値の設定
+				pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
+				break;
+				// 風船
+			case CEffect::EFFECT_TYPE_BALLOON:
+
+				break;
+			default:
+				break;
 			}
-			// 使用フラグをオン
-			pEffect->bUse = true;
+
 			//頂点データをアンロック
 			m_pVtxBuff->Unlock();
 			break;
@@ -440,24 +435,15 @@ void C2DEffect::Set2DEffect(
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 読み込み
+// 全リソース情報の読み込み処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 HRESULT C2DEffect::Load(void)
-{
-	// テクスチャファイル名の取得
-	return C2DEffect::LoadTextureFile();
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// テクスチャファイル名の読み込み
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-HRESULT C2DEffect::LoadTextureFile(void)
 {
 	return S_OK;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 開放
+// 全リソース情報の開放
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DEffect::Unload(void)
 {
