@@ -752,14 +752,18 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// 変数宣言
 		// ネットワーク情報取得
 		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
-		// 死亡処理
-		BalloonNone();
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_PLAYER);
+			// 死亡処理
+			BalloonNone();
+
+
+
+			// この処理をどこで行うか不明
+			//CManager::GetGame()->GetScore()->AddScore(SCORETYPE_PLAYER);
 			// MP上げ処理(プレイヤー)
-			MpUp(MPUP_PLAYER_KNOCKDOWN);
+			//MpUp(MPUP_PLAYER_KNOCKDOWN);
 		}
 	}
 	// オブジェクトタイプが敵なら
@@ -768,14 +772,17 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		// 変数宣言
 		// ネットワーク情報取得
 		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
-		// 死亡処理
-		BalloonNone();
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			CManager::GetGame()->GetScore()->AddScore(SCORETYPE_ENEMY);
+			// 死亡処理
+			BalloonNone();
+
+
+			// この処理をどこで行うか不明
+			//CManager::GetGame()->GetScore()->AddScore(SCORETYPE_ENEMY);
 			// MP上げ処理(敵)
-			MpUp(MPUP_ENEMY_KNOCKDOWN);
+			//MpUp(MPUP_ENEMY_KNOCKDOWN);
 		}
 	}
 	// オブジェクトタイプがアイテムなら

@@ -11,6 +11,7 @@
 #include "circleshadow.h"
 #include "camera.h"
 #include "balloon_group.h"
+#include "collision.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -179,6 +180,15 @@ void CEnemy::Debug(void)
 void CEnemy::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
 	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがキャラクターなら
+	else if (nObjType == CCollision::OBJTYPE_PLAYER)
+	{
+		// 死亡処理
+		CCharacter_Balloon::BalloonNone();
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -189,6 +199,15 @@ void CEnemy::Scene_MyCollision(int const & nObjType, CScene * pScene)
 void CEnemy::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
 	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
+	// シーン情報がNULLなら
+	// ->関数を抜ける
+	if (pScene == NULL) return;
+	// オブジェクトタイプがキャラクターなら
+	else if (nObjType == CCollision::OBJTYPE_PLAYER)
+	{
+		// 死亡処理
+		CCharacter_Balloon::BalloonNone();
+	}
 }
 
 //-------------------------------------------------------------------------------------------------------------

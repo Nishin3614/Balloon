@@ -534,7 +534,8 @@ void CScene_X::SetCollision(
 	int const &obj,
 	bool const &bPush,
 	bool const &bOpponent,
-	CScene * pParent
+	CScene * pParent,
+	D3DXVECTOR3 const &offset_pos
 )
 {
 	// “–‚½‚è”»’è‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
@@ -554,7 +555,7 @@ void CScene_X::SetCollision(
 		// ‹éŒ`‚Ì“–‚½‚è”»’è¶¬
 		m_Collision = CRectCollision::Create(
 			m_pModelLoad[m_nModelId]->size,
-			D3DVECTOR3_ZERO,
+			offset_pos,
 			(CCollision::OBJTYPE)obj,
 			this,
 			pParent,
@@ -569,7 +570,7 @@ void CScene_X::SetCollision(
 		// ‹…‚Ì“–‚½‚è”»’è¶¬
 		m_Collision = CSphereCollision::Create(
 			m_pModelLoad[m_nModelId]->size.x,
-			D3DVECTOR3_ZERO,
+			offset_pos,
 			(CCollision::OBJTYPE)obj,
 			this,
 			pParent,
@@ -585,7 +586,7 @@ void CScene_X::SetCollision(
 		m_Collision = CColumnCollision::Create(
 			m_pModelLoad[m_nModelId]->size.x,
 			m_pModelLoad[m_nModelId]->size.y,
-			D3DVECTOR3_ZERO,
+			offset_pos,
 			(CCollision::OBJTYPE)obj,
 			this,
 			pParent,

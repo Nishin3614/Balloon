@@ -138,7 +138,8 @@ public:
 		int const &obj,
 		bool const &bPush = false,
 		bool const &bOpponent = false,
-		CScene * pParent = NULL
+		CScene * pParent = NULL,
+		D3DXVECTOR3 const &offset_pos = D3DVECTOR3_ZERO
 	);									// “–‚½‚è”»’èİ’è
 
 	// æ“¾

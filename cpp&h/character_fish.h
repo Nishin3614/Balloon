@@ -74,8 +74,6 @@ private:
 	/* ŠÖ” */
 	// AIƒAƒNƒVƒ‡ƒ“ˆ—
 	void Ai_Action(void);
-	// AIˆÚ“®ˆ—
-	void Ai_Move(void);
 	/* •Ï” */
 };
 #endif

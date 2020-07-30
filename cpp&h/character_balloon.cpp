@@ -165,11 +165,8 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		);
 		m_move = D3DVECTOR3_ZERO;
 		*pCharacterMove = D3DVECTOR3_ZERO;
-		m_move += RefVecA;
-		*pCharacterMove += RefVecB;
-
-		// 死亡処理
-		BalloonNone();
+		m_move += RefVecA * 5.0f;
+		*pCharacterMove += RefVecB * 5.0f;
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
 	// オブジェクトタイプが敵風船なら ||
@@ -197,7 +194,7 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 			RefVecB
 		);
 		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA;
+		m_move += RefVecA* 5.0f;
 	}
 }
 
@@ -244,7 +241,7 @@ void CCharacter_Balloon::Scene_OpponentCollision(int const & nObjType, CScene * 
 			RefVecB
 		);
 		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA;
+		m_move += RefVecA* 5.0f;
 	}
 }
 
