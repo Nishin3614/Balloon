@@ -429,6 +429,9 @@ void CPlayer::MpUp(
 	int const &nMpUp	// MP上げ
 )
 {
+	// キャラクター情報取得
+	CCharacter::CHARACTER character = CCharacter::GetCharacter();
+
 	if (m_bResetMP == false)
 	{
 		// MPを上げる
@@ -449,8 +452,25 @@ void CPlayer::MpUp(
 	}
 	else
 	{
-		// MPを下げる
-		m_nMP -= 100;
+		switch (character)
+		{
+		case CCharacter::CHARACTER_BALLOON1:
+			// MPを下げる
+			m_nMP -= SPEED_UP_MPDOWN;
+			break;
+		case CCharacter::CHARACTER_BALLOON2:
+			// MPを下げる
+			m_nMP -= REVIVAL_MPDOWN;
+			break;
+		case CCharacter::CHARACTER_BALLOON3:
+			// MPを下げる
+			m_nMP -= INVISIBLE_MPDOWN;
+			break;
+		case CCharacter::CHARACTER_BALLOON4:
+			// MPを下げる
+			m_nMP -= SCORE_UP_MPDOWN;
+			break;
+		}
 		// MPがマックスだったら
 		if (m_nMP == 0)
 		{
@@ -667,6 +687,8 @@ void CPlayer::OtherDie(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
+	// キャラクター情報取得
+	CCharacter::CHARACTER character = CCharacter::GetCharacter();
 	// バルーンキャラクターの当たった後の処理
 	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
 	// シーン情報がNULLなら
@@ -682,12 +704,12 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			// キャラクターが一致したら
-			if (CCharacter::GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+			if (character != CCharacter::CHARACTER_BALLOON4)
 			{
 				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
 			}
 			// キャラクターが一致したら
-			if (CCharacter::GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+			if (character == CCharacter::CHARACTER_BALLOON4)
 			{
 				// 状態
 				if (CScoreUP::GetScoreUP() == true)
@@ -713,13 +735,13 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			// キャラクターが一致したら
-			if (CCharacter::GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+			if (character != CCharacter::CHARACTER_BALLOON4)
 			{
 				// スコア加算処理
 				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 			}
 			// キャラクターが一致したら
-			if (CCharacter::GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+			if (character == CCharacter::CHARACTER_BALLOON4)
 			{
 				// 状態
 				if (CScoreUP::GetScoreUP() == true)
@@ -795,6 +817,9 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
+	// キャラクター情報取得
+	CCharacter::CHARACTER character = CCharacter::GetCharacter();
+
 	// バルーンキャラクターの相手に当てられた後の処理
 	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
 	// シーン情報がNULLなら
@@ -816,12 +841,12 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		if (m_nPlayerID == pNetwork->GetId())
 		{
 			// キャラクターが一致したら
-			if (CCharacter::GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+			if (character != CCharacter::CHARACTER_BALLOON4)
 			{
 				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
 			}
 			// キャラクターが一致したら
-			if (CCharacter::GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+			if (character == CCharacter::CHARACTER_BALLOON4)
 			{
 				// 状態
 				if (CScoreUP::GetScoreUP() == true)
