@@ -60,6 +60,7 @@ CGame::CGame()
 {
 	m_pause = NULL;
 	m_state = CGame::STATE_NORMAL;
+	m_nWatchingId = 0;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -172,6 +173,37 @@ void CGame::Update(void)
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_POUSE))
 		{
 			PauseState();
+		}
+	}
+
+	if (CPlayer::GetDie(CManager::GetNetwork()->GetId()))
+	{
+		CKeyboard *pKeyboard = CManager::GetKeyboard();
+
+		if (pKeyboard != NULL)
+		{
+			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
+			{
+				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+				{
+					m_nWatchingId++;
+
+					if (m_nWatchingId >= MAX_PLAYER)
+					{
+						m_nWatchingId = 0;
+					}
+
+					if (!CPlayer::GetDie(m_nWatchingId))
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		if (!CPlayer::GetDie(m_nWatchingId))
+		{
+			m_pPlayer[m_nWatchingId]->Camera();
 		}
 	}
 
