@@ -9,7 +9,7 @@
 #include "speedUP.h"
 #include "revival.h"
 #include "invisible.h"
-#include "attackUP.h"
+#include "scoreUP.h"
 #include "scene_two.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ CSelectCharacter::CSelectCharacter() : CScene::CScene()
 	m_pSpeedUP = NULL;
 	m_pRevival = NULL;
 	m_pInvisible = NULL;
-	m_pAttackUP = NULL;
+	m_pScoreUP = NULL;
 	m_pCheckUi = NULL;
 	m_CharacterType = 0;
 	m_PlayerID = 0;
@@ -70,7 +70,7 @@ void CSelectCharacter::Init(void)
 	// プレイヤー(透明)
 	m_pInvisible = CInvisible::Create_Self(m_PlayerID, m_pos);
 	// プレイヤー(アタックアップ)
-	m_pAttackUP = CAttackUP::Create_Self(m_PlayerID, m_pos);
+	m_pScoreUP = CScoreUP::Create_Self(m_PlayerID, m_pos);
 	// 選択UI生成
 	m_pSelectUi = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
@@ -139,11 +139,11 @@ void CSelectCharacter::Uninit(void)
 	}
 	// プレイヤー(アタックアップ)がNULLではないなら
 	// ->終了処理
-	if (m_pAttackUP != NULL)
+	if (m_pScoreUP != NULL)
 	{
-		m_pAttackUP->Uninit();
-		delete m_pAttackUP;
-		m_pAttackUP = NULL;
+		m_pScoreUP->Uninit();
+		delete m_pScoreUP;
+		m_pScoreUP = NULL;
 	}
 	// 選択UIのNULLチェック
 	// ->終了処理
@@ -270,9 +270,9 @@ void CSelectCharacter::Update(void)
 	case 3:
 		// プレイヤー(アタックアップ)がNULLではないなら
 		// ->更新処理
-		if (m_pAttackUP != NULL)
+		if (m_pScoreUP != NULL)
 		{
-			m_pAttackUP->Update();
+			m_pScoreUP->Update();
 		}
 		break;
 	default:
@@ -326,9 +326,9 @@ void CSelectCharacter::Draw(void)
 	case 3:
 		// プレイヤー(アタックアップ)がNULLではないなら
 		// ->更新処理
-		if (m_pAttackUP != NULL)
+		if (m_pScoreUP != NULL)
 		{
-			m_pAttackUP->Draw();
+			m_pScoreUP->Draw();
 		}
 		break;
 	default:

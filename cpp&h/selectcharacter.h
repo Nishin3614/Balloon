@@ -30,7 +30,7 @@
 class CSpeedUP;				// スピードアップ
 class CRevival;				// 復活
 class CInvisible;			// 透明
-class CAttackUP;			// アタックアップ
+class CScoreUP;				// スコアeアップ
 class CScene_TWO;			// シーン2D
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ private:
 	CSpeedUP * m_pSpeedUP;											// プレイヤー(スピードアップ)
 	CRevival * m_pRevival;											// プレイヤー(復活)
 	CInvisible * m_pInvisible;										// プレイヤー(透明)
-	CAttackUP * m_pAttackUP;										// プレイヤー(アタックアップ)
+	CScoreUP * m_pScoreUP;											// プレイヤー(アタックアップ)
 	CScene_TWO * m_pSelectUi;										// 選択UI
 	CScene_TWO * m_pCheckUi;										// 確定UI
 	CScene_TWO * m_pSelectIcon[CCharacter::CHARACTER_PLAYERMAX];	// キャラクター選択アイコン
