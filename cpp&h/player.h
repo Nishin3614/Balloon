@@ -32,6 +32,10 @@
 #define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
 #define MPUP_ENEMY_KNOCKDOWN	(1000)								// 敵を倒したときのMPUP
 #define MPUP_PLAYER_KNOCKDOWN	(1000)								// プレイヤーを倒したときのMPUP
+#define SPEED_UP_MPDOWN			(100)								// プレイヤー(スピードアップ)のMP消費量
+#define REVIVAL_MPDOWN			(1000)								// プレイヤー(復活)のMP消費量
+#define INVISIBLE_MPDOWN		(10)								// プレイヤー(透明)のMP消費量
+#define SCORE_UP_MPDOWN			(100)								// プレイヤー(スコアアップ)のMP消費量
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 前方宣言
