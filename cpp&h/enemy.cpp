@@ -21,6 +21,7 @@
 #define ENEMY_KEYMOVE (1)
 #define ENEMY_G (0.5f)			// 重力
 #define ENEMY_RESISTANCE (0.5f)// 抵抗力
+#define ENEMY_GRAVITY (0.1f)
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -67,6 +68,9 @@ void CEnemy::Update(void)
 {
 	// AIアクション処理
 	Ai_Action();
+
+	// キャラクターの重力加算処理
+	CCharacter::AddGravity(ENEMY_GRAVITY);
 
 	// キャラクター更新処理
 	CCharacter_Balloon::Update();
