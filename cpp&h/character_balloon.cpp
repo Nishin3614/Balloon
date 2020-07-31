@@ -98,8 +98,7 @@ void CCharacter_Balloon::Update(void)
 		Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
-	// キャラクターの重力加算処理
-	CCharacter::AddGravity(CHARACTER_BALLOON_GRAVITY);
+
 	// キャラクターの更新処理
 	CCharacter::Update();
 	// テスト
