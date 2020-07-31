@@ -405,9 +405,6 @@ void CPlayer::MyMove(void)
 		}
 	}
 
-	// キャラクターの重力加算処理
-	CCharacter::AddGravity(PLAYER_GRAVITY);
-
 	// yの上限設定
 	if (move.y > 10.0f)
 	{
@@ -418,6 +415,9 @@ void CPlayer::MyMove(void)
 		move.y = -5.0f;
 	}
 	CCharacter::SetMove(move);
+
+	// キャラクターの重力加算処理
+	CCharacter::AddGravity(PLAYER_GRAVITY);
 	CCharacter::SetRotDest(rot);
 }
 
