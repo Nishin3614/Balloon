@@ -88,7 +88,7 @@ void CThunder::Init(void)
 	// メッシュドームの生成
 	m_pMeshDome = CMeshdome::Create(
 		D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z),
-		D3DXVECTOR3(MAX_DISTANCE, MAX_DISTANCE, MAX_DISTANCE),
+		D3DXVECTOR3(MAX_DISTANCE, MAX_DISTANCE_Y, MAX_DISTANCE),
 		10,
 		10,
 		CMeshdome::TYPE_NORMAL,
@@ -132,16 +132,16 @@ void CThunder::Update(void)
 	{
 		if (m_nCntThunder % 50 == 0)
 		{
-			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
-				D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 41 - 20),200.0f, 0.0f),
+				D3DXVECTOR3(100.0f, 1000.0f, 0.0f));
 			// 雷音1
 			CManager::GetSound()->PlaySound(CSound::LABEL_SE_THUNDER1);
 		}
 
 		if (m_nCntThunder % 20 == 0)
 		{
-			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
-				D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 41 - 20), 0.0f, 0.0f),
+				D3DXVECTOR3(100.0f, 1000.0f, 0.0f));
 			// 雷音2
 			CManager::GetSound()->PlaySound(CSound::LABEL_SE_THUNDER2);
 		}
