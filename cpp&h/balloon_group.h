@@ -101,6 +101,8 @@ public:
 	void BreakBalloon_group(int const &nCntBalloon_group);	// 風船グループが割れる処理
 	// 雷で風船を割らせる処理
 	void Thunder_BreakBalloon_group(void);
+	// IDを設定する処理
+	void SetID(int nId) { m_nActorId = nId; }
 
 	// 生成
 	static CBalloon_group * Create(
@@ -114,6 +116,11 @@ public:
 	static HRESULT Load(void);					// リソース情報読み込む設定
 	// 読み込んだリソース情報を開放する
 	static void UnLoad(void);					// 読み込んだリソース情報を開放する
+	// 風船が割れる処理
+	//	nCrackBalloon	: 割れる風船数
+	void CrackBalloon(
+		int const &nCrackBalloon = 1		// 割れる風船数
+	);
 protected:
 private:
 	/* 関数 */
@@ -123,11 +130,6 @@ private:
 	void SetCollision(
 		int const &nObjType,				// オブジェクトタイプ
 		CScene * pParent					// 親情報
-	);
-	// 風船が割れる処理
-	//	nCrackBalloon	: 割れる風船数
-	void CrackBalloon(
-		int const &nCrackBalloon = 1		// 割れる風船数
 	);
 	/* 変数 */
 	std::vector<CBalloon *> m_apBalloon;			// 風船モデル情報
@@ -139,6 +141,7 @@ private:
 	int m_nBringBalloon_group;						// 現在持っている風船グループの個数
 	int m_nMaxPopBalloon_group;						// 最大出現数の個数
 	float m_fAngleBalloon_group;					// 風船グループの出現する角度(円周率 * 2 / 最大出現数)
+	int m_nActorId;									// ID
 };
 
 #endif

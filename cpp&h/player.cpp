@@ -106,6 +106,7 @@ void CPlayer::Init(void)
 		}
 
 		m_bDie[m_nPlayerID] = false;
+		CCharacter_Balloon::GetBalloon()->SetID(m_nPlayerID);
 	}
 }
 
