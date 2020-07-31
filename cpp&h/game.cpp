@@ -294,6 +294,7 @@ void CGame::PlayerCreate(void)
 	char aAns[256];
 	int aData[MAX_PLAYER];
 	char cDie[64];
+	D3DXVECTOR3 pos;
 
 	memset(&cDie, 0, sizeof(cDie));
 
@@ -303,20 +304,38 @@ void CGame::PlayerCreate(void)
 
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
 	{
+		switch (nCntPlayer)
+		{
+		case 0:
+			pos = D3DXVECTOR3(-850.0f, 0.0f, 850.0f);
+			break;
+		case 1:
+			pos = D3DXVECTOR3(850.0f, 0.0f, 850.0f);
+			break;
+		case 2:
+			pos = D3DXVECTOR3(-850.0f, 0.0f, -850.0f);
+			break;
+		case 3:
+			pos = D3DXVECTOR3(850.0f, 0.0f, -850.0f);
+			break;
+		default:
+			pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			break;
+		}
+
 		switch (aData[nCntPlayer])
 		{
 		case CPlayer::CHARATYPE_SPEED_UP:
-			m_pPlayer[nCntPlayer] = CSpeedUP::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			m_pPlayer[nCntPlayer] = CSpeedUP::Create(nCntPlayer, pos);
 			break;
-
 		case CPlayer::CHARATYPE_REVIVAL:
-			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, pos);
 			break;
 		case CPlayer::CHARATYPE_INVISIBLE:
-			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, pos);
 			break;
 		case CPlayer::CHARATYPE_SCORE_UP:
-			m_pPlayer[nCntPlayer] = CScoreUP::Create(nCntPlayer, D3DXVECTOR3(200.0f * nCntPlayer + 500.0f, 0.0f, -200.0f * nCntPlayer));
+			m_pPlayer[nCntPlayer] = CScoreUP::Create(nCntPlayer, pos);
 			break;
 		}
 	}

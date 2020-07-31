@@ -14,6 +14,7 @@
 #include "score.h"
 #include "fade.h"
 #include "thunder.h"
+#include "balloon_group.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -98,9 +99,7 @@ void CNetwork::Update(void)
 
 			int nError = -1;
 
-			OutputDebugString("送信開始\n");
 			KeyData();
-			OutputDebugString("送信完了\n");
 
 			fd_set readfds;
 			FD_ZERO(&readfds);
@@ -555,9 +554,7 @@ bool CNetwork::UpdateUDP(void)
 	char cDie[32];
 
 	int nError = -1;
-	OutputDebugString("受信開始\n");
 	nError = recv(m_sockServerToClient, aData, sizeof(aData), 0);
-	OutputDebugString("受信完了\n");
 
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
@@ -632,6 +629,7 @@ bool CNetwork::UpdateTCP(void)
 	nError = recv(m_sockClient, &aFunc[0], 256, 0);
 
 	sscanf(aFunc, "%s %s", &cHeadText, &cDataText);
+	OutputDebugString(aFunc);
 
 	// 接続確認
 	if (WSAGetLastError() == WSAEWOULDBLOCK)
@@ -685,6 +683,23 @@ bool CNetwork::UpdateTCP(void)
 		{// フェードしていないとき
 		 // チュートリアルへ
 			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+		}
+	}
+	else if (strcmp(cHeadText, "HIT") == 0)
+	{
+		int nId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d", &aDie, &nId);
+		OutputDebugString(aFunc);
+
+		// プレイヤー取得
+		CPlayer *pPlayer = CGame::GetPlayer(nId);
+		if (pPlayer != NULL)
+		{
+			// 風船破壊
+			pPlayer->GetBalloon()->CrackBalloon();
 		}
 	}
 	else if (strcmp(cHeadText, "THUNDER") == 0)

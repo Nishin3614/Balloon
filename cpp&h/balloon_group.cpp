@@ -16,6 +16,7 @@
 #include "selectcharacter.h"
 #include "spherecollision.h"
 #include "circleshadow.h"
+#include "network.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -46,6 +47,7 @@ CBalloon_group::CBalloon_group() : CScene::CScene()
 	m_fAngleBalloon_group = 0;
 	m_pCollision = NULL;
 	m_pMtx = NULL;
+	m_nActorId = -1;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -172,8 +174,12 @@ void CBalloon_group::Scene_OpponentCollision(
 	if (nObjType == CCollision::OBJTYPE_PLAYER ||
 		nObjType == CCollision::OBJTYPE_ENEMY)
 	{
-		// •—‘DŠ„‚ê‚éˆ—
-		CrackBalloon();
+		if (m_nActorId == CManager::GetNetwork()->GetId())
+		{
+			// •—‘DŠ„‚ê‚éˆ—
+			CrackBalloon();
+			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));
+		}
 	}
 }
 
@@ -214,7 +220,7 @@ void CBalloon_group::SetPopMaxBalloom(
 			m_pPos,
 			D3DVECTOR3_ZERO,
 			0
-			));
+		));
 		//// “–‚½‚è”»’èÝ’è(‹…)
 		//m_apBalloon[nCntBalloon_group]->SetCollision(
 		//	CShape::SHAPETYPE_SPHERE,
