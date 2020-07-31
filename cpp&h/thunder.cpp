@@ -134,12 +134,16 @@ void CThunder::Update(void)
 		{
 			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
 				D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+			// 雷音1
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_THUNDER1);
 		}
 
 		if (m_nCntThunder % 20 == 0)
 		{
 			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 81 - 40), float(rand() % 201 - 100), float(rand() % 81 - 40)),
 				D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+			// 雷音2
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_THUNDER2);
 		}
 
 		//// 電撃テクスチャー
@@ -185,6 +189,8 @@ void CThunder::Update(void)
 						C3DParticle::PARTICLE_ID_CROSSLINE,
 						charaPos
 					);
+					// 死ぬ音2
+					CManager::GetSound()->PlaySound(CSound::LABEL_SE_KERSPLASH2);
 					// キャラクター消滅
 					pCharacter->Release();
 				}

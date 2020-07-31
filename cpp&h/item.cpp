@@ -175,6 +175,8 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
+		// アイテムをとった音1
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
 		Release();
 		// あたり判定のNULLチェック
 		if (m_pCollision != NULL)
@@ -195,6 +197,9 @@ void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
+		// アイテムをとった音1
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
+
 		Release();
 		// あたり判定のNULLチェック
 		if (m_pCollision != NULL)

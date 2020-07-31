@@ -12,6 +12,8 @@
 #include "manager.h"
 #include "ui.h"
 #include "network.h"
+#include "2Deffect.h"
+#include "3Dparticle.h"
 
 //=============================================================================
 //
@@ -41,6 +43,14 @@ HRESULT CTitle::Init()
 {
 	// UI生成
 	CUi::LoadCreate(CUi::UITYPE_TITLEUI_NAME);
+	// 2Dエフェクトの生成
+	C2DEffect::Create();
+	// 3Dパーティクル生成
+	C3DParticle::Create(
+		C3DParticle::PARTICLE_ID_BALLOON,
+		//D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f),
+		D3DVECTOR3_ZERO,
+		true);
 	// 初期化
 	return S_OK;
 }

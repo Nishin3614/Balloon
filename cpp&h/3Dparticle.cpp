@@ -275,7 +275,8 @@ void C3DParticle::Draw(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 C3DParticle * C3DParticle::Create(
 	PARTICLE_ID const	&ParticleId,	// パーティクル番号
-	D3DXVECTOR3 const	&origin			// 初期位置
+	D3DXVECTOR3 const	&origin,		// 初期位置
+	bool		const	&b2D			// 2D描画状態
 )
 {
 	// 変数宣言
@@ -285,6 +286,7 @@ C3DParticle * C3DParticle::Create(
 	// 設定
 	p3DParticle->SetParticle(ParticleId);
 	p3DParticle->SetOrigin(origin);
+	p3DParticle->m_b2D = b2D;
 	return p3DParticle;
 }
 

@@ -93,6 +93,8 @@ void CBalloon::Scene_MyCollision(
 	{
 		// “–‚½‚Á‚Ä‚¢‚é”»’è‚ðtrue‚Ö
 		m_bCollision = true;
+		// •—‘D‚ªŠ„‚ê‚é‰¹1
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
 	}
 }
 
@@ -112,6 +114,9 @@ void CBalloon::Scene_OpponentCollision(
 	{
 		// “–‚½‚Á‚Ä‚¢‚é”»’è‚ðtrue‚Ö
 		m_bCollision = true;
+		// •—‘D‚ªŠ„‚ê‚é‰¹1
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
+
 	}
 }
 

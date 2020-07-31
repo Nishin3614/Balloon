@@ -187,18 +187,24 @@ void CSelectCharacter::Update(void)
 		{
 			m_pCheckUi->Release();
 			m_pCheckUi = NULL;
+			// 選択音2
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND2);
 		}
 		// 右が入力されたら
 		// ->キャラクター番号が加算
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_RIGHT))
 		{
 			m_CharacterType++;
+			// 選択音1
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 		}
 		// 左が入力されたら
 		// ->キャラクター番号が減算
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
 		{
 			m_CharacterType--;
+			// 選択音1
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 		}
 		// 範囲設定
 		if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
@@ -218,6 +224,8 @@ void CSelectCharacter::Update(void)
 				CScene_TWO::OFFSET_TYPE_CENTER,
 				CHARACTER_ICON_ORIGINPOS,
 				D3DXVECTOR2(CHARACTER_ICON_SIZE, CHARACTER_ICON_SIZE));
+			// 選択音1
+			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND1);
 			// 選択UIのNULLチェック
 			// ->テクスチャー設定
 			if (m_pCheckUi != NULL)
