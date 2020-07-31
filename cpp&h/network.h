@@ -107,6 +107,7 @@ public:
 	bool UpdateTCP(void);
 	void StartUpdate(void);
 	void StopUpdate(void);
+	void CloseTCP(void);
 
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
 	int GetRank(int nIndex) { return m_nRank[nIndex]; }

@@ -147,9 +147,9 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	// ネットワーク
 	if (!m_pNetwork->Init() == S_OK)
 	{
-		m_renderer->Uninit();
-		delete m_renderer;
-		m_renderer = NULL;
+		m_pNetwork->Uninit();
+		delete m_pNetwork;
+		m_pNetwork = NULL;
 		return E_FAIL;
 	}
 

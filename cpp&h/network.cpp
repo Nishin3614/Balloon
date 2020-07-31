@@ -13,6 +13,7 @@
 #include "joypad.h"
 #include "score.h"
 #include "fade.h"
+#include "thunder.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -64,7 +65,10 @@ HRESULT CNetwork::Init(void)
 void CNetwork::Uninit(void)
 {
 	//ソケット(クライアント)の開放
-	closesocket(m_sockClient);
+	CloseTCP();
+
+	// winsock2 の終了処理
+	WSACleanup();
 }
 
 //=============================================================================
@@ -350,9 +354,13 @@ HRESULT CNetwork::Connect(void)
 	int val = -1;
 	char debug[256];
 	unsigned int nStartTime = 0;
+	SOCKET sock;
+
+	// ソケットの初期化
+	sock = socket(AF_INET, SOCK_STREAM, 0);
 
 	//サーバに接続
-	val = connect(m_sockClient, (struct sockaddr *)&m_addrServer, sizeof(m_addrServer));
+	val = connect(sock, (struct sockaddr *)&m_addrServer, sizeof(m_addrServer));
 	if (val == SOCKET_ERROR)
 	{
 		char aError[64];
@@ -360,6 +368,8 @@ HRESULT CNetwork::Connect(void)
 		MessageBox(NULL, aError, "警告!", MB_ICONWARNING);
 		return E_FAIL;
 	}
+
+	m_sockClient = sock;
 
 	SendTCP("LOAD_ID", sizeof("LOAD_ID"));
 	DataRecv(SOCKETTYPE_CLIENT, (char*)&m_nId, sizeof(int));
@@ -666,7 +676,7 @@ bool CNetwork::UpdateTCP(void)
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
 			// チュートリアルへ
-			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+			CManager::GetFade()->SetFade(CManager::MODE_RESULT);
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_START") == 0)
@@ -676,6 +686,15 @@ bool CNetwork::UpdateTCP(void)
 		 // チュートリアルへ
 			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
+	}
+	else if (strcmp(cHeadText, "THUNDER") == 0)
+	{
+		char aDie[64];
+		D3DXVECTOR3 pos;
+
+		// 雷生成
+		sscanf(aFunc, "%s %f %f %f",&aDie, &pos.x, &pos.y, &pos.z);
+		CThunder::Create(pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 
 	return true;
@@ -704,4 +723,12 @@ void CNetwork::StopUpdate(void)
 	{// 更新フラグが立っていた時
 		m_bUpdate = false;
 	}
+}
+
+//=============================================================================
+// 通信切断
+//=============================================================================
+void CNetwork::CloseTCP(void)
+{
+	closesocket(m_sockClient);
 }

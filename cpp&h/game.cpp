@@ -129,6 +129,7 @@ void CGame::Uninit(void)
 	if (pNetwork != NULL)
 	{// ネットワークが存在していたとき
 		pNetwork->StopUpdate();				// 更新停止予約
+		pNetwork->CloseTCP();
 	}
 
 	// ポーズ
