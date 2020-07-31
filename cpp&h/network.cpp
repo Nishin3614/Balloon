@@ -556,15 +556,6 @@ bool CNetwork::UpdateUDP(void)
 	int nError = -1;
 	nError = recv(m_sockServerToClient, aData, sizeof(aData), 0);
 
-	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-	{
-		if (nCount != m_nId)
-		{
-			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
-			pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
-		}
-	}
-
 	if (nError == SOCKET_ERROR)
 	{
 		// ソケットの作成に失敗したとき
@@ -605,6 +596,15 @@ bool CNetwork::UpdateUDP(void)
 
 			m_nStick[STICKTYPE_H] = (int)fData[RECVDATA_STICK_H];
 			m_nStick[STICKTYPE_V] = (int)fData[RECVDATA_STICK_V];
+		}
+	}
+
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		if (nCount != m_nId)
+		{
+			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
+			pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
 		}
 	}
 
