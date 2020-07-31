@@ -70,6 +70,8 @@ public:
 	);
 	static HRESULT Load(void);			// “Ç‚İ‚İ
 	static void UnLoad(void);			// UnLoad‚·‚é
+	// “§–¾‚©‚Ç‚¤‚©‚Ìæ“¾ˆ—
+	bool const &GetInvisible(void) { return m_bInvisible; };
 protected:
 private:
 	/* \‘¢‘Ì */

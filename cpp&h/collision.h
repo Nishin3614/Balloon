@@ -142,6 +142,10 @@ public:
 	void SetCollision(void);
 	// 当たり判定状態の取得
 	bool &GetbCollision(void) { return m_bCollision; };
+	// 当たり判定の使用状態設定処理
+	void SetUse(bool const &bUse) { m_bUse = bUse; };
+	// 当たり判定の使用状態取得
+	bool const &GetUse(void) { return m_bUse; };
 	// 自分のオブジェクト番号設定
 	void SetObjectID(OBJTYPE const &obj) { m_nMyObjectId = obj; };
 	// あたり判定を所有しているシーン情報取得
@@ -211,7 +215,8 @@ protected:
 
 private:
 	/* 変数 */
-	bool m_bCollision;						// 当たり判定状態
+	bool m_bCollision;						// 当たり判定の判定状態
+	bool m_bUse;							// 当たり判定の使用状態
 	int m_nMyObjectId;						// オブジェクト番号
 	int m_nOponentId;						// 当たった時の相手
 	CScene * m_pOwner;						// あたり判定を所有しているシーン情報

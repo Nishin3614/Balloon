@@ -262,9 +262,8 @@ void CBalloon_group::CreateBalloon_group(
 		// 出現している風船グループの個数を増やす
 		m_nPopBalloon_group++;
 		// エフェクトを用意するならここ
-
-
-
+		// 当たり判定の使用状態をtrueに
+		m_pCollision->SetUse(true);
 
 		// 生成処理が終了したら
 		// ->関数を抜ける
@@ -408,6 +407,12 @@ void CBalloon_group::CrackBalloon(
 		nCntCrack--;
 		// 風船が割れる音1
 		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
+		// 全ての風船が割れていたら
+		if (nCntBalloon == (signed)m_apBalloon.size() - 1)
+		{
+			// 当たり判定の使用状態をfalseに
+			m_pCollision->SetUse(false);
+		}
 		// 割れる風船数カウントが0以下なら
 		// ->ループを抜ける
 		if (nCntCrack <= 0)
