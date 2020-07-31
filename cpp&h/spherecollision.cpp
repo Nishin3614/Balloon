@@ -74,6 +74,12 @@ void CSphereCollision::Uninit(void)
 void CSphereCollision::Update(void)
 {
 #ifdef _DEBUG
+	// 当たり判定の使用状態がfalse ||
+	// ->関数を抜ける
+	if (!CCollision::GetUse())
+	{
+		return;
+	}
 	// メッシュスフィアが生成されていたら
 	if (m_uni_pMeshsphere)
 	{
@@ -89,6 +95,12 @@ void CSphereCollision::Update(void)
 void CSphereCollision::Draw(void)
 {
 #ifdef _DEBUG
+	// 当たり判定の使用状態がfalse ||
+	// ->関数を抜ける
+	if (!CCollision::GetUse())
+	{
+		return;
+	}
 	// メッシュスフィアが生成されていたら
 	if (m_uni_pMeshsphere)
 	{

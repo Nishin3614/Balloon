@@ -43,6 +43,7 @@ CCollision::CCollision() : CScene::CScene()
 	m_pOwner = NULL;
 	m_pParent = NULL;
 	m_bCollision = false;
+	m_bUse = true;
 	m_nMyObjectId = 0;
 	m_nOponentId = -1;
 }
@@ -120,6 +121,14 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 	// ->関数を抜ける
 	if (pCollision == NULL ||
 		this == pCollision)
+	{
+		return false;
+	}
+	// 自分の当たり判定の使用状態がfalse ||
+	// 相手の当たり判定の使用状態がfalse ||
+	// ->関数を抜ける
+	if (!this->m_bUse ||
+		!pCollision->m_bUse)
 	{
 		return false;
 	}
