@@ -207,6 +207,7 @@ void CPlayer::MyAction(const int &nId)
 {
 	// 自キャラの移動処理
 	MyMove();
+
 	// 風船を膨らませる
 	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
 	{
@@ -245,10 +246,6 @@ void CPlayer::MyMove(void)
 	float fMove;			// 移動速度
 	float fAngle;			// スティック角度の計算用変数
 	fAngle = 0.0f;			// 角度
-
-	char aDebug[256];
-	sprintf(aDebug, "POS_Y : %f\n", m_pos.y);
-	OutputDebugString(aDebug);
 
 	if (CManager::GetJoy() != NULL)
 	{
@@ -536,16 +533,13 @@ void CPlayer::OtherMove(void)
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
 	bool bMove = false;				// 移動状態
-	float fRot;						// 回転
+	float fRot = 0.0f;						// 回転
 	// 情報取得
 	rot = CCharacter::GetRotDest();								// 目的回転量
 	move = CCharacter::GetMove();								// 移動量
-	// サーバー側からカメラの回転情報を取得する
-	fRot = pNetwork->GetRot(m_nPlayerID);	// カメラ回転
 	// 移動 //
 	/* ジョイパッド */
 	// パッド用 //
-	float fMove;			// 移動速度
 
 	/* キーボード */
 	// 左
@@ -639,6 +633,9 @@ void CPlayer::OtherMove(void)
 		}
 	}
 
+	// サーバー側からカメラの回転情報を取得する
+	fRot = pNetwork->GetRot(m_nPlayerID);	// カメラ回転
+
 	// 回転をセット
 	CCharacter::SetRotDest(rot);
 }
@@ -683,8 +680,8 @@ void CPlayer::Die(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::OtherDie(void)
 {
-	// 死亡処理
-	CCharacter_Balloon::Die();
+	//// 死亡処理
+	//CCharacter_Balloon::Die();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
