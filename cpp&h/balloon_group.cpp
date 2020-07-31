@@ -22,9 +22,10 @@
 // マクロ定義
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define BALLOON_GROUP_Y			(60.0f)								// 位置y
-#define BALLOON_GROUP_RADIUS	(30.0f)								// 半径
-#define BALLOON_OFFSET_POS		(D3DXVECTOR3(0.0f,25.0f,0.0f))		// オフセット位置
+#define BALLOON_GROUP_Y				(60.0f)								// 位置y
+#define BALLOON_GROUP_RADIUS		(30.0f)								// 半径
+#define BALLOON_OFFSET_POS			(D3DXVECTOR3(0.0f,100.0f,0.0f))		// オフセット位置
+#define BALLOON_COLLISION_RADIUS	(35.0f)								// あたり判定の半径
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -41,7 +42,10 @@ CBalloon_group::CBalloon_group() : CScene::CScene()
 	m_nPopBalloon_group = 2;
 	m_nBringBalloon_group = 0;
 	m_pPos = NULL;
+	m_offsetPos = BALLOON_OFFSET_POS;
 	m_fAngleBalloon_group = 0;
+	m_pCollision = NULL;
+	m_pMtx = NULL;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -73,6 +77,13 @@ void CBalloon_group::Uninit(void)
 		delete m_apBalloon[nCntBalloon_group];
 		m_apBalloon[nCntBalloon_group] = NULL;
 	}
+	// 当たり判定情報の開放
+	if (m_pCollision != NULL)
+	{
+		m_pCollision->CompulsionScene();
+		m_pCollision->Release();
+		m_pCollision = NULL;
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -88,8 +99,16 @@ void CBalloon_group::Update(void)
 		if (m_apBalloon[nCntBalloon_group] == NULL) continue;
 		// 更新
 		m_apBalloon[nCntBalloon_group]->Update();
-		// 風船グループが割れる処理
-		BreakBalloon_group(nCntBalloon_group);
+	}
+	// 当たり判定がNULLではないなら
+	// 更新
+	if (m_pCollision != NULL)
+	{
+		// 位置情報の更新(行列渡し)
+		m_pCollision->GetShape()->PassMatrix(*m_pMtx);
+		// 更新
+		m_pCollision->Update();
+		return;
 	}
 }
 
@@ -119,6 +138,44 @@ void CBalloon_group::Debug(void)
 	CDebugproc::Print("出現している風船グループの数[%d]\n", m_nPopBalloon_group);
 }
 #endif // _DEBUG
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 当たった後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::Scene_MyCollision(
+	int const &nObjType,	// オブジェクトタイプ
+	CScene * pScene			// 相手のシーン情報
+)
+{
+	// 相手のオブジェクトタイプがキャラクターなら
+	if (nObjType == CCollision::OBJTYPE_PLAYER ||
+		nObjType == CCollision::OBJTYPE_ENEMY)
+	{
+		// 風船割れる処理
+		CrackBalloon();
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 相手に当てられた後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::Scene_OpponentCollision(
+	int const &nObjType,	// オブジェクトタイプ
+	CScene * pScene			// 相手のシーン情報
+)
+{
+	// 相手のオブジェクトタイプがキャラクターなら
+	if (nObjType == CCollision::OBJTYPE_PLAYER ||
+		nObjType == CCollision::OBJTYPE_ENEMY)
+	{
+		// 風船割れる処理
+		CrackBalloon();
+	}
+}
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 位置情報設定
@@ -158,15 +215,15 @@ void CBalloon_group::SetPopMaxBalloom(
 			D3DVECTOR3_ZERO,
 			0
 			));
-		// 当たり判定設定(球)
-		m_apBalloon[nCntBalloon_group]->SetCollision(
-			CShape::SHAPETYPE_SPHERE,
-			nObjType,
-			false,
-			true,
-			pParent,
-			BALLOON_OFFSET_POS
-		);
+		//// 当たり判定設定(球)
+		//m_apBalloon[nCntBalloon_group]->SetCollision(
+		//	CShape::SHAPETYPE_SPHERE,
+		//	nObjType,
+		//	false,
+		//	true,
+		//	pParent,
+		//	BALLOON_OFFSET_POS
+		//);
 	}
 }
 
@@ -194,15 +251,6 @@ void CBalloon_group::CreateBalloon_group(
 			D3DVECTOR3_ZERO,
 			0
 		);
-		// 当たり判定設定(球)
-		m_apBalloon[nCntBalloon_group]->SetCollision(
-			CShape::SHAPETYPE_SPHERE,
-			nObjType,
-			false,
-			false,
-			pParent,
-			BALLOON_OFFSET_POS
-		);
 		// 持っている風船グループの個数を減らす
 		m_nBringBalloon_group--;
 		// 出現している風船グループの個数を増やす
@@ -215,6 +263,20 @@ void CBalloon_group::CreateBalloon_group(
 		// 生成処理が終了したら
 		// ->関数を抜ける
 		break;
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// あたり判定を強制的に削除
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::CollisionDelete(void)
+{
+	// 当たり判定情報の開放
+	if (m_pCollision != NULL)
+	{
+		m_pCollision->CompulsionScene();
+		m_pCollision->Release();
+		m_pCollision = NULL;
 	}
 }
 
@@ -241,6 +303,7 @@ CBalloon * CBalloon_group::GetBalloon(int const & nBalloon_group)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CBalloon_group * CBalloon_group::Create(
 	D3DXVECTOR3 *pPos,					// 位置情報
+	D3DXMATRIX	*pMtx,					// 行列情報
 	int const &nPopMaxBalloon_group,	// 最大風船グループ数
 	int const &nObjType,				// オブジェクトタイプ
 	CScene * pParent					// 親情報
@@ -254,7 +317,7 @@ CBalloon_group * CBalloon_group::Create(
 	pBalloon_group->ManageSetting(CScene::LAYER_3DOBJECT);
 	// 初期化処理
 	pBalloon_group->Init();
-	// 行列情報設定
+	// 位置情報設定
 	pBalloon_group->SetPPos(pPos);
 	// 外に出して置ける風船グループの最大個数を設定
 	pBalloon_group->SetPopMaxBalloom(
@@ -264,6 +327,10 @@ CBalloon_group * CBalloon_group::Create(
 	);
 	// 出現している風船グループの個数に代入する
 	pBalloon_group->m_nPopBalloon_group = nPopMaxBalloon_group;
+	// 行列情報設定
+	pBalloon_group->m_pMtx = pMtx;
+	// あたり判定の設定
+	pBalloon_group->SetCollision(nObjType, pParent);
 	// 生成したオブジェクトを返す
 	return pBalloon_group;
 }
@@ -281,6 +348,67 @@ HRESULT CBalloon_group::Load(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon_group::UnLoad(void)
 {
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// あたり判定情報設定処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::SetCollision(
+	int const &nObjType,				// オブジェクトタイプ
+	CScene * pParent					// 親情報
+)
+{
+	// あたり判定生成
+	m_pCollision = CSphereCollision::Create(
+		BALLOON_COLLISION_RADIUS,
+		m_offsetPos,
+		(CCollision::OBJTYPE)nObjType,
+		this,
+		pParent,
+		false,
+		true,
+		m_pPos
+	);
+	// 位置情報の更新(行列渡し)
+	m_pCollision->GetShape()->PassMatrix(*m_pMtx);
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 風船が割れる処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CBalloon_group::CrackBalloon(
+	int const &nCrackBalloon	// 割れる風船数
+)
+{
+	// 変数宣言
+	int nCntCrack = nCrackBalloon;	// 割れた風船カウント
+	// 風船ループ
+	for (int nCntBalloon = 0; nCntBalloon < (signed)m_apBalloon.size(); nCntBalloon++)
+	{
+		// 当たり判定状態がNULLなら
+		// ->ループスキップ
+		if (m_apBalloon[nCntBalloon] == NULL)
+		{
+			continue;
+		}
+		// 風船の終了処理
+		m_apBalloon[nCntBalloon]->Uninit();
+		// 風船の開放
+		delete m_apBalloon[nCntBalloon];
+		m_apBalloon[nCntBalloon] = NULL;
+		// 出現している風船グループの個数を減らす
+		m_nPopBalloon_group--;
+		// 割れる風船数カウントを減らす
+		nCntCrack--;
+		// 風船が割れる音1
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
+		// 割れる風船数カウントが0以下なら
+		// ->ループを抜ける
+		if (nCntCrack <= 0)
+		{
+			break;
+		}
+	}
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -25,6 +25,7 @@
 // 前方宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class CCollision;
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -50,16 +51,16 @@ public:
 	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	) {};
+	);
 	// 相手に当てられた後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
 	virtual void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	) {};
+	);
 	// ポインター位置情報を取得
-	D3DXVECTOR3 * Scene_GetPPos(void) { return NULL; };
+	D3DXVECTOR3 * Scene_GetPPos(void) { return m_pPos; };
 	// ポインター過去の位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPosold(void) { return NULL; };
 	// ポインター移動量情報の取得
@@ -85,6 +86,8 @@ public:
 		int const & nObjType,
 		CScene * pParent
 	);
+	// あたり判定の開放
+	void CollisionDelete(void);
 	// 風船情報取得
 	CBalloon * GetBalloon(int const &nBalloon_group);	// 風船の情報取得
 	// 風船グループを持っている個数を取得
@@ -102,6 +105,7 @@ public:
 	// 生成
 	static CBalloon_group * Create(
 		D3DXVECTOR3 *pPos,					// 位置情報
+		D3DXMATRIX	*pMtx,					// 行列情報
 		int const &nPopMaxBalloon_group,	// 風船グループの最大出現数
 		int const &nObjType,				// オブジェクトタイプ
 		CScene * pParent					// 親情報
@@ -113,9 +117,24 @@ public:
 protected:
 private:
 	/* 関数 */
+	// あたり判定情報設定処理
+	//	nObjType	: オブジェタイプ
+	//	pParent		: 親情報
+	void SetCollision(
+		int const &nObjType,				// オブジェクトタイプ
+		CScene * pParent					// 親情報
+	);
+	// 風船が割れる処理
+	//	nCrackBalloon	: 割れる風船数
+	void CrackBalloon(
+		int const &nCrackBalloon = 1		// 割れる風船数
+	);
 	/* 変数 */
 	std::vector<CBalloon *> m_apBalloon;			// 風船モデル情報
 	D3DXVECTOR3 *m_pPos;							// 位置情報
+	D3DXVECTOR3 m_offsetPos;						// オフセット位置
+	D3DXMATRIX	*m_pMtx;							// 行列情報
+	CCollision	*m_pCollision;						// あたり判定情報
 	int m_nPopBalloon_group;						// 現在出現している風船グループの個数
 	int m_nBringBalloon_group;						// 現在持っている風船グループの個数
 	int m_nMaxPopBalloon_group;						// 最大出現数の個数

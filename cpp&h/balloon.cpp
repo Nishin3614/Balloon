@@ -87,15 +87,7 @@ void CBalloon::Scene_MyCollision(
 	CScene * pScene				// 相手のシーン情報
 )
 {
-	// 相手のオブジェクトタイプがキャラクターなら
-	if (nObjType == CCollision::OBJTYPE_PLAYER ||
-		nObjType == CCollision::OBJTYPE_ENEMY)
-	{
-		// 当たっている判定をtrueへ
-		m_bCollision = true;
-		// 風船が割れる音1
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
-	}
+	CScene_X::Scene_MyCollision(nObjType, pScene);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,16 +100,7 @@ void CBalloon::Scene_OpponentCollision(
 	CScene * pScene				// 相手のシーン情報
 )
 {
-	// 相手のオブジェクトタイプがキャラクターなら
-	if (nObjType == CCollision::OBJTYPE_PLAYER ||
-		nObjType == CCollision::OBJTYPE_ENEMY)
-	{
-		// 当たっている判定をtrueへ
-		m_bCollision = true;
-		// 風船が割れる音1
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
-
-	}
+	CScene_X::Scene_OpponentCollision(nObjType, pScene);
 }
 
 #ifdef _DEBUG
