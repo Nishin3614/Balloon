@@ -73,7 +73,7 @@ void CRanking::Update(void)
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// ƒ^ƒCƒgƒ‹‚Ö
-				pFade->SetFade(CManager::MODE_GAME);
+				pFade->SetFade(CManager::MODE_TITLE);
 			}
 		}
 	}
