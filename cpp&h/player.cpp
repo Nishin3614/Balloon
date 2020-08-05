@@ -459,6 +459,11 @@ void CPlayer::MpUp(
 		{
 			// リセット開始
 			m_bResetMP = true;
+
+			// サーバーに報告
+			CNetwork *pNetwork = CManager::GetNetwork();
+			pNetwork->SendTCP("START_SP", sizeof("START_SP"));
+
 			// 状態変化
 			m_bMPMax = true;
 		}
@@ -489,6 +494,11 @@ void CPlayer::MpUp(
 		{
 			// MP状態の初期化
 			m_bMPMax = false;
+
+			// サーバーに報告
+			CNetwork *pNetwork = CManager::GetNetwork();
+			pNetwork->SendTCP("STOP_SP", sizeof("STOP_SP"));
+
 			// リセット終了
 			m_bResetMP = false;
 		}

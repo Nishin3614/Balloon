@@ -702,6 +702,34 @@ bool CNetwork::UpdateTCP(void)
 			pPlayer->GetBalloon()->CrackBalloon();
 		}
 	}
+	else if (strcmp(cHeadText, "START_SP") == 0)
+	{
+		int nId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d", &aDie, &nId);
+		CPlayer *pPlayer = CGame::GetPlayer(nId);
+
+		if (pPlayer != NULL)
+		{// プレイヤーが存在していたとき
+			pPlayer->SetMPMax(true);				// 必殺技使用
+		}
+	}
+	else if (strcmp(cHeadText, "STOP_SP") == 0)
+	{
+		int nId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d", &aDie, &nId);
+		CPlayer *pPlayer = CGame::GetPlayer(nId);
+
+		if (pPlayer != NULL)
+		{// プレイヤーが存在していたとき
+			pPlayer->SetMPMax(false);				// 必殺技解除
+		}
+	}
 	else if (strcmp(cHeadText, "THUNDER") == 0)
 	{
 		char aDie[64];
