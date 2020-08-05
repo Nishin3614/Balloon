@@ -92,6 +92,7 @@ public:
 	// プレイヤー番号の取得
 	int const &GetPlayerID(void) { return m_nPlayerID; };
 	// MPのフラグ取得
+	void SetMPMax(const bool bValue) { m_bMPMax = bValue; }
 	bool const &GetMPMax(void) { return m_bMPMax; }
 	// 移動量の設定
 	void const SetMoveNow(float fMoveNow) { m_fMoveNow = fMoveNow; }

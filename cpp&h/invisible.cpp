@@ -7,6 +7,7 @@
 #include "invisible.h"
 #include "manager.h"
 #include "character.h"
+#include "network.h"
 
 // ==========================================================
 //
@@ -82,7 +83,14 @@ void CInvisible::Draw(void)
 
 	if (m_bInvisible == true)
 	{
-		CCharacter::SetAlpha(INVISIBLE);
+		if (GetPlayerID() == CManager::GetNetwork()->GetId())
+		{
+			CCharacter::SetAlpha(INVISIBLE);
+		}
+		else
+		{
+			CCharacter::SetAlpha(0.0f);
+		}
 	}
 	else
 	{
