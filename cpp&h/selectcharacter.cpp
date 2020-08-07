@@ -6,22 +6,23 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "selectcharacter.h"
 /* •`‰æ */
-#include "speedUP.h"
-#include "revival.h"
-#include "invisible.h"
-#include "scoreUP.h"
 #include "scene_two.h"
+#include "ui_group.h"
+#include "player.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // ƒ}ƒNƒ’è‹`
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define CHARACTER_ICON_ORIGINPOS (D3DXVECTOR3(250.0f,658.0f,0.0f))	// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚Ì1”Ô–Ú‚ÌˆÊ’u
+#define CHARACTER_SELECTCHARA_POS	(D3DXVECTOR3(640.0f,360.0f,0.0f))	// ƒLƒƒƒ‰ƒNƒ^[‘I‘ð‚ÌˆÊ’u
+#define CHARACTER_SELECTCHARA_SIZE	(D3DXVECTOR2(1280.0f,720.0f))	// ƒLƒƒƒ‰ƒNƒ^[‘I‘ð‚ÌƒTƒCƒY
+
+#define CHARACTER_ICON_ORIGINPOS	(D3DXVECTOR3(250.0f,658.0f,0.0f))	// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚Ì1”Ô–Ú‚ÌˆÊ’u
 #define CHARACTER_ICON_ORIGINPOS_X (250.0f)							// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚Ì1”Ô–Ú‚ÌXˆÊ’u
 #define CHARACTER_ICON_ORIGINPOS_Y (658.0f)							// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚Ì1”Ô–Ú‚ÌYˆÊ’u
-#define CHARACTER_ICON_SPACE (250.0f)								// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ““¯Žm‚ÌˆÊ’uŠÔŠu
-#define CHARACTER_ICON_SIZE (85.0f)									// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚ÌƒTƒCƒY
+#define CHARACTER_ICON_SPACE		(250.0f)								// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ““¯Žm‚ÌˆÊ’uŠÔŠu
+#define CHARACTER_ICON_SIZE			(85.0f)									// ƒLƒƒƒ‰ƒNƒ^[ƒAƒCƒRƒ“‚ÌƒTƒCƒY
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -37,10 +38,7 @@ int CSelectCharacter::m_SaveCharaType[MAX_PLAYER] = {};	// ƒvƒŒƒCƒ„[‚ª‘I‚ñ‚¾ƒLƒ
 CSelectCharacter::CSelectCharacter() : CScene::CScene()
 {
 	// ‰Šú‰»
-	m_pSpeedUP = NULL;
-	m_pRevival = NULL;
-	m_pInvisible = NULL;
-	m_pScoreUP = NULL;
+	m_pSelectCharatUi = NULL;
 	m_pCheckUi = NULL;
 	m_CharacterType = 0;
 	m_PlayerID = 0;
@@ -63,14 +61,14 @@ CSelectCharacter::~CSelectCharacter()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::Init(void)
 {
-	// ƒvƒŒƒCƒ„[(ƒXƒs[ƒhƒAƒbƒv)
-	m_pSpeedUP = CSpeedUP::Create_Self(m_PlayerID, m_pos);
-	// ƒvƒŒƒCƒ„[(•œŠˆ)
-	m_pRevival = CRevival::Create_Self(m_PlayerID, m_pos);
-	// ƒvƒŒƒCƒ„[(“§–¾)
-	m_pInvisible = CInvisible::Create_Self(m_PlayerID, m_pos);
-	// ƒvƒŒƒCƒ„[(ƒAƒ^ƒbƒNƒAƒbƒv)
-	m_pScoreUP = CScoreUP::Create_Self(m_PlayerID, m_pos);
+	// ‘I‘ðƒLƒƒƒ‰ƒNƒ^[UI¶¬
+	m_pSelectCharatUi = CScene_TWO::Create(
+		CScene_TWO::OFFSET_TYPE_CENTER,
+		CHARACTER_SELECTCHARA_POS,
+		CHARACTER_SELECTCHARA_SIZE);
+	m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38));
+	// ‘I‘ð‰æ–Ê‚ÌUI¶¬
+	CUi::LoadCreate(CUi::UITYPE_SELECTCHARACTER);
 	// ‘I‘ðUI¶¬
 	m_pSelectUi = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
@@ -113,37 +111,13 @@ void CSelectCharacter::Init(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::Uninit(void)
 {
-	// ƒvƒŒƒCƒ„[(ƒXƒs[ƒhƒAƒbƒv)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
+	// ‘I‘ðƒLƒƒƒ‰ƒNƒ^[UI‚ÌNULLƒ`ƒFƒbƒN
 	// ->I—¹ˆ—
-	if (m_pSpeedUP != NULL)
+	if (m_pSelectCharatUi != NULL)
 	{
-		m_pSpeedUP->Uninit();
-		delete m_pSpeedUP;
-		m_pSpeedUP = NULL;
-	}
-	// ƒvƒŒƒCƒ„[(•œŠˆ)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-	// ->I—¹ˆ—
-	if (m_pRevival != NULL)
-	{
-		m_pRevival->Uninit();
-		delete m_pRevival;
-		m_pRevival = NULL;
-	}
-	// ƒvƒŒƒCƒ„[(“§–¾)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-	// ->I—¹ˆ—
-	if (m_pInvisible != NULL)
-	{
-		m_pInvisible->Uninit();
-		delete m_pInvisible;
-		m_pInvisible = NULL;
-	}
-	// ƒvƒŒƒCƒ„[(ƒAƒ^ƒbƒNƒAƒbƒv)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-	// ->I—¹ˆ—
-	if (m_pScoreUP != NULL)
-	{
-		m_pScoreUP->Uninit();
-		delete m_pScoreUP;
-		m_pScoreUP = NULL;
+		// I—¹ˆ—
+		//m_pSelectUi->Release();
+		m_pSelectCharatUi = NULL;
 	}
 	// ‘I‘ðUI‚ÌNULLƒ`ƒFƒbƒN
 	// ->I—¹ˆ—
@@ -195,6 +169,12 @@ void CSelectCharacter::Update(void)
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_RIGHT))
 		{
 			m_CharacterType++;
+			// ‘I‘ðƒLƒƒƒ‰ƒNƒ^[UI‚ÌNULLƒ`ƒFƒbƒN
+			// ->ƒeƒNƒXƒ`ƒƒ[ƒ^ƒCƒv•ÏX
+			if (m_pSelectCharatUi != NULL)
+			{
+				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+			}
 			// ‘I‘ð‰¹1
 			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 		}
@@ -203,6 +183,12 @@ void CSelectCharacter::Update(void)
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
 		{
 			m_CharacterType--;
+			// ‘I‘ðƒLƒƒƒ‰ƒNƒ^[UI‚ÌNULLƒ`ƒFƒbƒN
+			// ->ƒeƒNƒXƒ`ƒƒ[ƒ^ƒCƒv•ÏX
+			if (m_pSelectCharatUi != NULL)
+			{
+				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+			}
 			// ‘I‘ð‰¹1
 			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 		}
@@ -210,10 +196,22 @@ void CSelectCharacter::Update(void)
 		if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
 		{
 			m_CharacterType = 0;
+			// ‘I‘ðƒLƒƒƒ‰ƒNƒ^[UI‚ÌNULLƒ`ƒFƒbƒN
+			// ->ƒeƒNƒXƒ`ƒƒ[ƒ^ƒCƒv•ÏX
+			if (m_pSelectCharatUi != NULL)
+			{
+				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+			}
 		}
 		else if (m_CharacterType < 0)
 		{
 			m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
+			// ‘I‘ðƒLƒƒƒ‰ƒNƒ^[UI‚ÌNULLƒ`ƒFƒbƒN
+			// ->ƒeƒNƒXƒ`ƒƒ[ƒ^ƒCƒv•ÏX
+			if (m_pSelectCharatUi != NULL)
+			{
+				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+			}
 		}
 	}
 	else
@@ -245,48 +243,6 @@ void CSelectCharacter::Update(void)
 	// Œ»Ý‚ÌƒLƒƒƒ‰ƒNƒ^[”Ô†‚Ì•Û‘¶
 	m_SaveCharaType[m_PlayerID] = m_CharacterType;
 
-	// ƒvƒŒƒCƒ„[‚ÌXV
-	switch (m_CharacterType)
-	{
-		// ƒvƒŒƒCƒ„[(ƒXƒs[ƒhƒAƒbƒv)
-	case 0:
-		// ƒvƒŒƒCƒ„[(ƒXƒs[ƒhƒAƒbƒv)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->XVˆ—
-		if (m_pSpeedUP != NULL)
-		{
-			m_pSpeedUP->Update();
-		}
-		break;
-		// ƒvƒŒƒCƒ„[(•œŠˆ)
-	case 1:
-		// ƒvƒŒƒCƒ„[(•œŠˆ)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->XVˆ—
-		if (m_pRevival != NULL)
-		{
-			m_pRevival->Update();
-		}
-		break;
-		// ƒvƒŒƒCƒ„[(“§–¾)
-	case 2:
-		// ƒvƒŒƒCƒ„[(“§–¾)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->XVˆ—
-		if (m_pInvisible != NULL)
-		{
-			m_pInvisible->Update();
-		}
-		break;
-	case 3:
-		// ƒvƒŒƒCƒ„[(ƒAƒ^ƒbƒNƒAƒbƒv)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->XVˆ—
-		if (m_pScoreUP != NULL)
-		{
-			m_pScoreUP->Update();
-		}
-		break;
-	default:
-		break;
-	}
-
 	// ‘I‘ðUI‚ÌNULLƒ`ƒFƒbƒN
 	// ->‘I‘ðUI‚ÌˆÊ’uÝ’è
 	if (m_pSelectUi != NULL)
@@ -302,46 +258,7 @@ void CSelectCharacter::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelectCharacter::Draw(void)
 {
-	switch (m_CharacterType)
-	{
-		// ƒvƒŒƒCƒ„[(ƒXƒs[ƒhƒAƒbƒv)
-	case 0:
-		// ƒvƒŒƒCƒ„[(ƒXƒs[ƒhƒAƒbƒv)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->•`‰æˆ—
-		if (m_pSpeedUP != NULL)
-		{
-			m_pSpeedUP->Draw();
-		}
-		break;
-		// ƒvƒŒƒCƒ„[(•œŠˆ)
-	case 1:
-		// ƒvƒŒƒCƒ„[(•œŠˆ)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->•`‰æˆ—
-		if (m_pRevival != NULL)
-		{
-			m_pRevival->Draw();
-		}
-		break;
-		// ƒvƒŒƒCƒ„[(“§–¾)
-	case 2:
-		// ƒvƒŒƒCƒ„[(“§–¾)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->•`‰æˆ—
-		if (m_pInvisible != NULL)
-		{
-			m_pInvisible->Draw();
-		}
-		break;
-	case 3:
-		// ƒvƒŒƒCƒ„[(ƒAƒ^ƒbƒNƒAƒbƒv)‚ªNULL‚Å‚Í‚È‚¢‚È‚ç
-		// ->XVˆ—
-		if (m_pScoreUP != NULL)
-		{
-			m_pScoreUP->Draw();
-		}
-		break;
-	default:
-		break;
-	}
+
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
