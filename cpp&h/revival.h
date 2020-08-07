@@ -70,6 +70,8 @@ public:
 	);
 	static HRESULT Load(void);			// “Ç‚İ‚İ
 	static void UnLoad(void);			// UnLoad‚·‚é
+
+	void CreateBalloon(void);			// •—‘D‚Ìì¬
 protected:
 private:
 	/* \‘¢‘Ì */

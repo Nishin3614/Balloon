@@ -64,13 +64,13 @@ public:
 	);
 	// バルーンの情報取得
 	CBalloon_group * GetBalloon(void) { return m_pBalloon_group; };
+	// 風船を生成する処理
+	void BalloonCreate(void);
 #ifdef _DEBUG
 	void Debug(void);
 #endif
 	// 風船がない場合
 	bool BalloonNone(void);
-	// 風船を生成する処理
-	void BalloonCreate(void);
 	// 風船を強制的に割らせる処理
 	// nBreakBalloon:割れる風船の個数
 	void Thunder_BreakBalloon(void);

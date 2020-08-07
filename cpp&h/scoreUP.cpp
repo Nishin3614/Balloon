@@ -24,7 +24,7 @@ bool CScoreUP::m_bScoreUP = false;
 // ==========================================================
 // コンストラクタ処理
 // ==========================================================
-CScoreUP::CScoreUP() : CPlayer::CPlayer(CHARACTER_BALLOON4)
+CScoreUP::CScoreUP() : CPlayer::CPlayer(CHARACTER_BALLOON2)
 {
 }
 

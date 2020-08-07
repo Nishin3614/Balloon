@@ -702,6 +702,23 @@ bool CNetwork::UpdateTCP(void)
 			pPlayer->GetBalloon()->CrackBalloon();
 		}
 	}
+	else if (strcmp(cHeadText, "RECOVERY") == 0)
+	{
+		int nId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d", &aDie, &nId);
+		OutputDebugString(aFunc);
+
+		// プレイヤー取得
+		CPlayer *pPlayer = CGame::GetPlayer(nId);
+		if (pPlayer != NULL)
+		{
+			// 風船破壊
+			pPlayer->BalloonCreate();
+		}
+	}
 	else if (strcmp(cHeadText, "START_SP") == 0)
 	{
 		int nId;
