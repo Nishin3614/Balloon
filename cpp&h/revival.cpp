@@ -6,6 +6,7 @@
 // ==========================================================
 #include "revival.h"
 #include "manager.h"
+#include "network.h"
 
 // ==========================================================
 //
@@ -22,7 +23,7 @@
 // ==========================================================
 // コンストラクタ処理
 // ==========================================================
-CRevival::CRevival() : CPlayer::CPlayer(CHARACTER_BALLOON2)
+CRevival::CRevival() : CPlayer::CPlayer(CHARACTER_BALLOON4)
 {
 }
 
@@ -63,8 +64,8 @@ void CRevival::Update(void)
 	{
 		// 状態変化
 		m_bRevival = true;
-
 		CCharacter_Balloon::BalloonCreate();
+		CManager::GetNetwork()->SendTCP("RECOVERY", sizeof("RECOVERY"));
 	}
 	else
 	{
@@ -181,6 +182,14 @@ HRESULT CRevival::Load(void)
 // 読み込んだリソース情報を破棄処理
 // ==========================================================
 void CRevival::UnLoad(void)
+{
+
+}
+
+// ==========================================================
+// 風船の作成
+// ==========================================================
+void CRevival::CreateBalloon(void)
 {
 
 }
