@@ -51,6 +51,7 @@ public:
 		UITYPE_TITLEUI_SELECT_BG,
 		UITYPE_TUTORIALUI,
 		UITYPE_SELECTCHARACTER,
+		UITYPE_RESULT,
 		UITYPE_MAX
 	} UITYPE;
 	// UIの情報格納用型名
@@ -196,11 +197,17 @@ public:
 	} UI_LOAD, *P_UI_LOAD;
 
 	/* 関数 */
+	// コンストラクタ
 	CUi();
+	// デストラクタ
 	~CUi();
+	// 初期化処理
 	void Init(void);
+	// 終了処理
 	void Uninit(void);
+	// 更新処理
 	void Update(void);
+	// 描画処理
 	void Draw(void);
 #ifdef _DEBUG
 	void Debug(void);

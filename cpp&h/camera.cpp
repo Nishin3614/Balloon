@@ -44,7 +44,7 @@ CCamera::CCamera()
 	m_RotSpeed.x = CAMERA_INIT;				// 回転スピード
 	m_RotSpeed.y = -CAMERA_INIT;			// 回転スピード
 	m_fIntertia = 0.1f;
-	m_bSet = false;	
+	m_bSet = false;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ void CCamera::Debug(void)
 		// 慣性
 		if (ImGui::TreeNode("Intertia"))
 		{
-			ImGui::DragFloat("Intertia", &m_fIntertia, 0.01f,0.1f,0.01f); 
+			ImGui::DragFloat("Intertia", &m_fIntertia, 0.01f,0.1f,0.01f);
 			ImGui::TreePop();
 		}
 		// 回転スピード
@@ -349,8 +349,8 @@ void CCamera::Set(void)
 // カメラの目的注視点設定
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCamera::SetPosDestR(
-	D3DXVECTOR3 const & pos,	// 位置情報 
-	D3DXVECTOR3 const & rot		// 回転情報 
+	D3DXVECTOR3 const & pos,	// 位置情報
+	D3DXVECTOR3 const & rot		// 回転情報
 )
 {
 	m_fLength = m_load[m_type].fLengh;
@@ -394,8 +394,8 @@ void CCamera::SetPosDestR(
 // カメラの目的注視点設定
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCamera::SetPosDestRPlayer(
-	D3DXVECTOR3 const & pos,	// 位置情報 
-	D3DXVECTOR3 const & rot		// 回転情報 
+	D3DXVECTOR3 const & pos,	// 位置情報
+	D3DXVECTOR3 const & rot		// 回転情報
 )
 {
 	m_fLength = m_load[m_type].fLengh;
@@ -631,9 +631,9 @@ void CCamera::SetCamera_Motion(
 // カメラの演出
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCamera::SetCamera_Perfom(
-	D3DXVECTOR3 const & posR, 
-	D3DXVECTOR3 const & rot, 
-	float const & fLength, 
+	D3DXVECTOR3 const & posR,
+	D3DXVECTOR3 const & rot,
+	float const & fLength,
 	float const & fHeight
 )
 {

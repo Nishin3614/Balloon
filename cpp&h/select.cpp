@@ -11,7 +11,6 @@
 #include "p_zombie.h"
 #include "meshsphere.h"
 #include "3Deffect.h"
-#include "ui_group.h"
 #include "3Dmap.h"
 #include "camera.h"
 #include "selectcharacter.h"
@@ -66,8 +65,6 @@ void CSelect::Init(void)
 		10000.0f);
 	// 3Dマップ生成
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
-	// 選択画面のUI生成
-	CUi::LoadCreate(CUi::UITYPE_SELECTCHARACTER);
 	// 選択キャラクターの生成
 	// もし、キャラ選択決定した後に全プレイヤーの
 	m_pSelectCharacter = CSelectCharacter::Create(
