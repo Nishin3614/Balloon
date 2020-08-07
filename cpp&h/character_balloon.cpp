@@ -61,7 +61,7 @@ void CCharacter_Balloon::Init(void)
 			CCharacter::GetMatrix(-1),
 			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
 			objtype,
-			
+
 			this
 		);
 		// ステータスの反映 //
@@ -166,7 +166,7 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		);
 		m_move = D3DVECTOR3_ZERO;
 		*pCharacterMove = D3DVECTOR3_ZERO;
-		m_move += RefVecA * 5.0f;
+		m_move += RefVecA * 10.0f;
 		*pCharacterMove += RefVecB * 5.0f;
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
@@ -195,7 +195,7 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 			RefVecB
 		);
 		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA* 5.0f;
+		m_move += RefVecA* 10.0f;
 	}
 }
 
