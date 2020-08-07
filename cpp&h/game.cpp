@@ -44,6 +44,8 @@
 // マクロ定義
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#define ITEM_SPACE	(100)			// アイテム同士の間隔
+#define CIRCLE_SIZE (300)			// 円の大きさ
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -107,8 +109,22 @@ void CGame::Init(void)
 	PlayerCreate();
 	// キャラクター魚生成
 	// CCharacter_Fish::Create();
-	// アイテム生成
-	CItem::Create(D3DXVECTOR3(0.0f, 500.0f, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+
+
+	// 直線配置用
+	//for (int nCntItem = 0; nCntItem < 5; nCntItem++)
+	//{
+	//	// アイテム生成
+	//	CItem::Create(D3DXVECTOR3(0.0f, 500.0f + nCntItem * 100, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	//}
+
+	// 円形配置用
+	for (int nCntItem = 0; nCntItem < 10; nCntItem++)
+	{
+		// アイテム生成
+		CItem::Create(D3DXVECTOR3(CIRCLE_SIZE * sinf(D3DX_PI / 180 * nCntItem * ITEM_SPACE), 500.0, CIRCLE_SIZE * 
+								cosf(D3DX_PI / 180 * nCntItem * ITEM_SPACE)), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	}
 	// スコア生成
 	m_pScore = CScore::Create();
 	// ポーズの生成
