@@ -14,6 +14,7 @@
 #include "network.h"
 #include "2Deffect.h"
 #include "3Dparticle.h"
+#include "framework.h"
 
 //=============================================================================
 //
@@ -51,6 +52,7 @@ HRESULT CTitle::Init()
 		//D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f),
 		D3DVECTOR3_ZERO,
 		true);
+
 	// èâä˙âª
 	return S_OK;
 }
