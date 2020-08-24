@@ -17,6 +17,7 @@
 #include "balloon_group.h"
 #include "item.h"
 #include "scoreUP.h"
+#include "collision.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -503,7 +504,12 @@ void CNetwork::ResetCoin(void)
 {
 	for (int nCount = 0; nCount < MAX_COIN; nCount++)
 	{
-		m_apItem[nCount] = NULL;
+		m_apItem[nCount] = CItem::Create(nCount, D3DXVECTOR3(0.0f, -1000.0f, 0.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+
+		if (m_apItem[nCount] != NULL)
+		{
+			m_apItem[nCount]->SetDrawState(false);
+		}
 	}
 }
 
@@ -718,20 +724,35 @@ bool CNetwork::UpdateTCP(void)
 	else if (strcmp(cHeadText, "SET_COIN") == 0)
 	{
 		int nId;
+		int nMaxCoin = 0;
 		D3DXVECTOR3 pos;
-		char aDie[64];
 
-		// 情報整理
-		sscanf(aFunc, "%s %d %f %f %f", &aDie, &nId, &pos.x, &pos.y, &pos.z);
+		std::string Data = aFunc;
+		std::vector<std::string> vsvec_Contens;		// テキストデータ格納用
+		std::vector<std::string> vsvec_Data;		// テキストデータ格納用
 
-		if (m_apItem[nId] == NULL)
+		vsvec_Contens = CCalculation::split(Data, ' ');
+
+		nMaxCoin = atoi(vsvec_Contens[1].c_str());
+
+		for (int nCount = 0; nCount < nMaxCoin; nCount++)
 		{
-			m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-		}
-		else
-		{
-			m_apItem[nId]->Release();
-			m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+			// 情報整理
+			vsvec_Data = CCalculation::split(vsvec_Contens[nCount + 2], ',');
+			nId = atoi(vsvec_Data[0].c_str());
+			pos.x = (float)atof(vsvec_Data[1].c_str());
+			pos.y = (float)atof(vsvec_Data[2].c_str());
+			pos.z = (float)atof(vsvec_Data[3].c_str());
+
+			if (m_apItem[nId] != NULL)
+			{
+				m_apItem[nId]->SetPos(pos);
+				m_apItem[nId]->SetDrawState(true);
+			}
+			else
+			{
+				m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+			}
 		}
 	}
 	else if (strcmp(cHeadText, "DELETE_COIN") == 0)
@@ -775,8 +796,9 @@ bool CNetwork::UpdateTCP(void)
 
 		if (m_apItem[nCoinId] != NULL)
 		{
-			m_apItem[nCoinId]->Release();
-			m_apItem[nCoinId] = NULL;
+			m_apItem[nCoinId]->SetPos(D3DXVECTOR3(0.0f, 1000.0f, 0.0f));
+			//m_apItem[nCoinId]->GetCollision()->;
+			m_apItem[nCoinId]->SetDrawState(false);
 		}
 	}
 	else if (strcmp(cHeadText, "RECOVERY") == 0)

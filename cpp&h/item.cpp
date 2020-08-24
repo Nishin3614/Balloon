@@ -92,6 +92,12 @@ void CItem::Uninit(void)
 // ==========================================================
 void CItem::Update(void)
 {
+	// あたり判定のNULLチェック
+	if (m_pCollision != NULL)
+	{
+		m_pCollision->GetShape()->PassPos(D3DVECTOR3_ZERO);
+	}
+
 	CScene_THREE::Update();
 }
 
