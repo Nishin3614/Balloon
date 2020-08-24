@@ -74,6 +74,7 @@ CCharacter::CCharacter(CHARACTER const &character) : CScene::CScene()
 	m_nFrame = 0;									// フレームカウント
 	m_nMotionFrame = 0;								// モーション一つののフレームカウント
 	m_nMaxMotion = 0;								// 最大モーション数
+	m_nCntDamage = 0;								// ダメージカウント
 	m_State = STATE_NORMAL;							// 現状のステータス
 	m_nCntState = 0;								// カウントステータス
 	m_fLength = 0;									// 攻撃の当たり範囲
