@@ -110,7 +110,6 @@ void CGame::Init(void)
 	// キャラクター魚生成
 	// CCharacter_Fish::Create();
 
-
 	// 直線配置用
 	//for (int nCntItem = 0; nCntItem < 5; nCntItem++)
 	//{
@@ -125,6 +124,7 @@ void CGame::Init(void)
 	//	CItem::Create(D3DXVECTOR3(CIRCLE_SIZE * sinf(D3DX_PI / 180 * nCntItem * ITEM_SPACE), 500.0, CIRCLE_SIZE *
 	//							cosf(D3DX_PI / 180 * nCntItem * ITEM_SPACE)), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	//}
+
 	// スコア生成
 	m_pScore = CScore::Create();
 	// ポーズの生成

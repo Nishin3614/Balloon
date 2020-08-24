@@ -21,7 +21,7 @@
 #include "rank.h"
 #include "scoreUP.h"
 #include "invisible.h"
-
+#include "framework.h"
 
 #define PLAYER_GRAVITY (0.1f)
 
@@ -48,6 +48,7 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 	m_bMPMax = false;				// MPが最大かどうか
 	m_bResetMP = false;				// MPをリセット
 	m_nRank = -1;					// ランキングの初期化
+	m_pFramework = NULL;			// フレームワーク情報
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -100,6 +101,8 @@ void CPlayer::Init(void)
 			m_p2DMPGauge->SetMainCol(
 				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
 				D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
+			// フレームワークの生成
+			m_pFramework = CFramework::Create();
 		}
 
 		m_pRank = CRank::Create();
@@ -126,9 +129,15 @@ void CPlayer::Uninit(void)
 	{
 		m_p2DMPGauge = NULL;
 	}
+	// ランク情報の開放
 	if (m_pRank != NULL)
 	{
 		m_pRank = NULL;
+	}
+	// フレームワーク情報の開放
+	if (m_pFramework != NULL)
+	{
+		m_pFramework = NULL;
 	}
 }
 
@@ -466,6 +475,12 @@ void CPlayer::MpUp(
 
 			// 状態変化
 			m_bMPMax = true;
+			// フレームワーク情報のNULLチェック
+			if (m_pFramework != NULL)
+			{
+				// フレームワーク情報の使用状態設定
+				m_pFramework->SetUse(true);;
+			}
 		}
 	}
 	else
@@ -501,6 +516,12 @@ void CPlayer::MpUp(
 
 			// リセット終了
 			m_bResetMP = false;
+			// フレームワーク情報のNULLチェック
+			if (m_pFramework != NULL)
+			{
+				// フレームワーク情報の使用状態設定
+				m_pFramework->SetUse(false);;
+			}
 		}
 	}
 

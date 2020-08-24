@@ -42,7 +42,7 @@ void C2DEffect::Init(void)
 	// 変数宣言
 	LPDIRECT3DDEVICE9	pDevice;					// デバイスのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
-													// エフェクトの初期化
+	// エフェクトの初期化
 	CEffect::Init();
 	// 変数の初期化
 	CEffect::InitValues(&m_aEffect[0]);
