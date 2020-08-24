@@ -87,11 +87,8 @@ void CTitle::Update(void)
 			{
 				if (pNetwork->Connect() == S_OK)
 				{
-					if (pFade->GetFade() == CFade::FADE_NONE)
-					{
-						// チュートリアルへ
-						pFade->SetFade(CManager::MODE_TUTORIAL);
-					}
+					// チュートリアルへ
+					pFade->SetFade(CManager::MODE_TUTORIAL);
 				}
 			}
 		}

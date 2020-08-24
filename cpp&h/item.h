@@ -54,7 +54,7 @@ public:
 	);
 	bool ItemCollision(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pVtxMax, D3DXVECTOR3 *pVtxMin);				// 弾の当たり判定
 
-	static CItem *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
+	static CItem *Create(const int nId, D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
 	static HRESULT Load(void);													// ロード
 	static void Unload(void);													// アンロード
 
@@ -76,6 +76,7 @@ private:
 	D3DXCOLOR m_col;									// 色
 	CCollision * m_pCollision;							// あたり判定情報
 	int m_nCntEffect;
+	int m_nId;											// コインのID
 
 };
 #endif
