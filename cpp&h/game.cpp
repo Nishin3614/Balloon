@@ -229,6 +229,12 @@ void CGame::Update(void)
 		}
 	}
 
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
+	{
+		CUi::LoadCreate(CUi::UITYPE_DIE);
+	}
+
+
 #ifdef _DEBUG
 	// 情報取得
 	CFade *pFade = CManager::GetFade();	// フェード情報
