@@ -123,7 +123,7 @@ public:
 	// サイズ
 	D3DXVECTOR3 GetSize(void) const { return m_size; };
 	// 位置
-	D3DXVECTOR3 GetPos(void) const	{ return m_pos; };
+	D3DXVECTOR3 &GetPos(void)		{ return m_pos; };
 	// 回転
 	D3DXVECTOR3 GetRot(void) const	{ return m_rot; };
 	// テクスチャータイプ
