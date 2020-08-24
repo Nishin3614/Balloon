@@ -40,6 +40,7 @@ private:
 	D3DXMATRIX m_mtxWorld;								// ワールドマトリックス
 
 	static CThunderMulti *m_pThunderMulti;
+	static int m_ThunderCnt;							// 雷のカウント
 
 	D3DXVECTOR3	m_vtxMin;								// 最小値
 	D3DXVECTOR3	m_vtxMax;								// 最大値

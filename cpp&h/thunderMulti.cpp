@@ -22,6 +22,7 @@
 // 静的メンバー変数の初期化
 // ==========================================================
 CThunderMulti *CThunderMulti::m_pThunderMulti = NULL;
+int CThunderMulti::m_ThunderCnt = 0;							// 雷のカウント
 
 // ==========================================================
 //
@@ -30,7 +31,7 @@ CThunderMulti *CThunderMulti::m_pThunderMulti = NULL;
 // ==========================================================
 CThunderMulti::CThunderMulti() :CScene_THREE()
 {
-
+	m_ThunderCnt++;
 }
 
 // ==========================================================
@@ -40,7 +41,7 @@ CThunderMulti::CThunderMulti() :CScene_THREE()
 // ==========================================================
 CThunderMulti::~CThunderMulti()
 {
-
+	m_ThunderCnt--;
 }
 
 // ==========================================================
@@ -102,6 +103,7 @@ void CThunderMulti::Update(void)
 	if (m_nPatternAnim == 5)
 	{
 		m_bThunder = false;
+		Release();
 	}
 }
 
