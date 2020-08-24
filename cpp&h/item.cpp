@@ -77,6 +77,13 @@ void CItem::Init(void)
 // ==========================================================
 void CItem::Uninit(void)
 {
+	// あたり判定のNULLチェック
+	if (m_pCollision != NULL)
+	{
+		m_pCollision->Release();
+		m_pCollision = NULL;
+	}
+
 	CScene_THREE::Uninit();
 }
 
@@ -120,7 +127,7 @@ void CItem::Draw(void)
 // ==========================================================
 // 弾の生成
 // ==========================================================
-CItem *CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CItem *CItem::Create(const int nId, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// シーン動的に確保
 	m_pItem = new CItem();
@@ -135,6 +142,9 @@ CItem *CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	m_pItem->Init();
 
 	m_pItem->ManageSetting(LAYER_3DOBJECT2);
+
+	// IDの設定
+	m_pItem->m_nId = nId;
 
 	// 値を返す
 	return m_pItem;
@@ -172,18 +182,19 @@ void CItem::Unload(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (pNetwork == NULL)
+	{
+		return;
+	}
+
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
-		// アイテムをとった音1
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
-		Release();
-		// あたり判定のNULLチェック
-		if (m_pCollision != NULL)
-		{
-			m_pCollision->Release();
-			m_pCollision = NULL;
-		}
+		char aDie[64];
+		sprintf(aDie, "GET_COIN %d", m_nId);
+		pNetwork->SendTCP(aDie, sizeof(aDie));
 	}
 }
 
@@ -194,19 +205,19 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (pNetwork == NULL)
+	{
+		return;
+	}
+
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
-		// アイテムをとった音1
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
-
-		Release();
-		// あたり判定のNULLチェック
-		if (m_pCollision != NULL)
-		{
-			m_pCollision->Release();
-			m_pCollision = NULL;
-		}
+		char aDie[64];
+		sprintf(aDie, "GET_COIN %d", m_nId);
+		pNetwork->SendTCP(aDie, sizeof(aDie));
 	}
 }
 

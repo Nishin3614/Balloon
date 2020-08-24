@@ -15,6 +15,8 @@
 #include "fade.h"
 #include "thunder.h"
 #include "balloon_group.h"
+#include "item.h"
+#include "scoreUP.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -495,6 +497,17 @@ bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
 }
 
 //=============================================================================
+// コインのデータベースをリセット
+//=============================================================================
+void CNetwork::ResetCoin(void)
+{
+	for (int nCount = 0; nCount < MAX_COIN; nCount++)
+	{
+		m_apItem[nCount] = NULL;
+	}
+}
+
+//=============================================================================
 // サーバーソケットを作成する
 //=============================================================================
 SOCKET CNetwork::createServerSocket(unsigned short port)
@@ -702,6 +715,70 @@ bool CNetwork::UpdateTCP(void)
 			pPlayer->GetBalloon()->CrackBalloon();
 		}
 	}
+	else if (strcmp(cHeadText, "SET_COIN") == 0)
+	{
+		int nId;
+		D3DXVECTOR3 pos;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d %f %f %f", &aDie, &nId, &pos.x, &pos.y, &pos.z);
+
+		if (m_apItem[nId] == NULL)
+		{
+			m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		}
+		else
+		{
+			m_apItem[nId]->Release();
+			m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+		}
+	}
+	else if (strcmp(cHeadText, "DELETE_COIN") == 0)
+	{
+		int nCoinId;
+		int nPlayerId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d %d", &aDie, &nCoinId, &nPlayerId);
+
+		if (m_nId == nPlayerId)
+		{
+			CPlayer *pPlayer = CGame::GetPlayer(m_nId);
+
+			// プレイヤーのスコア加算追加
+			if (pPlayer != NULL)
+			{
+				// キャラクターが一致したら
+				if (pPlayer->GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+				{
+					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+				}
+				// キャラクターが一致したら
+				if (pPlayer->GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+				{
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+					}
+				}
+
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
+			}
+		}
+
+		if (m_apItem[nCoinId] != NULL)
+		{
+			m_apItem[nCoinId]->Release();
+			m_apItem[nCoinId] = NULL;
+		}
+	}
 	else if (strcmp(cHeadText, "RECOVERY") == 0)
 	{
 		int nId;
@@ -753,7 +830,7 @@ bool CNetwork::UpdateTCP(void)
 		D3DXVECTOR3 pos;
 
 		// 雷生成
-		sscanf(aFunc, "%s %f %f %f",&aDie, &pos.x, &pos.y, &pos.z);
+		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
 		CThunder::Create(pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 
