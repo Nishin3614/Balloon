@@ -29,6 +29,7 @@
 CCharacter_Balloon::CCharacter_Balloon(CHARACTER const &character) : CCharacter::CCharacter(character)
 {
 	m_nCntState = 0;				// ステートカウント
+	m_nCntDamage = 0;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -98,6 +99,22 @@ void CCharacter_Balloon::Update(void)
 		Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
+
+	// 位置が一定位置になったら
+	if (m_pos.y > 900.0f)
+	{
+		// カウント加算
+		m_nCntDamage++;
+		if (m_nCntDamage >= 180)
+		{
+			// 風船割れる処理
+			m_pBalloon_group->CrackBalloon();
+
+			// カウント初期化
+			m_nCntDamage = 0;
+		}
+	}
+
 
 	// キャラクターの更新処理
 	CCharacter::Update();
