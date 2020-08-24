@@ -53,6 +53,7 @@ public:
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
 	bool ItemCollision(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pVtxMax, D3DXVECTOR3 *pVtxMin);				// 弾の当たり判定
+	CCollision *GetCollision(void) { return m_pCollision; }
 
 	static CItem *Create(const int nId, D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
 	static HRESULT Load(void);													// ロード
