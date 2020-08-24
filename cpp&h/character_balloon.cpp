@@ -29,7 +29,7 @@
 CCharacter_Balloon::CCharacter_Balloon(CHARACTER const &character) : CCharacter::CCharacter(character)
 {
 	m_nCntState = 0;				// ステートカウント
-	m_nCntDamage = 0;
+	m_nCntDamage = 0;				// カウント初期化
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
