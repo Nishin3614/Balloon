@@ -397,6 +397,10 @@ void CBalloon_group::CrackBalloon(
 		{
 			continue;
 		}
+		// 風船が割れる音1
+		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
+		// 風船割れた時のパーティクル生成
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_BALLOONBREAK, m_apBalloon[nCntBalloon]->GetPos());
 		// 風船の終了処理
 		m_apBalloon[nCntBalloon]->Uninit();
 		// 風船の開放
@@ -406,8 +410,6 @@ void CBalloon_group::CrackBalloon(
 		m_nPopBalloon_group--;
 		// 割れる風船数カウントを減らす
 		nCntCrack--;
-		// 風船が割れる音1
-		CManager::GetSound()->PlaySound(CSound::LABEL_SE_BALLOONBREAK1);
 		// 全ての風船が割れていたら
 		if (nCntBalloon == (signed)m_apBalloon.size() - 1)
 		{

@@ -53,7 +53,9 @@ public:
 	// ---------モーションタイプ---------- //
 	typedef enum
 	{
-		MOTIONTYPE_MAX = CCharacter::MOTIONTYPE_MAX
+		MOTIONTYPE_JAMP = CCharacter::MOTIONTYPE_MAX,
+		MOTIONTYPE_DANCE,
+		MOTIONTYPE_MAX
 	} MOTIONTYPE;
 	// ---------キャラクタータイプ---------- //
 	typedef enum
@@ -117,7 +119,8 @@ private:
 	void OtherMove(void);				// 他キャラ移動処理
 	void OtherAction(void);				// 他キャラ行動処理
 	void FishApponent(void);			// 魚が出現
-
+	// 状態によってのモーション設定処理
+	void StatusMotion(void);
 	/* 変数 */
 	static int	m_All;					// 総数
 	CRank		*m_pRank;				// 現在順位表示

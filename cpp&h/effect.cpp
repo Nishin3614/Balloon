@@ -75,47 +75,47 @@ bool CEffect::UpdateVetex(
 	EFFECT *pEffect		// エフェクト情報
 )
 {
+	// 半径を変化させる
+	pEffect->size += pEffect->sizeValue;
+	// アルファ値を変化させる
+	pEffect->col.a -= pEffect->fAlphaValue;
+
 	// エフェクトタイプ
 	switch (pEffect->EffectType)
 	{
 		// 爆発
 	case CEffect::EFFECT_TYPE_EXPLOSION:
-		// 半径を変化させる
-		pEffect->size -= pEffect->sizeValue;
 		// 角度を変化させる
 		pEffect->fAngle += (rand() % 10) * 0.01f;
 		CCalculation::Rot_One_Limit(pEffect->fAngle);
-		// アルファ値を変化させる
-		pEffect->col.a -= pEffect->fAlphaValue;
 		break;
 		// 花火
 	case CEffect::EFFECT_TYPE_SPARK:
-		// 半径を変化させる
-		pEffect->size -= pEffect->sizeValue;
 		// 角度を変化させる
 		pEffect->fAngle += (rand() % 10) * 0.01f;
 		CCalculation::Rot_One_Limit(pEffect->fAngle);
-		// アルファ値を変化させる
-		pEffect->col.a -= pEffect->fAlphaValue;
 		break;
 		// 煙
 	case CEffect::EFFECT_TYPE_SMOKE:
 		// 角度を変化させる
 		pEffect->fAngle += (rand() % 10) * 0.005f;
 		CCalculation::Rot_One_Limit(pEffect->fAngle);
-		// アルファ値を変化させる
-		pEffect->col.a -= pEffect->fAlphaValue;
 		break;
 		// 線
 	case CEffect::EFFECT_TYPE_LINE:
-		// 半径を変化させる
-		pEffect->size -= pEffect->sizeValue;
 		// 角度を変化させる
 		pEffect->fAngle += (rand() % 10) * 0.01f;
 		CCalculation::Rot_One_Limit(pEffect->fAngle);
 		break;
+		// 衝撃
+	case CEffect::EFFECT_TYPE_SHOCK:
+		break;
 		// 風船
 	case CEffect::EFFECT_TYPE_BALLOON:
+		break;
+		// 焚火
+	case CEffect::EFFECT_TYPE_BONFIRE_SPARK:
+
 		break;
 	default:
 		break;
@@ -154,8 +154,15 @@ void CEffect::UpdateMove(
 	case CEffect::EFFECT_TYPE_LINE:
 
 		break;
+		// 衝撃
+	case CEffect::EFFECT_TYPE_SHOCK:
+		break;
 		// 風船
 	case CEffect::EFFECT_TYPE_BALLOON:
+
+		break;
+		// 焚火
+	case CEffect::EFFECT_TYPE_BONFIRE_SPARK:
 
 		break;
 	default:
@@ -166,24 +173,50 @@ void CEffect::UpdateMove(
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 値の初期化処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CEffect::InitValues(EFFECT *pEffect)
+void CEffect::InitValues(
+	EFFECT *pEffect	// エフェクト情報
+)
 {
 	// エフェクトループ
 	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++)
 	{
-		pEffect->pos = D3DVECTOR3_ZERO;							// 位置
-		pEffect->rot = D3DVECTOR3_ZERO;							// 回転量
-		pEffect->move = D3DVECTOR3_ZERO;						// 移動量
-		pEffect->col = D3DXCOLOR_INI;							// 色
-		pEffect->size = D3DVECTOR2_ZERO;						// サイズ
-		pEffect->sizeValue = D3DVECTOR2_ZERO;					// 半径の変化値
-		pEffect->fAngle = 0.0f;									// 角度
-		pEffect->fAlphaValue = 0.0f;							// アルファ値の変化値
-		pEffect->nLife = 0;										// 持ち時間
-		pEffect->bUse = false;									// 使用しているかどうか
-		pEffect->BlendType = CRenderer::BLEND_ADD_TRANSLUCENT;	// ブレンドタイプ
-		pEffect->EffectType = CEffect::EFFECT_TYPE_NONE;		// エフェクトの種類
+		pEffect->pos			= D3DVECTOR3_ZERO;					// 位置
+		pEffect->rot			= D3DVECTOR3_ZERO;					// 回転量
+		pEffect->move			= D3DVECTOR3_ZERO;					// 移動量
+		pEffect->col			= D3DXCOLOR_INI;					// 色
+		pEffect->size			= D3DVECTOR2_ZERO;					// サイズ
+		pEffect->sizeValue		= D3DVECTOR2_ZERO;					// 半径の変化値
+		pEffect->fAngle			= 0.0f;								// 角度
+		pEffect->fAlphaValue	= 0.0f;								// アルファ値の変化値
+		pEffect->nLife			= 0;								// 持ち時間
+		pEffect->nTexType		= 0;								// テクスチャータイプ
+		pEffect->bUse			= false;							// 使用しているかどうか
+		pEffect->BlendType		= CRenderer::BLEND_ADD_TRANSLUCENT;	// ブレンドタイプ
+		pEffect->EffectType		= CEffect::EFFECT_TYPE_NONE;		// エフェクトの種類
 	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 値の初期化処理
+//	pEffect		: エフェクト情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CEffect::Init_OneValues(
+	EFFECT * pEffect
+)
+{
+	pEffect->pos = D3DVECTOR3_ZERO;							// 位置
+	pEffect->rot = D3DVECTOR3_ZERO;							// 回転量
+	pEffect->move = D3DVECTOR3_ZERO;						// 移動量
+	pEffect->col = D3DXCOLOR_INI;							// 色
+	pEffect->size = D3DVECTOR2_ZERO;						// サイズ
+	pEffect->sizeValue = D3DVECTOR2_ZERO;					// 半径の変化値
+	pEffect->fAngle = 0.0f;									// 角度
+	pEffect->fAlphaValue = 0.0f;							// アルファ値の変化値
+	pEffect->nLife = 0;										// 持ち時間
+	pEffect->nTexType = 0;									// テクスチャータイプ
+	pEffect->bUse = false;									// 使用しているかどうか
+	pEffect->BlendType = CRenderer::BLEND_ADD_TRANSLUCENT;	// ブレンドタイプ
+	pEffect->EffectType = CEffect::EFFECT_TYPE_NONE;		// エフェクトの種類
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

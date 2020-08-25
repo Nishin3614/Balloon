@@ -72,14 +72,14 @@ void C2DEffect::Update(void)
 	// 変数定義
 	VERTEX_2D *pVtx;				// 頂点情報のポインタ
 	C2DEffect::EFFECT *pEffect;		// エフェクトのポインタ
-									// ポインタの初期化
+	// ポインタの初期化
 	pEffect = &m_aEffect[0];
 
 	// 頂点データの範囲をロックし、頂点バッファへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// エフェクトループ
-	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++, pVtx += 4)
+	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++, pVtx+=4)
 	{
 		// 使用フラグがオフの時
 		// ->ループスキップ
@@ -145,8 +145,8 @@ void C2DEffect::Draw(void)
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, nCount * 4, 2);
 		}
 	}
-	// 合成演算設定
-	CManager::GetRenderer()->SetBlend(CRenderer::BLEND_TRANSLUCENT);
+	// レンダーステート(通常ブレンド処理)
+	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ HRESULT C2DEffect::MakeVertex(
 	// 変数宣言
 	VERTEX_2D *pVtx;							// 頂点情報
 
-												// オブジェクトの頂点バッファを生成
+	// オブジェクトの頂点バッファを生成
 	if (FAILED(pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * EFFECT_MAX,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
@@ -220,7 +220,7 @@ void C2DEffect::SetVartexSize(
 		C2DEffect::EFFECT *pLocalEffect;					// エフェクトのポインタ
 		pLocalEffect = &C2DEffect::m_aEffect[*nIndex];		// ポインタの初期化
 
-															// 頂点の設定
+		// 頂点の設定
 		pVtx[0].pos = ORIGIN_POS + pLocalEffect->pos;
 		pVtx[0].pos.x += -sinf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.x;
 		pVtx[0].pos.y += -cosf(BASEANGLE + pLocalEffect->fAngle) * pLocalEffect->size.y;
@@ -345,22 +345,25 @@ void C2DEffect::Set2DEffect(
 	D3DXVECTOR2 const &size,						// サイズ
 	int const &nLife,								// ライフ
 	CRenderer::BLEND const &Blend,					// ブレンドタイプ
-	D3DXVECTOR2 const &sizeValue					// サイズ変化
+	D3DXVECTOR2 const &sizeValue,					// サイズ変化値
+	float const &fAlphaValue						// α変化値
 )
 {
 	// 変数宣言
 	C2DEffect::EFFECT *pEffect;			// エフェクトのポインタ
 	pEffect = &C2DEffect::m_aEffect[0];	// ポインタの初期化
 
-										// 最大数ループ
+	// 最大数ループ
 	for (int nCntEffect = 0; nCntEffect < EFFECT_MAX; nCntEffect++, pEffect++)
 	{
 		// 使用フラグオフの個体の時
 		if (pEffect->bUse == false)
 		{
+			// エフェクト情報の値初期化
+			Init_OneValues(pEffect);
 			// 変数定義
 			VERTEX_2D *pVtx;		// 頂点ポインタ
-									//頂点データの範囲をロックし、頂点バッファへのポインタを取得
+			//頂点データの範囲をロックし、頂点バッファへのポインタを取得
 			m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 			// 頂点ポインタの更新
 			pVtx += nCntEffect * 4;
@@ -388,44 +391,10 @@ void C2DEffect::Set2DEffect(
 			SetVetexColor(pVtx, pEffect);
 			// 使用フラグをオン
 			pEffect->bUse = true;
-			// エフェクトタイプ
-			switch (pEffect->EffectType)
-			{
-				// 爆発
-			case CEffect::EFFECT_TYPE_EXPLOSION:
-				// サイズx変化値の設定
-				pEffect->sizeValue.x = pEffect->size.x / pEffect->nLife;
-				// サイズy変化値の設定
-				pEffect->sizeValue.y = pEffect->size.y / pEffect->nLife;
-				// アルファ変化値の設定
-				pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
-				break;
-				// 花火
-			case CEffect::EFFECT_TYPE_SPARK:
-				// サイズx変化値の設定
-				pEffect->sizeValue.x = pEffect->size.x / pEffect->nLife;
-				// サイズy変化値の設定
-				pEffect->sizeValue.y = pEffect->size.y / pEffect->nLife;
-				// アルファ変化値の設定
-				pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
-				break;
-				// 線
-			case CEffect::EFFECT_TYPE_LINE:
-				// サイズx変化値の設定
-				pEffect->sizeValue.x = pEffect->size.x / pEffect->nLife;
-				// サイズy変化値の設定
-				pEffect->sizeValue.y = pEffect->size.y / pEffect->nLife;
-				// アルファ変化値の設定
-				pEffect->fAlphaValue = pEffect->col.a / pEffect->nLife;
-				break;
-				// 風船
-			case CEffect::EFFECT_TYPE_BALLOON:
-
-				break;
-			default:
-				break;
-			}
-
+			// アルファ変化値の設定
+			pEffect->fAlphaValue = fAlphaValue;
+			// サイズ変化値の設定
+			pEffect->sizeValue = sizeValue;
 			//頂点データをアンロック
 			m_pVtxBuff->Unlock();
 			break;
