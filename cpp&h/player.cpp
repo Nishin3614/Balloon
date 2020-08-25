@@ -22,6 +22,7 @@
 #include "scoreUP.h"
 #include "invisible.h"
 #include "framework.h"
+#include "ui_group.h"
 
 #define PLAYER_GRAVITY (0.1f)
 
@@ -720,6 +721,7 @@ void CPlayer::Draw(void)
 		CCharacter_Balloon::Draw();
 	}
 }
+
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // éÄñSèàóù
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -743,6 +745,7 @@ void CPlayer::Die(void)
 	if (m_nPlayerID == CManager::GetPlayerID())
 	{
 		m_bDie[m_nPlayerID] = true;			// éÄñSÉtÉâÉOÇóßÇƒÇÈ
+		CUi_group::Create(CUi::UITYPE_DIE);
 	}
 }
 
@@ -875,6 +878,7 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_FISH)
 	{
 		// éÄñS
+		CUi_group::Create(CUi::UITYPE_DIE);
 		Die();
 	}
 }

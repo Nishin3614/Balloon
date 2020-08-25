@@ -66,6 +66,8 @@ public:
 	static CPlayer *GetPlayer(int nIndex) { return m_pPlayer[nIndex]; }
 	// スコアの情報取得
 	CScore *GetScore(void) { return m_pScore; };
+	// 観戦用
+	void FocusPlayer(void);
 protected:
 private:
 	/* 関数 */
