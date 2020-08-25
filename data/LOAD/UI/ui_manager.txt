@@ -11,3 +11,5 @@ data/LOAD/UI/tutorial_ui.txt
 data/LOAD/UI/select.txt
 data/LOAD/UI/result.txt
 data/LOAD/UI/game_died.txt
+data/LOAD/UI/game_start.txt
+data/LOAD/UI/finish.txt

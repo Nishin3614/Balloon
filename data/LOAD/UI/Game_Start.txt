@@ -1,6 +1,6 @@
 #==============================================================================
 #
-# [UIエディター] スクリプトファイル [data/LOAD/UI/Game_Start.txt]
+# [UIエディター] スクリプトファイル [data/LOAD/UI/game_died.txt]
 # Author : KOKI NISHIYAMA
 #
 #==============================================================================
@@ -10,13 +10,13 @@ SCRIPT
 	#==============================================================================
 	SET PRESENTS
 		# ----------[基本設定]---------- #
-		POS = 640.0 360.0 0.0
+		POS = 640.0 221.0 0.0
 		COL = 1.0 1.0 1.0 1.0
-		SIZE = 700.0 200.0
+		SIZE = 732.0 134.0
 		ROT = 0.0
 		FIRST_TEX = 0.0 0.0
 		LAST_TEX = 1.0 1.0
-		TEXTYPE = 42
+		TEXTYPE = 47
 		OFFSET = 0
 		# ----------[フェードイン]---------- #
 		FADE_IN
@@ -28,17 +28,29 @@ SCRIPT
 				END_COL = 1.0 1.0 1.0 1.0
 				MAXFRAME = 30
 			END_FADE_COL
+			# 位置指定
+			FADE_POS
+				BEGIN_POS = 360.0 221.0 0.0
+				END_POS = 640.0 221.0 0.0
+				MAXFRAME = 40
+			END_FADE_POS
 		END_FADE_IN
 		# ----------[フェードアウト]---------- #
 		FADE_OUT
 			# フェード開始時間
-			STARTFADETIME = 0
+			STARTFADETIME = 30
 			# 色指定
 			FADE_COL
 				BEGIN_COL = 1.0 1.0 1.0 1.0
 				END_COL = 1.0 1.0 1.0 0.0
-				MAXFRAME = 60
+				MAXFRAME = 30
 			END_FADE_COL
+			# 位置指定
+			FADE_POS
+				BEGIN_POS = 640.0 221.0 0.0
+				END_POS = 726.5 221.0 0.0
+				MAXFRAME = 40
+			END_FADE_POS
 		END_FADE_OUT
 	END_SET
 END_SCRIPT
