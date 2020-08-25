@@ -231,7 +231,7 @@ void CGame::Update(void)
 
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
 	{
-		CUi::LoadCreate(CUi::UITYPE_DIE);
+		CUi_group::Create(CUi::UITYPE_DIE);
 	}
 
 

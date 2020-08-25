@@ -85,6 +85,9 @@ public:
 protected:
 
 private:
+	/* 関数 */
+// ゲームオーバー
+	void Update_GameOver(void);
 	/* 変数 */
 	CUi::UITYPE m_Uitype;
 	/* 各UIクラス */

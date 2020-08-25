@@ -78,6 +78,14 @@ void CUi_group::Uninit(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CUi_group::Update(void)
 {
+	switch (m_Uitype)
+	{
+	case CUi::UITYPE_DIE:
+	Update_GameOver();
+		break;
+	default:
+		break;
+	}
 	// UIの更新処理
 	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
 	{
@@ -240,5 +248,20 @@ void CUi_group::Start_FadeIn(int const & ID)
 			// フェードアウト開始
 			m_Ui[nCntUi]->GetPresents()->Start_FadeIn();
 		}
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ゲームオーバーUI用更新処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CUi_group::Update_GameOver(void)
+{
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
+	{
+		Start_FadeOut();
+	}
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_END)
+	{
+		Release();
 	}
 }
