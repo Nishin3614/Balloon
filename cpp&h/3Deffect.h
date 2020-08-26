@@ -50,7 +50,7 @@ public:
 	HRESULT MakeVertex(
 		LPDIRECT3DDEVICE9 pDevice	// デバイス情報
 	);
-	// 3Dエフェクトの設定
+	// 全体の設定
 	//	EffectType	: エフェクトタイプ
 	//	nTexType	: テクスチャータイプ
 	//	pos			: 位置
@@ -71,7 +71,8 @@ public:
 		D3DXVECTOR2 const &size,											// サイズ
 		int const &nLife,													// ライフ
 		CRenderer::BLEND const &Blend = CRenderer::BLEND_ADD_TRANSLUCENT,	// ブレンドタイプ
-		D3DXVECTOR2 const &sizeValue = D3DVECTOR2_ZERO						// サイズ変化
+		D3DXVECTOR2 const &sizeValue = D3DVECTOR2_ZERO,						// サイズ変化値
+		float const &fAlphaValue = 0.0f										// α変化値
 	);
 private:
 	/* 関数 */

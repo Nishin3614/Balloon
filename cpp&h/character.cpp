@@ -80,6 +80,8 @@ CCharacter::CCharacter(CHARACTER const &character) : CScene::CScene()
 	m_fLength = 0;									// 攻撃の当たり範囲
 	m_fAlpha = 1.0f;								// アルファ値
 	m_bMotionCamera = false;						// モーションカメラの切り替え
+	m_bLanding = false;								// 着地状態
+	m_bMove = false;								// 移動状態
 	m_pStencilshadow = NULL;						// ステンシルシャドウ
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -263,8 +265,6 @@ void CCharacter::Init()
 		// ステンシルシャドウの生成
 		m_pStencilshadow = CStencilshadow::Create(m_pos, D3DXVECTOR3(10.0f, 10000.0f, 10.0f));
 	}
-	// 通常モーション設定
-	SetMotion(MOTIONTYPE_NEUTRAL);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -777,7 +777,15 @@ bool CCharacter::GetFloorHeight(void)
 			{
 				m_pos.y = pFloor->GetHeight(m_pos);
 				m_move.y = 0;
+				// 着地状態をtrueに
+				m_bLanding = true;
 				return true;
+			}
+			// それ以外
+			else
+			{
+				// 着地状態をfalseに
+				m_bLanding = false;
 			}
 		}
 	}
