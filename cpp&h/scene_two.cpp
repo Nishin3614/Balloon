@@ -150,7 +150,9 @@ CScene_TWO * CScene_TWO::Create(
 	D3DXVECTOR3 const & pos,	// 位置
 	D3DXVECTOR2 const & size,	// サイズ
 	float		const & frot,	// 角度
-	D3DXCOLOR	const & col		// 色
+	D3DXCOLOR	const & col,		// 色
+	CScene::LAYER	const & layer
+
 )
 {
 	// 変数宣言
@@ -159,7 +161,7 @@ CScene_TWO * CScene_TWO::Create(
 	pScene_Two = new CScene_TWO();
 	// 設定
 	// シーン管理設定
-	pScene_Two->ManageSetting(CScene::LAYER_UI);
+	pScene_Two->ManageSetting(layer);
 	pScene_Two->m_offsetType = type;	// タイプ
 	pScene_Two->m_pos = pos;			// 位置
 	pScene_Two->m_size = size;			// サイズ
