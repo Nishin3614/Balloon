@@ -40,6 +40,7 @@ int CMeshdome::m_nTexId[TYPE_MAX] =
 {
 	25,
 	48,
+	49,
 	0
 };
 
