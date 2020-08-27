@@ -43,6 +43,7 @@
 class C2DGauge;		// 2Dゲージクラス
 class CRank;		// ランククラス
 class CFramework;	// フレームワーククラス
+class CMeshdome;	// メッシュドームクラス
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // クラス
@@ -123,6 +124,7 @@ private:
 	void StatusMotion(void);
 	/* 変数 */
 	static int	m_All;					// 総数
+	static CMeshdome *m_pMeshDome;				// 移動上限警告用
 	CRank		*m_pRank;				// 現在順位表示
 	C2DGauge	*m_p2DMPGauge;			// MPゲージ
 	D3DXVECTOR3	m_posold;				// 前の位置

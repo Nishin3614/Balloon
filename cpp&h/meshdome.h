@@ -39,6 +39,7 @@ public:
 	typedef enum
 	{
 		TYPE_NORMAL,
+		TYPE_WARNING,
 		TYPE_WAVE,
 		TYPE_MAX
 	} TYPE;
@@ -75,7 +76,7 @@ public:
 	static HRESULT Load(void);
 	static void UnLoad(void);
 	// 作成処理(シーン管理)
-	static CMeshdome * Create(	
+	static CMeshdome * Create(
 		D3DXVECTOR3 const &pos,							// 位置
 		D3DXVECTOR3 const &size,						// サイズ
 		int const &nWidth = 10,							// 横数
@@ -101,6 +102,8 @@ public:
 	void SetRot(D3DXVECTOR3 const &rot);	// 回転
 	void SetCol(D3DXCOLOR const &col);		// 色
 	void SetUse(bool const bUse);					// 使用状態
+
+	void SetDrawBack(bool const bUse) { m_bDrawBack = bUse; }
 protected:
 
 private:
@@ -122,6 +125,7 @@ private:
 	int		m_nBlock_Depth;						// 縦ブロック数
 	int		m_nBlock_Width;						// 横ブロック数
 	bool	m_bUse;								// 使用
+	bool	m_bDrawBack;						// 裏面描画
 	TYPE	m_type;								// タイプ
 };
 
