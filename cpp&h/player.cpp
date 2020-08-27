@@ -24,6 +24,7 @@
 #include "framework.h"
 #include "ui_group.h"
 #include "meshdome.h"
+#include "thundercloud.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -48,6 +49,7 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 {
 	m_p2DMPGauge = NULL;			// MPゲージ
 	m_pRank = NULL;					// 現在順位
+	m_nCloudCount = 0;				// 雲が出現するまでのカウンタ
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
@@ -205,6 +207,23 @@ void CPlayer::Update(void)
 	if (CManager::GetPlayerID() != m_nPlayerID)
 	{
 		CCharacter::Limit();
+	}
+
+	if (m_pos.y > 900.0f)
+	{
+		if (m_nCloudCount > 10)
+		{
+			for (int nCount = 0; nCount < 5; nCount++)
+			{
+				D3DXVECTOR3 pos = CCharacter_Balloon::GetBalloon()->GetCorePos();
+				CThunderCloud::Create(pos);
+				m_nCloudCount = 0;
+			}
+		}
+		else
+		{
+			m_nCloudCount++;
+		}
 	}
 
 	if (CManager::GetMode() == CManager::MODE_GAME)
@@ -447,6 +466,10 @@ void CPlayer::MyMove(void)
 		rot.y = D3DX_PI * 1.0f + fRot;
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+	}
+	else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+	{
+		CThunderCloud::Create(GetPos());
 	}
 	// それ以外
 	else

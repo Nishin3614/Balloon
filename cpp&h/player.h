@@ -132,6 +132,7 @@ private:
 	int m_nRank;						// 今の順位
 	int m_nCntFishApponent;				// 魚出現カウント
 	int m_nMP;							// MP
+	int m_nCloudCount;					// 雲が出現するまでのカウンタ
 	bool m_bMPMax;						// MPが最大かどうか
 	bool m_bResetMP;					// MPをリセット
 	static bool m_bDie[MAX_PLAYER];		// 死亡フラグ
