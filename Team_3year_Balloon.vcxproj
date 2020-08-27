@@ -242,6 +242,7 @@
     <ClCompile Include="cpp&amp;h\stencilshadow.cpp" />
     <ClCompile Include="cpp&amp;h\texture_manager.cpp" />
     <ClCompile Include="cpp&amp;h\thunder.cpp" />
+    <ClCompile Include="cpp&amp;h\thundercloud.cpp" />
     <ClCompile Include="cpp&amp;h\thunderMulti.cpp" />
     <ClCompile Include="cpp&amp;h\title.cpp" />
     <ClCompile Include="cpp&amp;h\tutorial.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="cpp&amp;h\stencilshadow.h" />
     <ClInclude Include="cpp&amp;h\texture_manager.h" />
     <ClInclude Include="cpp&amp;h\thunder.h" />
+    <ClInclude Include="cpp&amp;h\thundercloud.h" />
     <ClInclude Include="cpp&amp;h\thunderMulti.h" />
     <ClInclude Include="cpp&amp;h\title.h" />
     <ClInclude Include="cpp&amp;h\tutorial.h" />
