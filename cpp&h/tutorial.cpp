@@ -11,7 +11,7 @@
 #include "scene.h"
 #include "player.h"
 #include "manager.h"
-
+#include "network.h"
 #include "ui.h"
 
 //=============================================================================
@@ -65,6 +65,7 @@ void CTutorial::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
 	CJoypad *pJoypad = CManager::GetJoy();
+	CNetwork *pNetwork = CManager::GetNetwork();
 
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
@@ -72,10 +73,17 @@ void CTutorial::Update(void)
 		// ゲームへ遷移
 		if (CManager::GetKeyboard()->GetKeyboardPress(DIK_RETURN))
 		{
-			if (pFade->GetFade() == CFade::FADE_NONE)
+			if (pNetwork != NULL)
 			{
-				// チュートリアルへ
-				pFade->SetFade(CManager::MODE_SELECT);
+				if (pNetwork->Connect() == S_OK)
+				{
+
+					if (pFade->GetFade() == CFade::FADE_NONE)
+					{
+						// チュートリアルへ
+						pFade->SetFade(CManager::MODE_SELECT);
+					}
+				}
 			}
 		}
 
@@ -83,7 +91,10 @@ void CTutorial::Update(void)
 		{
 			if (pJoypad->GetTrigger(0, CJoypad::KEY_START) || pJoypad->GetTrigger(0, CJoypad::KEY_A))
 			{
-				pFade->SetFade(CManager::MODE_SELECT);
+				if (pNetwork->Connect() == S_OK)
+				{
+					pFade->SetFade(CManager::MODE_TUTORIAL);
+				}
 			}
 		}
 	}
