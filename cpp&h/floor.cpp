@@ -16,6 +16,7 @@
 #include "scene.h"
 #include "debugproc.h"
 #include "character.h"
+#include "light.h"
 
 // ----------------------------------------
 //
@@ -37,6 +38,7 @@
 // 静的変数宣言
 //
 // ----------------------------------------
+LPD3DXEFFECT CFloor::m_pEffect = NULL;
 
 // ----------------------------------------
 // コンストラクタ処理
@@ -45,6 +47,8 @@ CFloor::CFloor() : CScene()
 {
 	/* 変数の初期化 */
 	// 回転量
+	m_pTexture = NULL;
+	m_pMaskTex = NULL;
 	m_pVtxBuff = NULL;
 	m_pIndex = NULL;
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -81,6 +85,22 @@ void CFloor::Init(void)
 	// 情報取得
 	LPDIRECT3DDEVICE9 pDevice =				// デバイス
 		CManager::GetRenderer()->GetDevice();
+
+	if (m_pEffect == NULL)
+	{
+		//シェーダーを読み込む
+		if (FAILED(D3DXCreateEffectFromFile(pDevice, "MaskShader.fx", NULL, NULL,
+			0, NULL, &m_pEffect, NULL)))
+		{
+			MessageBox(NULL, "シェーダーファイル読み込み失敗", "", MB_OK);
+		}
+	}
+
+	// テクスチャー生成
+	D3DXCreateTextureFromFile(
+		CManager::GetRenderer()->GetDevice(),
+		"data/TEXTURE/mask.jpg",
+		&m_pMaskTex);
 
 	// ブロック描画の原点の初期設定
 	m_OriginBlock = D3DXVECTOR3(
@@ -213,6 +233,13 @@ void CFloor::Uninit(void)
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
+
+	// シェーダーの開放
+	if (m_pEffect != NULL)
+	{
+		m_pEffect->Release();
+		m_pEffect = NULL;
+	}
 }
 
 // ----------------------------------------
@@ -256,9 +283,25 @@ void CFloor::Draw(void)
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
+	D3DXMATRIX mtxProj, mtxView;
+
+	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
+	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProj);
+
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 
+	// シェーダー処理
+	if (m_pEffect != NULL)
+	{
+		m_pEffect->SetTechnique("tecLambert");
+		D3DXMATRIX mAll = m_mtxWorld * mtxView * mtxProj;
+		m_pEffect->SetMatrix("WVP", &mAll);
+		// 分割数の設定 (枚数ごとに決める)
+		m_pEffect->SetFloat("fDivision", 1.0f / 50);
+		m_pEffect->Begin(NULL, 0);
+		m_pEffect->BeginPass(0);
+	}
 
 	// インデックスバッファをデータストリームを設定
 	pDevice->SetIndices(
@@ -272,6 +315,38 @@ void CFloor::Draw(void)
 		0,
 		CTexture_manager::GetTexture(m_nTexType));
 
+	if (m_pEffect != NULL)
+	{
+		//ワールド行列の逆行列の転置行列を渡す
+		D3DXMATRIX mWIT;
+		m_pEffect->SetMatrix("WIT", D3DXMatrixTranspose(&mWIT, D3DXMatrixInverse(&mWIT, NULL, &m_mtxWorld)));
+
+		//ライトの方向ベクトルを渡す
+		CLight *pLight = CManager::GetRenderer()->GetLight();
+		D3DLIGHT9 Light = pLight->GetLight(CLight::TYPE_MAIN);
+		D3DXVECTOR4 direction;
+		direction = D3DXVECTOR4(Light.Direction.x, Light.Direction.y, Light.Direction.z, 0.0f);
+		m_pEffect->SetVector("LightDir", &direction);
+
+		//入射光（ライト）の強度を渡す　目一杯明るい白色光にしてみる
+		m_pEffect->SetVector("LightIntensity", &D3DXVECTOR4(1, 1, 1, 1));
+
+		//メッシュのディフューズ色を渡す
+		m_pEffect->SetValue("Diffuse", (LPVOID)&D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 16);
+
+		//メッシュのディフューズ色を渡す
+		m_pEffect->SetValue("Ambient", (LPVOID)&D3DXCOLOR(0.2f, 0.2f, 0.2f, 1.0f), 16);
+
+		// テクスチャ情報を渡す
+		m_pEffect->SetTexture("texDecal", CTexture_manager::GetTexture(m_nTexType));
+		m_pEffect->SetTexture("texMask", m_pMaskTex);
+
+		m_pEffect->SetFloat("uv_left", 0.0f);
+		m_pEffect->SetFloat("uv_top", 0.00f);
+		m_pEffect->SetFloat("uv_width", 1.0f);
+		m_pEffect->SetFloat("uv_height", 1.0f);
+	}
+
 	// ポリゴンの描画
 	pDevice->DrawIndexedPrimitive(
 		D3DPT_TRIANGLESTRIP,
@@ -280,6 +355,13 @@ void CFloor::Draw(void)
 		m_nNumberVertex,
 		0,
 		m_nNumPolygon);
+
+	// シェーダー終了
+	if (m_pEffect != NULL)
+	{
+		m_pEffect->EndPass();
+		m_pEffect->End();
+	}
 }
 
 #ifdef _DEBUG

@@ -354,7 +354,6 @@ HRESULT CNetwork::Build(void)
 HRESULT CNetwork::Connect(void)
 {
 	int val = -1;
-	char debug[256];
 	unsigned int nStartTime = 0;
 	SOCKET sock;
 
@@ -373,18 +372,29 @@ HRESULT CNetwork::Connect(void)
 
 	m_sockClient = sock;
 
+	// IDの取得
 	SendTCP("LOAD_ID", sizeof("LOAD_ID"));
-	DataRecv(SOCKETTYPE_CLIENT, (char*)&m_nId, sizeof(int));
+	if (!DataRecv(SOCKETTYPE_CLIENT, (char*)&m_nId, sizeof(int)))
+	{
+		return E_FAIL;
+	}
 
+	// シード値の取得
 	SendTCP("SEED", sizeof("SEED"));
-	DataRecv(SOCKETTYPE_CLIENT, (char*)&nStartTime, sizeof(nStartTime));
+	if (!DataRecv(SOCKETTYPE_CLIENT, (char*)&nStartTime, sizeof(nStartTime)))
+	{
+		return E_FAIL;
+	}
+
 	srand(nStartTime);				// 乱数の種を設定
 
+#ifdef _DEBUG
+	char debug[256];
 	sprintf(debug, "ID = %d\n", m_nId);
 	OutputDebugString(debug);
 	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
-	OutputDebugString("サーバとの接続完了\n");
+#endif // _DEBUG
 
 	StartUpdate();
 	return S_OK;

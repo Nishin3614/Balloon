@@ -16,6 +16,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{4f4d0712-1da4-44f3-84d7-be76a1d34c42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{f2786f71-554b-4b25-9947-e18fc5019044}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cpp&amp;h\2Deffect.cpp">
@@ -559,5 +562,10 @@
     <None Include="network.ini">
       <Filter>リソース ファイル</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="MaskShader.fx">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
