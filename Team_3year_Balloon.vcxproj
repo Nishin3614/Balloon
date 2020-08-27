@@ -169,6 +169,7 @@
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp" />
     <ClCompile Include="cpp&amp;h\effect.cpp" />
     <ClCompile Include="cpp&amp;h\framework.cpp" />
+    <ClCompile Include="cpp&amp;h\PointCircle.cpp" />
     <ClCompile Include="cpp&amp;h\scoreUP.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
     <ClCompile Include="cpp&amp;h\balloon_group.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="cpp&amp;h\3Dparticle.h" />
     <ClInclude Include="cpp&amp;h\effect.h" />
     <ClInclude Include="cpp&amp;h\framework.h" />
+    <ClInclude Include="cpp&amp;h\PointCircle.h" />
     <ClInclude Include="cpp&amp;h\scoreUP.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />
     <ClInclude Include="cpp&amp;h\balloon_group.h" />

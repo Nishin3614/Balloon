@@ -26,6 +26,7 @@
 #include "meshdome.h"
 #include "item.h"
 #include "thundercloud.h"
+#include "PointCircle.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -470,7 +471,7 @@ void CPlayer::MyMove(void)
 	}
 	else if (pKeyboard->GetKeyboardTrigger(DIK_K))
 	{
-		CThunderCloud::Create(GetPos());
+		CPointCircle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 	// ‚»‚êˆÈŠO
 	else

@@ -11,7 +11,6 @@
 #include "scene.h"
 #include "manager.h"
 #include "ui.h"
-#include "network.h"
 #include "2Deffect.h"
 #include "3Dparticle.h"
 #include "framework.h"
@@ -99,7 +98,6 @@ void CTitle::Uninit(void)
 void CTitle::Update(void)
 {
 	CFade *pFade = CManager::GetFade();
-	CNetwork *pNetwork = CManager::GetNetwork();
 	CJoypad *pJoypad = CManager::GetJoy();
 
 	// フェードしていないとき
@@ -115,14 +113,8 @@ void CTitle::Update(void)
 		// ゲームへ遷移
 		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 		{
-			if (pNetwork != NULL)
-			{
-				if (pNetwork->Connect() == S_OK)
-				{
-					// チュートリアルへ
-					pFade->SetFade(CManager::MODE_TUTORIAL);
-				}
-			}
+			// チュートリアルへ
+			pFade->SetFade(CManager::MODE_TUTORIAL);
 		}
 #ifdef _DEBUG
 		// リザルト画面遷移
@@ -135,10 +127,7 @@ void CTitle::Update(void)
 		{
 			if (pJoypad->GetTrigger(0, CJoypad::KEY_START) || pJoypad->GetTrigger(0, CJoypad::KEY_A))
 			{
-				if (pNetwork->Connect() == S_OK)
-				{
-					pFade->SetFade(CManager::MODE_TUTORIAL);
-				}
+				pFade->SetFade(CManager::MODE_TUTORIAL);
 			}
 		}
 	}
