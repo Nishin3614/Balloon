@@ -183,8 +183,8 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		);
 		m_move = D3DVECTOR3_ZERO;
 		*pCharacterMove = D3DVECTOR3_ZERO;
-		m_move += RefVecA * 10.0f;
-		*pCharacterMove += RefVecB * 5.0f;
+		m_move += RefVecA;
+		*pCharacterMove += RefVecB;
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
 	// オブジェクトタイプが敵風船なら ||
@@ -192,27 +192,14 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
 		// 変数宣言
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
 		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
-		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
-		// 押し出し処理を入れる
-		// 今回の当たり判定とプレイヤーの位置ポインター管理
-		// 衝突後の速度計算処理
-		CCalculation::SquarColiAfterVec(
-			m_pos,
-			m_move,
-			*pCharacterPos,
-			CharacterMove,
-			1,
-			1,
-			1.0f,
-			1.0f,
-			RefVecA,
-			RefVecB
-		);
+		D3DXVECTOR3 diff = m_pos - *pCharacterPos;						// BからAの差
+		D3DXVECTOR3 vec;									// B->Aのベクトル
+															// ベクトルの正規化
+		D3DXVec3Normalize(&vec, &diff);
+
 		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA* 10.0f;
+		m_move += vec * 10;
 	}
 }
 
