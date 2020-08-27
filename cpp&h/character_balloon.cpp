@@ -16,6 +16,8 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define CHARACTER_BALLOON_GRAVITY		(0.1f)			// キャラクターバルーンにかかる重力
+#define CHARACTER_BALLOON_DAMAGEPOS		(900.0f)		// ダメージを受ける上限
+#define CHARACTER_BALLOON_DAMAGECOUNT	(180)			// ダメージを受けるフレーム数
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -101,11 +103,11 @@ void CCharacter_Balloon::Update(void)
 #endif // _DEBUG
 
 	// 位置が一定位置になったら
-	if (m_pos.y > 900.0f)
+	if (m_pos.y > CHARACTER_BALLOON_DAMAGEPOS)
 	{
 		// カウント加算
 		m_nCntDamage++;
-		if (m_nCntDamage >= 180)
+		if (m_nCntDamage >= CHARACTER_BALLOON_DAMAGECOUNT)
 		{
 			// 風船割れる処理
 			m_pBalloon_group->CrackBalloon();
@@ -199,7 +201,7 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		D3DXVec3Normalize(&vec, &diff);
 
 		m_move = D3DVECTOR3_ZERO;
-		m_move += vec * 10;
+		m_move += vec * 5;
 	}
 }
 

@@ -832,6 +832,7 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 		D3DXVec3Normalize(&vec, &diff);
 		// ‰Ÿ‚µo‚µ
 		*pos_A = *pos_B + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
+
 		pSphereShapeA->PassPos(D3DVECTOR3_ZERO);
 	}
 	return bCollision;

@@ -88,6 +88,20 @@ public:
 		float		fMaxInertia;		// 慣性力
 		float		fMaxJump;			// ジャンプ力
 		float		fMaxMove;			// 移動力
+		int			nMaxMpUp_Every;		// マイフレームで増えるMP数
+		int			nMaxMpUp_KNOCKDOWN;	// 倒したときのMP数
+		int			nMaxMpDown;			// スキル使用時の減る量
+		int			fMaxSkill;			// 能力の倍率
+		// ポイントゾーン ポイント加算(100)
+		// スコアをとった時のゲージの上昇率
+		// ポイントの倍率
+		// 能力の数値　効果時間と
+		// 能力が発動するまでのポイント数
+		// 敵倒したときのポイント数
+
+		// ポイントアイテムとったら、ゲージを増える
+		// 各キャラクターのゲージの減り具合
+		// 能力の倍率(二人キャラクター)
 	} STATUS, *PSTATUS;
 	/* 関数 */
 	CCharacter(CHARACTER const &character);

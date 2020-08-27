@@ -22,6 +22,8 @@
 #define ENEMY_G (0.5f)			// 重力
 #define ENEMY_RESISTANCE (0.5f)// 抵抗力
 #define ENEMY_GRAVITY (0.1f)
+#define ENEMY_AISTANDSTATEPOS	(450.0f)	// 通常状態になる位置
+#define ENEMY_AIJUMPSTATEPOS	(20.0f)		// 通常状態になる位置
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -90,12 +92,12 @@ void CEnemy::Ai_Action(void)
 			m_AI = AIACTION_BALLOON_NONE;
 		}
 		// 位置yが500超過なら
-		else if (CCharacter::GetPos().y > 500.0f)
+		else if (CCharacter::GetPos().y > ENEMY_AISTANDSTATEPOS)
 		{
 			m_AI = AIACTION_STAND;
 		}
 		// 位置yが10未満なら
-		else if (CCharacter::GetPos().y < 10.0f)
+		else if (CCharacter::GetPos().y < ENEMY_AIJUMPSTATEPOS)
 		{
 			m_AI = AIACTION_JUMP;
 		}
