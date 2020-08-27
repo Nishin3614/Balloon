@@ -45,6 +45,7 @@ CBalloon_group::CBalloon_group() : CScene::CScene()
 	m_nBringBalloon_group = 0;
 	m_pPos = NULL;
 	m_offsetPos = BALLOON_OFFSET_POS;
+	m_Corepos = D3DVECTOR3_ZERO;
 	m_fAngleBalloon_group = 0;
 	m_pCollision = NULL;
 	m_pMtx = NULL;
@@ -94,6 +95,8 @@ void CBalloon_group::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon_group::Update(void)
 {
+	// 最終的な位置情報の更新
+	m_Corepos = *m_pPos + m_offsetPos;
 	// 風船の更新処理
 	for (int nCntBalloon_group = 0; nCntBalloon_group < (signed)m_apBalloon.size(); nCntBalloon_group++)
 	{
@@ -139,6 +142,7 @@ void CBalloon_group::Debug(void)
 {
 	CDebugproc::Print("所持している風船グループの数[%d]\n", m_nBringBalloon_group);
 	CDebugproc::Print("出現している風船グループの数[%d]\n", m_nPopBalloon_group);
+	CDebugproc::Print("風船グループ[%d]pos(%.1f,%.1f,%.1f)\n",m_nActorId,m_pPos->x, m_pPos->y, m_pPos->z);
 }
 #endif // _DEBUG
 
@@ -371,13 +375,13 @@ void CBalloon_group::SetCollision(
 	// あたり判定生成
 	m_pCollision = CSphereCollision::Create(
 		BALLOON_COLLISION_RADIUS,
-		m_offsetPos,
+		D3DVECTOR3_ZERO,
 		(CCollision::OBJTYPE)nObjType,
 		this,
 		pParent,
 		false,
 		true,
-		m_pPos
+		&m_Corepos
 	);
 	// 位置情報の更新(行列渡し)
 	m_pCollision->GetShape()->PassMatrix(*m_pMtx);

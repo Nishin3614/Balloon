@@ -121,6 +121,8 @@ public:
 	void CrackBalloon(
 		int const &nCrackBalloon = 1		// 割れる風船数
 	);
+	// 最終的な位置情報の取得
+	D3DXVECTOR3 &GetCorePos(void) { return m_Corepos; };
 protected:
 private:
 	/* 関数 */
@@ -135,6 +137,7 @@ private:
 	std::vector<CBalloon *> m_apBalloon;			// 風船モデル情報
 	D3DXVECTOR3 *m_pPos;							// 位置情報
 	D3DXVECTOR3 m_offsetPos;						// オフセット位置
+	D3DXVECTOR3 m_Corepos;							// 最終的な位置情報
 	D3DXMATRIX	*m_pMtx;							// 行列情報
 	CCollision	*m_pCollision;						// あたり判定情報
 	int m_nPopBalloon_group;						// 現在出現している風船グループの個数
