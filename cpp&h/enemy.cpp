@@ -83,21 +83,23 @@ void CEnemy::Update(void)
 void CEnemy::Ai_Action(void)
 {
 	// 出現している風船がすべて割られていたら
-	if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() <= 0)
+	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
-		m_AI = AIACTION_BALLOON_NONE;
+		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() <= 0)
+		{
+			m_AI = AIACTION_BALLOON_NONE;
+		}
+		// 位置yが500超過なら
+		else if (CCharacter::GetPos().y > 500.0f)
+		{
+			m_AI = AIACTION_STAND;
+		}
+		// 位置yが10未満なら
+		else if (CCharacter::GetPos().y < 10.0f)
+		{
+			m_AI = AIACTION_JUMP;
+		}
 	}
-	// 位置yが500超過なら
-	else if (CCharacter::GetPos().y > 500.0f)
-	{
-		m_AI = AIACTION_STAND;
-	}
-	// 位置yが10未満なら
-	else if (CCharacter::GetPos().y < 10.0f)
-	{
-		m_AI = AIACTION_JUMP;
-	}
-
 	switch (m_AI)
 	{
 		// 立っている状態(何もしていない)
@@ -209,8 +211,6 @@ void CEnemy::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがキャラクターなら
 	else if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
-		// 死亡処理
-		CCharacter_Balloon::BalloonNone();
 	}
 }
 

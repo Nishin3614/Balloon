@@ -56,13 +56,6 @@ class CCollision : public CScene
 {
 public:
 	/* 列挙型 */
-	// 当たり判定の形
-	typedef enum
-	{
-		COLLISIONTYPE_SQUARE = 0,
-		COLLISIONTYPE_CIRCLE,
-		COLLISIONTYPE_MAX
-	} COLLISIONTYPE;
 	// オブジェクトカテゴリー
 	typedef enum
 	{
@@ -134,7 +127,7 @@ public:
 	// 当たり判定同士の判定(指定オブジェクト)
 	bool CollisionDetection(OBJTYPE const &obj);
 	// 当たり判定同士の判定(全体)
-	bool CollisionDetection(void);
+	static void CollisionDetection(void);
 	// 形別の当たり判定の区別
 
 	// 当たり判定状態の強制falseへ

@@ -156,8 +156,12 @@ void CBalloon_group::Scene_MyCollision(
 	if (nObjType == CCollision::OBJTYPE_PLAYER ||
 		nObjType == CCollision::OBJTYPE_ENEMY)
 	{
-		// •—‘DŠ„‚ê‚éˆ—
-		CrackBalloon();
+		if (m_nActorId == CManager::GetNetwork()->GetId())
+		{
+			// •—‘DŠ„‚ê‚éˆ—
+			CrackBalloon();
+			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));
+		}
 	}
 }
 
