@@ -110,7 +110,6 @@ void CGame::Init(void)
 	// キャラクター魚生成
 	// CCharacter_Fish::Create();
 
-
 	// 直線配置用
 	//for (int nCntItem = 0; nCntItem < 5; nCntItem++)
 	//{
@@ -118,13 +117,14 @@ void CGame::Init(void)
 	//	CItem::Create(D3DXVECTOR3(0.0f, 500.0f + nCntItem * 100, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	//}
 
-	// 円形配置用
-	for (int nCntItem = 0; nCntItem < 10; nCntItem++)
-	{
-		// アイテム生成
-		CItem::Create(D3DXVECTOR3(CIRCLE_SIZE * sinf(D3DX_PI / 180 * nCntItem * ITEM_SPACE), 500.0, CIRCLE_SIZE * 
-								cosf(D3DX_PI / 180 * nCntItem * ITEM_SPACE)), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-	}
+	//// 円形配置用
+	//for (int nCntItem = 0; nCntItem < 10; nCntItem++)
+	//{
+	//	// アイテム生成
+	//	CItem::Create(D3DXVECTOR3(CIRCLE_SIZE * sinf(D3DX_PI / 180 * nCntItem * ITEM_SPACE), 500.0, CIRCLE_SIZE *
+	//							cosf(D3DX_PI / 180 * nCntItem * ITEM_SPACE)), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	//}
+
 	// スコア生成
 	m_pScore = CScore::Create();
 	// ポーズの生成
@@ -132,7 +132,15 @@ void CGame::Init(void)
 	// ポーズの初期化
 	m_pause->Init();
 
+	if (pNetwork != NULL)
+	{
+		pNetwork->ResetCoin();				// コインのデータベースをリセット
+	}
+
 	CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
+
+	// スタートコール
+	CUi_group::Create(CUi::UITYPE_GAMESTART);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -145,7 +153,7 @@ void CGame::Uninit(void)
 	if (pNetwork != NULL)
 	{// ネットワークが存在していたとき
 		pNetwork->StopUpdate();				// 更新停止予約
-		pNetwork->CloseTCP();
+		pNetwork->CloseTCP();				// サーバーとの窓口を閉める
 	}
 
 	// ポーズ
@@ -201,20 +209,7 @@ void CGame::Update(void)
 		{
 			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
-				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-				{
-					m_nWatchingId++;
-
-					if (m_nWatchingId >= MAX_PLAYER)
-					{
-						m_nWatchingId = 0;
-					}
-
-					if (!CPlayer::GetDie(m_nWatchingId))
-					{
-						break;
-					}
-				}
+				FocusPlayer();
 			}
 		}
 
@@ -257,11 +252,9 @@ void CGame::Update(void)
 		}
 	}
 
-	// テスト
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
 	{
-		// 雷生成
-		CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		CUi_group::Create(CUi::UITYPE_FINISH);
 	}
 
 #endif // _DEBUG
@@ -282,6 +275,27 @@ void CGame::Draw(void)
 	if (m_pScore != NULL)
 	{
 		m_pScore->Draw();
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 注目させる処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CGame::FocusPlayer(void)
+{
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_nWatchingId++;
+
+		if (m_nWatchingId >= MAX_PLAYER)
+		{
+			m_nWatchingId = 0;
+		}
+
+		if (!CPlayer::GetDie(m_nWatchingId))
+		{
+			break;
+		}
 	}
 }
 

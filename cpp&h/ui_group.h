@@ -85,6 +85,14 @@ public:
 protected:
 
 private:
+	/* 関数 */
+	void Init_GameFinish(void);
+	// ゲームオーバー
+	void Update_GameOver(void);
+	// ゲームスタート
+	void Update_GameStart(void);
+	// 最後の生き残り
+	void Update_Finish(void);
 	/* 変数 */
 	CUi::UITYPE m_Uitype;
 	/* 各UIクラス */

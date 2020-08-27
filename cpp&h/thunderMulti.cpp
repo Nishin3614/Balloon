@@ -22,7 +22,7 @@
 // 静的メンバー変数の初期化
 // ==========================================================
 CThunderMulti *CThunderMulti::m_pThunderMulti = NULL;
-LPDIRECT3DTEXTURE9 CThunderMulti::m_pTex = NULL;
+int CThunderMulti::m_ThunderCnt = 0;							// 雷のカウント
 
 // ==========================================================
 //
@@ -31,7 +31,7 @@ LPDIRECT3DTEXTURE9 CThunderMulti::m_pTex = NULL;
 // ==========================================================
 CThunderMulti::CThunderMulti() :CScene_THREE()
 {
-
+	m_ThunderCnt++;
 }
 
 // ==========================================================
@@ -41,7 +41,7 @@ CThunderMulti::CThunderMulti() :CScene_THREE()
 // ==========================================================
 CThunderMulti::~CThunderMulti()
 {
-
+	m_ThunderCnt--;
 }
 
 // ==========================================================
@@ -92,7 +92,7 @@ void CThunderMulti::Update(void)
 
 	m_nCounterAnim++;	// カウンター加算
 
-						// 電撃テクスチャー
+	// 電撃テクスチャー
 	if (m_nCounterAnim % 6 == 0)
 	{
 		m_nPatternAnim = (m_nPatternAnim + 1) % 6;
@@ -103,6 +103,7 @@ void CThunderMulti::Update(void)
 	if (m_nPatternAnim == 5)
 	{
 		m_bThunder = false;
+		Release();
 	}
 }
 
@@ -158,17 +159,4 @@ CThunderMulti *CThunderMulti::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
 	// 値を返す
 	return m_pThunderMulti;
-}
-
-// ==========================================================
-// 破棄
-// ==========================================================
-void CThunderMulti::Unload(void)
-{
-	// テクスチャ解放
-	if (m_pTex != NULL)
-	{
-		m_pTex->Release();
-		m_pTex = NULL;
-	}
 }

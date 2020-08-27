@@ -21,7 +21,8 @@
 #include "rank.h"
 #include "scoreUP.h"
 #include "invisible.h"
-
+#include "framework.h"
+#include "ui_group.h"
 
 #define PLAYER_GRAVITY (0.1f)
 
@@ -48,6 +49,7 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 	m_bMPMax = false;				// MPが最大かどうか
 	m_bResetMP = false;				// MPをリセット
 	m_nRank = -1;					// ランキングの初期化
+	m_pFramework = NULL;			// フレームワーク情報
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -100,6 +102,8 @@ void CPlayer::Init(void)
 			m_p2DMPGauge->SetMainCol(
 				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
 				D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
+			// フレームワークの生成
+			m_pFramework = CFramework::Create();
 		}
 
 		m_pRank = CRank::Create();
@@ -126,9 +130,15 @@ void CPlayer::Uninit(void)
 	{
 		m_p2DMPGauge = NULL;
 	}
+	// ランク情報の開放
 	if (m_pRank != NULL)
 	{
 		m_pRank = NULL;
+	}
+	// フレームワーク情報の開放
+	if (m_pFramework != NULL)
+	{
+		m_pFramework = NULL;
 	}
 }
 
@@ -140,8 +150,6 @@ void CPlayer::Update(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 	const int nId = pNetwork->GetId();
 
-	// モーション設定
-	CCharacter::SetMotion(MOTIONTYPE_NEUTRAL);
 	// 選択画面以外なら
 	if (CManager::GetMode() != CManager::MODE_SELECT)
 	{
@@ -159,6 +167,8 @@ void CPlayer::Update(void)
 			OtherAction();
 		}
 	}
+	// モーション設定処理
+	StatusMotion();
 
 	// キャラクター更新
 	CCharacter_Balloon::Update();
@@ -234,7 +244,6 @@ void CPlayer::MyMove(void)
 {
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
-	bool bMove = false;				// 移動状態
 	float fRot;						// 回転
 
 	// 情報取得
@@ -287,7 +296,7 @@ void CPlayer::MyMove(void)
 			move.x -= sinf(fAngle + fRot) * (fMove);
 			move.z -= cosf(fAngle + fRot) * (fMove);
 			// 移動状態on
-			bMove = true;
+			CCharacter::SetbMove(true);
 		}
 	}
 
@@ -296,7 +305,7 @@ void CPlayer::MyMove(void)
 	if (pKeyboard->GetKeyboardPress(DIK_A))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		// 奥
 		if (pKeyboard->GetKeyboardPress(DIK_W))
 		{
@@ -325,7 +334,7 @@ void CPlayer::MyMove(void)
 	else if (pKeyboard->GetKeyboardPress(DIK_D))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 
 		// 奥
 		if (pKeyboard->GetKeyboardPress(DIK_W))
@@ -356,7 +365,7 @@ void CPlayer::MyMove(void)
 	else if (pKeyboard->GetKeyboardPress(DIK_W))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 0.0f + fRot;
 		move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
 		move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
@@ -365,10 +374,16 @@ void CPlayer::MyMove(void)
 	else if (pKeyboard->GetKeyboardPress(DIK_S))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 1.0f + fRot;
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+	}
+	// それ以外
+	else
+	{
+		// 移動状態off
+		CCharacter::SetbMove(false);
 	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
@@ -404,7 +419,6 @@ void CPlayer::MyMove(void)
 			}
 		}
 	}
-
 	// yの上限設定
 	if (move.y > 10.0f)
 	{
@@ -466,6 +480,12 @@ void CPlayer::MpUp(
 
 			// 状態変化
 			m_bMPMax = true;
+			// フレームワーク情報のNULLチェック
+			if (m_pFramework != NULL)
+			{
+				// フレームワーク情報の使用状態設定
+				m_pFramework->SetUse(true);;
+			}
 		}
 	}
 	else
@@ -501,6 +521,12 @@ void CPlayer::MpUp(
 
 			// リセット終了
 			m_bResetMP = false;
+			// フレームワーク情報のNULLチェック
+			if (m_pFramework != NULL)
+			{
+				// フレームワーク情報の使用状態設定
+				m_pFramework->SetUse(false);;
+			}
 		}
 	}
 
@@ -543,6 +569,32 @@ void CPlayer::FishApponent(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 状態によってのモーション設定処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::StatusMotion(void)
+{
+	// 勝利モーション
+
+	// ジャンプ中
+	if (!CCharacter::GetbLanding())
+	{
+		SetMotion(MOTIONTYPE_JAMP);
+	}
+	// 移動中
+	else if (CCharacter::GetbMove())
+	{
+		// モーション設定(移動)
+		SetMotion(MOTIONTYPE_JAMP);
+	}
+	// 待機
+	else
+	{
+		SetMotion(MOTIONTYPE_NEUTRAL);
+	}
+
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 他キャラ移動処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::OtherMove(void)
@@ -551,7 +603,6 @@ void CPlayer::OtherMove(void)
 
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
-	bool bMove = false;				// 移動状態
 	float fRot = 0.0f;						// 回転
 	// 情報取得
 	rot = CCharacter::GetRotDest();								// 目的回転量
@@ -565,7 +616,7 @@ void CPlayer::OtherMove(void)
 	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		// 奥
 		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 		{
@@ -594,7 +645,7 @@ void CPlayer::OtherMove(void)
 	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_D))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 
 		// 奥
 		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
@@ -625,7 +676,7 @@ void CPlayer::OtherMove(void)
 	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 0.0f + fRot;
 		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
@@ -634,10 +685,16 @@ void CPlayer::OtherMove(void)
 	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 1.0f + fRot;
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	}
+	// それ以外
+	else
+	{
+		// 移動状態off
+		CCharacter::SetbMove(false);
 	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
@@ -699,6 +756,7 @@ void CPlayer::Draw(void)
 		CCharacter_Balloon::Draw();
 	}
 }
+
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 死亡処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -722,6 +780,7 @@ void CPlayer::Die(void)
 	if (m_nPlayerID == CManager::GetPlayerID())
 	{
 		m_bDie[m_nPlayerID] = true;			// 死亡フラグを立てる
+		CUi_group::Create(CUi::UITYPE_DIE);
 	}
 }
 
@@ -854,6 +913,7 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_FISH)
 	{
 		// 死亡
+		CUi_group::Create(CUi::UITYPE_DIE);
 		Die();
 	}
 }

@@ -18,6 +18,7 @@
 #include "character.h"
 #include "3Dparticle.h"
 #include "meshdome.h"
+#include "ui_group.h"
 
 // ==========================================================
 //
@@ -192,7 +193,7 @@ void CThunder::Update(void)
 					// 死ぬ音2
 					CManager::GetSound()->PlaySound(CSound::LABEL_SE_KERSPLASH2);
 					// キャラクター消滅
-					pCharacter->Release();
+					pCharacter->Die();
 				}
 			}
 		}

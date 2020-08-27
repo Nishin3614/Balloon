@@ -14,6 +14,7 @@
 #include "network.h"
 #include "2Deffect.h"
 #include "3Dparticle.h"
+#include "framework.h"
 
 //=============================================================================
 //
@@ -22,6 +23,8 @@
 //=============================================================================
 CTitle::CTitle()
 {
+	m_pCloudBack = NULL;
+	m_fScroll = 0.0f;
 }
 
 //=============================================================================
@@ -41,6 +44,27 @@ CTitle::~CTitle()
 //=============================================================================
 HRESULT CTitle::Init()
 {
+	// タイトル背景
+	m_pCloudBack = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_CENTER, D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f),
+		D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT),
+		0.0f,
+		D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+		CScene::LAYER_WORLD
+	);
+
+	LPDIRECT3DTEXTURE9 pTex = NULL;
+
+	// テクスチャー生成
+	D3DXCreateTextureFromFile(
+		CManager::GetRenderer()->GetDevice(),
+		"data/TEXTURE/UI/TITLE/cloud.jpg",
+		&pTex);
+
+	if (m_pCloudBack != NULL)
+	{
+		m_pCloudBack->BindTexture(pTex);
+	}
+
 	// UI生成
 	CUi::LoadCreate(CUi::UITYPE_TITLEUI_NAME);
 	// 2Dエフェクトの生成
@@ -51,6 +75,7 @@ HRESULT CTitle::Init()
 		//D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f),
 		D3DVECTOR3_ZERO,
 		true);
+
 	// 初期化
 	return S_OK;
 }
@@ -80,6 +105,13 @@ void CTitle::Update(void)
 	// フェードしていないとき
 	if (pFade->GetFade() == CFade::FADE_NONE)
 	{
+		m_fScroll -= 0.0025f;
+
+		if (m_pCloudBack != NULL)
+		{
+			m_pCloudBack->SetTex(D3DXVECTOR2(0.0f, 0.0f + m_fScroll), D3DXVECTOR2(1.0f, 1.0f + m_fScroll));
+		}
+
 		// ゲームへ遷移
 		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 		{
@@ -87,11 +119,8 @@ void CTitle::Update(void)
 			{
 				if (pNetwork->Connect() == S_OK)
 				{
-					if (pFade->GetFade() == CFade::FADE_NONE)
-					{
-						// チュートリアルへ
-						pFade->SetFade(CManager::MODE_TUTORIAL);
-					}
+					// チュートリアルへ
+					pFade->SetFade(CManager::MODE_TUTORIAL);
 				}
 			}
 		}

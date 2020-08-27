@@ -33,15 +33,14 @@ public:
 	void Draw(void);										// 描画
 
 	static CThunderMulti *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// 生成
-	static void Unload(void);													// アンロード
 
 private:
-	static LPDIRECT3DTEXTURE9 m_pTex;					// テクスチャ
 	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;			// 頂点バッファへのポインタ
 	VERTEX_3D *m_pVtx;									// 頂点情報へのポインタ
 	D3DXMATRIX m_mtxWorld;								// ワールドマトリックス
 
 	static CThunderMulti *m_pThunderMulti;
+	static int m_ThunderCnt;							// 雷のカウント
 
 	D3DXVECTOR3	m_vtxMin;								// 最小値
 	D3DXVECTOR3	m_vtxMax;								// 最大値
