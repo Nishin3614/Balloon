@@ -1050,6 +1050,27 @@ HRESULT CCharacter::LoadStatus(void)
 			case 4:
 				m_sStatus[nCntLine].fMaxMove = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
+				// 最大MP数
+			case 5:
+				m_sStatus[nCntLine].nMaxMp = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// マイフレームで増えるMP数
+			case 6:
+				m_sStatus[nCntLine].nMaxMpUp_Every = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// 倒したときのMP数
+			case 7:
+				m_sStatus[nCntLine].nMaxMpUp_KnockDown = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// スキル使用時の減る量
+			case 8:
+				m_sStatus[nCntLine].nMaxMpDown = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// 能力の倍率
+			case 9:
+				m_sStatus[nCntLine].fMaxSkill = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+
 			default:
 				break;
 			}
@@ -1086,19 +1107,6 @@ void CCharacter::InitStatic(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Debug(void)
 {
-	/*
-	CDebugproc::Print("キャラクタータイプ[%d]\n", m_character);
-	CDebugproc::Print("位置[%.1f,%.1f,%.1f]\n",
-		m_pos.x,
-		m_pos.y,
-		m_pos.z
-	);
-	CDebugproc::Print("移動[%.1f,%.1f,%.1f]\n",
-		m_move.x,
-		m_move.y,
-		m_move.z
-	);
-	*/
 	// キャラクターの当たり判定がNULLではないなら
 	// デバッグ処理
 	if (m_pCharacterCollision != NULL)
@@ -1113,14 +1121,6 @@ void CCharacter::Debug(void)
 void CCharacter::AllDebug(void)
 {
 	/*
-	// キャラクターステータスの更新 //
-	CDebugproc::Print("F12:キャラクターステータスの更新\n");
-	// F12ボタンを押すと
-	// ステータスが更新される
-	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_F12))
-	{
-		LoadStatus();
-	}
 	// キャラクターステータスの表示 //
 	CDebugproc::Print("//----------キャラクターステータス情報----------//\n");
 	for (int nCntCharacter = 0; nCntCharacter < CHARACTER_MAX; nCntCharacter++)
@@ -1131,8 +1131,11 @@ void CCharacter::AllDebug(void)
 		CDebugproc::Print("慣性力:%.2f\n", m_sStatus[nCntCharacter].fMaxInertia);
 		CDebugproc::Print("ジャンプ力:%.2f\n", m_sStatus[nCntCharacter].fMaxJump);
 		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+
 	}
-	CDebugproc::Print("//----------キャラクターステータス情報----------//\n");
 	*/
 }
 #endif // _DEBUG

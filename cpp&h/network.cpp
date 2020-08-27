@@ -694,7 +694,7 @@ bool CNetwork::UpdateTCP(void)
 			pPlayer = CGame::GetPlayer(m_nId);
 			if (pPlayer != NULL)
 			{
-				pPlayer->MpUp(MPUP_PLAYER_KNOCKDOWN);
+				pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
 			}
 		}
 	}
@@ -784,7 +784,7 @@ bool CNetwork::UpdateTCP(void)
 				// キャラクターが一致したら
 				if (pPlayer->GetCharacter() != CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
 				if (pPlayer->GetCharacter() == CCharacter::CHARACTER_BALLOON4)
@@ -792,11 +792,11 @@ bool CNetwork::UpdateTCP(void)
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
 					{
-						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
 					}
 					else
 					{
-						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 					}
 				}
 

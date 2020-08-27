@@ -253,12 +253,28 @@ void CGame::Update(void)
 			}
 		}
 	}
+	DebugStatus();
 
+	// 終了表示
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
 	{
 		CUi_group::Create(CUi::UITYPE_FINISH);
 	}
-
+	// ステータスリセット
+	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_LCONTROL) &&
+		CManager::GetKeyboard()->GetKeyboardTrigger(DIK_4))
+	{
+		CCharacter::LoadStatus();
+		CItem::LoadStatus();
+		for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+		{
+			if (m_pPlayer[nCntPlayer] == NULL)
+			{
+				continue;
+			}
+			m_pPlayer[nCntPlayer]->GaugeStatusInit();
+		}
+	}
 #endif // _DEBUG
 }
 
@@ -299,6 +315,17 @@ void CGame::FocusPlayer(void)
 			break;
 		}
 	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// デバッグステータス処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CGame::DebugStatus(void)
+{
+	// ステータスの更新 //
+	CDebugproc::Print("LCTRL + 4:ステータスの更新\n");
+	//CCharacter::AllDebug();
+	//CItem::AllDebug();
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

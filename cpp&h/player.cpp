@@ -24,6 +24,7 @@
 #include "framework.h"
 #include "ui_group.h"
 #include "meshdome.h"
+#include "item.h"
 #include "thundercloud.h"
 #include "PointCircle.h"
 
@@ -105,7 +106,7 @@ void CPlayer::Init(void)
 				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
 			);
 			// MPゲージの変化定数を設定
-			m_p2DMPGauge->SetConstance((float)PLAYER_MPMAX);
+			m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
 			// MPゲージの変化定数を設定
 			m_p2DMPGauge->BeginGauge((float)m_nMP);
 			// MPゲージのメインカラー設定
@@ -277,7 +278,7 @@ void CPlayer::MyAction(const int &nId)
 		CCharacter_Balloon::BalloonCreate();
 	}
 	// MP上げ処理(マイフレーム)
-	MpUp(MPUP_EVERY);
+	MpUp(CCharacter::GetStatus().nMaxMpUp_Every);
 	// カメラの更新
 	Camera();
 	// MPゲージの変化定数を設定
@@ -557,12 +558,12 @@ void CPlayer::MpUp(
 		// MPを上げる
 		m_nMP += nMpUp;
 		// 上限を超えたら最大MP分代入
-		if (m_nMP > PLAYER_MPMAX)
+		if (m_nMP > CCharacter::GetStatus().nMaxMp)
 		{
-			m_nMP = PLAYER_MPMAX;
+			m_nMP = CCharacter::GetStatus().nMaxMp;
 		}
 		// MPがマックスだったら
-		if (m_nMP == PLAYER_MPMAX)
+		if (m_nMP == CCharacter::GetStatus().nMaxMp)
 		{
 			// リセット開始
 			m_bResetMP = true;
@@ -583,25 +584,9 @@ void CPlayer::MpUp(
 	}
 	else
 	{
-		switch (character)
-		{
-		case CCharacter::CHARACTER_BALLOON1:
-			// MPを下げる
-			m_nMP -= SPEED_UP_MPDOWN;
-			break;
-		case CCharacter::CHARACTER_BALLOON2:
-			// MPを下げる
-			m_nMP -= REVIVAL_MPDOWN;
-			break;
-		case CCharacter::CHARACTER_BALLOON3:
-			// MPを下げる
-			m_nMP -= INVISIBLE_MPDOWN;
-			break;
-		case CCharacter::CHARACTER_BALLOON4:
-			// MPを下げる
-			m_nMP -= SCORE_UP_MPDOWN;
-			break;
-		}
+		// MPを下げる
+		m_nMP -= CCharacter::GetStatus().nMaxMpDown;
+
 		// MPがマックスだったら
 		if (m_nMP == 0)
 		{
@@ -623,6 +608,22 @@ void CPlayer::MpUp(
 		}
 	}
 
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ゲージ初期化処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::GaugeStatusInit(void)
+{
+	m_nMP = 0;						// MP
+	// ぬるちぇ
+	if (m_p2DMPGauge != NULL)
+	{
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->BeginGauge((float)m_nMP);
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -912,7 +913,7 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			// キャラクターが一致したら
 			if (character != CCharacter::CHARACTER_BALLOON4)
 			{
-				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+				CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 			}
 			// キャラクターが一致したら
 			if (character == CCharacter::CHARACTER_BALLOON4)
@@ -920,13 +921,15 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 				// 状態
 				if (CScoreUP::GetScoreUP() == true)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
 				}
 				else
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 			}
+			// MP上げ処理(風船)
+			MpUp(CItem::GetStatus().nMpUp);
 		}
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
@@ -1044,7 +1047,7 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 			// キャラクターが一致したら
 			if (character != CCharacter::CHARACTER_BALLOON4)
 			{
-				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+				CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 			}
 			// キャラクターが一致したら
 			if (character == CCharacter::CHARACTER_BALLOON4)
@@ -1052,11 +1055,11 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 				// 状態
 				if (CScoreUP::GetScoreUP() == true)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
 				}
 				else
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 			}
 
@@ -1083,7 +1086,7 @@ void CPlayer::Debug(void)
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(TESTPLAY_NUMBER3))
 	{
 		// MP全回復
-		m_nMP = PLAYER_MPMAX;
+		m_nMP = CCharacter::GetStatus().nMaxMp;
 		// MPゲージのNULLチェック
 		if (m_p2DMPGauge != NULL)
 		{
@@ -1091,7 +1094,7 @@ void CPlayer::Debug(void)
 			m_p2DMPGauge->ChangeGauge((float)m_nMP);
 		}
 	}
-	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
+	//CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter_Balloon::Debug();
 

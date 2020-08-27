@@ -140,9 +140,9 @@ void CBalloon_group::Draw(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CBalloon_group::Debug(void)
 {
-	CDebugproc::Print("所持している風船グループの数[%d]\n", m_nBringBalloon_group);
-	CDebugproc::Print("出現している風船グループの数[%d]\n", m_nPopBalloon_group);
-	CDebugproc::Print("風船グループ[%d]pos(%.1f,%.1f,%.1f)\n",m_nActorId,m_pPos->x, m_pPos->y, m_pPos->z);
+	//CDebugproc::Print("所持している風船グループの数[%d]\n", m_nBringBalloon_group);
+	//CDebugproc::Print("出現している風船グループの数[%d]\n", m_nPopBalloon_group);
+	//CDebugproc::Print("風船グループ[%d]pos(%.1f,%.1f,%.1f)\n",m_nActorId,m_pPos->x, m_pPos->y, m_pPos->z);
 }
 #endif // _DEBUG
 

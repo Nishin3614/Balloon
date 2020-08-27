@@ -68,9 +68,9 @@ void CColumnCollision::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CColumnCollision::Debug(void)
 {
-	CDebugproc::Print("----------‰~’Œ‚Ì“–‚½‚è”»’èî•ñ----------\n");
-	CDebugproc::Print("”¼Œa(%.1f)\n", m_pColumnShape->GetRadius());
-	CDebugproc::Print("‚‚³(%.1f)\n", m_pColumnShape->GetVertical());
+	//CDebugproc::Print("----------‰~’Œ‚Ì“–‚½‚è”»’èî•ñ----------\n");
+	//CDebugproc::Print("”¼Œa(%.1f)\n", m_pColumnShape->GetRadius());
+	//CDebugproc::Print("‚‚³(%.1f)\n", m_pColumnShape->GetVertical());
 	CCollision::Debug();
 }
 

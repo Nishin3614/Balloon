@@ -14,11 +14,13 @@
 #include "character.h"
 #include "spherecollision.h"
 
+#define ITME_STATUS_FILE	("data/LOAD/STATUS/status_manager_Item.csv")	// アイテムステータスパス
 // ==========================================================
 // 静的メンバー変数の初期化
 // ==========================================================
 CItem *CItem::m_pItem = NULL;
 LPDIRECT3DTEXTURE9 CItem::m_pTex = NULL;
+CItem::STATUS	CItem::m_sStatus = {};					// アイテムのスタータス情報
 
 // ==========================================================
 // グローバル変数
@@ -165,6 +167,8 @@ HRESULT CItem::Load(void)
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
 	// テクスチャの読み込み
 	D3DXCreateTextureFromFile(pDevice, TEXTURE_BULLET, &m_pTex);
+	// ステータス読み込み
+	LoadStatus();
 	return S_OK;
 }
 
@@ -179,6 +183,40 @@ void CItem::Unload(void)
 		m_pTex->Release();
 		m_pTex = NULL;
 	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ステータス情報読み込み処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CItem::LoadStatus(void)
+{
+	// 変数宣言
+	std::vector<std::vector<std::string>> vsvec_Contens;	// ファイルの中身格納用
+															// ファイルの中身を取得する
+	vsvec_Contens = CCalculation::FileContens(ITME_STATUS_FILE, ',');
+	// 行ごとに回す
+	for (int nCntLine = 0; nCntLine < (signed)vsvec_Contens.size(); nCntLine++)
+	{
+		// 項目ごとに回す
+		for (int nCntItem = 0; nCntItem < (signed)vsvec_Contens.at(nCntLine).size(); nCntItem++)
+		{
+			switch (nCntItem)
+			{
+				// スコアポイント
+			case 0:
+				m_sStatus.nScorePoint = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// MPアップ
+			case 1:
+				m_sStatus.nMpUp = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	// std::vectorの多重配列開放
+	std::vector<std::vector<std::string>>().swap(vsvec_Contens);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

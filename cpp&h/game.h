@@ -71,6 +71,7 @@ public:
 protected:
 private:
 	/* 関数 */
+	void DebugStatus(void);				// デバッグステータス
 	void PauseState(void);				// ポーズの状態
 	void PlayerCreate(void);			// プレイヤー生成
 	/* 変数 */

@@ -77,6 +77,7 @@ void CCollision::Debug(void)
 	{
 		posold = GetShape()->Get_Posold();
 	}
+	/*
 	ImGui::Text("Pos(%.1f,%.1f,%.1f)",
 		pos.x,
 		pos.y,
@@ -88,6 +89,7 @@ void CCollision::Debug(void)
 		posold.z
 	);
 	ImGui::Text("nCollisionTime:%d", nCollisionTime);
+	*/
 }
 
 #endif // _DEBUG

@@ -12,7 +12,6 @@
 // É}ÉNÉçíËã`
 //
 // ==========================================================
-#define SPEED_UP (8.0f)
 
 // ==========================================================
 //
@@ -64,7 +63,7 @@ void CSpeedUP::Update(void)
 	{
 		// èÛë‘ïœâª
 		m_bSpeedUP = true;
-		SetMoveNow(SPEED_UP);
+		SetMoveNow(CCharacter::GetStatus().fMaxSkill);
 	}
 	else
 	{
