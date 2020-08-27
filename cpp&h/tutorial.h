@@ -45,5 +45,7 @@ public:
 	static  CTutorial		*Create(void);						// チュートリアルの生成
 
 private:
+	void PopEvent(void);
+	int nCntPop;
 };
 #endif

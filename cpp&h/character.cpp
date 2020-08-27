@@ -725,15 +725,15 @@ void CCharacter::Die(void)
 		m_pCharacterCollision->Release();
 		m_pCharacterCollision = NULL;
 	}
-	// 総キャラクターが一人だけなら
-	// ->タイトルへフェード
-	if (m_nAllCharacter <= 1)
-	{
-		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
-		{
-			CManager::GetFade()->SetFade(CManager::MODE_GAME);
-		}
-	}
+	//// 総キャラクターが一人だけなら
+	//// ->タイトルへフェード
+	//if (m_nAllCharacter <= 1)
+	//{
+	//	if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+	//	{
+	//		CManager::GetFade()->SetFade(CManager::MODE_GAME);
+	//	}
+	//}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

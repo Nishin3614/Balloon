@@ -21,6 +21,7 @@
 CItem *CItem::m_pItem = NULL;
 LPDIRECT3DTEXTURE9 CItem::m_pTex = NULL;
 CItem::STATUS	CItem::m_sStatus = {};					// アイテムのスタータス情報
+int CItem::m_nAllItem = 0;
 
 // ==========================================================
 // グローバル変数
@@ -34,6 +35,7 @@ CItem::STATUS	CItem::m_sStatus = {};					// アイテムのスタータス情報
 CItem::CItem() :CScene_THREE()
 {
 	m_pCollision = NULL;
+	m_nAllItem++;
 }
 
 // ==========================================================
@@ -43,6 +45,7 @@ CItem::CItem() :CScene_THREE()
 // ==========================================================
 CItem::~CItem()
 {
+	m_nAllItem--;
 
 }
 
@@ -236,9 +239,16 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
-		char aDie[64];
-		sprintf(aDie, "GET_COIN %d", m_nId);
-		pNetwork->SendTCP(aDie, sizeof(aDie));
+		if (CManager::GetMode() == CManager::MODE_GAME)
+		{
+			char aDie[64];
+			sprintf(aDie, "GET_COIN %d", m_nId);
+			pNetwork->SendTCP(aDie, sizeof(aDie));
+		}
+		else
+		{
+			Release();
+		}
 	}
 }
 
@@ -259,9 +269,16 @@ void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがキャラクターなら
 	if (nObjType == CCollision::OBJTYPE_PLAYER)
 	{
-		char aDie[64];
-		sprintf(aDie, "GET_COIN %d", m_nId);
-		pNetwork->SendTCP(aDie, sizeof(aDie));
+		if (CManager::GetMode() == CManager::MODE_GAME)
+		{
+			char aDie[64];
+			sprintf(aDie, "GET_COIN %d", m_nId);
+			pNetwork->SendTCP(aDie, sizeof(aDie));
+		}
+		else
+		{
+			Release();
+		}
 	}
 }
 

@@ -46,7 +46,8 @@ public:
 	// ---------モーションタイプ---------- //
 	typedef enum
 	{
-		MOTIONTYPE_JAMP = CCharacter::MOTIONTYPE_MAX,
+		MOTIONTYPE_MOVE = CCharacter::MOTIONTYPE_MAX,
+		MOTIONTYPE_JAMP,
 		MOTIONTYPE_DANCE,
 		MOTIONTYPE_MAX
 	} MOTIONTYPE;
@@ -104,6 +105,8 @@ public:
 	void MpUp(int const & nMpUp);
 	// ゲージ初期化処理
 	void GaugeStatusInit(void);
+	// プレイヤー総数取得
+	static int &GetAll(void) { return m_All; };
 protected:
 private:
 	/* 構造体 */
