@@ -89,6 +89,9 @@ private:
 	void CalculationNormalize(void);
 
 	/* 変数 */
+	LPDIRECT3DTEXTURE9 m_pTexture;
+	LPDIRECT3DTEXTURE9 m_pMaskTex;
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;					// 頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9	m_pIndex;					// インデックスバッファのポインタ
 	D3DXVECTOR3 m_OriginBlock;							// 初期配置
@@ -102,6 +105,6 @@ private:
 	int m_nBlock_Depth;									// 縦ブロック数
 	int m_nBlock_Width;									// 横ブロック数
 	int m_nTexType;										// テクスチャータイプ
+	static LPD3DXEFFECT		m_pEffect;
 };
-
 #endif
