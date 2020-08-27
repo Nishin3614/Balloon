@@ -105,10 +105,22 @@ void CKeyboard::Update(void)
 			m_aState[nCntKey] = aKeyState[nCntKey];	// キープレス情報保存
 		}
 	}
-
 	else
 	{
 		m_pDevice->Acquire();	// キーボードへのアクセス権を取得
+
+		if (SUCCEEDED(m_pDevice->GetDeviceState(sizeof(aKeyState), aKeyState)))
+		{
+			for (nCntKey = 0; nCntKey < NUM_KEY_MAX; nCntKey++)
+			{
+				if (aKeyState[nCntKey] != 0)
+				{
+					m_sbState = true;
+				}
+				m_aTrigger[nCntKey] = (m_aState[nCntKey] ^ aKeyState[nCntKey]) & aKeyState[nCntKey];
+				m_aState[nCntKey] = aKeyState[nCntKey];	// キープレス情報保存
+			}
+		}
 	}
 }
 

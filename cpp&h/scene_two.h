@@ -119,7 +119,8 @@ public:
 		D3DXVECTOR3 const & pos,									// 位置
 		D3DXVECTOR2 const & size,									// サイズ
 		float		const & frot = 0.0f,							// 角度
-		D3DXCOLOR	const & col = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f)	// 色
+		D3DXCOLOR	const & col = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f),	// 色
+		CScene::LAYER	const & layer = CScene::LAYER_UI			// レイヤー
 	);
 	// 作成(シーン継承なし)
 	static CScene_TWO * Create_Self(
