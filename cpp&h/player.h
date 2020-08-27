@@ -25,7 +25,7 @@
 #define PLAYER_MOTIONFILE		"data/LOAD/PLAYER/Tricker.txt"		// モーションのファイル名
 #define PLAYER_FALL				(-20.0f)							// 落ちる位置条件
 #define PLAYER_UI_MP_POS		(D3DXVECTOR3(78.5f, 690.0f, 0.0f))	// UI_MPの位置
-#define FISH_APPONENTPOS		(-40.0f)								// 魚出現位置
+#define FISH_APPONENTPOS		(-40.0f)							// 魚出現位置
 #define FISH_APPONENTTIME		(300)								// 魚出現タイム
 #define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
 

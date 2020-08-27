@@ -8,6 +8,20 @@
 #define _TUTORIAL_H_
 
 #include "main.h"
+#include "lake.h"
+#include "floor.h"
+#include "meshobit.h"
+#include "meshdome.h"
+#include "meshsphere.h"
+#include "meshwall.h"
+#include "3Deffect.h"
+#include "bgdome.h"
+#include "camera.h"
+#include "3Dparticle.h"
+#include "keyboard.h"
+#include "3Dmap.h"
+#include "item.h"
+#include "thunder.h"
 
 //=============================================================================
 // 前方宣言	( ポインタだけなら使える )

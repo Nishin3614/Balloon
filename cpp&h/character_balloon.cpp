@@ -73,6 +73,30 @@ void CCharacter_Balloon::Init(void)
 			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon
 		);
 	}
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+	{
+		// 変数宣言
+		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
+		// キャラクタータイプがNPCなら
+		if (CCharacter::GetCharacter() == CCharacter::CHARACTER_NPC)
+		{
+			objtype = CCollision::OBJTYPE_ENEMY_BALLOON;
+		}
+		// 風船生成
+		m_pBalloon_group = CBalloon_group::Create(
+			&CCharacter::GetPos(),
+			CCharacter::GetMatrix(-1),
+			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
+			objtype,
+
+			this
+		);
+		// ステータスの反映 //
+		// 初期風船を持っている個数
+		m_pBalloon_group->SetBiginBalloon_group(
+			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon
+		);
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

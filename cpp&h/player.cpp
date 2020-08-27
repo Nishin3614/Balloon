@@ -146,6 +146,26 @@ void CPlayer::Init(void)
 			}
 		}
 	}
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+	{
+		// MPゲージの生成
+		m_p2DMPGauge = C2DGauge::Create(
+			PLAYER_UI_MP_POS,
+			D3DXVECTOR2(500.0f, 25.0f),
+			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+		);
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->BeginGauge((float)m_nMP);
+		// MPゲージのメインカラー設定
+		m_p2DMPGauge->SetMainCol(
+			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+			D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
+		// フレームワークの生成
+		m_pFramework = CFramework::Create();
+
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -181,7 +201,7 @@ void CPlayer::Update(void)
 	const int nId = pNetwork->GetId();
 
 	// 選択画面以外なら
-	if (CManager::GetMode() != CManager::MODE_SELECT)
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
 		// キャラクター自体のプレイヤー番号とコントロールしているプレイヤー番号が同じなら
 		// ->行動処理
@@ -196,6 +216,11 @@ void CPlayer::Update(void)
 			// 他キャラの行動処理
 			OtherAction();
 		}
+	}
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+	{
+		// 自キャラの行動処理
+		MyAction(m_nPlayerID);
 	}
 	// モーション設定処理
 	StatusMotion();
@@ -906,27 +931,35 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
-		// プレイヤーのスコア加算追加
-		if (m_nPlayerID == pNetwork->GetId())
+		if (CManager::GetMode() == CManager::MODE_GAME)
 		{
-			// キャラクターが一致したら
-			if (character != CCharacter::CHARACTER_BALLOON4)
+			// プレイヤーのスコア加算追加
+			if (m_nPlayerID == pNetwork->GetId())
 			{
-				CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
-			}
-			// キャラクターが一致したら
-			if (character == CCharacter::CHARACTER_BALLOON4)
-			{
-				// 状態
-				if (CScoreUP::GetScoreUP() == true)
-				{
-					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
-				}
-				else
+				// キャラクターが一致したら
+				if (character != CCharacter::CHARACTER_BALLOON4)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
+				// キャラクターが一致したら
+				if (character == CCharacter::CHARACTER_BALLOON4)
+				{
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
+				}
+				// MP上げ処理(風船)
+				MpUp(CItem::GetStatus().nMpUp);
 			}
+		}
+		else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+		{
 			// MP上げ処理(風船)
 			MpUp(CItem::GetStatus().nMpUp);
 		}
@@ -936,28 +969,36 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
-		// プレイヤーのスコア加算追加
-		if (m_nPlayerID == pNetwork->GetId())
+		if (CManager::GetMode() == CManager::MODE_GAME)
 		{
-			// キャラクターが一致したら
-			if (character != CCharacter::CHARACTER_BALLOON4)
+			// プレイヤーのスコア加算追加
+			if (m_nPlayerID == pNetwork->GetId())
 			{
-				// スコア加算処理
-				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
-			}
-			// キャラクターが一致したら
-			if (character == CCharacter::CHARACTER_BALLOON4)
-			{
-				// 状態
-				if (CScoreUP::GetScoreUP() == true)
+				// キャラクターが一致したら
+				if (character != CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON * 2);
-				}
-				else
-				{
+					// スコア加算処理
 					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 				}
+				// キャラクターが一致したら
+				if (character == CCharacter::CHARACTER_BALLOON4)
+				{
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+					}
+				}
+				// MP上げ処理(風船)
+				MpUp(MPUP_BREAKBALLOON);
 			}
+		}
+		else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+		{
 			// MP上げ処理(風船)
 			MpUp(MPUP_BREAKBALLOON);
 		}
@@ -1043,25 +1084,27 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			// キャラクターが一致したら
-			if (character != CCharacter::CHARACTER_BALLOON4)
+			if (CManager::GetMode() == CManager::MODE_GAME)
 			{
-				CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
-			}
-			// キャラクターが一致したら
-			if (character == CCharacter::CHARACTER_BALLOON4)
-			{
-				// 状態
-				if (CScoreUP::GetScoreUP() == true)
-				{
-					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
-				}
-				else
+				// キャラクターが一致したら
+				if (character != CCharacter::CHARACTER_BALLOON4)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
+				// キャラクターが一致したら
+				if (character == CCharacter::CHARACTER_BALLOON4)
+				{
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
+				}
 			}
-
 		}
 		// 死亡処理
 		BalloonNone();
