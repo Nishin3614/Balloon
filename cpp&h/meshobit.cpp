@@ -308,8 +308,8 @@ void CMeshobit::Debug(void)
 		0);
 	for (int nCntObit = 0; nCntObit < m_nLine; nCntObit++)
 	{
-		CDebugproc::Print("[‹OÕ%d]:ˆÊ’u(%.2f,%.2f,%.2f)\n",nCntObit * 2, pVtx[nCntObit * 2].pos.x, pVtx[nCntObit * 2].pos.y,pVtx[nCntObit * 2].pos.z);
-		CDebugproc::Print("[‹OÕ%d]:ˆÊ’u(%.2f,%.2f,%.2f)\n", nCntObit * 2 + 1, pVtx[nCntObit * 2 + 1].pos.x, pVtx[nCntObit * 2 + 1].pos.y, pVtx[nCntObit * 2 + 1].pos.z);
+		//CDebugproc::Print("[‹OÕ%d]:ˆÊ’u(%.2f,%.2f,%.2f)\n",nCntObit * 2, pVtx[nCntObit * 2].pos.x, pVtx[nCntObit * 2].pos.y,pVtx[nCntObit * 2].pos.z);
+		//CDebugproc::Print("[‹OÕ%d]:ˆÊ’u(%.2f,%.2f,%.2f)\n", nCntObit * 2 + 1, pVtx[nCntObit * 2 + 1].pos.x, pVtx[nCntObit * 2 + 1].pos.y, pVtx[nCntObit * 2 + 1].pos.z);
 	}
 	// ƒAƒ“ƒƒbƒN
 	m_pVtxBuff->Unlock();

@@ -126,8 +126,8 @@ void CSphereCollision::Debug(void)
 	}
 	ImGui::Text("----------SphereCollision_Information----------");
 	ImGui::Text("Radius(%.1f)", m_pSphereShape->GetRadius());
-	CDebugproc::Print("----------‹…‚Ì“–‚½‚è”»’èî•ñ----------\n");
-	CDebugproc::Print("”¼Œa(%.1f)\n", m_pSphereShape->GetRadius());
+	//CDebugproc::Print("----------‹…‚Ì“–‚½‚è”»’èî•ñ----------\n");
+	//CDebugproc::Print("”¼Œa(%.1f)\n", m_pSphereShape->GetRadius());
 	CCollision::Debug();
 }
 

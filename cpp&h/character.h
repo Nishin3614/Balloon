@@ -81,6 +81,11 @@ public:
 			fMaxInertia = 0;			// 慣性力
 			fMaxJump = 0;				// ジャンプ力
 			fMaxMove = 0;				// 移動力
+			nMaxMp = 0;					// 最大MP数
+			nMaxMpUp_Every = 0;			// マイフレームで増えるMP数
+			nMaxMpUp_KnockDown = 0;		// 倒したときのMP数
+			nMaxMpDown = 0;				// スキル使用時の減る量
+			fMaxSkill = 0;				// 能力の倍率
 		}
 		/* 変数 */
 		int			nMaxBalloon;		// 最大風船数
@@ -88,20 +93,14 @@ public:
 		float		fMaxInertia;		// 慣性力
 		float		fMaxJump;			// ジャンプ力
 		float		fMaxMove;			// 移動力
+		int			nMaxMp;				// 最大MP数
 		int			nMaxMpUp_Every;		// マイフレームで増えるMP数
-		int			nMaxMpUp_KNOCKDOWN;	// 倒したときのMP数
+		int			nMaxMpUp_KnockDown;	// 倒したときのMP数
 		int			nMaxMpDown;			// スキル使用時の減る量
-		int			fMaxSkill;			// 能力の倍率
+		float		fMaxSkill;			// 能力の倍率
 		// ポイントゾーン ポイント加算(100)
 		// スコアをとった時のゲージの上昇率
 		// ポイントの倍率
-		// 能力の数値　効果時間と
-		// 能力が発動するまでのポイント数
-		// 敵倒したときのポイント数
-
-		// ポイントアイテムとったら、ゲージを増える
-		// 各キャラクターのゲージの減り具合
-		// 能力の倍率(二人キャラクター)
 	} STATUS, *PSTATUS;
 	/* 関数 */
 	CCharacter(CHARACTER const &character);
@@ -249,6 +248,7 @@ private:
 	void TrackCamera(void);									// カメラ追尾
 	void Motion_Effect(void);								// モーションエフェクト
 	void Motion_Obit(void);									// モーション軌跡
+	static void Status_Reset(void);								// ステータスリセット
 	/* 変数 */
 	/* 構造体のスタティックにする */
 	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];				// モデル全体の情報

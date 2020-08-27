@@ -25,17 +25,9 @@
 #define PLAYER_MOTIONFILE		"data/LOAD/PLAYER/Tricker.txt"		// モーションのファイル名
 #define PLAYER_FALL				(-20.0f)							// 落ちる位置条件
 #define PLAYER_UI_MP_POS		(D3DXVECTOR3(78.5f, 690.0f, 0.0f))	// UI_MPの位置
-#define PLAYER_MPMAX			(10000)								// MPの最大値
 #define FISH_APPONENTPOS		(-40.0f)								// 魚出現位置
 #define FISH_APPONENTTIME		(300)								// 魚出現タイム
-#define MPUP_EVERY				(1)									// マイフレームMPUP
 #define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
-#define MPUP_ENEMY_KNOCKDOWN	(1000)								// 敵を倒したときのMPUP
-#define MPUP_PLAYER_KNOCKDOWN	(1000)								// プレイヤーを倒したときのMPUP
-#define SPEED_UP_MPDOWN			(100)								// プレイヤー(スピードアップ)のMP消費量
-#define REVIVAL_MPDOWN			(1000)								// プレイヤー(復活)のMP消費量
-#define INVISIBLE_MPDOWN		(10)								// プレイヤー(透明)のMP消費量
-#define SCORE_UP_MPDOWN			(100)								// プレイヤー(スコアアップ)のMP消費量
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 前方宣言
@@ -110,7 +102,8 @@ public:
 	// MP上げ処理
 	//	nMpUp	: MP上げ値
 	void MpUp(int const & nMpUp);
-
+	// ゲージ初期化処理
+	void GaugeStatusInit(void);
 protected:
 private:
 	/* 構造体 */

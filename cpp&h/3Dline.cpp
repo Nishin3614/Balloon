@@ -108,7 +108,6 @@ void C3DLine::Uninit(void)
 void C3DLine::Update(void)
 {
 #ifdef _DEBUG
-	//CDebugproc::Print("pos:(%.3f,%.3f,%.3f)\n", m_ppos->x, m_ppos->y, m_ppos->z);
 #endif // _DEBUG
 }
 
