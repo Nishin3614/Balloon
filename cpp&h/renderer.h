@@ -105,7 +105,7 @@ public:
 	// 情報取得
 	LPDIRECT3DDEVICE9 GetDevice(void);	// デバイス
 	CCamera * GetCamera(void);			// カメラ
-	CLight * GetLight(void);			// ライト
+	CLight * GetLight(void) { return m_pLight; }			// ライト
 protected:
 
 private:
