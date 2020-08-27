@@ -247,6 +247,7 @@
     <ClCompile Include="cpp&amp;h\tutorial.cpp" />
     <ClCompile Include="cpp&amp;h\ui.cpp" />
     <ClCompile Include="cpp&amp;h\ui_group.cpp" />
+    <ClCompile Include="thundercloud.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpp&amp;h\2Deffect.h" />
@@ -340,6 +341,7 @@
     <ClInclude Include="cpp&amp;h\tutorial.h" />
     <ClInclude Include="cpp&amp;h\ui.h" />
     <ClInclude Include="cpp&amp;h\ui_group.h" />
+    <ClInclude Include="thundercloud.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="network.ini" />
