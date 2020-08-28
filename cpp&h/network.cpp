@@ -20,6 +20,7 @@
 #include "collision.h"
 #include "PointCircle.h"
 #include "select.h"
+#include "BalloonNum.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -34,6 +35,13 @@ CNetwork::CNetwork()
 {
 	m_nId = -1;
 	m_bTimeout = false;
+
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_selectState[nCount].bReady = false;
+		m_selectState[nCount].nType = -1;
+		m_selectState[nCount].pBalloonNum = NULL;
+	}
 }
 
 //=============================================================================
@@ -58,6 +66,7 @@ HRESULT CNetwork::Init(void)
 	{
 		m_fRot[nCount] = 0.0f;
 		m_bDie[nCount] = false;
+		m_samplePos[nCount] = D3DXVECTOR3(250.0f * (nCount + 1), 600.0f, 0.0f);
 	}
 
 	m_bUpdate = false;
@@ -767,6 +776,32 @@ bool CNetwork::UpdateTCP(void)
 		m_selectState[nId].bReady = true;
 		m_selectState[nId].nType = nType;
 
+		if (m_selectState[nId].pBalloonNum == NULL)
+		{// 選択中プレイヤー表示UIが存在していないとき
+			// UIの作成
+			m_selectState[nId].pBalloonNum = CBalloonNum::Create(nId);
+
+			if (m_selectState[nId].pBalloonNum != NULL)
+			{
+				m_selectState[nId].pBalloonNum->SetPosition(m_samplePos[nType]);
+				m_selectState[nId].pBalloonNum->Init();
+			}
+		}
+		else
+		{// 選択中プレイヤー表示UIが存在していたとき
+			m_selectState[nId].pBalloonNum->Release();		// 開放処理
+			m_selectState[nId].pBalloonNum = NULL;
+
+			// UIの作成
+			m_selectState[nId].pBalloonNum = CBalloonNum::Create(nId);
+
+			if (m_selectState[nId].pBalloonNum != NULL)
+			{
+				m_selectState[nId].pBalloonNum->SetPosition(m_samplePos[nType]);
+				m_selectState[nId].pBalloonNum->Init();
+			}
+		}
+
 		if (m_nId == nId)
 		{
 			CSelect *pSelect = CManager::GetSelect();
@@ -782,6 +817,13 @@ bool CNetwork::UpdateTCP(void)
 		sscanf(aFunc, "%s %d", &aDie, &nId);
 
 		m_selectState[nId].bReady = false;
+		m_selectState[nId].nType = -1;
+
+		if (m_selectState[nId].pBalloonNum != NULL)
+		{
+			m_selectState[nId].pBalloonNum->Release();
+			m_selectState[nId].pBalloonNum = NULL;
+		}
 
 		if (m_nId == nId)
 		{
