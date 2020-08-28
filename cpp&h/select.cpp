@@ -140,8 +140,6 @@ void CSelect::Update(void)
 						memset(aData, 0, sizeof(aData));
 						sprintf(aData, "READY %d %d", 1, m_pSelectCharacter->GetCharacterType());
 						pNetwork->SendTCP(aData, sizeof(aData));
-						m_bReady = true;
-						m_pSelectCharacter->SetReady(m_bReady);
 					}
 				}
 			}
@@ -153,8 +151,6 @@ void CSelect::Update(void)
 				char aData[64];
 				sprintf(aData, "READY %d", 0);
 				pNetwork->SendTCP(aData, sizeof(aData));
-				m_bReady = false;
-				m_pSelectCharacter->SetReady(m_bReady);
 			}
 
 			if (pJoypad != NULL)
@@ -164,8 +160,6 @@ void CSelect::Update(void)
 					char aData[64];
 					sprintf(aData, "READY %d", 0);
 					pNetwork->SendTCP(aData, sizeof(aData));
-					m_bReady = false;
-					m_pSelectCharacter->SetReady(m_bReady);
 				}
 			}
 		}
@@ -184,4 +178,13 @@ void CSelect::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelect::Draw(void)
 {
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// €”õŠ®—¹
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CSelect::SetReady(bool bValue)
+{
+	m_bReady = bValue;
+	m_pSelectCharacter->SetReady(bValue);
 }

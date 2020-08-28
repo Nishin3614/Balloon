@@ -74,6 +74,12 @@ typedef struct
 	bool bCreate;				// 生成フラグ
 } WAITEVENT;
 
+typedef struct
+{
+	int nType;
+	bool bReady;
+} CHARACTERSELECT;
+
 //=============================================================================
 // 前方宣言
 //=============================================================================
@@ -119,6 +125,7 @@ public:
 	D3DXVECTOR3 GetPosition(int nIndex) { return m_playerPos[nIndex]; }
 	int GetRank(int nIndex) { return m_nRank[nIndex]; }
 	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
+	bool CheckCharacterReady(int nIndex);
 
 	void Create(void);
 
@@ -159,5 +166,6 @@ private:
 	bool m_bUpdate;						// 更新フラグ
 	WAITEVENT m_thunderEvent;			// 雷待機
 	WAITEVENT m_pointcircleEvent;		// ポイントサークル待機
+	CHARACTERSELECT m_selectState[MAX_PLAYER];		// 選択状況
 };
 #endif // !_NETWORK_H_
