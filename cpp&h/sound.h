@@ -64,6 +64,10 @@ public:
 		LABEL_SE_THUNDER6,			// 雷6
 		LABEL_SE_WIND1,				// 風1
 		LABEL_SE_WIND2,				// 風2
+		LABEL_BGM_TITLE,			// タイトル
+		LABEL_BGM_SELECTCHARACTER,	// 選択キャラクタ
+		LABEL_BGM_GAME,				// ゲーム
+		LABEL_BGM_RESULT,			// リザルト
 		LABEL_MAX,					//
 	} LABEL;
 	/* 関数 */
