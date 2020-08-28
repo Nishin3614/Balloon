@@ -9,6 +9,7 @@
 #include "scene_two.h"
 #include "ui_group.h"
 #include "player.h"
+#include "network.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -168,29 +169,51 @@ void CSelectCharacter::Update(void)
 		// ->キャラクター番号が加算
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_RIGHT))
 		{
-			m_CharacterType++;
-			// 選択キャラクターUIのNULLチェック
-			// ->テクスチャータイプ変更
-			if (m_pSelectCharatUi != NULL)
+			CNetwork *pNetwork = CManager::GetNetwork();
+
+			if (pNetwork != NULL)
 			{
-				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+				m_CharacterType++;
+
+				while (!pNetwork->CheckCharacterReady(m_CharacterType))
+				{
+					m_CharacterType++;
+				}
+
+				// 選択キャラクターUIのNULLチェック
+				// ->テクスチャータイプ変更
+				if (m_pSelectCharatUi != NULL)
+				{
+					m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+				}
+				// 選択音1
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 			}
-			// 選択音1
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 		}
 		// 左が入力されたら
 		// ->キャラクター番号が減算
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
 		{
-			m_CharacterType--;
-			// 選択キャラクターUIのNULLチェック
-			// ->テクスチャータイプ変更
-			if (m_pSelectCharatUi != NULL)
+			CNetwork *pNetwork = CManager::GetNetwork();
+
+			if (pNetwork != NULL)
 			{
-				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+				m_CharacterType--;
+
+				while (!pNetwork->CheckCharacterReady(m_CharacterType))
+				{
+					m_CharacterType--;
+				}
+
+				// 選択キャラクターUIのNULLチェック
+				// ->テクスチャータイプ変更
+				if (m_pSelectCharatUi != NULL)
+				{
+					m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+				}
+				// 選択音1
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 			}
-			// 選択音1
-			CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
 		}
 		// 範囲設定
 		if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)

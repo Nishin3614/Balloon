@@ -19,6 +19,7 @@
 #include "scoreUP.h"
 #include "collision.h"
 #include "PointCircle.h"
+#include "select.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -509,6 +510,21 @@ bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
 }
 
 //=============================================================================
+// キャラクターが使用可能かどうか
+//=============================================================================
+bool CNetwork::CheckCharacterReady(int nIndex)
+{
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		if (!m_selectState[nCount].bReady || m_selectState[nCount].nType != nIndex)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//=============================================================================
 // クリエイト処理
 //=============================================================================
 void CNetwork::Create(void)
@@ -730,6 +746,40 @@ bool CNetwork::UpdateTCP(void)
 		{// フェードしていないとき
 		 // チュートリアルへ
 			CManager::GetFade()->SetFade(CManager::MODE_GAME);
+		}
+	}
+	else if (strcmp(cHeadText, "CHARACTER_SELECT") == 0)
+	{
+		int nId;			// プレイヤーID
+		int nType;			// キャラクターの種類
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d %d", &aDie, &nId, &nType);
+
+		m_selectState[nId].bReady = true;
+		m_selectState[nId].nType = nType;
+
+		if (m_nId == nId)
+		{
+			CSelect *pSelect = CManager::GetSelect();
+			pSelect->SetReady(true);
+		}
+	}
+	else if (strcmp(cHeadText, "CHARACTER_CANCEL") == 0)
+	{
+		int nId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d", &aDie, &nId);
+
+		m_selectState[nId].bReady = false;
+
+		if (m_nId == nId)
+		{
+			CSelect *pSelect = CManager::GetSelect();
+			pSelect->SetReady(false);
 		}
 	}
 	else if (strcmp(cHeadText, "HIT") == 0)
