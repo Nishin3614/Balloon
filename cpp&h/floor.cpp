@@ -89,7 +89,7 @@ void CFloor::Init(void)
 	if (m_pEffect == NULL)
 	{
 		//シェーダーを読み込む
-		if (FAILED(D3DXCreateEffectFromFile(pDevice, "MaskShader.fx", NULL, NULL,
+		if (FAILED(D3DXCreateEffectFromFile(pDevice, "data/LOAD/MAPPING/MaskShader.fx", NULL, NULL,
 			0, NULL, &m_pEffect, NULL)))
 		{
 			MessageBox(NULL, "シェーダーファイル読み込み失敗", "", MB_OK);
