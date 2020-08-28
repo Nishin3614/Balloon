@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "selectcharacter.h"
 #include "network.h"
+#include "BalloonNum.h"
 
 /* ポーズ */
 #include "pause.h"
@@ -98,6 +99,23 @@ void CSelect::Update(void)
 	{
 		if (!m_bReady)
 		{// 準備中だったとき
+
+			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_1))
+			{
+				CBalloonNum::Create(0);
+			}
+			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_2))
+			{
+				CBalloonNum::Create(1);
+			}
+			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_3))
+			{
+				CBalloonNum::Create(2);
+			}
+			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_4))
+			{
+				CBalloonNum::Create(3);
+			}
 			// 選択画面へ遷移
 			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 			{
@@ -122,8 +140,6 @@ void CSelect::Update(void)
 						memset(aData, 0, sizeof(aData));
 						sprintf(aData, "READY %d %d", 1, m_pSelectCharacter->GetCharacterType());
 						pNetwork->SendTCP(aData, sizeof(aData));
-						m_bReady = true;
-						m_pSelectCharacter->SetReady(m_bReady);
 					}
 				}
 			}
@@ -135,8 +151,6 @@ void CSelect::Update(void)
 				char aData[64];
 				sprintf(aData, "READY %d", 0);
 				pNetwork->SendTCP(aData, sizeof(aData));
-				m_bReady = false;
-				m_pSelectCharacter->SetReady(m_bReady);
 			}
 
 			if (pJoypad != NULL)
@@ -146,8 +160,6 @@ void CSelect::Update(void)
 					char aData[64];
 					sprintf(aData, "READY %d", 0);
 					pNetwork->SendTCP(aData, sizeof(aData));
-					m_bReady = false;
-					m_pSelectCharacter->SetReady(m_bReady);
 				}
 			}
 		}
@@ -166,4 +178,13 @@ void CSelect::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSelect::Draw(void)
 {
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 準備完了
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CSelect::SetReady(bool bValue)
+{
+	m_bReady = bValue;
+	m_pSelectCharacter->SetReady(bValue);
 }

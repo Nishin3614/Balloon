@@ -48,6 +48,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	void SetReady(bool bValue);
 #ifdef _DEBUG
 	void Debug(void) {};
 #endif // _DEBUG
