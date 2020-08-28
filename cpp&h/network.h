@@ -68,6 +68,12 @@ typedef struct
 	int m_aKeyState[NUM_KEY_M] = {};				// キーボードのプレス状態
 } PLAYERSTATE;
 
+typedef struct
+{
+	D3DXVECTOR3 pos;			// 位置
+	bool bCreate;				// 生成フラグ
+} WAITEVENT;
+
 //=============================================================================
 // 前方宣言
 //=============================================================================
@@ -114,6 +120,8 @@ public:
 	int GetRank(int nIndex) { return m_nRank[nIndex]; }
 	bool GetDie(int nIndex) { return m_bDie[nIndex]; }
 
+	void Create(void);
+
 	void ResetCoin(void);
 
 private:
@@ -149,5 +157,7 @@ private:
 	// マルチスレッド関連
 	std::thread m_th;					// スレッド
 	bool m_bUpdate;						// 更新フラグ
+	WAITEVENT m_thunderEvent;			// 雷待機
+	WAITEVENT m_pointcircleEvent;		// ポイントサークル待機
 };
 #endif // !_NETWORK_H_

@@ -10,6 +10,8 @@
 #include "player.h"
 #include "game.h"
 #include "3Dparticle.h"
+#include "item.h"
+#include "score.h"
 
 // ==========================================================
 //
@@ -71,7 +73,7 @@ void CPointCircle::Init(void)
 	// アニメーションパターン初期化
 	m_nPatternAnim = 0;
 	// 雷のカウント初期化
-	m_nCntThunder = 0;
+	m_nCntPoint = 0;
 	// 雷の描画カウント初期化
 	m_nCntDraw = 0;
 	// 雷の状態を初期化
@@ -117,7 +119,6 @@ void CPointCircle::Update(void)
 
 	// カウンター加算
 	m_nCounterAnim++;
-	m_nCntThunder++;
 	m_nCntDraw++;
 
 
@@ -149,6 +150,16 @@ void CPointCircle::Update(void)
 				C3DParticle::PARTICLE_ID_CROSSLINE,
 				charaPos
 			);
+
+			if (m_nCntPoint > 60)
+			{
+				CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+				m_nCntPoint = 0;
+			}
+			else
+			{
+				m_nCntPoint++;
+			}
 		}
 	}
 
