@@ -167,6 +167,7 @@
     <ClCompile Include="cpp&amp;h\3Dline.cpp" />
     <ClCompile Include="cpp&amp;h\3Dmap.cpp" />
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp" />
+    <ClCompile Include="cpp&amp;h\BalloonNum.cpp" />
     <ClCompile Include="cpp&amp;h\effect.cpp" />
     <ClCompile Include="cpp&amp;h\framework.cpp" />
     <ClCompile Include="cpp&amp;h\PointCircle.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="cpp&amp;h\3Dline.h" />
     <ClInclude Include="cpp&amp;h\3Dmap.h" />
     <ClInclude Include="cpp&amp;h\3Dparticle.h" />
+    <ClInclude Include="cpp&amp;h\BalloonNum.h" />
     <ClInclude Include="cpp&amp;h\effect.h" />
     <ClInclude Include="cpp&amp;h\framework.h" />
     <ClInclude Include="cpp&amp;h\PointCircle.h" />

@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "selectcharacter.h"
 #include "network.h"
+#include "BalloonNum.h"
 
 /* ポーズ */
 #include "pause.h"
@@ -98,6 +99,23 @@ void CSelect::Update(void)
 	{
 		if (!m_bReady)
 		{// 準備中だったとき
+
+			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_1))
+			{
+				CBalloonNum::Create(0);
+			}
+			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_2))
+			{
+				CBalloonNum::Create(1);
+			}
+			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_3))
+			{
+				CBalloonNum::Create(2);
+			}
+			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_4))
+			{
+				CBalloonNum::Create(3);
+			}
 			// 選択画面へ遷移
 			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 			{
