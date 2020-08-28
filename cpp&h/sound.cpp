@@ -78,7 +78,7 @@ CSound::~CSound()
 // 初期化処理(ソースの読み込み)
 // ----------------------------------------
 HRESULT CSound::Init(HWND hWnd)
-{	
+{
 	// スクリプトの読み込み
 	Load();
 	// オーディオの生成
@@ -182,7 +182,7 @@ HRESULT CSound::PlaySound(
 		m_SourceBGM->GetState(&xa2state);
 		// 再生中
 		if (xa2state.BuffersQueued != 0)
-		{ 
+		{
 			// 一時停止
 			m_SourceBGM->Stop(0);
 			// オーディオバッファの削除
@@ -261,7 +261,7 @@ void CSound::StopSound(LABEL label)
 		m_SourceBGM->GetState(&xa2state);
 		// 再生中
 		if (xa2state.BuffersQueued != 0)
-		{ 
+		{
 			// 一時停止
 			m_SourceBGM->Stop(0);
 			// オーディオバッファの削除
@@ -298,7 +298,7 @@ void CSound::StopSound(void)
 	XAUDIO2_VOICE_STATE xa2state;
 	// BGMを停止する
 	if (m_SourceBGM != NULL)
-	{		
+	{
 		// 状態取得
 		m_SourceBGM->GetState(&xa2state);
 		// 再生中
@@ -310,7 +310,7 @@ void CSound::StopSound(void)
 			m_SourceBGM->FlushSourceBuffers();
 		}
 	}
-	
+
 	// SEを停止する
 	for (int nCntSE = 0; nCntSE < MAX_SE; nCntSE++)
 	{

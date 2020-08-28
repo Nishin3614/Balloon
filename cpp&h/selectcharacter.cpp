@@ -178,6 +178,28 @@ void CSelectCharacter::Update(void)
 				while (!pNetwork->CheckCharacterReady(m_CharacterType))
 				{
 					m_CharacterType++;
+
+					// 範囲設定
+					if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
+					{
+						m_CharacterType = 0;
+						// 選択キャラクターUIのNULLチェック
+						// ->テクスチャータイプ変更
+						if (m_pSelectCharatUi != NULL)
+						{
+							m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+						}
+					}
+					else if (m_CharacterType < 0)
+					{
+						m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
+						// 選択キャラクターUIのNULLチェック
+						// ->テクスチャータイプ変更
+						if (m_pSelectCharatUi != NULL)
+						{
+							m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+						}
+					}
 				}
 
 				// 選択キャラクターUIのNULLチェック
@@ -203,6 +225,28 @@ void CSelectCharacter::Update(void)
 				while (!pNetwork->CheckCharacterReady(m_CharacterType))
 				{
 					m_CharacterType--;
+
+					// 範囲設定
+					if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
+					{
+						m_CharacterType = 0;
+						// 選択キャラクターUIのNULLチェック
+						// ->テクスチャータイプ変更
+						if (m_pSelectCharatUi != NULL)
+						{
+							m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+						}
+					}
+					else if (m_CharacterType < 0)
+					{
+						m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
+						// 選択キャラクターUIのNULLチェック
+						// ->テクスチャータイプ変更
+						if (m_pSelectCharatUi != NULL)
+						{
+							m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+						}
+					}
 				}
 
 				// 選択キャラクターUIのNULLチェック
