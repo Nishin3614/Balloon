@@ -354,22 +354,27 @@ void CManager::SetMode(MODE const mode)
 	{
 		// タイトル
 	case MODE_TITLE:
+		CManager::GetSound()->StopSound(CSound::LABEL_BGM_TITLE);
 		m_title->Uninit();
 		break;
 		// チュートリアル
 	case MODE_TUTORIAL:
+		CManager::GetSound()->StopSound(CSound::LABEL_BGM_GAME);
 		m_tutorial->Uninit();
 		break;
 		// 選択画面
 	case MODE_SELECT:
+		CManager::GetSound()->StopSound(CSound::LABEL_BGM_SELECTCHARACTER);
 		m_select->Uninit();
 		break;
 		// ゲーム
 	case MODE_GAME:
+		CManager::GetSound()->StopSound(CSound::LABEL_BGM_GAME);
 		m_game->Uninit();
 		break;
 		// リザルト
 	case MODE_RESULT:
+		CManager::GetSound()->StopSound(CSound::LABEL_BGM_RESULT);
 		m_result->Uninit();
 		break;
 		// ランキング
@@ -387,22 +392,27 @@ void CManager::SetMode(MODE const mode)
 	{
 		// タイトル
 	case MODE_TITLE:
+		CManager::GetSound()->PlaySound(CSound::LABEL_BGM_TITLE);
 		m_title->Init();
 		break;
 		// チュートリアル
 	case MODE_TUTORIAL:
+		CManager::GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
 		m_tutorial->Init();
 		break;
 		// 選択画面
 	case MODE_SELECT:
+		CManager::GetSound()->PlaySound(CSound::LABEL_BGM_SELECTCHARACTER);
 		m_select->Init();
 		break;
 		// ゲーム
 	case MODE_GAME:
+		CManager::GetSound()->PlaySound(CSound::LABEL_BGM_GAME);
 		m_game->Init();
 		break;
 		// リザルト
 	case MODE_RESULT:
+		CManager::GetSound()->PlaySound(CSound::LABEL_BGM_RESULT);
 		m_result->Init();
 		break;
 		// ランキング
