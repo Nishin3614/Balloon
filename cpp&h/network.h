@@ -82,6 +82,13 @@ typedef struct
 
 typedef struct
 {
+	int nId;			// ID
+	int nType;			// 種類
+	bool bCreate;				// 生成フラグ
+} WAITEVENT_SELECT;
+
+typedef struct
+{
 	int nType;
 	bool bReady;
 	CBalloonNum *pBalloonNum;
@@ -168,6 +175,8 @@ private:
 	bool m_bUpdate;						// 更新フラグ
 	WAITEVENT m_thunderEvent;			// 雷待機
 	WAITEVENT m_pointcircleEvent;		// ポイントサークル待機
+	WAITEVENT_SELECT m_selectBalloon;	// キャラクタ選択UI
+
 	CHARACTERSELECT m_selectState[MAX_PLAYER];		// 選択状況
 
 	D3DXVECTOR3 m_samplePos[MAX_PLAYER];

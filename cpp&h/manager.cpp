@@ -289,6 +289,8 @@ void CManager::Update(void)
 	// レンダリング
 	m_renderer->Update();
 
+	m_pNetwork->Create();
+
 	// 前のモード終了
 	switch (m_mode)
 	{
