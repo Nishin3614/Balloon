@@ -121,12 +121,13 @@ void CSelect::Update(void)
 			{
 				if (pNetwork != NULL)
 				{
-					char aData[64];
-					m_bReady = true;
-					m_pSelectCharacter->SetReady(m_bReady);
-					memset(aData, 0, sizeof(aData));
-					sprintf(aData, "READY %d %d", 1, m_pSelectCharacter->GetCharacterType());
-					pNetwork->SendTCP(aData, sizeof(aData));
+					if (CManager::GetNetwork()->CheckCharacterReady(m_pSelectCharacter->GetCharacterType()))
+					{
+						char aData[64];
+						memset(aData, 0, sizeof(aData));
+						sprintf(aData, "READY %d %d", 1, m_pSelectCharacter->GetCharacterType());
+						pNetwork->SendTCP(aData, sizeof(aData));
+					}
 				}
 			}
 
@@ -136,10 +137,13 @@ void CSelect::Update(void)
 				{
 					if (pNetwork != NULL)
 					{
-						char aData[64];
-						memset(aData, 0, sizeof(aData));
-						sprintf(aData, "READY %d %d", 1, m_pSelectCharacter->GetCharacterType());
-						pNetwork->SendTCP(aData, sizeof(aData));
+						if (CManager::GetNetwork()->CheckCharacterReady(m_pSelectCharacter->GetCharacterType()))
+						{
+							char aData[64];
+							memset(aData, 0, sizeof(aData));
+							sprintf(aData, "READY %d %d", 1, m_pSelectCharacter->GetCharacterType());
+							pNetwork->SendTCP(aData, sizeof(aData));
+						}
 					}
 				}
 			}
