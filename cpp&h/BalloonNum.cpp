@@ -75,7 +75,7 @@ CBalloonNum *CBalloonNum::Create(int nID)
 
 	if (pBalloonNum != NULL)
 	{
-		pBalloonNum->SetSize(D3DXVECTOR2(500.0f, 500.0f));
+		pBalloonNum->SetSize(D3DXVECTOR2(100.0f, 250.0f));
 		pBalloonNum->SetPosition(D3DXVECTOR3(200.0f, 400.0f, 0.0f));
 		pBalloonNum->Init();
 		pBalloonNum->ManageSetting(LAYER_UI);
