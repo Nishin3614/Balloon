@@ -480,14 +480,6 @@ CCamera * CRenderer::GetCamera(void)
 	return m_pCamera;
 }
 
-// ------------------------------------------
-// ライト取得処理
-// ------------------------------------------
-CLight * CRenderer::GetLight(void)
-{
-	return m_pLight;
-}
-
 #ifdef _DEBUG
 // ------------------------------------------
 // ImGuiのセットアップ処理

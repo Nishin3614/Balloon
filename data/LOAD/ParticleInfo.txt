@@ -27,6 +27,7 @@ OFFSET
 	COL = 1.0 0.2 0.1 1.0
 	# サイズ情報
 	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -56,6 +57,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 0.4
 	# サイズ情報
 	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -96,6 +98,7 @@ OFFSET
 	COL = 1.0 0.2 0.1 1.0
 	# サイズ情報
 	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -130,6 +133,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 0.6
 	# サイズ情報
 	SIZE = 20.0 20.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -164,6 +168,7 @@ OFFSET
 	COL = 0.9 0.1 0.1 0.6
 	# サイズ情報
 	SIZE = 20.0 20.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -193,6 +198,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 0.8
 	# サイズ情報
 	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -242,6 +248,7 @@ OFFSET
 	COL = 1.0 0.2 0.2 1.0
 	# サイズ情報
 	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -276,6 +283,7 @@ OFFSET
 	COL = 1.0 0.2 0.2 1.0
 	# サイズ情報
 	SIZE = 5.0 250.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -316,6 +324,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
 	SIZE = 5.0 500.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -362,6 +371,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
 	SIZE = 5.0 500.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -402,6 +412,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
 	SIZE = 5.0 500.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -442,6 +453,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
 	SIZE = 5.0 500.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -488,6 +500,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
 	SIZE = 5.0 500.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -539,6 +552,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
 	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# スピード情報
@@ -557,5 +571,112 @@ OFFSET
 	PARTICLETYPE = 0
 	# ブレンドタイプ情報
 	BLEND = 1
+END_OFFSET
+#==============================================================================
+# [14] BalloonBreak
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 10 10
+		POSY = 10 10
+		POSZ = 10 10
+	ENDSET_POSRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 5 5
+		SIZEY = 5 5
+	ENDSET_SIZERAND
+	# 角度ランダム
+	SET_ANGLERAND
+		MAX = 628
+		MIN = -314
+	ENDSET_ANGLERAND
+	# スピードランダム
+	SET_SPEEDRAND
+		MAX = 5
+		MIN = 5
+	ENDSET_SPEEDRAND
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 1.0 0.1 0.0 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_DESCREASE	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 30
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 20
+	# テクスチャータイプ情報
+	TEXTYPE = 0
+	# エフェクトタイプ情報
+	EFFECTTYPE = 5
+	# パーティクルタイプ情報
+	PARTICLETYPE = 0
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [15] PlayerDie
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 50 -25
+		POSY = 50 0
+		POSZ = 50 -25
+	ENDSET_POSRAND
+	# 色ランダム
+	SET_COLRAND
+		RED
+		GREEN
+		BLUE
+	ENDSET_COLRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 30 10
+		SIZEY = 30 10
+	ENDSET_SIZERAND
+	# スピードランダム
+	SET_SPEEDRAND
+		MAX = 5
+		MIN = 2
+	ENDSET_SPEEDRAND
+	# ライフランダム
+	SET_LIFERAND
+		MAX = 50
+		MIN = 30
+	ENDSET_LIFERAND
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 1.0 1.0 1.0 1.0
+	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
+	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 0
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 30
+	# テクスチャータイプ情報
+	TEXTYPE = 29
+	# エフェクトタイプ情報
+	EFFECTTYPE = 4
+	# パーティクルタイプ情報
+	PARTICLETYPE = 0
+	# ブレンドタイプ情報
+	BLEND = 3
 END_OFFSET
 END_SCRIPT

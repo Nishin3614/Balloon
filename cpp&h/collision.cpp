@@ -77,6 +77,7 @@ void CCollision::Debug(void)
 	{
 		posold = GetShape()->Get_Posold();
 	}
+	/*
 	ImGui::Text("Pos(%.1f,%.1f,%.1f)",
 		pos.x,
 		pos.y,
@@ -88,6 +89,7 @@ void CCollision::Debug(void)
 		posold.z
 	);
 	ImGui::Text("nCollisionTime:%d", nCollisionTime);
+	*/
 }
 
 #endif // _DEBUG
@@ -267,26 +269,116 @@ bool CCollision::CollisionDetection(OBJTYPE const & obj)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 当たり判定(管理している全体)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::CollisionDetection(void)
+void CCollision::CollisionDetection(void)
 {
 	// 変数宣言
-	CCollision * pCollision;	// 当たり判定情報
-	bool bCollision = false;	// 当たり判定状態
+	CCollision * pCollision1 = NULL;	// 当たり判定情報
+	CCollision * pCollision2 = NULL;	// 当たり判定情報
+
 	// 処理
-	for (int nCntLayer = 0; nCntLayer < CScene::GetMaxLayer(LAYER_COLLISION); nCntLayer++)
+	for (int nCntLayer1 = 0; nCntLayer1 < CScene::GetMaxLayer(LAYER_COLLISION); nCntLayer1++)
 	{
 		// 当たり判定取得
-		pCollision = (CCollision *)CScene::GetScene(LAYER_COLLISION, nCntLayer);
-		// 当たり判定のNULLチェック ||
-		// あたり判定が自分の当たり判定とアドレスが同じなら
-		// ->ループスキップ
-		if (pCollision == NULL ||
-			pCollision == this) continue;
-		// 当たり判定をtrueにする
-		bCollision |= this->CollisionDetection(pCollision);
+		pCollision1 = (CCollision *)CScene::GetScene(LAYER_COLLISION, nCntLayer1);
+		// 当たり判定情報がNULLなら
+		if (pCollision1 == NULL)
+		{
+			continue;
+		}
+		// !オブジェクトタイプがプレイヤーなら ||
+		// !オプジェクトタイプがエネミーなら ||
+		// !オブジェクトタイプが魚なら
+		else if (!(pCollision1->m_nMyObjectId == OBJTYPE_PLAYER ||
+			pCollision1->m_nMyObjectId == OBJTYPE_ENEMY ||
+			pCollision1->m_nMyObjectId == OBJTYPE_FISH)
+			)
+		{
+			continue;
+		}
+		// 処理
+		for (int nCntLayer2 = 0; nCntLayer2 < CScene::GetMaxLayer(LAYER_COLLISION); nCntLayer2++)
+		{
+			// 当たり判定取得
+			pCollision2 = (CCollision *)CScene::GetScene(LAYER_COLLISION, nCntLayer2);
+			// 引数の当たり判定情報がNULLの場合 ||
+			// 引数の当たり判定が自分のあたり判定なら
+			// ->関数を抜ける
+			if (pCollision2 == NULL ||
+				pCollision1 == pCollision2)
+			{
+				continue;
+			}
+			// 自分の当たり判定の使用状態がfalse ||
+			// 相手の当たり判定の使用状態がfalse ||
+			// ->関数を抜ける
+			else if (!pCollision1->m_bUse ||
+				!pCollision2->m_bUse)
+			{
+				continue;
+			}
+			// 自分のオブジェクト情報のNULLチェック ||
+			// 相手のオブジェクトの親情報のNULLチェック ||
+			// 自分のオブジェクト情報と相手のオブジェクトの親情報が同じなら
+			// ->関数を抜ける
+			else if (pCollision1->m_pOwner == NULL ||
+				pCollision1->m_pOwner == pCollision2->m_pParent)
+			{
+				continue;
+			}
+			else if ((pCollision1->m_nMyObjectId == OBJTYPE_FISH &&
+				pCollision2->m_nMyObjectId == OBJTYPE_ENEMY_BALLOON) ||
+				(pCollision1->m_nMyObjectId == OBJTYPE_FISH &&
+					pCollision2->m_nMyObjectId == OBJTYPE_PLAYER_BALLOON))
+			{
+				continue;
+			}
+			// 変数宣言
+			bool bJudg = false;	// 当たり判定状態
+								// クラス型比較 //
+								// 矩形クラス
+			if (pCollision2->GetShape()->GetType() == CShape::SHAPETYPE_RECT)
+			{
+				bJudg = pCollision1->Judg((CRectShape*)pCollision2->GetShape());
+			}
+			// 球クラス
+			else if (pCollision2->GetShape()->GetType() == CShape::SHAPETYPE_SPHERE)
+			{
+				bJudg = pCollision1->Judg((CSphereShape*)pCollision2->GetShape());
+			}
+			// 円柱クラス
+			else if (pCollision2->GetShape()->GetType() == CShape::SHAPETYPE_COLUMN)
+			{
+				bJudg = pCollision1->Judg((CColumnShape*)pCollision2->GetShape());
+			}
+			// 判定がtrueなら
+			// ->情報を保存
+			if (bJudg == true)
+			{
+
+#ifdef _DEBUG
+				// テスト変数
+				nCollisionTime++;
+#endif // _DEBUG
+
+				// 相手の当たり判定状態をtrueへ
+				pCollision2->m_bCollision = true;
+				// 相手の番号を代入
+				pCollision2->m_nOponentId = pCollision1->m_nMyObjectId;
+				// シーン情報がNULLではないなら
+				// ->当たった後の処理を行う
+				if (pCollision1->m_pOwner != NULL)
+				{
+ 					pCollision1->m_pOwner->Scene_MyCollision(pCollision2->m_nMyObjectId, pCollision2->m_pOwner);
+				}
+				// 相手のシーン情報がNULLではないなら
+				// ->当たった後の処理を行う
+				if (pCollision2->m_pOwner != NULL)
+				{
+					pCollision2->m_pOwner->Scene_OpponentCollision(pCollision1->m_nMyObjectId, pCollision1->m_pOwner);
+				}
+			}
+		}
 	}
-	// 当たり判定状態を返す
-	return bCollision;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -725,13 +817,13 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 	}
 
 	// 変数宣言
-	D3DXVECTOR3 posA = pSphereShapeA->m_DestPos;	// 位置A
-	D3DXVECTOR3 posB = pSphereShapeB->m_DestPos;	// 位置B
+	//D3DXVECTOR3 posA = pSphereShapeA->m_DestPos;	// 位置A
+	//D3DXVECTOR3 posB = pSphereShapeB->m_DestPos;	// 位置B
 	// 当たっているかどうか
 	bCollision = CCalculation::Collision_Sphere(
-		posA,
+		*pos_A + pSphereShapeA->GetOffset(),
 		pSphereShapeA->GetRadius(),
-		posB,
+		*pos_B + pSphereShapeB->GetOffset(),
 		pSphereShapeB->GetRadius()
 	);
 	// 当たっていたら &&
@@ -743,12 +835,13 @@ bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShap
 		pSphereShapeB->m_bOpponentPush
 		)
 	{
- 		D3DXVECTOR3 diff = posA - posB;						// BからAの差
+		D3DXVECTOR3 diff = *pos_A - *pos_B;						// BからAの差
 		D3DXVECTOR3 vec;									// B->Aのベクトル
-		// ベクトルの正規化
+															// ベクトルの正規化
 		D3DXVec3Normalize(&vec, &diff);
 		// 押し出し
-		*pos_A = posB - pSphereShapeA->GetOffset() + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
+		*pos_A = *pos_B + vec * (pSphereShapeA->GetRadius() + pSphereShapeB->GetRadius());
+
 		pSphereShapeA->PassPos(D3DVECTOR3_ZERO);
 	}
 	return bCollision;

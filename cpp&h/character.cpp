@@ -74,11 +74,14 @@ CCharacter::CCharacter(CHARACTER const &character) : CScene::CScene()
 	m_nFrame = 0;									// フレームカウント
 	m_nMotionFrame = 0;								// モーション一つののフレームカウント
 	m_nMaxMotion = 0;								// 最大モーション数
+	m_nCntDamage = 0;								// ダメージカウント
 	m_State = STATE_NORMAL;							// 現状のステータス
 	m_nCntState = 0;								// カウントステータス
 	m_fLength = 0;									// 攻撃の当たり範囲
 	m_fAlpha = 1.0f;								// アルファ値
 	m_bMotionCamera = false;						// モーションカメラの切り替え
+	m_bLanding = false;								// 着地状態
+	m_bMove = false;								// 移動状態
 	m_pStencilshadow = NULL;						// ステンシルシャドウ
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -142,116 +145,112 @@ void CCharacter::Init()
 		}
 	}
 
-	// ゲーム画面なら
-	if (CManager::GetMode() == CManager::MODE_GAME)
+	// 軌跡の設定
+	for (int nCntObit_Basic = 0; nCntObit_Basic < (signed)m_modelAll[m_character]->v_MeshObitLoad.size(); nCntObit_Basic++)
 	{
-		// 軌跡の設定
-		for (int nCntObit_Basic = 0; nCntObit_Basic < (signed)m_modelAll[m_character]->v_MeshObitLoad.size(); nCntObit_Basic++)
+		m_vec_pMeshObit.push_back(std::move(CMeshobit::Create_Self(
+			m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nLine,
+			m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).BeginOffset,
+			m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).EndOffset,
+			(CMeshobit::TEX)m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nTexType
+		)));
+	}
+
+	// 攻撃当たり判定設定
+	for (int nCntAttackCollision = 0; nCntAttackCollision < (signed)m_modelAll[m_character]->v_AttackCollision.size(); nCntAttackCollision++)
+	{
+		// 変数宣言
+		D3DXVECTOR3 pos;
+		// 当たり判定の位置の設定
+		D3DXVec3TransformCoord(
+			&pos,
+			&m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+			&m_pModel[m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).nParts].GetMatrix()
+		);
+		// 矩形の当たり判定
+		if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo)
 		{
-			m_vec_pMeshObit.push_back(std::move(CMeshobit::Create_Self(
-				m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nLine,
-				m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).BeginOffset,
-				m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).EndOffset,
-				(CMeshobit::TEX)m_modelAll[m_character]->v_MeshObitLoad.at(nCntObit_Basic).nTexType
+			// 矩形の当たり判定
+			m_vec_AttackCollision.push_back(std::move(CRectCollision::Create_Self(
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo->size,
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+				CCollision::OBJTYPE_ATTACK
 			)));
 		}
-
-		// 攻撃当たり判定設定
-		for (int nCntAttackCollision = 0; nCntAttackCollision < (signed)m_modelAll[m_character]->v_AttackCollision.size(); nCntAttackCollision++)
+		// 球の当たり判定
+		else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo)
 		{
-			// 変数宣言
-			D3DXVECTOR3 pos;
-			// 当たり判定の位置の設定
-			D3DXVec3TransformCoord(
-				&pos,
-				&m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-				&m_pModel[m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).nParts].GetMatrix()
-			);
-			// 矩形の当たり判定
-			if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo)
-			{
-				// 矩形の当たり判定
-				m_vec_AttackCollision.push_back(std::move(CRectCollision::Create_Self(
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_RectInfo->size,
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-					CCollision::OBJTYPE_ATTACK
-				)));
-			}
 			// 球の当たり判定
-			else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo)
-			{
-				// 球の当たり判定
-				m_vec_AttackCollision.push_back(std::move(CSphereCollision::Create_Self(
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo->fRadius,
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-					CCollision::OBJTYPE_ATTACK
-				)));
-			}
-			// 円柱の当たり判定
-			else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo)
-			{
-				// 円柱の当たり判定
-				m_vec_AttackCollision.push_back(std::move(CColumnCollision::Create_Self(
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fRadius,
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fVertical,
-					m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
-					CCollision::OBJTYPE_ATTACK
-				)));
-			}
+			m_vec_AttackCollision.push_back(std::move(CSphereCollision::Create_Self(
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_SphereInfo->fRadius,
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+				CCollision::OBJTYPE_ATTACK
+			)));
 		}
-
-		// キャラクター当たり判定設定
-		if (m_modelAll[m_character]->pCharacterCollision != NULL)
+		// 円柱の当たり判定
+		else if (m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo)
 		{
-			// 変数宣言
-			CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER;	// あたり判定のオブジェクトタイプ
-			// オブジェクト分け
-			// オブジェクトタイプが魚の時
-			if (m_character == CHARACTER_FISH)
-			{
-				objtype = CCollision::OBJTYPE_FISH;
-			}
-			// オブジェクトタイプがNPCの時
-			else if (m_character == CHARACTER_NPC)
-			{
-				objtype = CCollision::OBJTYPE_ENEMY;
-			}
-			// それ以外
-			else
-			{
-				objtype = CCollision::OBJTYPE_PLAYER;
-			}
-			// 矩形の当たり判定
-			if (m_modelAll[m_character]->pCharacterCollision->RectInfo)
-			{
-				m_pCharacterCollision = CRectCollision::Create(
-					m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
-					m_modelAll[m_character]->pCharacterCollision->Offset,
-					objtype,
-					this,
-					NULL,
-					true,
-					true,
-					&m_pos,
-					&m_posold
-				);
-			}
-			// 球の当たり判定
-			else if (m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo)
-			{
-				m_pCharacterCollision = CSphereCollision::Create(
-					m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo->fRadius,
-					m_modelAll[m_character]->pCharacterCollision->Offset,
-					objtype,
-					this,
-					NULL,
-					true,
-					true,
-					&m_pos,
-					&m_posold
-				);
+			// 円柱の当たり判定
+			m_vec_AttackCollision.push_back(std::move(CColumnCollision::Create_Self(
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fRadius,
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).p_uni_ColumnInfo->fVertical,
+				m_modelAll[m_character]->v_AttackCollision.at(nCntAttackCollision).Offset,
+				CCollision::OBJTYPE_ATTACK
+			)));
+		}
+	}
 
-			}
+	// キャラクター当たり判定設定
+	if (m_modelAll[m_character]->pCharacterCollision != NULL)
+	{
+		// 変数宣言
+		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER;	// あたり判定のオブジェクトタイプ
+		// オブジェクト分け
+		// オブジェクトタイプが魚の時
+		if (m_character == CHARACTER_FISH)
+		{
+			objtype = CCollision::OBJTYPE_FISH;
+		}
+		// オブジェクトタイプがNPCの時
+		else if (m_character == CHARACTER_NPC)
+		{
+			objtype = CCollision::OBJTYPE_ENEMY;
+		}
+		// それ以外
+		else
+		{
+			objtype = CCollision::OBJTYPE_PLAYER;
+		}
+		// 矩形の当たり判定
+		if (m_modelAll[m_character]->pCharacterCollision->RectInfo)
+		{
+			m_pCharacterCollision = CRectCollision::Create(
+				m_modelAll[m_character]->pCharacterCollision->RectInfo->size,
+				m_modelAll[m_character]->pCharacterCollision->Offset,
+				objtype,
+				this,
+				NULL,
+				true,
+				true,
+				&m_pos,
+				&m_posold
+			);
+		}
+		// 球の当たり判定
+		else if (m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo)
+		{
+			m_pCharacterCollision = CSphereCollision::Create(
+				m_modelAll[m_character]->pCharacterCollision->p_uni_SphereInfo->fRadius,
+				m_modelAll[m_character]->pCharacterCollision->Offset,
+				objtype,
+				this,
+				NULL,
+				true,
+				true,
+				&m_pos,
+				&m_posold
+			);
+
 		}
 	}
 	// シャドウon
@@ -262,8 +261,6 @@ void CCharacter::Init()
 		// ステンシルシャドウの生成
 		m_pStencilshadow = CStencilshadow::Create(m_pos, D3DXVECTOR3(10.0f, 10000.0f, 10.0f));
 	}
-	// 通常モーション設定
-	SetMotion(MOTIONTYPE_NEUTRAL);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -326,6 +323,7 @@ void CCharacter::Update(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Collision(void)
 {
+	/*
 	// 変数宣言
 	CCollision * pCollision;
 	int nCnt = CScene::GetMaxLayer(LAYER_COLLISION);
@@ -351,6 +349,7 @@ void CCharacter::Collision(void)
 		{
 		}
 	}
+	*/
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -509,28 +508,28 @@ void CCharacter::TrackCamera(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Limit(void)
 {
-	// xの制限
-	if (m_pos.x < -950)
-	{
-		m_pos.x = -950;
-		m_move.x = 0.0f;
-	}
-	if (m_pos.x > 950)
-	{
-		m_pos.x = 950;
-		m_move.x = 0.0f;
-	}
-	// zの制限
-	if (m_pos.z < -950)
-	{
-		m_pos.z = -950;
-		m_move.z = 0.0f;
-	}
-	if (m_pos.z > 950)
-	{
-		m_pos.z = 950;
-		m_move.z = 0.0f;
-	}
+	//// xの制限
+	//if (m_pos.x < -950)
+	//{
+	//	m_pos.x = -950;
+	//	m_move.x = 0.0f;
+	//}
+	//if (m_pos.x > 950)
+	//{
+	//	m_pos.x = 950;
+	//	m_move.x = 0.0f;
+	//}
+	//// zの制限
+	//if (m_pos.z < -950)
+	//{
+	//	m_pos.z = -950;
+	//	m_move.z = 0.0f;
+	//}
+	//if (m_pos.z > 950)
+	//{
+	//	m_pos.z = 950;
+	//	m_move.z = 0.0f;
+	//}
 	if (m_pos.y > 1000.0f)
 	{
 		m_pos.y = 1000.0f;
@@ -726,15 +725,15 @@ void CCharacter::Die(void)
 		m_pCharacterCollision->Release();
 		m_pCharacterCollision = NULL;
 	}
-	// 総キャラクターが一人だけなら
-	// ->タイトルへフェード
-	if (m_nAllCharacter <= 1)
-	{
-		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
-		{
-			CManager::GetFade()->SetFade(CManager::MODE_GAME);
-		}
-	}
+	//// 総キャラクターが一人だけなら
+	//// ->タイトルへフェード
+	//if (m_nAllCharacter <= 1)
+	//{
+	//	if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
+	//	{
+	//		CManager::GetFade()->SetFade(CManager::MODE_GAME);
+	//	}
+	//}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -776,7 +775,15 @@ bool CCharacter::GetFloorHeight(void)
 			{
 				m_pos.y = pFloor->GetHeight(m_pos);
 				m_move.y = 0;
+				// 着地状態をtrueに
+				m_bLanding = true;
 				return true;
+			}
+			// それ以外
+			else
+			{
+				// 着地状態をfalseに
+				m_bLanding = false;
 			}
 		}
 	}
@@ -1039,6 +1046,27 @@ HRESULT CCharacter::LoadStatus(void)
 			case 4:
 				m_sStatus[nCntLine].fMaxMove = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
 				break;
+				// 最大MP数
+			case 5:
+				m_sStatus[nCntLine].nMaxMp = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// マイフレームで増えるMP数
+			case 6:
+				m_sStatus[nCntLine].nMaxMpUp_Every = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// 倒したときのMP数
+			case 7:
+				m_sStatus[nCntLine].nMaxMpUp_KnockDown = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// スキル使用時の減る量
+			case 8:
+				m_sStatus[nCntLine].nMaxMpDown = stoi(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+				// 能力の倍率
+			case 9:
+				m_sStatus[nCntLine].fMaxSkill = stof(vsvec_Contens.at(nCntLine).at(nCntItem));
+				break;
+
 			default:
 				break;
 			}
@@ -1075,19 +1103,6 @@ void CCharacter::InitStatic(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter::Debug(void)
 {
-	/*
-	CDebugproc::Print("キャラクタータイプ[%d]\n", m_character);
-	CDebugproc::Print("位置[%.1f,%.1f,%.1f]\n",
-		m_pos.x,
-		m_pos.y,
-		m_pos.z
-	);
-	CDebugproc::Print("移動[%.1f,%.1f,%.1f]\n",
-		m_move.x,
-		m_move.y,
-		m_move.z
-	);
-	*/
 	// キャラクターの当たり判定がNULLではないなら
 	// デバッグ処理
 	if (m_pCharacterCollision != NULL)
@@ -1102,14 +1117,6 @@ void CCharacter::Debug(void)
 void CCharacter::AllDebug(void)
 {
 	/*
-	// キャラクターステータスの更新 //
-	CDebugproc::Print("F12:キャラクターステータスの更新\n");
-	// F12ボタンを押すと
-	// ステータスが更新される
-	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_F12))
-	{
-		LoadStatus();
-	}
 	// キャラクターステータスの表示 //
 	CDebugproc::Print("//----------キャラクターステータス情報----------//\n");
 	for (int nCntCharacter = 0; nCntCharacter < CHARACTER_MAX; nCntCharacter++)
@@ -1120,8 +1127,11 @@ void CCharacter::AllDebug(void)
 		CDebugproc::Print("慣性力:%.2f\n", m_sStatus[nCntCharacter].fMaxInertia);
 		CDebugproc::Print("ジャンプ力:%.2f\n", m_sStatus[nCntCharacter].fMaxJump);
 		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+		CDebugproc::Print("移動力:%.2f\n", m_sStatus[nCntCharacter].fMaxMove);
+
 	}
-	CDebugproc::Print("//----------キャラクターステータス情報----------//\n");
 	*/
 }
 #endif // _DEBUG

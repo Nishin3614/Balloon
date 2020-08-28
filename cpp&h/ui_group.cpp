@@ -59,6 +59,14 @@ void CUi_group::Init(void)
 	m_Ui = std::move(CUi::LoadCreate_Self(
 		m_Uitype
 	));
+	switch (m_Uitype)
+	{
+	case CUi::UITYPE_FINISH:
+		Init_GameFinish();
+		break;
+	default:
+		break;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -78,6 +86,20 @@ void CUi_group::Uninit(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CUi_group::Update(void)
 {
+	switch (m_Uitype)
+	{
+	case CUi::UITYPE_DIE:
+		Update_GameOver();
+		break;
+	case CUi::UITYPE_GAMESTART:
+		Update_GameStart();
+		break;
+	case CUi::UITYPE_FINISH:
+		Update_Finish();
+		break;
+	default:
+		break;
+	}
 	// UIの更新処理
 	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
 	{
@@ -240,5 +262,59 @@ void CUi_group::Start_FadeIn(int const & ID)
 			// フェードアウト開始
 			m_Ui[nCntUi]->GetPresents()->Start_FadeIn();
 		}
+	}
+}
+
+void CUi_group::Init_GameFinish(void)
+{
+	m_vec_nNumber.push_back(0);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ゲームオーバーUI用更新処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CUi_group::Update_GameOver(void)
+{
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
+	{
+		Start_FadeOut();
+	}
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_END)
+	{
+		CManager::GetGame()->FocusPlayer();		// 生きているプレイヤーにフォーカスを変える
+		Release();
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ゲームスタートUI用更新処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CUi_group::Update_GameStart(void)
+{
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
+	{
+		Start_FadeOut();
+	}
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_END)
+	{
+		Release();
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 最後の生き残りUI用更新処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CUi_group::Update_Finish(void)
+{
+	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
+	{
+		int &nCntEnd = m_vec_nNumber[0];
+		if (nCntEnd == 60)
+		{
+			CManager::GetFade()->SetFade(CManager::MODE_RESULT);
+			Release();
+		}
+		nCntEnd++;
+
 	}
 }

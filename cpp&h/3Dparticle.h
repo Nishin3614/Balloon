@@ -48,6 +48,8 @@ public:
 		PARTICLE_ID_ONELINE,			// 一つライン
 		PARTICLE_ID_CONCENTLINE,		// コネクトライン
 		PARTICLE_ID_BALLOON,			// 風船
+		PARTICLE_ID_BALLOONBREAK,		// 風船割れた時
+		PARTICLE_ID_PLAYERDIE,			// プレイヤーが死んだ時
 		PARTICLE_ID_MAX,
 	} PARTICLE_ID;
 	/* 構造体 */
@@ -72,10 +74,13 @@ public:
 			bGreenRand		= false;			// 緑ランダム
 			bBlueRand		= false;			// 青ランダム
 			bAlphaRand		= false;			// 透明度ランダム
+			bAlphaDecrease	= false;					// 透明度減少状態
 			/* サイズ情報 */
 			Size = D3DVECTOR2_ZERO;				// サイズ
 			SizeXRand		= INTEGER2(0, 0);	// サイズxランダム用
 			SizeYRand		= INTEGER2(0, 0);	// サイズyランダム用
+			fSizeChange		= 0.0f;						// サイズ変化値
+			bSizeDecrease	= false;					// サイズの減少状態
 			/* 角度情報 */
 			Rot				= D3DVECTOR3_ZERO;	// 回転ー
 			nAngleRand		= INTEGER2(0, 0);	// 角度のランダム用
@@ -105,10 +110,13 @@ public:
 		bool				bGreenRand;		// 緑ランダム
 		bool				bBlueRand;		// 青ランダム
 		bool				bAlphaRand;		// 透明度ランダム
+		bool				bAlphaDecrease;	// 透明度減少状態
 		/* サイズ情報 */
 		D3DXVECTOR2			Size;			// サイズ
 		INTEGER2			SizeXRand;		// サイズxランダム用
 		INTEGER2			SizeYRand;		// サイズyランダム用
+		float				fSizeChange;	// サイズ変化値
+		bool				bSizeDecrease;	// サイズの減少状態
 		/* 角度情報 */
 		D3DXVECTOR3			Rot;			// 回転ー
 		INTEGER2			nAngleRand;		// 角度のランダム用

@@ -28,7 +28,7 @@ data/TEXTURE/rank.png
 data/TEXTURE/check.png
 data/TEXTURE/water.png
 data/TEXTURE/balloon_99.png
-data/TEXTURE/TUTORIAL/tutorial_tly2.png
+data/TEXTURE/UI/TUTORIAL/tutorial.png
 data/TEXTURE/UI/RESULT/bg.png
 data/TEXTURE/UI/RESULT/result.png
 data/TEXTURE/UI/RESULT/ranking1.png
@@ -43,3 +43,8 @@ data/TEXTURE/UI/SELECT/CharacterSelect_4.png
 data/TEXTURE/UI/START.png
 data/TEXTURE/UI/FINISH.png
 data/TEXTURE/Effect/Framework1.jpg
+data/TEXTURE/finish.png
+data/TEXTURE/gameover.png
+data/TEXTURE/gamestart.png
+data/TEXTURE/warning.png
+data/TEXTURE/PointCircle.jpg

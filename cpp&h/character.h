@@ -81,6 +81,11 @@ public:
 			fMaxInertia = 0;			// 慣性力
 			fMaxJump = 0;				// ジャンプ力
 			fMaxMove = 0;				// 移動力
+			nMaxMp = 0;					// 最大MP数
+			nMaxMpUp_Every = 0;			// マイフレームで増えるMP数
+			nMaxMpUp_KnockDown = 0;		// 倒したときのMP数
+			nMaxMpDown = 0;				// スキル使用時の減る量
+			fMaxSkill = 0;				// 能力の倍率
 		}
 		/* 変数 */
 		int			nMaxBalloon;		// 最大風船数
@@ -88,6 +93,14 @@ public:
 		float		fMaxInertia;		// 慣性力
 		float		fMaxJump;			// ジャンプ力
 		float		fMaxMove;			// 移動力
+		int			nMaxMp;				// 最大MP数
+		int			nMaxMpUp_Every;		// マイフレームで増えるMP数
+		int			nMaxMpUp_KnockDown;	// 倒したときのMP数
+		int			nMaxMpDown;			// スキル使用時の減る量
+		float		fMaxSkill;			// 能力の倍率
+		// ポイントゾーン ポイント加算(100)
+		// スコアをとった時のゲージの上昇率
+		// ポイントの倍率
 	} STATUS, *PSTATUS;
 	/* 関数 */
 	CCharacter(CHARACTER const &character);
@@ -120,21 +133,25 @@ public:
 	D3DXVECTOR3 * Scene_GetPMove(void) { return &m_move; };
 	// 必要に応じた動作 //
 	// 重力
-	void AddGravity(float const &fGravity)			{ m_move.y -= fGravity; };
+	void AddGravity(float const &fGravity)					{ m_move.y -= fGravity; };
 	// 設定 //
 	// 位置
-	void SetPos(D3DXVECTOR3 const &pos)				{ m_pos = pos; };
+	void SetPos(D3DXVECTOR3 const &pos)						{ m_pos = pos; };
 	// 移動量
-	void SetMove(D3DXVECTOR3 const &move)			{ m_move = move; };
+	void SetMove(D3DXVECTOR3 const &move)					{ m_move = move; };
 	// 回転
-	void SetRot(D3DXVECTOR3 const &rot)				{ m_rot = rot; };
+	void SetRot(D3DXVECTOR3 const &rot)						{ m_rot = rot; };
+	// 着地状態設定
+	void SetbLanding(bool const &bLanding)					{ m_bLanding = bLanding; };
+	// 移動状態設定
+	void SetbMove(bool const &bMove)						{ m_bMove = bMove; };
 	// 取得 //
 	// 位置
-	D3DXVECTOR3 &GetPos(void)						{ return m_pos; };
+	D3DXVECTOR3 &GetPos(void)								{ return m_pos; };
 	// 移動量
-	D3DXVECTOR3 &GetMove(void)						{ return m_move; };
+	D3DXVECTOR3 &GetMove(void)								{ return m_move; };
 	// 回転
-	D3DXVECTOR3 &GetRot(void)						{ return m_rot; };
+	D3DXVECTOR3 &GetRot(void)								{ return m_rot; };
 	// 親と子の回転量
 	D3DXVECTOR3 *GetPartsRot(int const nModelID);
 	// 親と子の位置
@@ -142,14 +159,18 @@ public:
 	// 親と子の行列
 	D3DXMATRIX *GetMatrix(int const nModelID);
 	// 状態
-	STATE GetState(void) const						{ return m_State; };
+	STATE GetState(void) const								{ return m_State; };
 	// キャラクター
-	CHARACTER	GetCharacter(void) const			{ return m_character; };
+	CHARACTER	GetCharacter(void) const					{ return m_character; };
 	// ステータス(キャラクターのクラスを基底クラスに持っているクラス)
 	STATUS &GetStatus(void) { return m_sStatus[m_character]; };
 	// ステータス(キャラクター別)
 	// 引数:キャラクター番号
-	static STATUS &GetStatus(CHARACTER const &character) { return m_sStatus[character]; };
+	static STATUS &GetStatus(CHARACTER const &character)	{ return m_sStatus[character]; };
+	// 着地状態取得
+	bool GetbLanding(void)									{ return m_bLanding; };
+	// 移動状態取得
+	bool GetbMove(void)										{ return m_bMove; };
 	// 床の高さ
 	bool GetFloorHeight(void);
 	// モーションのフレーム情報取得処理
@@ -227,38 +248,41 @@ private:
 	void TrackCamera(void);									// カメラ追尾
 	void Motion_Effect(void);								// モーションエフェクト
 	void Motion_Obit(void);									// モーション軌跡
+	static void Status_Reset(void);								// ステータスリセット
 	/* 変数 */
 	/* 構造体のスタティックにする */
-	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];		// モデル全体の情報
-	static std::vector<int>				m_modelId[CHARACTER_MAX];	// モデル番号
-	static CModel_info				*m_model_info[CHARACTER_MAX];	// モデル情報
-	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];	// キャラクターのサイズ
-	static int						m_NumModel[CHARACTER_MAX];		// 最大モデル数
-	static int						m_NumParts[CHARACTER_MAX];		// 動かすモデル数
-	static int						m_nAllCharacter;				// 出現しているキャラクター人数
-	static float					m_fAlpha;						// アルファ値
-	CMeshobit						*m_pMeshobit;					// 軌跡
-	CModel 							*m_pModel;						// モデル
-	CHARACTER						m_character;					// キャラクター
-	D3DXMATRIX						m_mtxWorld;						// 行列
-	D3DXVECTOR3						m_posold;						// 前の位置
-	D3DXVECTOR3						m_rotLast;						// 向きたい方向
-	D3DXVECTOR3						m_rotbetween;					// 回転の差分
-	D3DXVECTOR3						m_size;							// キャラクターのサイズ
-	int								m_nMotiontype;					// モーションタイプ
-	int								m_nMotiontypeOld;				// 前回のモーションタイプ
-	int								m_nMaxMotion;					// 最大モーション数
-	int								m_keyinfoCnt;					// キー情報のカウント
-	int								m_nFrame;						// フレームカウント
-	int								m_nMotionFrame;					// 一つのモーションのカウント
-	int								m_nIdAttackKey;					// 攻撃用のキーID
-	float							m_fLength;						// 攻撃の当たり範囲
-	bool							m_bMotionCamera;				// モーションカメラの切り替えON・OFF
-	CCollision						*m_pCharacterCollision;			// キャラクターの当たり判定
-	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;			// 攻撃当たり判定
+	static MODEL_ALL				*m_modelAll[CHARACTER_MAX];				// モデル全体の情報
+	static std::vector<int>				m_modelId[CHARACTER_MAX];			// モデル番号
+	static CModel_info				*m_model_info[CHARACTER_MAX];			// モデル情報
+	static D3DXVECTOR3				m_CharacterSize[CHARACTER_MAX];			// キャラクターのサイズ
+	static int						m_NumModel[CHARACTER_MAX];				// 最大モデル数
+	static int						m_NumParts[CHARACTER_MAX];				// 動かすモデル数
+	static int						m_nAllCharacter;						// 出現しているキャラクター人数
+	static float					m_fAlpha;								// アルファ値
+	CMeshobit						*m_pMeshobit;							// 軌跡
+	CModel 							*m_pModel;								// モデル
+	CHARACTER						m_character;							// キャラクター
+	D3DXMATRIX						m_mtxWorld;								// 行列
+	D3DXVECTOR3						m_posold;								// 前の位置
+	D3DXVECTOR3						m_rotLast;								// 向きたい方向
+	D3DXVECTOR3						m_rotbetween;							// 回転の差分
+	D3DXVECTOR3						m_size;									// キャラクターのサイズ
+	int								m_nMotiontype;							// モーションタイプ
+	int								m_nMotiontypeOld;						// 前回のモーションタイプ
+	int								m_nMaxMotion;							// 最大モーション数
+	int								m_keyinfoCnt;							// キー情報のカウント
+	int								m_nFrame;								// フレームカウント
+	int								m_nMotionFrame;							// 一つのモーションのカウント
+	int								m_nIdAttackKey;							// 攻撃用のキーID
+	int								m_nCntDamage;							// ダメージカウント
+	float							m_fLength;								// 攻撃の当たり範囲
+	bool							m_bMotionCamera;						// モーションカメラの切り替えON・OFF
+	bool							m_bLanding;								// 着地状態
+	bool							m_bMove;								// 移動状態
+	CCollision						*m_pCharacterCollision;					// キャラクターの当たり判定
+	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;		// 攻撃当たり判定
 	std::vector<std::unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡
-	CStencilshadow					* m_pStencilshadow;
-	// ステンシルシャドウ
+	CStencilshadow					* m_pStencilshadow;						// ステンシルシャドウ
 };
 
 #endif

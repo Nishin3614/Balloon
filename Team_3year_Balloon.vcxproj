@@ -169,6 +169,7 @@
     <ClCompile Include="cpp&amp;h\3Dparticle.cpp" />
     <ClCompile Include="cpp&amp;h\effect.cpp" />
     <ClCompile Include="cpp&amp;h\framework.cpp" />
+    <ClCompile Include="cpp&amp;h\PointCircle.cpp" />
     <ClCompile Include="cpp&amp;h\scoreUP.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
     <ClCompile Include="cpp&amp;h\balloon_group.cpp" />
@@ -242,6 +243,7 @@
     <ClCompile Include="cpp&amp;h\stencilshadow.cpp" />
     <ClCompile Include="cpp&amp;h\texture_manager.cpp" />
     <ClCompile Include="cpp&amp;h\thunder.cpp" />
+    <ClCompile Include="cpp&amp;h\thundercloud.cpp" />
     <ClCompile Include="cpp&amp;h\thunderMulti.cpp" />
     <ClCompile Include="cpp&amp;h\title.cpp" />
     <ClCompile Include="cpp&amp;h\tutorial.cpp" />
@@ -258,6 +260,7 @@
     <ClInclude Include="cpp&amp;h\3Dparticle.h" />
     <ClInclude Include="cpp&amp;h\effect.h" />
     <ClInclude Include="cpp&amp;h\framework.h" />
+    <ClInclude Include="cpp&amp;h\PointCircle.h" />
     <ClInclude Include="cpp&amp;h\scoreUP.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />
     <ClInclude Include="cpp&amp;h\balloon_group.h" />
@@ -335,6 +338,7 @@
     <ClInclude Include="cpp&amp;h\stencilshadow.h" />
     <ClInclude Include="cpp&amp;h\texture_manager.h" />
     <ClInclude Include="cpp&amp;h\thunder.h" />
+    <ClInclude Include="cpp&amp;h\thundercloud.h" />
     <ClInclude Include="cpp&amp;h\thunderMulti.h" />
     <ClInclude Include="cpp&amp;h\title.h" />
     <ClInclude Include="cpp&amp;h\tutorial.h" />
@@ -343,6 +347,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="network.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="MaskShader.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

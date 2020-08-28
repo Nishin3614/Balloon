@@ -15,6 +15,9 @@
 #include "fade.h"
 #include "thunder.h"
 #include "balloon_group.h"
+#include "item.h"
+#include "scoreUP.h"
+#include "collision.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -351,7 +354,6 @@ HRESULT CNetwork::Build(void)
 HRESULT CNetwork::Connect(void)
 {
 	int val = -1;
-	char debug[256];
 	unsigned int nStartTime = 0;
 	SOCKET sock;
 
@@ -370,18 +372,29 @@ HRESULT CNetwork::Connect(void)
 
 	m_sockClient = sock;
 
+	// IDの取得
 	SendTCP("LOAD_ID", sizeof("LOAD_ID"));
-	DataRecv(SOCKETTYPE_CLIENT, (char*)&m_nId, sizeof(int));
+	if (!DataRecv(SOCKETTYPE_CLIENT, (char*)&m_nId, sizeof(int)))
+	{
+		return E_FAIL;
+	}
 
+	// シード値の取得
 	SendTCP("SEED", sizeof("SEED"));
-	DataRecv(SOCKETTYPE_CLIENT, (char*)&nStartTime, sizeof(nStartTime));
+	if (!DataRecv(SOCKETTYPE_CLIENT, (char*)&nStartTime, sizeof(nStartTime)))
+	{
+		return E_FAIL;
+	}
+
 	srand(nStartTime);				// 乱数の種を設定
 
+#ifdef _DEBUG
+	char debug[256];
 	sprintf(debug, "ID = %d\n", m_nId);
 	OutputDebugString(debug);
 	sprintf(debug, "SEED = %d\n", nStartTime);
 	OutputDebugString(debug);
-	OutputDebugString("サーバとの接続完了\n");
+#endif // _DEBUG
 
 	StartUpdate();
 	return S_OK;
@@ -492,6 +505,22 @@ bool CNetwork::GetPressKeyboard(int nId, int nKey)
 bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
 {
 	return m_aKeyStateTrigger[nId][nKey];
+}
+
+//=============================================================================
+// コインのデータベースをリセット
+//=============================================================================
+void CNetwork::ResetCoin(void)
+{
+	for (int nCount = 0; nCount < MAX_COIN; nCount++)
+	{
+		m_apItem[nCount] = CItem::Create(nCount, D3DXVECTOR3(0.0f, -1000.0f, 0.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+
+		if (m_apItem[nCount] != NULL)
+		{
+			m_apItem[nCount]->SetDrawState(false);
+		}
+	}
 }
 
 //=============================================================================
@@ -665,7 +694,7 @@ bool CNetwork::UpdateTCP(void)
 			pPlayer = CGame::GetPlayer(m_nId);
 			if (pPlayer != NULL)
 			{
-				pPlayer->MpUp(MPUP_PLAYER_KNOCKDOWN);
+				pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
 			}
 		}
 	}
@@ -700,6 +729,86 @@ bool CNetwork::UpdateTCP(void)
 		{
 			// 風船破壊
 			pPlayer->GetBalloon()->CrackBalloon();
+		}
+	}
+	else if (strcmp(cHeadText, "SET_COIN") == 0)
+	{
+		int nId;
+		int nMaxCoin = 0;
+		D3DXVECTOR3 pos;
+
+		std::string Data = aFunc;
+		std::vector<std::string> vsvec_Contens;		// テキストデータ格納用
+		std::vector<std::string> vsvec_Data;		// テキストデータ格納用
+
+		vsvec_Contens = CCalculation::split(Data, ' ');
+
+		nMaxCoin = atoi(vsvec_Contens[1].c_str());
+
+		for (int nCount = 0; nCount < nMaxCoin; nCount++)
+		{
+			// 情報整理
+			vsvec_Data = CCalculation::split(vsvec_Contens[nCount + 2], ',');
+			nId = atoi(vsvec_Data[0].c_str());
+			pos.x = (float)atof(vsvec_Data[1].c_str());
+			pos.y = (float)atof(vsvec_Data[2].c_str());
+			pos.z = (float)atof(vsvec_Data[3].c_str());
+
+			if (m_apItem[nId] != NULL)
+			{
+				m_apItem[nId]->SetPos(pos);
+				m_apItem[nId]->SetDrawState(true);
+			}
+			else
+			{
+				m_apItem[nId] = CItem::Create(nId, pos, D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+			}
+		}
+	}
+	else if (strcmp(cHeadText, "DELETE_COIN") == 0)
+	{
+		int nCoinId;
+		int nPlayerId;
+		char aDie[64];
+
+		// 情報整理
+		sscanf(aFunc, "%s %d %d", &aDie, &nCoinId, &nPlayerId);
+
+		if (m_nId == nPlayerId)
+		{
+			CPlayer *pPlayer = CGame::GetPlayer(m_nId);
+
+			// プレイヤーのスコア加算追加
+			if (pPlayer != NULL)
+			{
+				// キャラクターが一致したら
+				if (pPlayer->GetCharacter() != CCharacter::CHARACTER_BALLOON4)
+				{
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+				}
+				// キャラクターが一致したら
+				if (pPlayer->GetCharacter() == CCharacter::CHARACTER_BALLOON4)
+				{
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
+				}
+
+				CManager::GetSound()->PlaySound(CSound::LABEL_SE_POINTGET1);
+			}
+		}
+
+		if (m_apItem[nCoinId] != NULL)
+		{
+			m_apItem[nCoinId]->SetPos(D3DXVECTOR3(0.0f, 1000.0f, 0.0f));
+			//m_apItem[nCoinId]->GetCollision()->;
+			m_apItem[nCoinId]->SetDrawState(false);
 		}
 	}
 	else if (strcmp(cHeadText, "RECOVERY") == 0)
@@ -753,7 +862,7 @@ bool CNetwork::UpdateTCP(void)
 		D3DXVECTOR3 pos;
 
 		// 雷生成
-		sscanf(aFunc, "%s %f %f %f",&aDie, &pos.x, &pos.y, &pos.z);
+		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
 		CThunder::Create(pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 

@@ -30,6 +30,21 @@ class CCollision;
 class CItem : public CScene_THREE
 {
 public:
+	/* 構造体 */
+	// ステータス情報
+	typedef struct STATUS
+	{
+		/* 関数 */
+		// 初期化
+		STATUS()
+		{
+			nScorePoint = 0;	// スコアポイント
+			nMpUp = 0;			// MPアップ
+		}
+		/* 変数 */
+		int	nScorePoint;		// スコアポイント
+		int nMpUp;				// MPアップ
+	} STATUS, *PSTATUS;
 
 	CItem();												// コンストラクタ
 	~CItem();												// デストラクタ
@@ -53,15 +68,22 @@ public:
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
 	bool ItemCollision(D3DXVECTOR3 *pPos, D3DXVECTOR3 *pVtxMax, D3DXVECTOR3 *pVtxMin);				// 弾の当たり判定
+	CCollision *GetCollision(void) { return m_pCollision; }
+	// ステータス(キャラクター別)
+	static STATUS &GetStatus(void) { return m_sStatus; };
 
-	static CItem *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
+	static CItem *Create(const int nId, D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
 	static HRESULT Load(void);													// ロード
 	static void Unload(void);													// アンロード
-
+	static void LoadStatus(void);
+	static int &GetAllItem(void) { return m_nAllItem; };
 protected:
 
 private:
+	/* 変数 */
 	static LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャ
+	static STATUS	m_sStatus;					// アイテムのスタータス情報
+	static int m_nAllItem;						// アイテムの個数
 	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;	// 頂点バッファへのポインタ
 	VERTEX_3D *m_pVtx;							// 頂点情報へのポインタ
 	D3DXMATRIX m_mtxWorld;						// ワールドマトリックス
@@ -76,6 +98,7 @@ private:
 	D3DXCOLOR m_col;									// 色
 	CCollision * m_pCollision;							// あたり判定情報
 	int m_nCntEffect;
+	int m_nId;											// コインのID
 
 };
 #endif

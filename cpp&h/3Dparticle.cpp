@@ -77,6 +77,7 @@ void C3DParticle::Update(void)
 		D3DXVECTOR3	pos			= D3DVECTOR3_ZERO;	// 位置
 		D3DXVECTOR3 rot			= D3DVECTOR3_ZERO;	// 回転
 		D3DXVECTOR2	size		= D3DVECTOR2_ZERO;	// サイズ
+		D3DXVECTOR2 sizeValue	= D3DVECTOR2_ZERO;	// サイズ変化値
 		D3DXCOLOR	col			= D3DXCOLOR_INI;	// 色
 		D3DXVECTOR3	posRand		= D3DVECTOR3_ZERO;	// 位置ランダム
 		int			nLife		= 0;				// ライフ
@@ -84,6 +85,7 @@ void C3DParticle::Update(void)
 		int			nRand = 0;						// ランダム値
 		float		fSpeed		= 0;				// 速度
 		float		fAngle[3];						// 角度
+		float		fAlphaDerease = 0.0f;			// α変化値
 		// 初期化
 		fAngle[0] = 0;	// 角度0
 		fAngle[1] = 0;	// 角度1
@@ -92,6 +94,15 @@ void C3DParticle::Update(void)
 		// エフェクトの個数ループ
 		for (int nCntEffect = 0; nCntEffect < m_ParticleOffset[m_offsetID]->nNumber; nCntEffect++)
 		{
+			/* ライフ設定 */
+			nLife = m_ParticleOffset[m_offsetID]->nLife;
+			// ランダムのライフを設定
+			if (m_ParticleOffset[m_offsetID]->nLifeRand.nMax > 0)
+			{
+				nLife +=
+					(rand() % m_ParticleOffset[m_offsetID]->nLifeRand.nMax +
+						m_ParticleOffset[m_offsetID]->nLifeRand.nMin);
+			}
 			/* カラー設定 */
 			col = m_ParticleOffset[m_offsetID]->Col;
 			if (m_ParticleOffset[m_offsetID]->bRedRand)
@@ -134,6 +145,11 @@ void C3DParticle::Update(void)
 					col.a = (float)nColRand / 10;
 				}
 			}
+			if (m_ParticleOffset[m_offsetID]->bAlphaDecrease)
+			{
+				// α値の減少
+				fAlphaDerease = col.a / nLife;
+			}
 
 			/* 半径設定 */
 			// 読み込んだサイズを代入
@@ -147,16 +163,19 @@ void C3DParticle::Update(void)
 			{
 				size.y += (float)(rand() % m_ParticleOffset[m_offsetID]->SizeYRand.nMax + m_ParticleOffset[m_offsetID]->SizeXRand.nMin);
 			}
-			/* ライフ設定 */
-			nLife = m_ParticleOffset[m_offsetID]->nLife;
-			// ランダムのライフを設定
-			if (m_ParticleOffset[m_offsetID]->nLifeRand.nMax > 0)
+			// サイズ減少状態がtrueなら
+			if (m_ParticleOffset[m_offsetID]->bSizeDecrease)
 			{
-				nLife +=
-					(rand() % m_ParticleOffset[m_offsetID]->nLifeRand.nMax +
-						m_ParticleOffset[m_offsetID]->nLifeRand.nMin);
+				// サイズ値の減少
+				sizeValue = -size / (float)nLife;
 			}
-
+			// それ以外
+			else
+			{
+				// サイズの変化値代入
+				sizeValue.x = sizeValue.y =
+					m_ParticleOffset[m_offsetID]->fSizeChange;
+			}
 			/* 速度の設定 */
 			fSpeed = m_ParticleOffset[m_offsetID]->fSpeed;
 			// ランダムのスピード設定
@@ -232,7 +251,9 @@ void C3DParticle::Update(void)
 					col,
 					size,
 					nLife,
-					m_ParticleOffset[m_offsetID]->Blend
+					m_ParticleOffset[m_offsetID]->Blend,
+					sizeValue,
+					fAlphaDerease
 				);
 
 			}
@@ -253,7 +274,9 @@ void C3DParticle::Update(void)
 					col,
 					size,
 					nLife,
-					m_ParticleOffset[m_offsetID]->Blend
+					m_ParticleOffset[m_offsetID]->Blend,
+					sizeValue,
+					fAlphaDerease
 				);
 			}
 		}
@@ -603,6 +626,14 @@ HRESULT C3DParticle::Load(void)
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// 色の減少状態が読み込まれたら
+				else if (strcmp(cComp, "COL_DESCREASE") == 0)
+				{
+					// サイズの減少状態をtrueに
+					m_ParticleOffset[nCntOffset]->bAlphaDecrease = true;
+					// 文字列の初期化
+					cComp[0] = '\0';
+				}
 				// サイズが読み込まれたら
 				else if (strcmp(cComp, "SIZE") == 0)
 				{
@@ -612,6 +643,26 @@ HRESULT C3DParticle::Load(void)
 						&cEmpty,
 						&m_ParticleOffset[nCntOffset]->Size.x,
 						&m_ParticleOffset[nCntOffset]->Size.y
+					);
+					// 文字列の初期化
+					cComp[0] = '\0';
+				}
+				// サイズの減少が読み込まれたら
+				else if (strcmp(cComp, "SIZE_DESCREASE") == 0)
+				{
+					// サイズの減少状態をtrueに
+					m_ParticleOffset[nCntOffset]->bSizeDecrease = true;
+					// 文字列の初期化
+					cComp[0] = '\0';
+				}
+				// サイズの変化値が読み込まれたら
+				else if (strcmp(cComp, "SIZE_CHANGE") == 0)
+				{
+					// サイズの変化値の代入
+					sscanf(cRead, "%s %s %f",
+						&cEmpty,
+						&cEmpty,
+						&m_ParticleOffset[nCntOffset]->fSizeChange
 					);
 					// 文字列の初期化
 					cComp[0] = '\0';

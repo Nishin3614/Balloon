@@ -22,7 +22,17 @@
 #include "scoreUP.h"
 #include "invisible.h"
 #include "framework.h"
+#include "ui_group.h"
+#include "meshdome.h"
+#include "item.h"
+#include "thundercloud.h"
+#include "PointCircle.h"
 
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+// マクロ定義
+//
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define PLAYER_GRAVITY (0.1f)
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -32,6 +42,7 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 int	CPlayer::m_All = 0;					// 総数
 bool CPlayer::m_bDie[MAX_PLAYER] = {};
+CMeshdome *CPlayer::m_pMeshDome = NULL;	// 移動上限警告表示用
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -40,6 +51,7 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 {
 	m_p2DMPGauge = NULL;			// MPゲージ
 	m_pRank = NULL;					// 現在順位
+	m_nCloudCount = 0;				// 雲が出現するまでのカウンタ
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
@@ -56,6 +68,7 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CPlayer::~CPlayer()
 {
+	m_All--;						// 総数
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,7 +107,7 @@ void CPlayer::Init(void)
 				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
 			);
 			// MPゲージの変化定数を設定
-			m_p2DMPGauge->SetConstance((float)PLAYER_MPMAX);
+			m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
 			// MPゲージの変化定数を設定
 			m_p2DMPGauge->BeginGauge((float)m_nMP);
 			// MPゲージのメインカラー設定
@@ -114,6 +127,46 @@ void CPlayer::Init(void)
 
 		m_bDie[m_nPlayerID] = false;
 		CCharacter_Balloon::GetBalloon()->SetID(m_nPlayerID);
+
+		if (m_pMeshDome == NULL)
+		{
+			// メッシュドームの生成
+			m_pMeshDome = CMeshdome::Create(
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				D3DXVECTOR3(1200, 500, 1200),
+				10,
+				10,
+				CMeshdome::TYPE_WARNING,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+			if (m_pMeshDome != NULL)
+			{
+				// メッシュドームの使用状態
+				m_pMeshDome->SetUse(false);
+				m_pMeshDome->SetDrawBack(true);
+			}
+		}
+	}
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+	{
+		// MPゲージの生成
+		m_p2DMPGauge = C2DGauge::Create(
+			PLAYER_UI_MP_POS,
+			D3DXVECTOR2(500.0f, 25.0f),
+			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+		);
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->BeginGauge((float)m_nMP);
+		// MPゲージのメインカラー設定
+		m_p2DMPGauge->SetMainCol(
+			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+			D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
+		// フレームワークの生成
+		m_pFramework = CFramework::Create();
+
 	}
 }
 
@@ -149,10 +202,8 @@ void CPlayer::Update(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 	const int nId = pNetwork->GetId();
 
-	// モーション設定
-	CCharacter::SetMotion(MOTIONTYPE_NEUTRAL);
 	// 選択画面以外なら
-	if (CManager::GetMode() != CManager::MODE_SELECT)
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
 		// キャラクター自体のプレイヤー番号とコントロールしているプレイヤー番号が同じなら
 		// ->行動処理
@@ -168,6 +219,13 @@ void CPlayer::Update(void)
 			OtherAction();
 		}
 	}
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+	{
+		// 自キャラの行動処理
+		MyAction(m_nPlayerID);
+	}
+	// モーション設定処理
+	StatusMotion();
 
 	// キャラクター更新
 	CCharacter_Balloon::Update();
@@ -177,6 +235,23 @@ void CPlayer::Update(void)
 	if (CManager::GetPlayerID() != m_nPlayerID)
 	{
 		CCharacter::Limit();
+	}
+
+	if (m_pos.y > 900.0f)
+	{
+		if (m_nCloudCount > 10)
+		{
+			for (int nCount = 0; nCount < 5; nCount++)
+			{
+				D3DXVECTOR3 pos = CCharacter_Balloon::GetBalloon()->GetCorePos();
+				CThunderCloud::Create(pos);
+				m_nCloudCount = 0;
+			}
+		}
+		else
+		{
+			m_nCloudCount++;
+		}
 	}
 
 	if (CManager::GetMode() == CManager::MODE_GAME)
@@ -229,11 +304,53 @@ void CPlayer::MyAction(const int &nId)
 		CCharacter_Balloon::BalloonCreate();
 	}
 	// MP上げ処理(マイフレーム)
-	MpUp(MPUP_EVERY);
+	MpUp(CCharacter::GetStatus().nMaxMpUp_Every);
 	// カメラの更新
 	Camera();
 	// MPゲージの変化定数を設定
 	m_p2DMPGauge->ChangeGauge((float)m_nMP);
+
+	D3DXVECTOR3 pos = GetPos();
+	float fDifference = sqrtf(pos.x * pos.x + pos.z * pos.z);
+
+	if (fDifference > 1000.0f)
+	{
+		if (m_pMeshDome != NULL)
+		{
+			if (!m_pMeshDome->GetUse())
+			{
+				m_pMeshDome->SetUse(true);
+			}
+		}
+	}
+	else
+	{
+		if (m_pMeshDome != NULL)
+		{
+			if (m_pMeshDome->GetUse())
+			{
+				m_pMeshDome->SetUse(false);
+			}
+		}
+	}
+
+	if (fDifference > 1200.0f)
+	{// 今回もし当たっていたとき
+		D3DXVECTOR3 save = pos - D3DXVECTOR3(0.0f, pos.y, 0.0f);
+		D3DXVECTOR3 vec;
+		D3DXVec3Normalize(&vec, &save);			//正規化する
+
+		float y = pos.y;
+
+		// 食い込んだ分を求める
+		pos = vec * 1200.0f;
+
+		pos.y = y;
+
+		// 食い込んだ分だけ戻す
+		SetPos(pos);
+
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -243,7 +360,6 @@ void CPlayer::MyMove(void)
 {
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
-	bool bMove = false;				// 移動状態
 	float fRot;						// 回転
 
 	// 情報取得
@@ -254,6 +370,96 @@ void CPlayer::MyMove(void)
 	CJoypad *pJoypad = CManager::GetJoy();
 
 	// 移動 //
+	/* キーボード */
+	// 左
+	if (pKeyboard->GetKeyboardPress(DIK_A))
+	{
+		// 移動状態on
+		CCharacter::SetbMove(true);
+		// 奥
+		if (pKeyboard->GetKeyboardPress(DIK_W))
+		{
+			rot.y = -D3DX_PI * 0.25f + fRot;
+
+			move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+		}
+		// 手前
+		else if (pKeyboard->GetKeyboardPress(DIK_S))
+		{
+			rot.y = -D3DX_PI * 0.75f + fRot;
+
+			move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+		}
+		// 左
+		else
+		{
+			rot.y = -D3DX_PI * 0.5f + fRot;
+			move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+		}
+	}
+	// 右
+	else if (pKeyboard->GetKeyboardPress(DIK_D))
+	{
+		// 移動状態on
+		CCharacter::SetbMove(true);
+
+		// 奥
+		if (pKeyboard->GetKeyboardPress(DIK_W))
+		{
+			rot.y = D3DX_PI * 0.25f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+		}
+		// 手前
+		else if (pKeyboard->GetKeyboardPress(DIK_S))
+		{
+			rot.y = D3DX_PI * 0.75f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+		}
+		// 右
+		else
+		{
+			rot.y = D3DX_PI * 0.5f + fRot;
+
+			move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+		}
+	}
+	// 奥に行く
+	else if (pKeyboard->GetKeyboardPress(DIK_W))
+	{
+		// 移動状態on
+		CCharacter::SetbMove(true);
+		rot.y = D3DX_PI * 0.0f + fRot;
+		move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+		move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+	}
+	// 手前に行く
+	else if (pKeyboard->GetKeyboardPress(DIK_S))
+	{
+		// 移動状態on
+		CCharacter::SetbMove(true);
+		rot.y = D3DX_PI * 1.0f + fRot;
+		move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+		move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+	}
+	else if (pKeyboard->GetKeyboardTrigger(DIK_K))
+	{
+		CPointCircle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+	}
+	// それ以外
+	else
+	{
+		// 移動状態off
+		CCharacter::SetbMove(false);
+	}
+
 	/* ジョイパッド */
 	// パッド用 //
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
@@ -296,89 +502,10 @@ void CPlayer::MyMove(void)
 			move.x -= sinf(fAngle + fRot) * (fMove);
 			move.z -= cosf(fAngle + fRot) * (fMove);
 			// 移動状態on
-			bMove = true;
+			CCharacter::SetbMove(true);
 		}
 	}
 
-	/* キーボード */
-	// 左
-	if (pKeyboard->GetKeyboardPress(DIK_A))
-	{
-		// 移動状態on
-		bMove = true;
-		// 奥
-		if (pKeyboard->GetKeyboardPress(DIK_W))
-		{
-			rot.y = -D3DX_PI * 0.25f + fRot;
-
-			move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-		}
-		// 手前
-		else if (pKeyboard->GetKeyboardPress(DIK_S))
-		{
-			rot.y = -D3DX_PI * 0.75f + fRot;
-
-			move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-		}
-		// 左
-		else
-		{
-			rot.y = -D3DX_PI * 0.5f + fRot;
-			move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-		}
-	}
-	// 右
-	else if (pKeyboard->GetKeyboardPress(DIK_D))
-	{
-		// 移動状態on
-		bMove = true;
-
-		// 奥
-		if (pKeyboard->GetKeyboardPress(DIK_W))
-		{
-			rot.y = D3DX_PI * 0.25f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-		}
-		// 手前
-		else if (pKeyboard->GetKeyboardPress(DIK_S))
-		{
-			rot.y = D3DX_PI * 0.75f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-		}
-		// 右
-		else
-		{
-			rot.y = D3DX_PI * 0.5f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-		}
-	}
-	// 奥に行く
-	else if (pKeyboard->GetKeyboardPress(DIK_W))
-	{
-		// 移動状態on
-		bMove = true;
-		rot.y = D3DX_PI * 0.0f + fRot;
-		move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
-		move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
-	}
-	// 手前に行く
-	else if (pKeyboard->GetKeyboardPress(DIK_S))
-	{
-		// 移動状態on
-		bMove = true;
-		rot.y = D3DX_PI * 1.0f + fRot;
-		move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
-		move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
-	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
@@ -413,7 +540,6 @@ void CPlayer::MyMove(void)
 			}
 		}
 	}
-
 	// yの上限設定
 	if (move.y > 10.0f)
 	{
@@ -459,12 +585,12 @@ void CPlayer::MpUp(
 		// MPを上げる
 		m_nMP += nMpUp;
 		// 上限を超えたら最大MP分代入
-		if (m_nMP > PLAYER_MPMAX)
+		if (m_nMP > CCharacter::GetStatus().nMaxMp)
 		{
-			m_nMP = PLAYER_MPMAX;
+			m_nMP = CCharacter::GetStatus().nMaxMp;
 		}
 		// MPがマックスだったら
-		if (m_nMP == PLAYER_MPMAX)
+		if (m_nMP == CCharacter::GetStatus().nMaxMp)
 		{
 			// リセット開始
 			m_bResetMP = true;
@@ -485,25 +611,9 @@ void CPlayer::MpUp(
 	}
 	else
 	{
-		switch (character)
-		{
-		case CCharacter::CHARACTER_BALLOON1:
-			// MPを下げる
-			m_nMP -= SPEED_UP_MPDOWN;
-			break;
-		case CCharacter::CHARACTER_BALLOON2:
-			// MPを下げる
-			m_nMP -= REVIVAL_MPDOWN;
-			break;
-		case CCharacter::CHARACTER_BALLOON3:
-			// MPを下げる
-			m_nMP -= INVISIBLE_MPDOWN;
-			break;
-		case CCharacter::CHARACTER_BALLOON4:
-			// MPを下げる
-			m_nMP -= SCORE_UP_MPDOWN;
-			break;
-		}
+		// MPを下げる
+		m_nMP -= CCharacter::GetStatus().nMaxMpDown;
+
 		// MPがマックスだったら
 		if (m_nMP == 0)
 		{
@@ -525,6 +635,22 @@ void CPlayer::MpUp(
 		}
 	}
 
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ゲージ初期化処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::GaugeStatusInit(void)
+{
+	m_nMP = 0;						// MP
+	// ぬるちぇ
+	if (m_p2DMPGauge != NULL)
+	{
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
+		// MPゲージの変化定数を設定
+		m_p2DMPGauge->BeginGauge((float)m_nMP);
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -564,6 +690,32 @@ void CPlayer::FishApponent(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 状態によってのモーション設定処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::StatusMotion(void)
+{
+	// 勝利モーション
+
+	// ジャンプ中
+	if (!CCharacter::GetbLanding())
+	{
+		SetMotion(MOTIONTYPE_JAMP);
+	}
+	// 移動中
+	else if (CCharacter::GetbMove())
+	{
+		// モーション設定(移動)
+		SetMotion(MOTIONTYPE_MOVE);
+	}
+	// 待機
+	else
+	{
+		SetMotion(MOTIONTYPE_NEUTRAL);
+	}
+
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 他キャラ移動処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::OtherMove(void)
@@ -572,7 +724,6 @@ void CPlayer::OtherMove(void)
 
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
-	bool bMove = false;				// 移動状態
 	float fRot = 0.0f;						// 回転
 	// 情報取得
 	rot = CCharacter::GetRotDest();								// 目的回転量
@@ -586,7 +737,7 @@ void CPlayer::OtherMove(void)
 	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		// 奥
 		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 		{
@@ -615,7 +766,7 @@ void CPlayer::OtherMove(void)
 	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_D))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 
 		// 奥
 		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
@@ -646,7 +797,7 @@ void CPlayer::OtherMove(void)
 	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 0.0f + fRot;
 		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
@@ -655,10 +806,16 @@ void CPlayer::OtherMove(void)
 	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
 	{
 		// 移動状態on
-		bMove = true;
+		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 1.0f + fRot;
 		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
 		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	}
+	// それ以外
+	else
+	{
+		// 移動状態off
+		CCharacter::SetbMove(false);
 	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
@@ -720,29 +877,39 @@ void CPlayer::Draw(void)
 		CCharacter_Balloon::Draw();
 	}
 }
+
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 死亡処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Die(void)
 {
-	CNetwork *pNetwork = CManager::GetNetwork();
-
-	char aDie[64];
-	sprintf(aDie, "DIE %d", pNetwork->GetId());
-	pNetwork->SendTCP(aDie, sizeof(aDie));
-
-	if (m_pRank != NULL)
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		m_pRank->Release();
-		m_pRank = NULL;
+		CNetwork *pNetwork = CManager::GetNetwork();
+
+		char aDie[64];
+		sprintf(aDie, "DIE %d", pNetwork->GetId());
+		pNetwork->SendTCP(aDie, sizeof(aDie));
+
+		if (m_pRank != NULL)
+		{
+			m_pRank->Release();
+			m_pRank = NULL;
+		}
+
+		// 死亡処理
+		CCharacter_Balloon::Die();
+		// コントロールする自キャラの場合
+		if (m_nPlayerID == CManager::GetPlayerID())
+		{
+			m_bDie[m_nPlayerID] = true;			// 死亡フラグを立てる
+			CUi_group::Create(CUi::UITYPE_DIE);
+		}
 	}
-
-	// 死亡処理
-	CCharacter_Balloon::Die();
-	// コントロールする自キャラの場合
-	if (m_nPlayerID == CManager::GetPlayerID())
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
 	{
-		m_bDie[m_nPlayerID] = true;			// 死亡フラグを立てる
+		// 死亡処理
+		CCharacter_Balloon::Die();
 	}
 }
 
@@ -775,27 +942,37 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがアイテムなら
 	else if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
-		// プレイヤーのスコア加算追加
-		if (m_nPlayerID == pNetwork->GetId())
+		if (CManager::GetMode() == CManager::MODE_GAME)
 		{
-			// キャラクターが一致したら
-			if (character != CCharacter::CHARACTER_BALLOON4)
+			// プレイヤーのスコア加算追加
+			if (m_nPlayerID == pNetwork->GetId())
 			{
-				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
-			}
-			// キャラクターが一致したら
-			if (character == CCharacter::CHARACTER_BALLOON4)
-			{
-				// 状態
-				if (CScoreUP::GetScoreUP() == true)
+				// キャラクターが一致したら
+				if (character != CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
-				else
+				// キャラクターが一致したら
+				if (character == CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
 				}
+				// MP上げ処理(風船)
+				MpUp(CItem::GetStatus().nMpUp);
 			}
+		}
+		else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+		{
+			// MP上げ処理(風船)
+			MpUp(CItem::GetStatus().nMpUp);
 		}
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
@@ -803,28 +980,36 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_PLAYER_BALLOON ||
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
-		// プレイヤーのスコア加算追加
-		if (m_nPlayerID == pNetwork->GetId())
+		if (CManager::GetMode() == CManager::MODE_GAME)
 		{
-			// キャラクターが一致したら
-			if (character != CCharacter::CHARACTER_BALLOON4)
+			// プレイヤーのスコア加算追加
+			if (m_nPlayerID == pNetwork->GetId())
 			{
-				// スコア加算処理
-				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
-			}
-			// キャラクターが一致したら
-			if (character == CCharacter::CHARACTER_BALLOON4)
-			{
-				// 状態
-				if (CScoreUP::GetScoreUP() == true)
+				// キャラクターが一致したら
+				if (character != CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON * 2);
-				}
-				else
-				{
+					// スコア加算処理
 					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 				}
+				// キャラクターが一致したら
+				if (character == CCharacter::CHARACTER_BALLOON4)
+				{
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
+					}
+				}
+				// MP上げ処理(風船)
+				MpUp(MPUP_BREAKBALLOON);
 			}
+		}
+		else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
+		{
 			// MP上げ処理(風船)
 			MpUp(MPUP_BREAKBALLOON);
 		}
@@ -874,7 +1059,6 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプが魚なら
 	else if (nObjType == CCollision::OBJTYPE_FISH)
 	{
-		// 死亡
 		Die();
 	}
 }
@@ -909,25 +1093,27 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		// プレイヤーのスコア加算追加
 		if (m_nPlayerID == pNetwork->GetId())
 		{
-			// キャラクターが一致したら
-			if (character != CCharacter::CHARACTER_BALLOON4)
+			if (CManager::GetMode() == CManager::MODE_GAME)
 			{
-				CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
-			}
-			// キャラクターが一致したら
-			if (character == CCharacter::CHARACTER_BALLOON4)
-			{
-				// 状態
-				if (CScoreUP::GetScoreUP() == true)
+				// キャラクターが一致したら
+				if (character != CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN * 2);
+					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
-				else
+				// キャラクターが一致したら
+				if (character == CCharacter::CHARACTER_BALLOON4)
 				{
-					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_COIN);
+					// 状態
+					if (CScoreUP::GetScoreUP() == true)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+					}
+					else
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
 				}
 			}
-
 		}
 		// 死亡処理
 		BalloonNone();
@@ -951,7 +1137,7 @@ void CPlayer::Debug(void)
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(TESTPLAY_NUMBER3))
 	{
 		// MP全回復
-		m_nMP = PLAYER_MPMAX;
+		m_nMP = CCharacter::GetStatus().nMaxMp;
 		// MPゲージのNULLチェック
 		if (m_p2DMPGauge != NULL)
 		{
@@ -959,7 +1145,7 @@ void CPlayer::Debug(void)
 			m_p2DMPGauge->ChangeGauge((float)m_nMP);
 		}
 	}
-	CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
+	//CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter_Balloon::Debug();
 

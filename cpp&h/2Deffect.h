@@ -75,7 +75,8 @@ public:
 		D3DXVECTOR2 const &size,											// サイズ
 		int const &nLife,													// ライフ
 		CRenderer::BLEND const &Blend = CRenderer::BLEND_ADD_TRANSLUCENT,	// ブレンドタイプ
-		D3DXVECTOR2 const &sizeValue = D3DVECTOR2_ZERO						// サイズ変化
+		D3DXVECTOR2 const &sizeValue = D3DVECTOR2_ZERO,						// サイズ変化値
+		float const &fAlphaValue = 0.0f										// α変化値
 	);
 private:
 	/* 関数 */
@@ -101,7 +102,7 @@ private:
 	//	pEffect	: エフェクト情報
 	static void Pos_Limit(
 		EFFECT *pEffect = NULL		// エフェクト情報
-	);
+		);
 	/* 変数 */
 	static LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff;					// バッファ情報
 	static EFFECT					m_aEffect[EFFECT_MAX];		// エフェクト情報

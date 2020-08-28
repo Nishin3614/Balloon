@@ -16,6 +16,8 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define CHARACTER_BALLOON_GRAVITY		(0.1f)			// キャラクターバルーンにかかる重力
+#define CHARACTER_BALLOON_DAMAGEPOS		(900.0f)		// ダメージを受ける上限
+#define CHARACTER_BALLOON_DAMAGECOUNT	(180)			// ダメージを受けるフレーム数
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -29,6 +31,7 @@
 CCharacter_Balloon::CCharacter_Balloon(CHARACTER const &character) : CCharacter::CCharacter(character)
 {
 	m_nCntState = 0;				// ステートカウント
+	m_nCntDamage = 0;				// カウント初期化
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -47,6 +50,30 @@ void CCharacter_Balloon::Init(void)
 	CCharacter::Init();
 	// ゲーム画面なら
 	if (CManager::GetMode() == CManager::MODE_GAME)
+	{
+		// 変数宣言
+		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
+		// キャラクタータイプがNPCなら
+		if (CCharacter::GetCharacter() == CCharacter::CHARACTER_NPC)
+		{
+			objtype = CCollision::OBJTYPE_ENEMY_BALLOON;
+		}
+		// 風船生成
+		m_pBalloon_group = CBalloon_group::Create(
+			&CCharacter::GetPos(),
+			CCharacter::GetMatrix(-1),
+			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
+			objtype,
+
+			this
+		);
+		// ステータスの反映 //
+		// 初期風船を持っている個数
+		m_pBalloon_group->SetBiginBalloon_group(
+			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon
+		);
+	}
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
 	{
 		// 変数宣言
 		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
@@ -98,6 +125,22 @@ void CCharacter_Balloon::Update(void)
 		Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
+
+	// 位置が一定位置になったら
+	if (m_pos.y > CHARACTER_BALLOON_DAMAGEPOS)
+	{
+		// カウント加算
+		m_nCntDamage++;
+		if (m_nCntDamage >= CHARACTER_BALLOON_DAMAGECOUNT)
+		{
+			// 風船割れる処理
+			m_pBalloon_group->CrackBalloon();
+
+			// カウント初期化
+			m_nCntDamage = 0;
+		}
+	}
+
 
 	// キャラクターの更新処理
 	CCharacter::Update();
@@ -166,8 +209,8 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		);
 		m_move = D3DVECTOR3_ZERO;
 		*pCharacterMove = D3DVECTOR3_ZERO;
-		m_move += RefVecA * 10.0f;
-		*pCharacterMove += RefVecB * 5.0f;
+		m_move += RefVecA;
+		*pCharacterMove += RefVecB;
 	}
 	// オブジェクトタイプがプレイヤー風船なら ||
 	// オブジェクトタイプが敵風船なら ||
@@ -175,27 +218,14 @@ void CCharacter_Balloon::Scene_MyCollision(int const & nObjType, CScene * pScene
 		nObjType == CCollision::OBJTYPE_ENEMY_BALLOON)
 	{
 		// 変数宣言
-		D3DXVECTOR3 RefVecA;
-		D3DXVECTOR3 RefVecB;
 		D3DXVECTOR3 *pCharacterPos = pScene->Scene_GetPPos();
-		D3DXVECTOR3 CharacterMove = D3DVECTOR3_ZERO;
-		// 押し出し処理を入れる
-		// 今回の当たり判定とプレイヤーの位置ポインター管理
-		// 衝突後の速度計算処理
-		CCalculation::SquarColiAfterVec(
-			m_pos,
-			m_move,
-			*pCharacterPos,
-			CharacterMove,
-			1,
-			1,
-			1.0f,
-			1.0f,
-			RefVecA,
-			RefVecB
-		);
+		D3DXVECTOR3 diff = m_pos - *pCharacterPos;						// BからAの差
+		D3DXVECTOR3 vec;									// B->Aのベクトル
+															// ベクトルの正規化
+		D3DXVec3Normalize(&vec, &diff);
+
 		m_move = D3DVECTOR3_ZERO;
-		m_move += RefVecA* 10.0f;
+		m_move += vec * 5;
 	}
 }
 

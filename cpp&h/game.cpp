@@ -117,13 +117,14 @@ void CGame::Init(void)
 	//	CItem::Create(D3DXVECTOR3(0.0f, 500.0f + nCntItem * 100, -500.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	//}
 
-	// 円形配置用
-	for (int nCntItem = 0; nCntItem < 10; nCntItem++)
-	{
-		// アイテム生成
-		CItem::Create(D3DXVECTOR3(CIRCLE_SIZE * sinf(D3DX_PI / 180 * nCntItem * ITEM_SPACE), 500.0, CIRCLE_SIZE *
-								cosf(D3DX_PI / 180 * nCntItem * ITEM_SPACE)), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-	}
+	//// 円形配置用
+	//for (int nCntItem = 0; nCntItem < 10; nCntItem++)
+	//{
+	//	// アイテム生成
+	//	CItem::Create(D3DXVECTOR3(CIRCLE_SIZE * sinf(D3DX_PI / 180 * nCntItem * ITEM_SPACE), 500.0, CIRCLE_SIZE *
+	//							cosf(D3DX_PI / 180 * nCntItem * ITEM_SPACE)), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	//}
+
 	// スコア生成
 	m_pScore = CScore::Create();
 	// ポーズの生成
@@ -131,7 +132,15 @@ void CGame::Init(void)
 	// ポーズの初期化
 	m_pause->Init();
 
+	if (pNetwork != NULL)
+	{
+		pNetwork->ResetCoin();				// コインのデータベースをリセット
+	}
+
 	CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
+
+	// スタートコール
+	CUi_group::Create(CUi::UITYPE_GAMESTART);
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -144,7 +153,7 @@ void CGame::Uninit(void)
 	if (pNetwork != NULL)
 	{// ネットワークが存在していたとき
 		pNetwork->StopUpdate();				// 更新停止予約
-		pNetwork->CloseTCP();
+		pNetwork->CloseTCP();				// サーバーとの窓口を閉める
 	}
 
 	// ポーズ
@@ -174,6 +183,8 @@ void CGame::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Update(void)
 {
+	// 当たり判定処理
+	CCollision::CollisionDetection();
 	// ポーズ状態ならば
 	if (m_state == STATE_PAUSE)
 	{
@@ -200,20 +211,7 @@ void CGame::Update(void)
 		{
 			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
-				for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
-				{
-					m_nWatchingId++;
-
-					if (m_nWatchingId >= MAX_PLAYER)
-					{
-						m_nWatchingId = 0;
-					}
-
-					if (!CPlayer::GetDie(m_nWatchingId))
-					{
-						break;
-					}
-				}
+				FocusPlayer();
 			}
 		}
 
@@ -255,14 +253,28 @@ void CGame::Update(void)
 			}
 		}
 	}
+	DebugStatus();
 
-	// テスト
+	// 終了表示
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_T))
 	{
-		// 雷生成
-		CThunder::Create(D3DXVECTOR3(0.0f, 500.0f, 500.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		CUi_group::Create(CUi::UITYPE_FINISH);
 	}
-
+	// ステータスリセット
+	if (CManager::GetKeyboard()->GetKeyboardPress(DIK_LCONTROL) &&
+		CManager::GetKeyboard()->GetKeyboardTrigger(DIK_4))
+	{
+		CCharacter::LoadStatus();
+		CItem::LoadStatus();
+		for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER; nCntPlayer++)
+		{
+			if (m_pPlayer[nCntPlayer] == NULL)
+			{
+				continue;
+			}
+			m_pPlayer[nCntPlayer]->GaugeStatusInit();
+		}
+	}
 #endif // _DEBUG
 }
 
@@ -282,6 +294,38 @@ void CGame::Draw(void)
 	{
 		m_pScore->Draw();
 	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 注目させる処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CGame::FocusPlayer(void)
+{
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_nWatchingId++;
+
+		if (m_nWatchingId >= MAX_PLAYER)
+		{
+			m_nWatchingId = 0;
+		}
+
+		if (!CPlayer::GetDie(m_nWatchingId))
+		{
+			break;
+		}
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// デバッグステータス処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CGame::DebugStatus(void)
+{
+	// ステータスの更新 //
+	CDebugproc::Print("LCTRL + 4:ステータスの更新\n");
+	//CCharacter::AllDebug();
+	//CItem::AllDebug();
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

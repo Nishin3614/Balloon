@@ -76,6 +76,8 @@ public:
 	virtual void Die(void);
 	static HRESULT Load(void);								// 読み込み
 	static void UnLoad(void);								// UnLoadする
+	// 敵の総数取得
+	static int &GetAllEnemy(void) { return m_nAllEnemy; };	// 敵の総数取得
 protected:
 	/* 列挙型 */
 	/* 変数 */
@@ -87,7 +89,8 @@ private:
 	// AI行動_ジャンプ状態
 	void AiAction_Jump(void);
 	/* 変数 */
-	JUMP_VARIABLE	m_Jump;	// ジャンプ用変数
-	AIACTION		m_AI;	// AI状態
+	static int		m_nAllEnemy;	// 敵の総数
+	JUMP_VARIABLE	m_Jump;			// ジャンプ用変数
+	AIACTION		m_AI;			// AI状態
 };
 #endif

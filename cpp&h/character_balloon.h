@@ -84,5 +84,7 @@ private:
 
 	/* 変数 */
 	CBalloon_group					* m_pBalloon_group;				// 風船グループ情報
+	int								m_nCntDamage;					// ダメージカウント
+
 };
 #endif

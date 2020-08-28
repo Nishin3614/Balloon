@@ -169,7 +169,7 @@ void CScene_THREE::Draw(void)
 	if (m_bAlpha)
 	{
 		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);		// アルファテスト有効
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 230);				// アルファ値の基準設定(基準より大きいと描画する)
+		pDevice->SetRenderState(D3DRS_ALPHAREF, 150);				// アルファ値の基準設定(基準より大きいと描画する)
 		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);	// 状況に応じてアルファテストを実行する(新ピクセル > 現在のピクセル)
 	}
 

@@ -39,6 +39,8 @@
 int CMeshdome::m_nTexId[TYPE_MAX] =
 {
 	25,
+	48,
+	49,
 	0
 };
 
@@ -61,6 +63,7 @@ CMeshdome::CMeshdome() : CScene()
 	m_nBlock_Width = 1;
 	m_nBlock_Depth = 1;
 	m_bUse = false;
+	m_bDrawBack = false;
 	m_type = TYPE_NORMAL;
 }
 
@@ -208,6 +211,11 @@ void CMeshdome::Draw(void)
 			0,
 			CTexture_manager::GetTexture(m_nTexId[m_type]));
 		//
+		if (m_bDrawBack)
+		{
+			pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);				// 裏面(左回り)をカリングする
+		}
+
 		// ポリゴンの描画
 		pDevice->DrawIndexedPrimitive(
 			D3DPT_TRIANGLESTRIP,
@@ -219,6 +227,11 @@ void CMeshdome::Draw(void)
 
 		// 描画状態
 		CManager::GetRenderer()->SetType(CRenderer::TYPE_CULLNORMAL);
+
+		if (m_bDrawBack)
+		{
+			pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);				// 裏面(左回り)をカリングする
+		}
 	}
 }
 
