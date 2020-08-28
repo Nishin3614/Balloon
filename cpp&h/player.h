@@ -133,6 +133,7 @@ private:
 	bool m_bResetMP;					// MPをリセット
 	static bool m_bDie[MAX_PLAYER];		// 死亡フラグ
 	float m_fMoveNow;					// 現在の移動量
+	float m_fMoveAdd;					// 移動量加算
 	CFramework * m_pFramework;			// フレームワーク情報
 };
 #endif

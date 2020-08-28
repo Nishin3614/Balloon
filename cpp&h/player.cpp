@@ -85,7 +85,8 @@ void CPlayer::Init(void)
 	D3DXVECTOR3 pos;	// ゲージの配置用
 
 	// 移動量代入
-	m_fMoveNow = CCharacter::GetStatus().fMaxMove;
+	m_fMoveAdd = CCharacter::GetStatus().fMaxMove * 0.01f;
+	m_fMoveNow += m_fMoveAdd;
 
 	// カメラの初期化
 	// カメラの注視点設定
@@ -505,7 +506,22 @@ void CPlayer::MyMove(void)
 			CCharacter::SetbMove(true);
 		}
 	}
-
+	// 移動中なら
+	if (CCharacter::GetbMove())
+	{
+		// 移動量加算
+		m_fMoveNow += m_fMoveAdd;
+		// 移動量の最大値以上なら
+		if (m_fMoveNow >= CCharacter::GetStatus().fMaxMove)
+		{
+			// 移動量を最大値に
+			m_fMoveNow = CCharacter::GetStatus().fMaxMove;
+		}
+	}
+	else
+	{
+		m_fMoveNow = 0;
+	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
