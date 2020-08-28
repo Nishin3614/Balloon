@@ -529,12 +529,15 @@ bool CNetwork::CheckCharacterReady(int nIndex)
 {
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
-		if (!m_selectState[nCount].bReady || m_selectState[nCount].nType != nIndex)
+		if (m_selectState[nCount].bReady)
 		{
-			return true;
+			if (m_selectState[nCount].nType == nIndex)
+			{
+				return false;
+			}
 		}
 	}
-	return false;
+	return true;
 }
 
 //=============================================================================
