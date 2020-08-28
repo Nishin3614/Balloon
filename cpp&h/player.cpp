@@ -543,7 +543,7 @@ void CPlayer::MyMove(void)
 				if (pJoypad != NULL)
 				{
 					// ’ˆ‚É•‚‚­
-					if (pJoypad->GetTrigger(0, CJoypad::KEY_A) || pJoypad->GetTrigger(0, CJoypad::KEY_X))
+					if (pJoypad->GetTrigger(0, CJoypad::KEY_RIGHT_1))
 					{
 						// ˆÚ“®—Êy‚ª0–¢–ž‚È‚ç
 						if (move.y < 0.0f)
