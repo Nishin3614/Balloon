@@ -38,7 +38,7 @@ public:
 		// 初期化
 		STATUS()
 		{
-			nScorePoint = 0;	// スコアポイント
+			nScorePoint = 200;	// スコアポイント
 			nMpUp = 0;			// MPアップ
 		}
 		/* 変数 */

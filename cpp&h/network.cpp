@@ -18,6 +18,7 @@
 #include "item.h"
 #include "scoreUP.h"
 #include "collision.h"
+#include "PointCircle.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -508,6 +509,23 @@ bool CNetwork::GetTriggerKeyboard(int nId, int nKey)
 }
 
 //=============================================================================
+// クリエイト処理
+//=============================================================================
+void CNetwork::Create(void)
+{
+	if (m_thunderEvent.bCreate)
+	{
+		CThunder::Create(m_thunderEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		m_thunderEvent.bCreate = false;
+	}
+	if (m_pointcircleEvent.bCreate)
+	{
+		CPointCircle::Create(m_pointcircleEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		m_pointcircleEvent.bCreate = false;
+	}
+}
+
+//=============================================================================
 // コインのデータベースをリセット
 //=============================================================================
 void CNetwork::ResetCoin(void)
@@ -863,7 +881,18 @@ bool CNetwork::UpdateTCP(void)
 
 		// 雷生成
 		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
-		CThunder::Create(pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		m_thunderEvent.pos = pos;
+		m_thunderEvent.bCreate = true;
+	}
+	else if (strcmp(cHeadText, "POINTCIRCLE") == 0)
+	{
+		char aDie[64];
+		D3DXVECTOR3 pos;
+
+		// ポイントサークル生成
+		sscanf(aFunc, "%s %f %f %f", &aDie, &pos.x, &pos.y, &pos.z);
+		m_pointcircleEvent.pos = pos;
+		m_pointcircleEvent.bCreate = true;
 	}
 
 	return true;
