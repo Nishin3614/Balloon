@@ -11,6 +11,7 @@
 #include "sound.h"
 #include "scene.h"
 #include "player.h"
+#include "charRanking.h"
 #include "manager.h"
 #include "ui.h"
 
@@ -42,6 +43,8 @@ CResult::~CResult()
 HRESULT CResult::Init()
 {
 	CUi::LoadCreate(CUi::UITYPE_RESULT);
+	// ƒLƒƒƒ‰ƒ‰ƒ“ƒLƒ“ƒO¶¬
+	CCharRanking::Create();
 	// ‰Šú‰»
 	return S_OK;
 }

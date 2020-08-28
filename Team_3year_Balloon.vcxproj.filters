@@ -288,6 +288,9 @@
     <ClCompile Include="cpp&amp;h\PointCircle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="cpp&amp;h\charRanking.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
     <ClCompile Include="cpp&amp;h\BalloonNum.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -570,6 +573,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="cpp&amp;h\PointCircle.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="cpp&amp;h\charRanking.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="cpp&amp;h\BalloonNum.h">
