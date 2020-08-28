@@ -58,19 +58,19 @@ void CCharRanking::Init(void)
 		D3DXVECTOR3(950.0f, 260.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[1]->BindTexture(CTexture_manager::GetTexture(49));
+	m_aCharaPhoto[1]->BindTexture(CTexture_manager::GetTexture(50));
 	m_aCharaPhoto[2] = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
 		D3DXVECTOR3(370.0f, 550.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[2]->BindTexture(CTexture_manager::GetTexture(49));
+	m_aCharaPhoto[2]->BindTexture(CTexture_manager::GetTexture(51));
 	m_aCharaPhoto[3] = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
 		D3DXVECTOR3(950.0f, 550.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[3]->BindTexture(CTexture_manager::GetTexture(49));
+	m_aCharaPhoto[3]->BindTexture(CTexture_manager::GetTexture(52));
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

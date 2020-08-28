@@ -32,5 +32,6 @@ public:
 	static  CResult		*Create(void);							// リザルトの生成
 
 private:
+	int nCntSkip;												// スキップ
 };
 #endif

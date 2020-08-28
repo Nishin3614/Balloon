@@ -117,12 +117,12 @@ void CTitle::Update(void)
 			pFade->SetFade(CManager::MODE_TUTORIAL);
 		}
 #ifdef _DEBUG
+#endif // _DEBUG
 		// ƒŠƒUƒ‹ƒg‰æ–Ê‘JˆÚ
 		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_9))
 		{
 			pFade->SetFade(CManager::MODE_RESULT);
 		}
-#endif // _DEBUG
 		if (pJoypad != NULL)
 		{
 			if (pJoypad->GetTrigger(0, CJoypad::KEY_START) || pJoypad->GetTrigger(0, CJoypad::KEY_A))

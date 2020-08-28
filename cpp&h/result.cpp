@@ -22,7 +22,7 @@
 //=============================================================================
 CResult::CResult()
 {
-
+	nCntSkip = 0;
 }
 
 //=============================================================================
@@ -78,11 +78,18 @@ void CResult::Update(void)
 
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
-				// ランキングへ
-				pFade->SetFade(CManager::MODE_RANKING);
+				// ゲームへ
+				pFade->SetFade(CManager::MODE_GAME);
 			}
 		}
+		if (nCntSkip >= DERAY_TIME(5))
+		{
+			// ゲームへ
+			pFade->SetFade(CManager::MODE_GAME);
+		}
 	}
+	// スキップカウントアップ
+	nCntSkip++;
 }
 
 //=============================================================================
