@@ -744,7 +744,14 @@ bool CNetwork::UpdateTCP(void)
 	{
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
-		 // チュートリアルへ
+			// 初期化
+			for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+			{
+				m_selectState[nCount].bReady = false;
+				m_selectState[nCount].nType = -1;
+			}
+
+			// チュートリアルへ
 			CManager::GetFade()->SetFade(CManager::MODE_GAME);
 		}
 	}
