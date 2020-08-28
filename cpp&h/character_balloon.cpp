@@ -64,7 +64,6 @@ void CCharacter_Balloon::Init(void)
 			CCharacter::GetMatrix(-1),
 			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
 			objtype,
-
 			this
 		);
 		// ステータスの反映 //
@@ -294,21 +293,16 @@ bool CCharacter_Balloon::BalloonNone(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CCharacter_Balloon::BalloonCreate(void)
 {
-	// 所持している風船が0超過なら
-	// ->風船を生成する処理
-	if (m_pBalloon_group->GetBringBalloon_group() > 0)
+	// 変数宣言
+	CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
+	// キャラクタータイプがNPCなら
+	if (CCharacter::GetCharacter() == CCharacter::CHARACTER_NPC)
 	{
-		// 変数宣言
-		CCollision::OBJTYPE objtype = CCollision::OBJTYPE_PLAYER_BALLOON;
-		// キャラクタータイプがNPCなら
-		if (CCharacter::GetCharacter() == CCharacter::CHARACTER_NPC)
-		{
-			objtype = CCollision::OBJTYPE_ENEMY_BALLOON;
-		}
-		m_pBalloon_group->CreateBalloon_group(
-			objtype,
-			this);
+		objtype = CCollision::OBJTYPE_ENEMY_BALLOON;
 	}
+	m_pBalloon_group->CreateBalloon_group(
+		objtype,
+		this);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
