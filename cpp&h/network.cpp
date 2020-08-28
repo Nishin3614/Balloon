@@ -36,6 +36,10 @@ CNetwork::CNetwork()
 	m_nId = -1;
 	m_bTimeout = false;
 
+	m_selectBalloon.bCreate = false;
+	m_selectBalloon.nId = -1;
+	m_selectBalloon.nType = -1;
+
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
 		m_selectState[nCount].bReady = false;
@@ -548,6 +552,37 @@ void CNetwork::Create(void)
 		CPointCircle::Create(m_pointcircleEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 		m_pointcircleEvent.bCreate = false;
 	}
+
+	if (m_selectBalloon.bCreate)
+	{
+		if (m_selectState[m_selectBalloon.nId].pBalloonNum == NULL)
+		{// 選択中プレイヤー表示UIが存在していないとき
+		 // UIの作成
+			m_selectState[m_selectBalloon.nId].pBalloonNum = CBalloonNum::Create(m_selectBalloon.nId);
+
+			if (m_selectState[m_selectBalloon.nId].pBalloonNum != NULL)
+			{
+				m_selectState[m_selectBalloon.nId].pBalloonNum->SetPosition(m_samplePos[m_selectBalloon.nType]);
+				m_selectState[m_selectBalloon.nId].pBalloonNum->Init();
+			}
+		}
+		else
+		{// 選択中プレイヤー表示UIが存在していたとき
+			m_selectState[m_selectBalloon.nId].pBalloonNum->Release();		// 開放処理
+			m_selectState[m_selectBalloon.nId].pBalloonNum = NULL;
+
+			// UIの作成
+			m_selectState[m_selectBalloon.nId].pBalloonNum = CBalloonNum::Create(m_selectBalloon.nId);
+
+			if (m_selectState[m_selectBalloon.nId].pBalloonNum != NULL)
+			{
+				m_selectState[m_selectBalloon.nId].pBalloonNum->SetPosition(m_samplePos[m_selectBalloon.nType]);
+				m_selectState[m_selectBalloon.nId].pBalloonNum->Init();
+			}
+		}
+
+		m_selectBalloon.bCreate = false;
+	}
 }
 
 //=============================================================================
@@ -776,31 +811,9 @@ bool CNetwork::UpdateTCP(void)
 		m_selectState[nId].bReady = true;
 		m_selectState[nId].nType = nType;
 
-		if (m_selectState[nId].pBalloonNum == NULL)
-		{// 選択中プレイヤー表示UIが存在していないとき
-			// UIの作成
-			m_selectState[nId].pBalloonNum = CBalloonNum::Create(nId);
-
-			if (m_selectState[nId].pBalloonNum != NULL)
-			{
-				m_selectState[nId].pBalloonNum->SetPosition(m_samplePos[nType]);
-				m_selectState[nId].pBalloonNum->Init();
-			}
-		}
-		else
-		{// 選択中プレイヤー表示UIが存在していたとき
-			m_selectState[nId].pBalloonNum->Release();		// 開放処理
-			m_selectState[nId].pBalloonNum = NULL;
-
-			// UIの作成
-			m_selectState[nId].pBalloonNum = CBalloonNum::Create(nId);
-
-			if (m_selectState[nId].pBalloonNum != NULL)
-			{
-				m_selectState[nId].pBalloonNum->SetPosition(m_samplePos[nType]);
-				m_selectState[nId].pBalloonNum->Init();
-			}
-		}
+		m_selectBalloon.nId = nId;
+		m_selectBalloon.nType = nType;
+		m_selectBalloon.bCreate = true;
 
 		if (m_nId == nId)
 		{
