@@ -44,8 +44,9 @@ public:
 
 	static CPointCircle *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
 	static void Unload(void);													// アンロード
-
+	static int &GetAllPointCircle(void) { return m_nAllPointCircle; };			// ポイントサークルの総数取得
 private:
+	static int m_nAllPointCircle;						// ポイントサークルの総数
 	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;			// 頂点バッファへのポインタ
 	VERTEX_3D *m_pVtx;									// 頂点情報へのポインタ
 	D3DXMATRIX m_mtxWorld;								// ワールドマトリックス

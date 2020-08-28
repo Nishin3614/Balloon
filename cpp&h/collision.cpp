@@ -325,6 +325,13 @@ void CCollision::CollisionDetection(void)
 			{
 				continue;
 			}
+			else if ((pCollision1->m_nMyObjectId == OBJTYPE_FISH &&
+				pCollision2->m_nMyObjectId == OBJTYPE_ENEMY_BALLOON) ||
+				(pCollision1->m_nMyObjectId == OBJTYPE_FISH &&
+					pCollision2->m_nMyObjectId == OBJTYPE_PLAYER_BALLOON))
+			{
+				continue;
+			}
 			// •Ï”éŒ¾
 			bool bJudg = false;	// “–‚½‚è”»’èó‘Ô
 								// ƒNƒ‰ƒXŒ^”äŠr //

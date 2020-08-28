@@ -25,7 +25,7 @@
 #define PLAYER_MOTIONFILE		"data/LOAD/PLAYER/Tricker.txt"		// モーションのファイル名
 #define PLAYER_FALL				(-20.0f)							// 落ちる位置条件
 #define PLAYER_UI_MP_POS		(D3DXVECTOR3(78.5f, 690.0f, 0.0f))	// UI_MPの位置
-#define FISH_APPONENTPOS		(-40.0f)								// 魚出現位置
+#define FISH_APPONENTPOS		(-40.0f)							// 魚出現位置
 #define FISH_APPONENTTIME		(300)								// 魚出現タイム
 #define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
 
@@ -46,7 +46,8 @@ public:
 	// ---------モーションタイプ---------- //
 	typedef enum
 	{
-		MOTIONTYPE_JAMP = CCharacter::MOTIONTYPE_MAX,
+		MOTIONTYPE_MOVE = CCharacter::MOTIONTYPE_MAX,
+		MOTIONTYPE_JAMP,
 		MOTIONTYPE_DANCE,
 		MOTIONTYPE_MAX
 	} MOTIONTYPE;
@@ -104,6 +105,8 @@ public:
 	void MpUp(int const & nMpUp);
 	// ゲージ初期化処理
 	void GaugeStatusInit(void);
+	// プレイヤー総数取得
+	static int &GetAll(void) { return m_All; };
 protected:
 private:
 	/* 構造体 */
