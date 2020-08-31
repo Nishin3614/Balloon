@@ -387,13 +387,13 @@ void CGame::PlayerCreate(void)
 		case CPlayer::CHARATYPE_SPEED_UP:
 			m_pPlayer[nCntPlayer] = CSpeedUP::Create(nCntPlayer, pos);
 			break;
-		case CPlayer::CHARATYPE_REVIVAL:
+		case CPlayer::CHARATYPE_SCORE_UP:
 			m_pPlayer[nCntPlayer] = CScoreUP::Create(nCntPlayer, pos);
 			break;
 		case CPlayer::CHARATYPE_INVISIBLE:
 			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, pos);
-			break;
-		case CPlayer::CHARATYPE_SCORE_UP:
+			break; 
+		case CPlayer::CHARATYPE_REVIVAL:
 			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, pos);
 			break;
 		}
