@@ -266,7 +266,6 @@ void C2DGauge::ChangeGauge(
 	m_fSizeDiff =
 		(m_fSizeLast - m_size[GAUGE_UNDERLINE].x) /
 		DERAY_TIME(1);
-
 	// ˆÊ’u‚ÌÝ’è
 	m_aScene_Two[GAUGE_MAINLINE]->SetSize(m_size[GAUGE_MAINLINE]);
 	// ’¸“_À•W‚ÌÝ’è

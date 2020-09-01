@@ -79,13 +79,13 @@ void CResult::Update(void)
 			if (pFade->GetFade() == CFade::FADE_NONE)
 			{
 				// ゲームへ
-				pFade->SetFade(CManager::MODE_GAME);
+				pFade->SetFade(CManager::MODE_TITLE);
 			}
 		}
-		if (nCntSkip >= DERAY_TIME(5))
+		if (nCntSkip >= DERAY_TIME(55))
 		{
 			// ゲームへ
-			pFade->SetFade(CManager::MODE_GAME);
+			pFade->SetFade(CManager::MODE_TITLE);
 		}
 	}
 	// スキップカウントアップ

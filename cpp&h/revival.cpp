@@ -62,10 +62,14 @@ void CRevival::Update(void)
 
 	if (CPlayer::GetMPMax() == true)
 	{
-		// ó‘Ô•Ï‰»
-		m_bRevival = true;
-		CCharacter_Balloon::BalloonCreate();
-		CManager::GetNetwork()->SendTCP("RECOVERY", sizeof("RECOVERY"));
+		if (!m_bRevival)
+		{
+			CCharacter_Balloon::BalloonCreate();
+			CManager::GetNetwork()->SendTCP("RECOVERY", sizeof("RECOVERY"));
+			// ó‘Ô•Ï‰»
+			m_bRevival = true;
+		}
+
 	}
 	else
 	{

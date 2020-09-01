@@ -70,6 +70,8 @@ public:
 	);
 	static HRESULT Load(void);			// 読み込み
 	static void UnLoad(void);			// UnLoadする
+	// スピードUP状態取得
+	bool const &GetbSpeedUp(void) { return m_bSpeedUP; };
 protected:
 private:
 	/* 構造体 */
