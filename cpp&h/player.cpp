@@ -203,6 +203,8 @@ void CPlayer::Update(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 	const int nId = pNetwork->GetId();
 
+	CDebugproc::Print("[%d]回転量 : %f\n", m_nPlayerID, GetRot().y);
+
 	// 選択画面以外なら
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
@@ -629,6 +631,11 @@ void CPlayer::MyMove(void)
 	// キャラクターの重力加算処理
 	CCharacter::AddGravity(PLAYER_GRAVITY);
 	CCharacter::SetRotDest(rot);
+
+	if (pKeyboard->GetKeyboardTrigger(DIK_C))
+	{
+		CGame::GetPlayer(1)->SetRotDest(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f));
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -807,108 +814,108 @@ void CPlayer::OtherMove(void)
 	// パッド用 //
 
 	/* キーボード */
-	// 左
-	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
-	{
-		// 移動状態on
-		CCharacter::SetbMove(true);
-		// 奥
-		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
-		{
-			rot.y = -D3DX_PI * 0.25f + fRot;
+	//// 左
+	//if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_A))
+	//{
+	//	// 移動状態on
+	//	CCharacter::SetbMove(true);
+	//	// 奥
+	//	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
+	//	{
+	//		rot.y = -D3DX_PI * 0.25f + fRot;
 
-			move.x += sinf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 手前
-		else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
-		{
-			rot.y = -D3DX_PI * 0.75f + fRot;
+	//		move.x += sinf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//		move.z += cosf(D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	}
+	//	// 手前
+	//	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
+	//	{
+	//		rot.y = -D3DX_PI * 0.75f + fRot;
 
-			move.x += sinf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 左
-		else
-		{
-			rot.y = -D3DX_PI * 0.5f + fRot;
-			move.x += sinf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-	}
-	// 右
-	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_D))
-	{
-		// 移動状態on
-		CCharacter::SetbMove(true);
+	//		move.x += sinf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//		move.z += cosf(D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	}
+	//	// 左
+	//	else
+	//	{
+	//		rot.y = -D3DX_PI * 0.5f + fRot;
+	//		move.x += sinf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//		move.z += cosf(D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	}
+	//}
+	//// 右
+	//else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_D))
+	//{
+	//	// 移動状態on
+	//	CCharacter::SetbMove(true);
 
-		// 奥
-		if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
-		{
-			rot.y = D3DX_PI * 0.25f + fRot;
+	//	// 奥
+	//	if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
+	//	{
+	//		rot.y = D3DX_PI * 0.25f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 手前
-		else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
-		{
-			rot.y = D3DX_PI * 0.75f + fRot;
+	//		move.x += sinf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//		move.z += cosf(-D3DX_PI * 0.75f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	}
+	//	// 手前
+	//	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
+	//	{
+	//		rot.y = D3DX_PI * 0.75f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-		// 右
-		else
-		{
-			rot.y = D3DX_PI * 0.5f + fRot;
+	//		move.x += sinf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//		move.z += cosf(-D3DX_PI * 0.25f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	}
+	//	// 右
+	//	else
+	//	{
+	//		rot.y = D3DX_PI * 0.5f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-			move.z += cosf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
-		}
-	}
-	// 奥に行く
-	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
-	{
-		// 移動状態on
-		CCharacter::SetbMove(true);
-		rot.y = D3DX_PI * 0.0f + fRot;
-		move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-		move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-	}
-	// 手前に行く
-	else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
-	{
-		// 移動状態on
-		CCharacter::SetbMove(true);
-		rot.y = D3DX_PI * 1.0f + fRot;
-		move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-		move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
-	}
-	// それ以外
-	else
-	{
-		// 移動状態off
-		CCharacter::SetbMove(false);
-	}
-	// 風船がNULLではないなら
-	if (CCharacter_Balloon::GetBalloon() != NULL)
-	{
-		if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
-		{
-			// 宙に浮く
-			if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
-			{
-				move.y += CCharacter::GetStatus().fMaxJump;
-			}
-		}
-	}
+	//		move.x += sinf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//		move.z += cosf(-D3DX_PI * 0.5f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	}
+	//}
+	//// 奥に行く
+	//else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_W))
+	//{
+	//	// 移動状態on
+	//	CCharacter::SetbMove(true);
+	//	rot.y = D3DX_PI * 0.0f + fRot;
+	//	move.x += sinf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	move.z += cosf(-D3DX_PI * 1.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//}
+	//// 手前に行く
+	//else if (pNetwork->GetPressKeyboard(m_nPlayerID, NUM_KEY_S))
+	//{
+	//	// 移動状態on
+	//	CCharacter::SetbMove(true);
+	//	rot.y = D3DX_PI * 1.0f + fRot;
+	//	move.x += sinf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//	move.z += cosf(D3DX_PI * 0.0f + fRot) * CCharacter::GetStatus().fMaxMove;
+	//}
+	//// それ以外
+	//else
+	//{
+	//	// 移動状態off
+	//	CCharacter::SetbMove(false);
+	//}
+	//// 風船がNULLではないなら
+	//if (CCharacter_Balloon::GetBalloon() != NULL)
+	//{
+	//	if (CCharacter_Balloon::GetBalloon()->GetPopBalloon_group() != 0)
+	//	{
+	//		// 宙に浮く
+	//		if (pNetwork->GetTriggerKeyboard(m_nPlayerID, NUM_KEY_SPACE))
+	//		{
+	//			move.y += CCharacter::GetStatus().fMaxJump;
+	//		}
+	//	}
+	//}
 
 	// サーバー側からカメラの回転情報を取得する
-	fRot = pNetwork->GetRot(m_nPlayerID);	// カメラ回転
+	rot.y = pNetwork->GetRot(m_nPlayerID);	// カメラ回転
 
-	// 回転をセット
-	CCharacter::SetRotDest(rot);
+	//	// 回転をセット
+	//CCharacter::SetRotDest(rot);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -974,7 +981,7 @@ void CPlayer::Die(void)
 		// 死亡処理
 		CCharacter_Balloon::Die();
 		// コントロールする自キャラの場合
-		if (m_nPlayerID == CManager::GetPlayerID())
+		if (m_nPlayerID == CManager::GetNetwork()->GetId())
 		{
 			m_bDie[m_nPlayerID] = true;			// 死亡フラグを立てる
 			CUi_group::Create(CUi::UITYPE_DIE);
@@ -1022,12 +1029,12 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			if (m_nPlayerID == pNetwork->GetId())
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1060,13 +1067,13 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			if (m_nPlayerID == pNetwork->GetId())
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					// スコア加算処理
 					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1170,12 +1177,12 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 			if (CManager::GetMode() == CManager::MODE_GAME)
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)

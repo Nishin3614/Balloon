@@ -467,7 +467,8 @@ bool CNetwork::KeyData(void)
 
 	if (pNetwork != NULL)
 	{
-		D3DXVECTOR3 rot = pCamera->GetRot();
+		D3DXVECTOR3 rot = CGame::GetPlayer(m_nId)->GetRotDest();
+
 		char data[1024];
 		bool aKeyState[NUM_KEY_M] = {};
 
@@ -715,6 +716,7 @@ bool CNetwork::UpdateUDP(void)
 		{
 			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
 			pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
+			pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
 		}
 	}
 

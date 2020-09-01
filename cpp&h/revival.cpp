@@ -68,8 +68,14 @@ void CRevival::Update(void)
 			CManager::GetNetwork()->SendTCP("RECOVERY", sizeof("RECOVERY"));
 			// ó‘Ô•Ï‰»
 			m_bRevival = true;
+			SetMPMax(false);
 		}
 
+		//// ó‘Ô•Ï‰»
+		//m_bRevival = true;
+		//CCharacter_Balloon::BalloonCreate();
+		//CManager::GetNetwork()->SendTCP("RECOVERY", sizeof("RECOVERY"));
+		//SetMPMax(false);
 	}
 	else
 	{
