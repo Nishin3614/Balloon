@@ -964,12 +964,12 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			if (m_nPlayerID == pNetwork->GetId())
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1002,13 +1002,13 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			if (m_nPlayerID == pNetwork->GetId())
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					// スコア加算処理
 					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1112,12 +1112,12 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 			if (CManager::GetMode() == CManager::MODE_GAME)
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
