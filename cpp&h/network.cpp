@@ -467,7 +467,7 @@ bool CNetwork::KeyData(void)
 
 	if (pNetwork != NULL)
 	{
-		D3DXVECTOR3 rot = pCamera->GetRot() + CGame::GetPlayer(m_nId)->GetRot();
+		D3DXVECTOR3 rot = CGame::GetPlayer(m_nId)->GetRot();
 		char data[1024];
 		bool aKeyState[NUM_KEY_M] = {};
 
