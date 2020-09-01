@@ -191,6 +191,10 @@ public:
 	static void UnLoad(void);
 	// キャラクターの静的変数の初期化
 	static void InitStatic(void);
+	// 目標回転量設定
+	void SetRotDest(D3DXVECTOR3 const &rotDest) { m_rotLast = rotDest; };
+	// 目標回転量取得
+	D3DXVECTOR3 GetRotDest(void) const { return m_rotLast; };
 #ifdef _DEBUG
 	virtual void  Debug(void);
 	static void AllDebug(void);
@@ -207,8 +211,6 @@ protected:
 	void ComplusionSetMotion(int const nMotiontype);
 	// 重力
 	void FagGravity(void);						// 重力
-	// 目標回転量設定
-	void SetRotDest(D3DXVECTOR3 const &rotDest)		{ m_rotLast = rotDest; };
 	// 透明度の設定
 	static void SetAlpha(float fAlpha) { m_fAlpha = fAlpha; }
 	// 設定 //
@@ -218,8 +220,6 @@ protected:
 	int GetOldMotion(void) const					{ return m_nMotiontypeOld; };
 	// キーカウント
 	int GetKeyInfoCnt(void) const					{ return m_keyinfoCnt; };
-	// 目標回転量取得
-	D3DXVECTOR3 GetRotDest(void) const				{ return m_rotLast; };
 	// モーションカメラの更新
 	void MotionCamera(void);
 	/* 変数 */
