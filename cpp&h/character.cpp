@@ -487,35 +487,9 @@ void CCharacter::Move(void)
 	// ’…’nó‘Ô‚È‚ç
 	else
 	{
-		// ˆÚ“®ó‘Ô‚Å‚Í‚È‚¢‚È‚ç
-		if (!m_bMove)
-		{
-			// ’ïR—Í
-			m_move.x *= m_sStatus[m_character].fMaxInertia;
-			m_move.z *= m_sStatus[m_character].fMaxInertia;
-		}
-		// ˆÚ“®ó‘Ô‚È‚ç
-		else
-		{
-			// x‚ÌˆÚ“®—Ê§ŒÀ
-			if (m_move.x > CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.x = CCharacter::GetStatus().fMaxMove;
-			}
-			else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.x = -CCharacter::GetStatus().fMaxMove;
-			}
-			// z‚ÌˆÚ“®—Ê§ŒÀ
-			if (m_move.z > CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.z = CCharacter::GetStatus().fMaxMove;
-			}
-			else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.z = -CCharacter::GetStatus().fMaxMove;
-			}
-		}
+		// ’ïR—Í
+		m_move.x *= m_sStatus[m_character].fMaxInertia;
+		m_move.z *= m_sStatus[m_character].fMaxInertia;
 	}
 	// ãŒÀˆ—
 	Limit();
