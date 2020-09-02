@@ -122,46 +122,51 @@ void CPointCircle::Update(void)
 	m_nCounterAnim++;
 	m_nCntDraw++;
 
-
-	// キャラクターへのポインタ
-	CPlayer *pPlayer = CGame::GetPlayer(CManager::GetNetwork()->GetId());
-
-	if (pPlayer != NULL)
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
-		// キャラクターのポジション取得
-		D3DXVECTOR3 charaPos = pPlayer->GetPos();
+		// キャラクターへのポインタ
+		CPlayer *pPlayer = CGame::GetPlayer(nCount);
 
-		// 前回のポジション設定
-		m_posOld = m_pos;
-
-		// 敵とプレイヤーのⅩ座標差分
-		fX_Difference = m_pos.x - charaPos.x;
-
-		// 敵とプレイヤーのZ座標差分
-		fZ_Difference = m_pos.z - charaPos.z;
-
-		// 敵とプレイヤーの一定距離
-		fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
-
-		// プレイヤーが一定距離に近づいたら
-		if (fDifference < m_fDistance)
+		if (pPlayer != NULL)
 		{
-			// パーティクル生成
-			C3DParticle::Create(
-				C3DParticle::PARTICLE_ID_CROSSLINE,
-				charaPos
-			);
+			// キャラクターのポジション取得
+			D3DXVECTOR3 charaPos = pPlayer->GetPos();
 
-			if (m_nCntPoint > 60)
+			// 前回のポジション設定
+			m_posOld = m_pos;
+
+			// 敵とプレイヤーのⅩ座標差分
+			fX_Difference = m_pos.x - charaPos.x;
+
+			// 敵とプレイヤーのZ座標差分
+			fZ_Difference = m_pos.z - charaPos.z;
+
+			// 敵とプレイヤーの一定距離
+			fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
+
+			// プレイヤーが一定距離に近づいたら
+			if (fDifference < m_fDistance)
 			{
-				m_bPoint = true;
-				//CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
-				m_nCntPoint = 0;
-			}
-			else
-			{
-				m_bPoint = false;
-				m_nCntPoint++;
+				// パーティクル生成
+				C3DParticle::Create(
+					C3DParticle::PARTICLE_ID_CROSSLINE,
+					charaPos
+				);
+
+				if (nCount == CManager::GetNetwork()->GetId())
+				{
+					if (m_nCntPoint > 60)
+					{
+						m_bPoint = true;
+						//CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+						m_nCntPoint = 0;
+					}
+					else
+					{
+						m_bPoint = false;
+						m_nCntPoint++;
+					}
+				}
 			}
 		}
 	}
