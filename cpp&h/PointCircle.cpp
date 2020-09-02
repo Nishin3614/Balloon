@@ -27,6 +27,7 @@
 //
 // ==========================================================
 int CPointCircle::m_nAllPointCircle = 0;
+bool CPointCircle::m_bPoint = false;
 
 // ==========================================================
 //
@@ -153,11 +154,13 @@ void CPointCircle::Update(void)
 
 			if (m_nCntPoint > 60)
 			{
-				CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+				m_bPoint = true;
+				//CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				m_nCntPoint = 0;
 			}
 			else
 			{
+				m_bPoint = false;
 				m_nCntPoint++;
 			}
 		}
