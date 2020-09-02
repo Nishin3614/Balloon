@@ -58,12 +58,11 @@ void CSphereCollision::Uninit(void)
 	m_pSphereShape.reset();
 #ifdef _DEBUG
 	// メッシュスフィアが生成されていたら
-	if (m_uni_pMeshsphere)
+	if (m_pDebugSphere != NULL)
 	{
-		// あたり判定可視化の変数
-		m_uni_pMeshsphere->Uninit();
-		// あたり判定可視化の変数
-		m_uni_pMeshsphere.reset();
+		// あたり判定可視化の開放
+		m_pDebugSphere->Release();
+		m_pDebugSphere = NULL;
 	}
 #endif // _DEBUG
 }
@@ -80,12 +79,6 @@ void CSphereCollision::Update(void)
 	{
 		return;
 	}
-	// メッシュスフィアが生成されていたら
-	if (m_uni_pMeshsphere)
-	{
-		// あたり判定可視化の変数
-		m_uni_pMeshsphere->Update();
-	}
 #endif // _DEBUG
 }
 
@@ -101,12 +94,6 @@ void CSphereCollision::Draw(void)
 	{
 		return;
 	}
-	// メッシュスフィアが生成されていたら
-	if (m_uni_pMeshsphere)
-	{
-		// あたり判定可視化の変数
-		m_uni_pMeshsphere->Draw();
-	}
 #endif // _DEBUG
 }
 
@@ -117,17 +104,13 @@ void CSphereCollision::Draw(void)
 void CSphereCollision::Debug(void)
 {
 	// メッシュスフィアが生成されていたら
-	if (m_uni_pMeshsphere)
+	if (m_pDebugSphere != NULL)
 	{
 		// メッシュスフィアの位置設定
-		m_uni_pMeshsphere->SetPosition(
+		m_pDebugSphere->SetPosition(
 			m_pSphereShape->m_DestPos
 		);
 	}
-	ImGui::Text("----------SphereCollision_Information----------");
-	ImGui::Text("Radius(%.1f)", m_pSphereShape->GetRadius());
-	//CDebugproc::Print("----------球の当たり判定情報----------\n");
-	//CDebugproc::Print("半径(%.1f)\n", m_pSphereShape->GetRadius());
 	CCollision::Debug();
 }
 
@@ -137,14 +120,15 @@ void CSphereCollision::Debug(void)
 void CSphereCollision::Collision_Visible_Set(void)
 {
 	// メッシュスフィア
-	m_uni_pMeshsphere = std::move(CMeshsphere::Create_Unique(
+	m_pDebugSphere = CMeshsphere::Create(
 		m_pSphereShape->m_DestPos,
 		m_pSphereShape->GetRadius(),
 		10,
 		10,
 		D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
-		CMeshsphere::TEXTYPE_NONE
-	));
+		CMeshsphere::TEXTYPE_NONE,
+		CScene::LAYER_DEBUGCOLLISION
+	);
 }
 
 #endif // _DEBUG

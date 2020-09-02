@@ -135,7 +135,7 @@ private:
 	std::unique_ptr<CSphereShape> m_pSphereShape;	// ‹…
 #ifdef _DEBUG
 	// ‚ ‚½‚è”»’è‰Â‹‰»‚Ì•Ï”
-	std::unique_ptr<CMeshsphere> m_uni_pMeshsphere;
+	CMeshsphere * m_pDebugSphere;
 #endif // _DEBUG
 };
 

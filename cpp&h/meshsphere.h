@@ -87,6 +87,7 @@ public:
 		int const &nHeightBlock = 10,
 		D3DXCOLOR const &col = D3DXCOLOR_INI,
 		TEXTYPE	const &textype = TEXTYPE_WORLD,
+		CScene::LAYER const &layer = CScene::LAYER_WORLD,
 		int const &nMaxFrame = 0
 	);
 	// ê∂ê¨(å¬êlä«óù)

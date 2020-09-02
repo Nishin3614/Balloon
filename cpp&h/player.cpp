@@ -85,8 +85,8 @@ void CPlayer::Init(void)
 	D3DXVECTOR3 pos;	// ゲージの配置用
 
 	// 移動量代入
-	m_fMoveAdd = CCharacter::GetStatus().fMaxMove * 0.01f;
-	m_fMoveNow += m_fMoveAdd;
+	m_fMoveAdd = CCharacter::GetStatus().fMaxMove * 0.1f;
+	m_fMoveNow = CCharacter::GetStatus().fMaxMove;
 
 	// カメラの初期化
 	// カメラの注視点設定
@@ -280,6 +280,39 @@ void CPlayer::Update(void)
 		{
 			m_pRank->SetPos(D3DXVECTOR3(m_pos.x, m_pos.y + 120.0f, m_pos.z));
 		}
+
+		if (CManager::GetMode() == CManager::MODE_GAME)
+		{
+			// キャラクター情報取得
+			CCharacter::CHARACTER character = CCharacter::GetCharacter();
+
+			// プレイヤーのスコア加算追加
+			if (m_nPlayerID == pNetwork->GetId())
+			{
+				if (CPointCircle::GetPoint() == true)
+				{
+					// キャラクターが一致したら
+					if (character != CCharacter::CHARACTER_BALLOON2)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
+					// キャラクターが一致したら
+					if (character == CCharacter::CHARACTER_BALLOON2)
+					{
+						// 状態
+						if (CScoreUP::GetScoreUP() == true)
+						{
+							CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+						}
+						else
+						{
+							CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+						}
+					}
+				}
+			}
+		}
+
 	}
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
@@ -287,7 +320,6 @@ void CPlayer::Update(void)
 		CCharacter_Balloon::Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
-
 	// 魚出現処理
 	FishApponent();
 }
@@ -382,24 +414,52 @@ void CPlayer::MyMove(void)
 		if (pKeyboard->GetKeyboardPress(DIK_W))
 		{
 			rot.y = -D3DX_PI * 0.25f + fRot;
-
-			move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
+			{
+				move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+				move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+			}
+			// 着地状態なら
+			else
+			{
+				move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+				move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			}
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = -D3DX_PI * 0.75f + fRot;
-
-			move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
+			{
+				move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+				move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+			}
+			// 着地状態なら
+			else
+			{
+				move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+				move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			}
 		}
 		// 左
 		else
 		{
 			rot.y = -D3DX_PI * 0.5f + fRot;
-			move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
+			{
+				move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+				move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+			}
+			// 着地状態なら
+			else
+			{
+				move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+				move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			}
 		}
 	}
 	// 右
@@ -413,24 +473,52 @@ void CPlayer::MyMove(void)
 		{
 			rot.y = D3DX_PI * 0.25f + fRot;
 
-			move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
+			{
+				move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+				move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+			}
+			// 着地状態なら
+			else
+			{
+				move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+				move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+			}
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = D3DX_PI * 0.75f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
+			{
+				move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+				move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+			}
+			// 着地状態なら
+			else
+			{
+				move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+				move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+			}
 		}
 		// 右
 		else
 		{
 			rot.y = D3DX_PI * 0.5f + fRot;
-
-			move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
+			{
+				move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+				move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+			}
+			// 着地状態なら
+			else
+			{
+				move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+				move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+			}
 		}
 	}
 	// 奥に行く
@@ -439,8 +527,18 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 0.0f + fRot;
-		move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
-		move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+		// 着地状態ではないなら
+		if (!CCharacter::GetbLanding())
+		{
+			move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveAdd;
+			move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveAdd;
+		}
+		// 着地状態なら
+		else
+		{
+			move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+			move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+		}
 	}
 	// 手前に行く
 	else if (pKeyboard->GetKeyboardPress(DIK_S))
@@ -448,8 +546,18 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 1.0f + fRot;
-		move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
-		move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+		// 着地状態ではないなら
+		if (!CCharacter::GetbLanding())
+		{
+			move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveAdd;
+			move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveAdd;
+		}
+		// 着地状態なら
+		else
+		{
+			move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+			move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+		}
 	}
 	else if (pKeyboard->GetKeyboardTrigger(DIK_K))
 	{
@@ -492,11 +600,11 @@ void CPlayer::MyMove(void)
 			// 速度の計算
 			if (abs(nValueH) > abs(nValueV))
 			{
-				fMove = (abs(nValueH) * m_fMoveNow) / 1024.0f;
+				fMove = (abs(nValueH) * m_fMoveAdd) / 1024.0f;
 			}
 			else
 			{
-				fMove = (abs(nValueV) * m_fMoveNow) / 1024.0f;
+				fMove = (abs(nValueV) * m_fMoveAdd) / 1024.0f;
 			}
 			rot.y = fAngle + fRot;
 
@@ -506,22 +614,6 @@ void CPlayer::MyMove(void)
 			// 移動状態on
 			CCharacter::SetbMove(true);
 		}
-	}
-	// 移動中なら
-	if (CCharacter::GetbMove())
-	{
-		// 移動量加算
-		m_fMoveNow += m_fMoveAdd;
-		// 移動量の最大値以上なら
-		if (m_fMoveNow >= CCharacter::GetStatus().fMaxMove)
-		{
-			// 移動量を最大値に
-			m_fMoveNow = CCharacter::GetStatus().fMaxMove;
-		}
-	}
-	else
-	{
-		m_fMoveNow = 0;
 	}
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
@@ -616,7 +708,6 @@ void CPlayer::MpUp(
 		{
 			// リセット開始
 			m_bResetMP = true;
-
 			// サーバーに報告
 			CNetwork *pNetwork = CManager::GetNetwork();
 			pNetwork->SendTCP("START_SP", sizeof("START_SP"));
@@ -627,7 +718,7 @@ void CPlayer::MpUp(
 			if (m_pFramework != NULL)
 			{
 				// フレームワーク情報の使用状態設定
-				m_pFramework->SetUse(true);;
+				m_pFramework->SetUse(true);
 			}
 		}
 	}
@@ -652,7 +743,7 @@ void CPlayer::MpUp(
 			if (m_pFramework != NULL)
 			{
 				// フレームワーク情報の使用状態設定
-				m_pFramework->SetUse(false);;
+				m_pFramework->SetUse(false);
 			}
 		}
 	}
@@ -970,12 +1061,12 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			if (m_nPlayerID == pNetwork->GetId())
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1008,13 +1099,13 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 			if (m_nPlayerID == pNetwork->GetId())
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					// スコア加算処理
 					CManager::GetGame()->GetScore()->AddScore(SCORETYPE_BALLOON);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1118,12 +1209,12 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 			if (CManager::GetMode() == CManager::MODE_GAME)
 			{
 				// キャラクターが一致したら
-				if (character != CCharacter::CHARACTER_BALLOON4)
+				if (character != CCharacter::CHARACTER_BALLOON2)
 				{
 					CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
 				}
 				// キャラクターが一致したら
-				if (character == CCharacter::CHARACTER_BALLOON4)
+				if (character == CCharacter::CHARACTER_BALLOON2)
 				{
 					// 状態
 					if (CScoreUP::GetScoreUP() == true)
@@ -1170,7 +1261,8 @@ void CPlayer::Debug(void)
 	//CDebugproc::Print("-----プレイヤー番号[%d]-----\n", m_nPlayerID);
 	// キャラクターデバッグ
 	CCharacter_Balloon::Debug();
-
+	// 現在のスピードを表示
+	CDebugproc::Print("現在のスピード(%.3f)\n", m_fMoveNow);
 
 }
 #endif // _DEBUG

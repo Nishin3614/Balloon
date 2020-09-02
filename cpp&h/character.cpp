@@ -15,6 +15,7 @@
 #include "ui.h"
 #include "Extrusion.h"
 #include "network.h"
+#include "speedUP.h"
 
 #include "rectcollision.h"
 #include "spherecollision.h"
@@ -410,10 +411,112 @@ void CCharacter::Move(void)
 
 	// 位置情報更新
 	m_pos += m_move;
-	// 移動
-	// 抵抗力
-	m_move.x *= CCharacter::GetStatus().fMaxInertia;
-	m_move.z *= CCharacter::GetStatus().fMaxInertia;
+	// 着地状態ではないなら
+	if (!m_bLanding)
+	{
+		// キャラクターがバルーンキャラクター1なら
+		if (m_character == CCharacter::CHARACTER_BALLOON1)
+		{
+			// 変数宣言
+			CSpeedUP * pSpeedUp = (CSpeedUP *)this;	// スピードキャラクター情報
+			if (pSpeedUp->GetbSpeedUp())
+			{
+				// xの移動量制限
+				if (m_move.x > CCharacter::GetStatus().fMaxSkill)
+				{
+					m_move.x = CCharacter::GetStatus().fMaxSkill;
+				}
+				else if (m_move.x < -CCharacter::GetStatus().fMaxSkill)
+				{
+					m_move.x = -CCharacter::GetStatus().fMaxSkill;
+				}
+				// zの移動量制限
+				if (m_move.z > CCharacter::GetStatus().fMaxSkill)
+				{
+					m_move.z = CCharacter::GetStatus().fMaxSkill;
+				}
+				else if (m_move.z < -CCharacter::GetStatus().fMaxSkill)
+				{
+					m_move.z = -CCharacter::GetStatus().fMaxSkill;
+				}
+			}
+			else
+			{
+				// xの移動量制限
+				if (m_move.x > CCharacter::GetStatus().fMaxMove)
+				{
+					m_move.x = CCharacter::GetStatus().fMaxMove;
+				}
+				else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
+				{
+					m_move.x = -CCharacter::GetStatus().fMaxMove;
+				}
+				// zの移動量制限
+				if (m_move.z > CCharacter::GetStatus().fMaxMove)
+				{
+					m_move.z = CCharacter::GetStatus().fMaxMove;
+				}
+				else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
+				{
+					m_move.z = -CCharacter::GetStatus().fMaxMove;
+				}
+			}
+		}
+		else
+		{
+			// xの移動量制限
+			if (m_move.x > CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.x = CCharacter::GetStatus().fMaxMove;
+			}
+			else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.x = -CCharacter::GetStatus().fMaxMove;
+			}
+			// zの移動量制限
+			if (m_move.z > CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.z = CCharacter::GetStatus().fMaxMove;
+			}
+			else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.z = -CCharacter::GetStatus().fMaxMove;
+			}
+		}
+	}
+	// 着地状態なら
+	else
+	{
+		// 移動状態ではないなら
+		if (!m_bMove)
+		{
+			// 抵抗力
+			m_move.x *= m_sStatus[m_character].fMaxInertia;
+			m_move.z *= m_sStatus[m_character].fMaxInertia;
+		}
+		// 移動状態なら
+		else
+		{
+			// xの移動量制限
+			if (m_move.x > CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.x = CCharacter::GetStatus().fMaxMove;
+			}
+			else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.x = -CCharacter::GetStatus().fMaxMove;
+			}
+			// zの移動量制限
+			if (m_move.z > CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.z = CCharacter::GetStatus().fMaxMove;
+			}
+			else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
+			{
+				m_move.z = -CCharacter::GetStatus().fMaxMove;
+			}
+		}
+	}
 	// 上限処理
 	Limit();
 
@@ -762,6 +865,8 @@ void CCharacter::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCharacter::GetFloorHeight(void)
 {
+	// キャラクターがキャラクター魚なら
+	if (m_character == CHARACTER_FISH) return false;
 	// 変数宣言
 	CFloor * pFloor = NULL;	// 床
 							// 情報取得
@@ -1109,6 +1214,8 @@ void CCharacter::Debug(void)
 	{
 		m_pCharacterCollision->Debug();
 	}
+	// 移動量表示
+	CDebugproc::Print("キャラクター[%d]:移動量(%.2f,%.2f,%.2f)\n", m_character, m_move.x, m_move.y, m_move.z);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
