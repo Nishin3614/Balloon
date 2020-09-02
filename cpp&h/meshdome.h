@@ -78,23 +78,24 @@ public:
 	static void UnLoad(void);
 	// 作成処理(シーン管理)
 	static CMeshdome * Create(
-		D3DXVECTOR3 const &pos,							// 位置
-		D3DXVECTOR3 const &size,						// サイズ
-		int const &nWidth = 10,							// 横数
-		int const &nDepth = 5,							// 縦数
-		TYPE const &type = TYPE_NORMAL,					// タイプ
-		D3DXCOLOR	const &col = D3DXCOLOR_INI,			// カラー
-		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO		// 回転
+		D3DXVECTOR3 const &pos,										// 位置
+		D3DXVECTOR3 const &size,									// サイズ
+		int const &nWidth = 10,										// 横数
+		int const &nDepth = 5,										// 縦数
+		TYPE const &type = TYPE_NORMAL,								// タイプ
+		D3DXCOLOR	const &col = D3DXCOLOR_INI,						// カラー
+		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,					// 回転
+		CScene::LAYER const &layer = CScene::LAYER_DOME				// レイヤー
 	);
 	// 作成処理(個人管理)
 	static CMeshdome * Create_Self(
-		D3DXVECTOR3 const &pos,							// 位置
-		D3DXVECTOR3 const &size,						// サイズ
-		int const &nWidth = 10,							// 横数
-		int const &nDepth = 5,							// 縦数
-		TYPE const &type = TYPE_NORMAL,					// タイプ
-		D3DXCOLOR	const &col = D3DXCOLOR_INI,			// カラー
-		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO		// 回転
+		D3DXVECTOR3 const &pos,										// 位置
+		D3DXVECTOR3 const &size,									// サイズ
+		int const &nWidth = 10,										// 横数
+		int const &nDepth = 5,										// 縦数
+		TYPE const &type = TYPE_NORMAL,								// タイプ
+		D3DXCOLOR	const &col = D3DXCOLOR_INI,						// カラー
+		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO					// 回転
 	);
 	// 取得
 	bool GetUse(void);						// 使用状態

@@ -39,7 +39,7 @@ public:
 	// 3Dオブジェクト
 	typedef struct OBJECT
 	{
-		OBJECT() 
+		OBJECT()
 		{
 			nModelType = 0;
 			pos = D3DVECTOR3_ZERO;
@@ -128,7 +128,7 @@ public:
 	C3DMap();
 	~C3DMap();
 #ifdef _DEBUG
-	void Debug(void);
+	static void Debug(void);
 #endif // _DEBUG
 	static HRESULT LoadCreate(MAP const &map);					// 読み込んだ情報を生成
 	static void LoadScript(char* Add);
@@ -142,7 +142,7 @@ protected:
 private:
 	/* 関数 */
 	// キャラクター生成
-	void CharaCreate(void);							
+	void CharaCreate(void);
 	/* 変数 */
 	static std::vector<std::vector<OBJECT>> m_vec_obj;
 	static std::vector<std::vector<CHARACTER>> m_vec_char;
@@ -150,6 +150,7 @@ private:
 	static std::vector<std::vector<FLOOR>> m_vec_floor;
 	static std::vector<std::vector<WALL>> m_vec_wall;
 	static std::vector<std::string> m_vec_String;					// ファイル情報読み書き用
+	static D3DXVECTOR3 m_CollisionPos[3];
 	int m_nType;									// タイプ
 };
 

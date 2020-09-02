@@ -268,7 +268,8 @@ CMeshdome * CMeshdome::Create(
 	int const &nDepth,			// 縦数
 	TYPE const &type,			// タイプ
 	D3DXCOLOR	const &col,		// カラー
-	D3DXVECTOR3 const &rot		// 回転
+	D3DXVECTOR3 const &rot,		// 回転
+	CScene::LAYER const & layer	// レイヤー
 )
 {
 	// 変数宣言
@@ -276,7 +277,7 @@ CMeshdome * CMeshdome::Create(
 	// メモリの生成(初め->基本クラス,後->派生クラス)
 	pMeshdome = new CMeshdome();
 	// シーン管理設定
-	pMeshdome->ManageSetting(CScene::LAYER_DOME);
+	pMeshdome->ManageSetting(layer);
 	// 位置情報
 	pMeshdome->m_pos = pos;
 	// サイズ情報
@@ -383,6 +384,7 @@ void CMeshdome::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 	VERTEX_3D *pVtx;			// 頂点情報へのポイント
 	WORD * pIdx;				// インデックスデータへのポインタを取得
 	D3DXVECTOR3 VecA, VecB;		// ベクトル
+	float fySplitSize;			// yの分割サイズ
 	int nCountDirect;			// 縦のカウント
 	int nCountWidth;			// 横のカウント
 	int nCntBlock = 0;
@@ -391,7 +393,8 @@ void CMeshdome::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 	D3DXVECTOR3 *pCross;		// ポリゴンの外積
 	pCross =					// メモリ確保
 		new D3DXVECTOR3[m_nBlock_Width * m_nBlock_Depth * 2];
-
+	// yの分割サイズ計算
+	fySplitSize = m_size.y / m_nBlock_Depth;
 	// 角度の計算
 	fAngle = D3DX_PI * 2 / m_nBlock_Width;
 
@@ -434,7 +437,7 @@ void CMeshdome::MakeVertex(LPDIRECT3DDEVICE9 pDevice)
 			pVtx[0].pos =
 				D3DXVECTOR3(
 					(sinf(fRadian) * m_size.x),
-					m_size.y * nCountDirect,
+					fySplitSize * nCountDirect,
 					(cosf(fRadian) * m_size.z));
 			// 法線ベクトルの設定
 			//pVtx[0].nor = pVtx[0].pos;

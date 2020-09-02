@@ -15,7 +15,7 @@
 // ==========================================================
 #define	TEXTURE_THUNDER	"data/TEXTURE/coin.png"			// 読み込むテクスチャファイル名
 #define	MAX_DISTANCE	(150)							// 距離
-#define	MAX_DISTANCE_Y	(200)							// 距離
+#define	MAX_DISTANCE_Y	(2000)							// 距離
 #define	ANIM_TEX		(1.0f / 6.0f)					// アニメーションテクスチャ
 
 // ==========================================================

@@ -320,8 +320,8 @@ void CPlayer::Update(void)
 		CCharacter_Balloon::Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
-	// 魚出現処理
-	FishApponent();
+	//// 魚出現処理
+	//FishApponent();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -780,26 +780,16 @@ void CPlayer::OtherAction(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::FishApponent(void)
 {
-	// プレイヤーの位置が指定した位置以下なら
-	if (CCharacter::GetPos().y <= FISH_APPONENTPOS)
+	// 出現カウント
+	if (m_nCntFishApponent == FISH_APPONENTTIME)
 	{
-		// 出現カウント
-		if (m_nCntFishApponent == FISH_APPONENTTIME)
-		{
-			// 魚生成
-			CCharacter_Fish::Create(CCharacter::GetPos());
-			// 魚出現カウント初期化処理
-			m_nCntFishApponent = 0;
-		}
-		// 魚出現カウントアップ
-		m_nCntFishApponent++;
-	}
-	// それ以外
-	else
-	{
+		// 魚生成
+		CCharacter_Fish::Create(CCharacter::GetPos());
 		// 魚出現カウント初期化処理
 		m_nCntFishApponent = 0;
 	}
+	// 魚出現カウントアップ
+	m_nCntFishApponent++;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1049,11 +1039,8 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 	// バルーンキャラクターの当たった後の処理
 	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
-	// シーン情報がNULLなら
-	// ->関数を抜ける
-	if (pScene == NULL) return;
 	// オブジェクトタイプがアイテムなら
-	else if (nObjType == CCollision::OBJTYPE_ITEM)
+	if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
 		if (CManager::GetMode() == CManager::MODE_GAME)
 		{
@@ -1173,6 +1160,11 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	else if (nObjType == CCollision::OBJTYPE_FISH)
 	{
 		Die();
+	}
+	// オブジェクトタイプが出現魚なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH)
+	{
+		FishApponent();
 	}
 }
 

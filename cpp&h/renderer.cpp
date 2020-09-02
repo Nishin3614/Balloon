@@ -13,6 +13,9 @@
 #include "camera.h"
 #include "light.h"
 
+// テスト
+#include "3Dmap.h"
+
 // ------------------------------------------
 //
 // マクロ関数
@@ -537,6 +540,11 @@ void CRenderer::UpdateImGui(void)
 	// ライト情報の設定
 	CDebugproc::Print("マウス位置(%.1f,%.1f)\n", (float)CManager::GetMouse()->GetX(), (float)CManager::GetMouse()->GetY());
 	CDebugproc::Print("ImGuiのマウス位置(%.1f,%.1f)\n",ImGui::GetMousePos().x,ImGui::GetMousePos().y);
+
+	// テスト 3Dマップの情報設定
+	C3DMap::Debug();
+
+
 	// ImGuiの更新終了
 	ImGui::End();
 	ImGui::EndFrame();

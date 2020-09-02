@@ -20,6 +20,7 @@
 #include "p_thunder.h"
 #include "p_zombie.h"
 #include "solider.h"
+#include "columncollision.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -39,6 +40,12 @@ std::vector<std::vector<C3DMap::POLYGON>> C3DMap::m_vec_polygon;
 std::vector<std::vector<C3DMap::FLOOR>> C3DMap::m_vec_floor;
 std::vector<std::vector<C3DMap::WALL>> C3DMap::m_vec_wall;
 std::vector<std::string> C3DMap::m_vec_String;
+D3DXVECTOR3 C3DMap::m_CollisionPos[3] =
+{
+	D3DXVECTOR3(761.0f,-80.0f,-482.0f),
+	D3DXVECTOR3(390.0f,-80.0f,770.0f),
+	D3DXVECTOR3(-643.0f,-110.0f,-481.0f)
+};
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -133,6 +140,21 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 			);
 	}
 
+	for (int nCntCollision = 0; nCntCollision < 3; nCntCollision++)
+	{
+		// テスト当たり判定
+		CColumnCollision::Create(
+			300.0f,
+			200.0f,
+			D3DVECTOR3_ZERO,
+			CCollision::OBJTYPE_APPEFISH,
+			NULL,
+			NULL,
+			false,
+			false,
+			&m_CollisionPos[nCntCollision]
+		);
+	}
 	return S_OK;
 }
 
