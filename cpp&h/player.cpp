@@ -280,6 +280,39 @@ void CPlayer::Update(void)
 		{
 			m_pRank->SetPos(D3DXVECTOR3(m_pos.x, m_pos.y + 120.0f, m_pos.z));
 		}
+
+		if (CManager::GetMode() == CManager::MODE_GAME)
+		{
+			// キャラクター情報取得
+			CCharacter::CHARACTER character = CCharacter::GetCharacter();
+
+			// プレイヤーのスコア加算追加
+			if (m_nPlayerID == pNetwork->GetId())
+			{
+				if (CPointCircle::GetPoint() == true)
+				{
+					// キャラクターが一致したら
+					if (character != CCharacter::CHARACTER_BALLOON2)
+					{
+						CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+					}
+					// キャラクターが一致したら
+					if (character == CCharacter::CHARACTER_BALLOON2)
+					{
+						// 状態
+						if (CScoreUP::GetScoreUP() == true)
+						{
+							CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint * 2);
+						}
+						else
+						{
+							CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+						}
+					}
+				}
+			}
+		}
+
 	}
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
