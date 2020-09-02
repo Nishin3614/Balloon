@@ -352,7 +352,6 @@ void CPlayer::MyAction(const int &nId)
 
 		// H‚¢‚ñ‚¾•ª‚¾‚¯–ß‚·
 		SetPos(pos);
-
 	}
 }
 
