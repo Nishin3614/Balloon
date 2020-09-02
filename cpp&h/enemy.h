@@ -88,6 +88,8 @@ private:
 	void Ai_Action(void);
 	// AI行動_ジャンプ状態
 	void AiAction_Jump(void);
+	// 移動距離制限処理
+	void MoveRestriction(void);
 	/* 変数 */
 	static int		m_nAllEnemy;	// 敵の総数
 	JUMP_VARIABLE	m_Jump;			// ジャンプ用変数

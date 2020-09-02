@@ -42,9 +42,11 @@ public:
 	void Update(void);										// 更新
 	void Draw(void);										// 描画
 
-	static CPointCircle *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
+	static CPointCircle *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);				// 生成
 	static void Unload(void);													// アンロード
 	static int &GetAllPointCircle(void) { return m_nAllPointCircle; };			// ポイントサークルの総数取得
+	static bool GetPoint(void) { return m_bPoint; }								// ポイント状態取得
+
 private:
 	static int m_nAllPointCircle;						// ポイントサークルの総数
 	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;			// 頂点バッファへのポインタ
@@ -67,5 +69,6 @@ private:
 	int m_nCntDraw;										// 雷の描画カウント
 	float m_fDistance;									// 距離
 	bool m_bThunder;									// 雷の状態
+	static bool m_bPoint;								// ポイントの状態
 };
 #endif
