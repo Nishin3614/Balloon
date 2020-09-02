@@ -45,13 +45,14 @@ CMeshsphere * CMeshsphere::Create(
 	int const &nHeightBlock,	// 縦数
 	D3DXCOLOR const &col,		// カラー
 	TEXTYPE	const &textype,		// テクスチャー
+	CScene::LAYER const &layer,
 	int const &nMaxFrame		// フレーム
 )
 {
 	// 変数宣言
 	CMeshsphere *pMeshsphere = new CMeshsphere;
 	// シーン管理設定
-	pMeshsphere->ManageSetting(CScene::LAYER_WORLD);
+	pMeshsphere->ManageSetting(layer);
 	// 設定
 	pMeshsphere->m_MeshSphere.pos = pos;
 	pMeshsphere->m_MeshSphere.fRadius = fRadius;

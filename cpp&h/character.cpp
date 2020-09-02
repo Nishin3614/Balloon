@@ -865,6 +865,8 @@ void CCharacter::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCharacter::GetFloorHeight(void)
 {
+	// キャラクターがキャラクター魚なら
+	if (m_character == CHARACTER_FISH) return false;
 	// 変数宣言
 	CFloor * pFloor = NULL;	// 床
 							// 情報取得

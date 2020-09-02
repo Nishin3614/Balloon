@@ -68,7 +68,7 @@ void CRevival::Update(void)
 			CManager::GetNetwork()->SendTCP("RECOVERY", sizeof("RECOVERY"));
 			// ó‘Ô•Ï‰»
 			m_bRevival = true;
-			SetMPMax(false);
+			//SetMPMax(false);
 		}
 
 		//// ó‘Ô•Ï‰»
