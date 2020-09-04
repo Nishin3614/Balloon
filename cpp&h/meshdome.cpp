@@ -38,6 +38,7 @@
 // テクスチャーID
 int CMeshdome::m_nTexId[TYPE_MAX] =
 {
+	-1,
 	25,
 	48,
 	53,
@@ -262,14 +263,15 @@ void CMeshdome::UnLoad(void)
 // 作成処理(シーン管理)
 // ----------------------------------------
 CMeshdome * CMeshdome::Create(
-	D3DXVECTOR3 const &pos,		// 位置
-	D3DXVECTOR3 const &size,	// サイズ
-	int const &nWidth,			// 横数
-	int const &nDepth,			// 縦数
-	TYPE const &type,			// タイプ
-	D3DXCOLOR	const &col,		// カラー
-	D3DXVECTOR3 const &rot,		// 回転
-	CScene::LAYER const & layer	// レイヤー
+	D3DXVECTOR3 const &pos,			// 位置
+	D3DXVECTOR3 const &size,		// サイズ
+	int const &nWidth,				// 横数
+	int const &nDepth,				// 縦数
+	TYPE const &type,				// タイプ
+	D3DXCOLOR	const &col,			// カラー
+	D3DXVECTOR3 const &rot,			// 回転
+	bool const &bDrawback,			// 両面描画状態
+	CScene::LAYER const & layer		// レイヤー
 )
 {
 	// 変数宣言
@@ -292,6 +294,8 @@ CMeshdome * CMeshdome::Create(
 	pMeshdome->m_nBlock_Depth = nDepth;
 	// タイプ
 	pMeshdome->m_type = type;
+	// 両面状態
+	pMeshdome->m_bDrawBack = bDrawback;
 	// 初期化処理
 	pMeshdome->Init();
 	// 生成したオブジェクトを返す

@@ -139,7 +139,7 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 			m_vec_wall[map][nCntMap].nTexType
 			);
 	}
-
+	// 当たり判定の生成
 	for (int nCntCollision = 0; nCntCollision < 3; nCntCollision++)
 	{
 		// テスト当たり判定
@@ -633,6 +633,12 @@ HRESULT C3DMap::ScriptLoad(void)
 					// カウント壁
 					nCntWall++;
 				}
+				// やること
+				// 当たり判定の追加
+
+
+
+
 
 				// エラーカウントをインクリメント
 				nCntError++;
