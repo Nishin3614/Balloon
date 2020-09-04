@@ -105,9 +105,10 @@ void CColumnCollision::Collision_Visible_Set(void)
 		D3DXVECTOR3(m_pColumnShape->GetRadius(),m_pColumnShape->GetVertical(),m_pColumnShape->GetRadius()),
 		10,
 		10,
-		CMeshdome::TYPE_WAVE,
+		CMeshdome::TYPE_NONE,
 		D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
 		D3DVECTOR3_ZERO,
+		true,
 		CScene::LAYER_DEBUGCOLLISION
 	);
 	m_pDebugdome->SetUse(true);

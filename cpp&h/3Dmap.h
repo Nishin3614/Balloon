@@ -123,6 +123,51 @@ public:
 		int nBlockWidth;
 		D3DXVECTOR2 size;
 	} WALL;
+	// 矩形の当たり判定
+	typedef struct RECTCOLLISION
+	{
+		RECTCOLLISION()
+		{
+			pos = D3DVECTOR3_ZERO;	// 位置
+			rot = D3DVECTOR3_ZERO;	// 回転
+			size = D3DVECTOR3_ZERO;	// サイズ
+			bPush = false;			// 押し出し処理
+		}
+		D3DXVECTOR3 pos;	// 位置
+		D3DXVECTOR3 rot;	// 回転
+		D3DXVECTOR3 size;	// サイズ
+		bool bPush;			// 押し出し処理
+	} RECTCOLLISION;
+	// 球の当たり判定
+	typedef struct SPHERECOLLISION
+	{
+		SPHERECOLLISION()
+		{
+			pos = D3DVECTOR3_ZERO;	// 位置
+			fRadius = 0.0f;			// 半径
+			bPush = false;			// 押し出し処理
+		}
+		D3DXVECTOR3 pos;	// 位置
+		float fRadius;		// 半径
+		bool bPush;			// 押し出し処理
+	} SPHERECOLLISION;
+	// 円柱の当たり判定
+	typedef struct COLUMNCOLLISION
+	{
+		COLUMNCOLLISION()
+		{
+			pos = D3DVECTOR3_ZERO;	// 位置
+			rot = D3DVECTOR3_ZERO;	// 回転
+			bPush = false;			// 押し出し処理
+			fRadius = 0.0f;			// 半径
+			fVertical = 0.0f;		// 縦
+		}
+		D3DXVECTOR3 pos;	// 位置
+		D3DXVECTOR3 rot;	// 回転
+		bool bPush;			// 押し出し処理
+		float fRadius;		// 半径
+		float fVertical;	// 縦
+	} COLUMNCOLLISION;
 
 	/* 関数 */
 	C3DMap();

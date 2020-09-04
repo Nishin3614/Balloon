@@ -38,6 +38,7 @@ public:
 	/* 列挙型 */
 	typedef enum
 	{
+		TYPE_NONE = 0,
 		TYPE_NORMAL,
 		TYPE_WARNING,
 		TYPE_POINTCIRCLE,
@@ -85,6 +86,7 @@ public:
 		TYPE const &type = TYPE_NORMAL,								// タイプ
 		D3DXCOLOR	const &col = D3DXCOLOR_INI,						// カラー
 		D3DXVECTOR3 const &rot = D3DVECTOR3_ZERO,					// 回転
+		bool const &bDrawback = false,								// 両面描画状態
 		CScene::LAYER const &layer = CScene::LAYER_DOME				// レイヤー
 	);
 	// 作成処理(個人管理)
