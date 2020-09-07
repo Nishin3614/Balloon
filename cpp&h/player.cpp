@@ -94,6 +94,26 @@ void CPlayer::Init(void)
 		CCharacter::GetPos() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
 		CCharacter::GetRot() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f)
 	);
+	// ドームのNULLチェック
+	if (m_pMeshDome == NULL)
+	{
+		// メッシュドームの生成
+		m_pMeshDome = CMeshdome::Create(
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(1300, 2000, 1300),
+			10,
+			10,
+			CMeshdome::TYPE_WARNING,
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+		if (m_pMeshDome != NULL)
+		{
+			// メッシュドームの使用状態
+			m_pMeshDome->SetUse(false);
+			m_pMeshDome->SetDrawBack(true);
+		}
+	}
 	// モードがゲームなら
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
@@ -129,25 +149,6 @@ void CPlayer::Init(void)
 		m_bDie[m_nPlayerID] = false;
 		CCharacter_Balloon::GetBalloon()->SetID(m_nPlayerID);
 
-		if (m_pMeshDome == NULL)
-		{
-			// メッシュドームの生成
-			m_pMeshDome = CMeshdome::Create(
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				D3DXVECTOR3(1200, 500, 1200),
-				10,
-				10,
-				CMeshdome::TYPE_WARNING,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-			if (m_pMeshDome != NULL)
-			{
-				// メッシュドームの使用状態
-				m_pMeshDome->SetUse(false);
-				m_pMeshDome->SetDrawBack(true);
-			}
-		}
 	}
 	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
 	{
@@ -167,7 +168,6 @@ void CPlayer::Init(void)
 			D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
 		// フレームワークの生成
 		m_pFramework = CFramework::Create();
-
 	}
 }
 
