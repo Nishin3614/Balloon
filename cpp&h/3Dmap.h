@@ -123,51 +123,58 @@ public:
 		int nBlockWidth;
 		D3DXVECTOR2 size;
 	} WALL;
-	// 矩形の当たり判定
-	typedef struct RECTCOLLISION
+	// 矩形情報
+	typedef struct RECT
 	{
-		RECTCOLLISION()
+		RECT()
 		{
-			pos = D3DVECTOR3_ZERO;	// 位置
 			rot = D3DVECTOR3_ZERO;	// 回転
 			size = D3DVECTOR3_ZERO;	// サイズ
-			bPush = false;			// 押し出し処理
 		}
-		D3DXVECTOR3 pos;	// 位置
 		D3DXVECTOR3 rot;	// 回転
 		D3DXVECTOR3 size;	// サイズ
-		bool bPush;			// 押し出し処理
-	} RECTCOLLISION;
-	// 球の当たり判定
-	typedef struct SPHERECOLLISION
+	} RECT;
+	// 球情報
+	typedef struct SPHERE
 	{
-		SPHERECOLLISION()
+		SPHERE()
 		{
-			pos = D3DVECTOR3_ZERO;	// 位置
 			fRadius = 0.0f;			// 半径
-			bPush = false;			// 押し出し処理
 		}
-		D3DXVECTOR3 pos;	// 位置
 		float fRadius;		// 半径
-		bool bPush;			// 押し出し処理
-	} SPHERECOLLISION;
-	// 円柱の当たり判定
-	typedef struct COLUMNCOLLISION
+	} SPHERE;
+	// 円柱情報
+	typedef struct COLUMN
 	{
-		COLUMNCOLLISION()
+		COLUMN()
 		{
-			pos = D3DVECTOR3_ZERO;	// 位置
 			rot = D3DVECTOR3_ZERO;	// 回転
-			bPush = false;			// 押し出し処理
 			fRadius = 0.0f;			// 半径
 			fVertical = 0.0f;		// 縦
 		}
-		D3DXVECTOR3 pos;	// 位置
 		D3DXVECTOR3 rot;	// 回転
-		bool bPush;			// 押し出し処理
 		float fRadius;		// 半径
 		float fVertical;	// 縦
-	} COLUMNCOLLISION;
+	} COLUMN;
+	// 当たり判定情報
+	typedef struct COLLISION
+	{
+		COLLISION()
+		{
+			pos = D3DVECTOR3_ZERO;	// 位置
+			bPush = false;			// 押し出し処理
+			nObjType = 0;			// オブジェクトタイプ
+			uni_Rect = NULL;		// 矩形情報
+			uni_Sphere = NULL;		// 球情報
+			uni_Column = NULL;		// 円柱情報
+		}
+		D3DXVECTOR3 pos;					// 位置
+		bool bPush;							// 押し出し処理
+		int nObjType;						// オブジェクトタイプ
+		std::unique_ptr<RECT>	uni_Rect;	// 矩形情報
+		std::unique_ptr<SPHERE>	uni_Sphere;	// 球情報
+		std::unique_ptr<COLUMN>	uni_Column;	// 円柱情報
+	} COLLISION;
 
 	/* 関数 */
 	C3DMap();
@@ -189,14 +196,14 @@ private:
 	// キャラクター生成
 	void CharaCreate(void);
 	/* 変数 */
-	static std::vector<std::vector<OBJECT>> m_vec_obj;
-	static std::vector<std::vector<CHARACTER>> m_vec_char;
-	static std::vector<std::vector<POLYGON>> m_vec_polygon;
-	static std::vector<std::vector<FLOOR>> m_vec_floor;
-	static std::vector<std::vector<WALL>> m_vec_wall;
-	static std::vector<std::string> m_vec_String;					// ファイル情報読み書き用
-	static D3DXVECTOR3 m_CollisionPos[3];
-	int m_nType;									// タイプ
+	static std::vector<std::vector<OBJECT>> m_vec_obj;			// オブジェクト情報
+	static std::vector<std::vector<CHARACTER>> m_vec_char;		// キャラクター情報
+	static std::vector<std::vector<POLYGON>> m_vec_polygon;		// ポリゴン情報
+	static std::vector<std::vector<FLOOR>> m_vec_floor;			// 床情報
+	static std::vector<std::vector<WALL>> m_vec_wall;			// 壁情報
+	static std::vector<std::vector<COLLISION>> m_vec_Collision;	// 円柱当たり判定情報
+	static std::vector<std::string> m_vec_String;				// ファイル情報読み書き用
+	int m_nType;												// タイプ
 };
 
 #endif

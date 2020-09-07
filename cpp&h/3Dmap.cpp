@@ -21,6 +21,8 @@
 #include "p_zombie.h"
 #include "solider.h"
 #include "columncollision.h"
+#include "rectcollision.h"
+#include "spherecollision.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -39,13 +41,8 @@ std::vector<std::vector<C3DMap::CHARACTER>> C3DMap::m_vec_char;
 std::vector<std::vector<C3DMap::POLYGON>> C3DMap::m_vec_polygon;
 std::vector<std::vector<C3DMap::FLOOR>> C3DMap::m_vec_floor;
 std::vector<std::vector<C3DMap::WALL>> C3DMap::m_vec_wall;
+std::vector<std::vector<C3DMap::COLLISION>> C3DMap::m_vec_Collision;
 std::vector<std::string> C3DMap::m_vec_String;
-D3DXVECTOR3 C3DMap::m_CollisionPos[3] =
-{
-	D3DXVECTOR3(761.0f,-80.0f,-482.0f),
-	D3DXVECTOR3(390.0f,-80.0f,770.0f),
-	D3DXVECTOR3(-643.0f,-110.0f,-481.0f)
-};
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -68,6 +65,18 @@ C3DMap::~C3DMap()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DMap::Debug(void)
 {
+	ImGui::Begin("3DMap::Collision");
+	for (int nCntCollision = 0; nCntCollision < (signed)m_vec_Collision[MAP_STAGE_1].size(); nCntCollision++)
+	{
+		std::string sNum = "Collision[" + std::to_string(nCntCollision) + "]";
+
+		if (ImGui::TreeNode(sNum.c_str()))
+		{
+			ImGui::DragFloat3("pos", m_vec_Collision[MAP_STAGE_1][nCntCollision].pos);
+			ImGui::TreePop();
+		}
+	}
+	ImGui::End();
 }
 #endif // _DEBUG
 
@@ -140,20 +149,54 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 			);
 	}
 	// 当たり判定の生成
-	for (int nCntCollision = 0; nCntCollision < 3; nCntCollision++)
+	for (nCntMap = 0; nCntMap < (signed)m_vec_Collision[map].size(); nCntMap++)
 	{
-		// テスト当たり判定
-		CColumnCollision::Create(
-			300.0f,
-			200.0f,
-			D3DVECTOR3_ZERO,
-			CCollision::OBJTYPE_APPEFISH,
-			NULL,
-			NULL,
-			false,
-			false,
-			&m_CollisionPos[nCntCollision]
-		);
+		// 矩形情報のNULLチェック
+		if (m_vec_Collision[map][nCntMap].uni_Rect != NULL)
+		{
+			// 矩形の生成
+			CRectCollision::Create(
+				m_vec_Collision[map][nCntMap].uni_Rect->size,
+				D3DVECTOR3_ZERO,
+				(CCollision::OBJTYPE)m_vec_Collision[map][nCntMap].nObjType,
+				NULL,
+				NULL,
+				false,
+				m_vec_Collision[map][nCntMap].bPush,
+				&m_vec_Collision[map][nCntMap].pos
+			);
+		}
+		// 球情報のNULLチェック
+		else if (m_vec_Collision[map][nCntMap].uni_Sphere != NULL)
+		{
+			// 球の生成
+			CSphereCollision::Create(
+				m_vec_Collision[map][nCntMap].uni_Sphere->fRadius,
+				D3DVECTOR3_ZERO,
+				(CCollision::OBJTYPE)m_vec_Collision[map][nCntMap].nObjType,
+				NULL,
+				NULL,
+				false,
+				m_vec_Collision[map][nCntMap].bPush,
+				&m_vec_Collision[map][nCntMap].pos
+			);
+		}
+		// 円柱情報のNULLチェック
+		else if (m_vec_Collision[map][nCntMap].uni_Column != NULL)
+		{
+			// 円柱の生成
+			CColumnCollision::Create(
+				m_vec_Collision[map][nCntMap].uni_Column->fRadius,
+				m_vec_Collision[map][nCntMap].uni_Column->fVertical,
+				D3DVECTOR3_ZERO,
+				(CCollision::OBJTYPE)m_vec_Collision[map][nCntMap].nObjType,
+				NULL,
+				NULL,
+				false,
+				m_vec_Collision[map][nCntMap].bPush,
+				&m_vec_Collision[map][nCntMap].pos
+			);
+		}
 	}
 	return S_OK;
 }
@@ -268,7 +311,13 @@ HRESULT C3DMap::ScriptLoad(void)
 	char cHeadText[128];	// 比較するよう
 	char cDie[128];			// 不必要な文字
 	int nCntError = 0;		// エラーカウント
-	int nCntObj, nCntChar, nCntPoly, nCntFloor, nCntWall;
+	int nCntObj,			// オブジェカウント
+		nCntChar,			// キャラクターカウント
+		nCntPoly,			// ポリゴンカウント
+		nCntFloor,			// 床カウント
+		nCntWall,			// 壁カウント
+		nCntCollision = 0;	// 当たり判定カウント
+	// 情報を保存
 	for (int nCntScript = 0; nCntScript < (signed)m_vec_String.size(); nCntScript++)
 	{
 		// 変数宣言
@@ -277,6 +326,7 @@ HRESULT C3DMap::ScriptLoad(void)
 		std::vector<POLYGON> vec_bill;
 		std::vector<FLOOR> vec_floor;
 		std::vector<WALL> vec_wall;
+		std::vector<COLLISION> vec_collision;
 		nCntObj = 0;
 		nCntChar = 0;
 		nCntPoly = 0;
@@ -633,12 +683,128 @@ HRESULT C3DMap::ScriptLoad(void)
 					// カウント壁
 					nCntWall++;
 				}
-				// やること
-				// 当たり判定の追加
+				// 当たり判定
+				else if (strcmp(cHeadText, "COLLISIONSET") == 0)
+				{
+					// 当たり判定追加
+					vec_collision.push_back(COLLISION());
+					// エンド当たり判定セットが来るまでループ
+					while (strcmp(cHeadText, "END_COLLISIONSET") != 0)
+					{
+						fgets(cRaedText, sizeof(cRaedText), pFile);
+						sscanf(cRaedText, "%s", &cHeadText);
 
+						// 位置情報読み込み
+						if (strcmp(cHeadText, "POS") == 0)
+						{
+							sscanf(cRaedText, "%s %s %f %f %f", &cDie, &cDie,
+								&vec_collision[nCntCollision].pos.x,
+								&vec_collision[nCntCollision].pos.y,
+								&vec_collision[nCntCollision].pos.z);
+						}
+						// オブジェクトタイプ情報読み込み
+						else if (strcmp(cHeadText, "TYPE") == 0)
+						{
+							sscanf(cRaedText, "%s %s %d", &cDie, &cDie,
+								&vec_collision[nCntCollision].nObjType);
+						}
+						// 押し出し情報読み込み
+						else if (strcmp(cHeadText, "PUSH") == 0)
+						{
+							vec_collision[nCntCollision].bPush = true;
+						}
+						// 矩形柱情報が来たら
+						else if (strcmp(cHeadText, "RECT") == 0)
+						{
+							// 矩形情報のメモリ確保
+							vec_collision[nCntCollision].uni_Rect.reset(new RECT);
+							// エンド矩形セットが来るまでループ
+							while (strcmp(cHeadText, "END_RECT") != 0)
+							{
+								fgets(cRaedText, sizeof(cRaedText), pFile);
+								sscanf(cRaedText, "%s", &cHeadText);
+								// 半径情報読み込み
+								if (strcmp(cHeadText, "SIZE") == 0)
+								{
+									sscanf(cRaedText, "%s %s %f %f %f", &cDie, &cDie,
+										&vec_collision[nCntCollision].uni_Rect->size.x,
+										&vec_collision[nCntCollision].uni_Rect->size.y,
+										&vec_collision[nCntCollision].uni_Rect->size.z);
+								}
+								// 回転情報読み込み
+								else if (strcmp(cHeadText, "ROT") == 0)
+								{
+									sscanf(cRaedText, "%s %s %f %f %f", &cDie, &cDie,
+										&vec_collision[nCntCollision].uni_Rect->rot.x,
+										&vec_collision[nCntCollision].uni_Rect->rot.y,
+										&vec_collision[nCntCollision].uni_Rect->rot.z);
+								}
+							}
+						}
+						// 球柱情報が来たら
+						else if (strcmp(cHeadText, "SPHERE") == 0)
+						{
+							// 球情報のメモリ確保
+							vec_collision[nCntCollision].uni_Sphere.reset(new SPHERE);
+							// エンド球セットが来るまでループ
+							while (strcmp(cHeadText, "END_SPHERE") != 0)
+							{
+								fgets(cRaedText, sizeof(cRaedText), pFile);
+								sscanf(cRaedText, "%s", &cHeadText);
+								// 半径情報読み込み
+								if (strcmp(cHeadText, "RADIUS") == 0)
+								{
+									sscanf(cRaedText, "%s %s %f", &cDie, &cDie,
+										&vec_collision[nCntCollision].uni_Sphere->fRadius);
+								}
+							}
+						}
+						// 円柱情報が来たら
+						else if (strcmp(cHeadText, "COLUMN") == 0)
+						{
+							// 円柱情報のメモリ確保
+							vec_collision[nCntCollision].uni_Column.reset(new COLUMN);
+							// エンド円柱セットが来るまでループ
+							while (strcmp(cHeadText, "END_COLUMN") != 0)
+							{
+								fgets(cRaedText, sizeof(cRaedText), pFile);
+								sscanf(cRaedText, "%s", &cHeadText);
+								// 回転情報読み込み
+								if (strcmp(cHeadText, "ROT") == 0)
+								{
+									sscanf(cRaedText, "%s %s %f %f %f", &cDie, &cDie,
+										&vec_collision[nCntCollision].uni_Column->rot.x,
+										&vec_collision[nCntCollision].uni_Column->rot.y,
+										&vec_collision[nCntCollision].uni_Column->rot.z);
+								}
+								// 半径情報読み込み
+								else if (strcmp(cHeadText, "RADIUS") == 0)
+								{
+									sscanf(cRaedText, "%s %s %f", &cDie, &cDie,
+										&vec_collision[nCntCollision].uni_Column->fRadius);
+								}
+								// 縦情報読み込み
+								else if (strcmp(cHeadText, "VERTICAL") == 0)
+								{
+									sscanf(cRaedText, "%s %s %f", &cDie, &cDie,
+										&vec_collision[nCntCollision].uni_Column->fVertical);
+								}
+							}
+						}
 
-
-
+						// エラーカウントをインクリメント
+						nCntError++;
+						if (nCntError > FILELINE_ERROW)
+						{// エラー
+							nCntError = 0;
+							fclose(pFile);
+							CCalculation::Messanger("エンド当たり判定セットがありません");
+							return E_FAIL;
+						}
+					}
+					// カウント当たり判定
+					nCntCollision++;
+				}
 
 				// エラーカウントをインクリメント
 				nCntError++;
@@ -660,6 +826,8 @@ HRESULT C3DMap::ScriptLoad(void)
 			m_vec_floor.push_back(std::move(vec_floor));
 			// 壁の格納
 			m_vec_wall.push_back(std::move(vec_wall));
+			// 当たり判定の格納
+			m_vec_Collision.push_back(std::move(vec_collision));
 		}
 		// ファイル閉
 		fclose(pFile);
@@ -672,6 +840,53 @@ HRESULT C3DMap::ScriptLoad(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C3DMap::UnLoad(void)
 {
+	// オブジェクト情報の開放
+	m_vec_obj.clear();
+	m_vec_obj.shrink_to_fit();
+	// キャラクター情報の開放
+	m_vec_char.clear();
+	m_vec_char.shrink_to_fit();
+	// ポリゴン情報の開放
+	m_vec_polygon.clear();
+	m_vec_polygon.shrink_to_fit();
+	// 床情報の開放
+	m_vec_floor.clear();
+	m_vec_floor.shrink_to_fit();
+	// 壁情報の開放
+	m_vec_wall.clear();
+	m_vec_wall.shrink_to_fit();
+	// 当たり判定の各形状情報の開放
+	for (int nCntMap = 0; nCntMap < (signed)m_vec_Collision.size(); nCntMap++)
+	{
+		for (int nCntCollision = 0; nCntCollision < (signed)m_vec_Collision[nCntMap].size(); nCntCollision++)
+		{
+			// 矩形情報のNULLチェック
+			if (m_vec_Collision[nCntMap][nCntCollision].uni_Rect != NULL)
+			{
+				// 矩形情報の開放
+				m_vec_Collision[nCntMap][nCntCollision].uni_Rect.reset();
+				m_vec_Collision[nCntMap][nCntCollision].uni_Rect = NULL;
+			}
+			// 球情報のNULLチェック
+			else if (m_vec_Collision[nCntMap][nCntCollision].uni_Sphere != NULL)
+			{
+				// 球情報の開放
+				m_vec_Collision[nCntMap][nCntCollision].uni_Sphere.reset();
+				m_vec_Collision[nCntMap][nCntCollision].uni_Sphere = NULL;
+			}
+			// 円柱情報のNULLチェック
+			else if (m_vec_Collision[nCntMap][nCntCollision].uni_Column != NULL)
+			{
+				// 円柱情報の開放
+				m_vec_Collision[nCntMap][nCntCollision].uni_Column.reset();
+				m_vec_Collision[nCntMap][nCntCollision].uni_Column = NULL;
+			}
+
+		}
+	}
+	// 当たり判定情報の開放
+	m_vec_Collision.clear();
+	m_vec_Collision.shrink_to_fit();
 
 }
 
