@@ -564,7 +564,7 @@ OFFSET
 	# 一度に出せる個数情報
 	NUMBER = 13
 	# テクスチャータイプ情報
-	TEXTYPE = 29
+	TEXTYPE = 55
 	# エフェクトタイプ情報
 	EFFECTTYPE = 4
 	# パーティクルタイプ情報

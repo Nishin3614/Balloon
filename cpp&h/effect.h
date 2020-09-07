@@ -49,19 +49,25 @@ public:
 	// エフェクトプリミティブ
 	typedef struct
 	{
-		D3DXVECTOR3			pos;			// 位置
-		D3DXVECTOR3			rot;			// 回転量
-		D3DXVECTOR3			move;			// 移動量
-		D3DXCOLOR			col;			// 色
-		D3DXVECTOR2			size;			// サイズ
-		D3DXVECTOR2			sizeValue;		// サイズの変化値
-		float				fAngle;			// 角度
-		float				fAlphaValue;	// アルファ値の変化値
-		int					nLife;			// 持ち時間
-		int					nTexType;		// テクスチャの種類
-		bool				bUse;			// 使用しているかどうか
-		EFFECT_TYPE			EffectType;		// エフェクトの種類
-		CRenderer::BLEND	BlendType;		// ブレンドタイプ
+		D3DXVECTOR3			pos;				// 位置
+		D3DXVECTOR3			rot;				// 回転量
+		D3DXVECTOR3			move;				// 移動量
+		D3DXCOLOR			col;				// 色
+		D3DXVECTOR2			size;				// サイズ
+		D3DXVECTOR2			sizeValue;			// サイズの変化値
+		float				fAngle;				// 角度
+		float				fAlphaValue;		// アルファ値の変化値
+		int					nLife;				// 持ち時間
+		int					nTexType;			// テクスチャの種類
+		int					nCntAnim;			// アニメカウント
+		int					nMaxCntAnim;			// 最大アニメカウント
+		int					nHorizonAnim;		// 水平のアニメーションパターン
+		int					nVirticalAnim;		// 垂直のアニメーションパターン
+		int					nMaxHorizonAnim;	// 最大水平アニメーションパターン数
+		int					nMaxVirticalAnim;	// 最大垂直のアニメーションパターン数
+		bool				bUse;				// 使用しているかどうか
+		EFFECT_TYPE			EffectType;			// エフェクトの種類
+		CRenderer::BLEND	BlendType;			// ブレンドタイプ
 	} EFFECT;
 
 	/* 関数 */
