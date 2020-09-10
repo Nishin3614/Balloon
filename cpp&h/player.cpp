@@ -332,12 +332,12 @@ void CPlayer::MyAction(const int &nId)
 	// 自キャラの移動処理
 	MyMove();
 
-	// 風船を膨らませる
-	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
-	{
-		// 風船を生成する処理
-		CCharacter_Balloon::BalloonCreate();
-	}
+	//// 風船を膨らませる
+	//if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
+	//{
+	//	// 風船を生成する処理
+	//	CCharacter_Balloon::BalloonCreate();
+	//}
 	// MP上げ処理(マイフレーム)
 	MpUp(CCharacter::GetStatus().nMaxMpUp_Every);
 	// カメラの更新
