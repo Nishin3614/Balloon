@@ -664,10 +664,10 @@ void CPlayer::MyMove(void)
 	CCharacter::AddGravity(PLAYER_GRAVITY);
 	CCharacter::SetRotDest(rot);
 
-	if (pKeyboard->GetKeyboardTrigger(DIK_C))
-	{
-		CGame::GetPlayer(1)->SetRotDest(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f));
-	}
+	//if (pKeyboard->GetKeyboardTrigger(DIK_C))
+	//{
+	//	CGame::GetPlayer(1)->SetRotDest(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f));
+	//}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
