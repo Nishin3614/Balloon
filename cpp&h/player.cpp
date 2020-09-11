@@ -193,6 +193,11 @@ void CPlayer::Uninit(void)
 	{
 		m_pFramework = NULL;
 	}
+	// メッシュドームの開放
+	if (m_pMeshDome != NULL)
+	{
+		m_pMeshDome = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -394,12 +399,14 @@ void CPlayer::MyMove(void)
 {
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
+	D3DXVECTOR3 vec;				// ベクトル
 	float fRot;						// 回転
 
 	// 情報取得
 	rot = CCharacter::GetRotDest();								// 目的回転量
 	move = CCharacter::GetMove();								// 移動量
 	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
+	vec = CCharacter::GetDirectionVec();						// ベクトル
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
 	CJoypad *pJoypad = CManager::GetJoy();
 
@@ -414,51 +421,54 @@ void CPlayer::MyMove(void)
 		if (pKeyboard->GetKeyboardPress(DIK_W))
 		{
 			rot.y = -D3DX_PI * 0.25f + fRot;
+			vec = D3DXVECTOR3(sinf(D3DX_PI * 0.75f + fRot), 0.0f, cosf(D3DX_PI * 0.75f + fRot));
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
-				move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-				move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = -D3DX_PI * 0.75f + fRot;
+			vec = D3DXVECTOR3(sinf(D3DX_PI * 0.25f + fRot), 0.0f, cosf(D3DX_PI * 0.25f + fRot));
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
-				move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-				move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 左
 		else
 		{
 			rot.y = -D3DX_PI * 0.5f + fRot;
+			vec = D3DXVECTOR3(sinf(D3DX_PI * 0.5f + fRot), 0.0f, cosf(D3DX_PI * 0.5f + fRot));
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
-				move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-				move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 	}
@@ -472,52 +482,57 @@ void CPlayer::MyMove(void)
 		if (pKeyboard->GetKeyboardPress(DIK_W))
 		{
 			rot.y = D3DX_PI * 0.25f + fRot;
+			vec = D3DXVECTOR3(sinf(-D3DX_PI * 0.75f + fRot), 0.0f, cosf(-D3DX_PI * 0.75f + fRot));
 
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
-				move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-				move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = D3DX_PI * 0.75f + fRot;
+			vec = D3DXVECTOR3(sinf(-D3DX_PI * 0.25f + fRot), 0.0f, cosf(-D3DX_PI * 0.25f + fRot));
+
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
-				move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-				move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 右
 		else
 		{
 			rot.y = D3DX_PI * 0.5f + fRot;
+			vec = D3DXVECTOR3(sinf(-D3DX_PI * 0.5f + fRot), 0.0f, cosf(-D3DX_PI * 0.5f + fRot));
+
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
-				move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-				move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 	}
@@ -527,17 +542,18 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 0.0f + fRot;
+		vec = D3DXVECTOR3(sinf(-D3DX_PI * 1.0f + fRot), 0.0f, cosf(-D3DX_PI * 1.0f + fRot));
 		// 着地状態ではないなら
 		if (!CCharacter::GetbLanding())
 		{
-			move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveAdd;
-			move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveAdd;
+			move.x += vec.x * m_fMoveAdd;
+			move.z += vec.z * m_fMoveAdd;
 		}
 		// 着地状態なら
 		else
 		{
-			move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+			move.x += vec.x * m_fMoveNow;
+			move.z += vec.z * m_fMoveNow;
 		}
 	}
 	// 手前に行く
@@ -546,22 +562,19 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 1.0f + fRot;
+		vec = D3DXVECTOR3(sinf(D3DX_PI * 0.0f + fRot), 0.0f, cosf(D3DX_PI * 0.0f + fRot));
 		// 着地状態ではないなら
 		if (!CCharacter::GetbLanding())
 		{
-			move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveAdd;
-			move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveAdd;
+			move.x += vec.x * m_fMoveAdd;
+			move.z += vec.z * m_fMoveAdd;
 		}
 		// 着地状態なら
 		else
 		{
-			move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+			move.x += vec.x * m_fMoveNow;
+			move.z += vec.z * m_fMoveNow;
 		}
-	}
-	else if (pKeyboard->GetKeyboardTrigger(DIK_K))
-	{
-		CPointCircle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 	// それ以外
 	else
@@ -570,6 +583,15 @@ void CPlayer::MyMove(void)
 		CCharacter::SetbMove(false);
 	}
 
+	if (vec.x < 0)
+	{
+		vec.x *= -1;
+	}
+	if (vec.z < 0)
+	{
+		vec.z *= -1;
+	}
+	CCharacter::SetDirectionVec(vec);
 	/* ジョイパッド */
 	// パッド用 //
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用

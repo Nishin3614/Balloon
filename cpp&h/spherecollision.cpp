@@ -119,7 +119,6 @@ void CSphereCollision::Debug(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CSphereCollision::Collision_Visible_Set(void)
 {
-	return;
 	// メッシュスフィア
 	m_pDebugSphere = CMeshsphere::Create(
 		m_pSphereShape->m_DestPos,
