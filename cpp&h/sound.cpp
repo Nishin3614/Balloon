@@ -520,6 +520,8 @@ HRESULT CSound::SoundCreate(HWND hWnd)
 #endif // _DEBUG
 			return S_FALSE;
 		}
+		// ‰¹‚Ì‰¹—Ê‚ğã‚°‚é
+		m_apSourceSE[nCntSE]->SetVolume(0.1f);
 	}
 	hr = m_pXAudio2->CreateSourceVoice(&m_pSoureceVOICE, &(wfx.Format));
 	if (FAILED(hr))
@@ -530,7 +532,7 @@ HRESULT CSound::SoundCreate(HWND hWnd)
 		return S_FALSE;
 	}
 	// ‰¹‚Ì‰¹—Ê‚ğã‚°‚é
-	m_pSoureceVOICE->SetVolume(5);
+	m_SourceBGM->SetVolume(0.1f);
 	return S_OK;
 }
 
