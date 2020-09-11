@@ -27,6 +27,7 @@
 #include "item.h"
 #include "thundercloud.h"
 #include "PointCircle.h"
+#include "3Dparticle.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -208,7 +209,8 @@ void CPlayer::Update(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 	const int nId = pNetwork->GetId();
 
-	CDebugproc::Print("[%d]回転量 : %f\n", m_nPlayerID, GetRot().y);
+	//CDebugproc::Print("[%d]回転量 : %f\n", m_nPlayerID, GetRot().y);
+	CDebugproc::Print("[%d]位置 : %f\n", m_nPlayerID, m_pos.y);
 
 	// 選択画面以外なら
 	if (CManager::GetMode() == CManager::MODE_GAME)
@@ -318,6 +320,12 @@ void CPlayer::Update(void)
 			}
 		}
 
+	}
+
+	if (m_pos.y <= -60.0f)
+	{
+		// 風船割れた時のパーティクル生成
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_WATER, m_pos);
 	}
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))

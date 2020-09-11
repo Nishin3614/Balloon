@@ -50,6 +50,7 @@ public:
 		PARTICLE_ID_BALLOON,			// 風船
 		PARTICLE_ID_BALLOONBREAK,		// 風船割れた時
 		PARTICLE_ID_PLAYERDIE,			// プレイヤーが死んだ時
+		PARTICLE_ID_WATER,				// 水滴
 		PARTICLE_ID_MAX,
 	} PARTICLE_ID;
 	/* 構造体 */
