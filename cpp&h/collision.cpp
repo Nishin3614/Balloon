@@ -189,50 +189,20 @@ bool CCollision::CollisionDetection(CCollision * pCollision)
 			pCollision->m_pOwner->Scene_OpponentCollision(m_nMyObjectId, m_pOwner);
 		}
 	}
-	// 当たり判定状態を返す
-	return bJudg;
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 当たり判定(押し出し処理)
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::CollisionDetection(
-	CCollision * collision,
-	D3DXVECTOR3 * pPos
-)
-{
-	// 引数の当たり判定情報がNULLの場合
-	// ->関数を抜ける
-	if (collision == NULL)
+	else
 	{
-		return false;
-	}
-	// 変数宣言
-	bool bJudg = false;	// 当たり判定状態
-	// クラス型比較 //
-	// 矩形クラス
-	if (collision->GetShape()->GetType() == CShape::SHAPETYPE_RECT)
-	{
-		bJudg = Judg((CRectShape*)collision->GetShape(),pPos);
-	}
-	// 球クラス
-	else if (collision->GetShape()->GetType() == CShape::SHAPETYPE_SPHERE)
-	{
-
-	}
-	// 円柱クラス
-	else if (collision->GetShape()->GetType() == CShape::SHAPETYPE_COLUMN)
-	{
-
-	}
-	// 判定がtrueなら
-	// ->情報を保存
-	if (bJudg == true)
-	{
-		// 相手の当たり判定状態をtrueへ
-		collision->m_bCollision = true;
-		// 相手の番号を代入
-		collision->m_nOponentId = m_nMyObjectId;
+		// シーン情報がNULLではないなら
+		// ->当たった後の処理を行う
+		if (m_pOwner != NULL)
+		{
+			m_pOwner->Scene_NoMyCollision(pCollision->m_nMyObjectId, pCollision->m_pOwner);
+		}
+		// 相手のシーン情報がNULLではないなら
+		// ->当たった後の処理を行う
+		if (pCollision->m_pOwner != NULL)
+		{
+			pCollision->m_pOwner->Scene_NoOpponentCollision(m_nMyObjectId, m_pOwner);
+		}
 	}
 	// 当たり判定状態を返す
 	return bJudg;
@@ -375,6 +345,21 @@ void CCollision::CollisionDetection(void)
 				if (pCollision2->m_pOwner != NULL)
 				{
 					pCollision2->m_pOwner->Scene_OpponentCollision(pCollision1->m_nMyObjectId, pCollision1->m_pOwner);
+				}
+			}
+			else
+			{
+				// シーン情報がNULLではないなら
+				// ->当たった後の処理を行う
+				if (pCollision1->m_pOwner != NULL)
+				{
+					pCollision1->m_pOwner->Scene_NoMyCollision(pCollision2->m_nMyObjectId, pCollision2->m_pOwner);
+				}
+				// 相手のシーン情報がNULLではないなら
+				// ->当たった後の処理を行う
+				if (pCollision2->m_pOwner != NULL)
+				{
+					pCollision2->m_pOwner->Scene_NoOpponentCollision(pCollision1->m_nMyObjectId, pCollision1->m_pOwner);
 				}
 			}
 		}
