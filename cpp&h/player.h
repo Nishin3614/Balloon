@@ -29,6 +29,7 @@
 #define FISH_APPONENTTIME		(300)								// 魚出現タイム
 #define MPUP_BREAKBALLOON		(100)								// 風船を割った時のMPUP
 #define MAX_DIFFERENCE			(1000)								// 移動限界距離
+#define MAX_FISHAPPONENT		(3)									// 魚の出現場所
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 前方宣言
@@ -85,6 +86,21 @@ public:
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
+	// 自分から当たらなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoMyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
+	// 相手に当てられなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoOpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	);
+
 	// プレイヤー番号の設定
 	void SetPlayerID(int const &nPlayerID) { m_nPlayerID = nPlayerID; };
 	// プレイヤー番号の取得
@@ -112,29 +128,37 @@ protected:
 private:
 	/* 構造体 */
 	/* 関数 */
-	void MyMove(void);					// 自キャラ移動処理
-	void MyAction(const int &nId);		// 自キャラ行動処理
-	void OtherMove(void);				// 他キャラ移動処理
-	void OtherAction(void);				// 他キャラ行動処理
-	void FishApponent(void);			// 魚が出現
+	// 自キャラ移動処理
+	void MyMove(void);
+	// 自キャラ行動処理
+	void MyAction(const int &nId);
+	// 他キャラ移動処理
+	void OtherMove(void);
+	// 他キャラ行動処理
+	void OtherAction(void);
+	// 魚が出現
+	//	nFishApponent	: 魚の出現番号
+	void FishApponent(
+		int const &nFishApponent	// 魚の出現番号
+	);
 	// 状態によってのモーション設定処理
 	void StatusMotion(void);
 	/* 変数 */
-	static int	m_All;					// 総数
-	static CMeshdome *m_pMeshDome;				// 移動上限警告用
-	CRank		*m_pRank;				// 現在順位表示
-	C2DGauge	*m_p2DMPGauge;			// MPゲージ
-	D3DXVECTOR3	m_posold;				// 前の位置
-	int m_nPlayerID;					// 番号
-	int m_nRank;						// 今の順位
-	int m_nCntFishApponent;				// 魚出現カウント
-	int m_nMP;							// MP
-	int m_nCloudCount;					// 雲が出現するまでのカウンタ
-	bool m_bMPMax;						// MPが最大かどうか
-	bool m_bResetMP;					// MPをリセット
-	static bool m_bDie[MAX_PLAYER];		// 死亡フラグ
-	float m_fMoveNow;					// 現在の移動量
-	float m_fMoveAdd;					// 移動量加算
-	CFramework * m_pFramework;			// フレームワーク情報
+	static int	m_All;								// 総数
+	static CMeshdome *m_pMeshDome;					// 移動上限警告用
+	CRank		*m_pRank;							// 現在順位表示
+	C2DGauge	*m_p2DMPGauge;						// MPゲージ
+	D3DXVECTOR3	m_posold;							// 前の位置
+	int m_nPlayerID;								// 番号
+	int m_nRank;									// 今の順位
+	int m_nCntFishApponent[MAX_FISHAPPONENT];		// 魚出現カウント
+	int m_nMP;										// MP
+	int m_nCloudCount;								// 雲が出現するまでのカウンタ
+	bool m_bMPMax;									// MPが最大かどうか
+	bool m_bResetMP;								// MPをリセット
+	static bool m_bDie[MAX_PLAYER];					// 死亡フラグ
+	float m_fMoveNow;								// 現在の移動量
+	float m_fMoveAdd;								// 移動量加算
+	CFramework * m_pFramework;						// フレームワーク情報
 };
 #endif

@@ -148,7 +148,12 @@ CRectCollision *CRectCollision::Create(
 	pRectCollision->SetObjectID(obj);
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
-	pRectCollision->m_pRectShape->m_pmove = pOwner->Scene_GetPMove();
+	// 親シーン情報NULLチェック
+	if (pOwner != NULL)
+	{
+		// 移動情報を代入
+		pRectCollision->m_pRectShape->m_pmove = pOwner->Scene_GetPMove();
+	}
 	// シーン管理設定
 	pRectCollision->ManageSetting(CScene::LAYER_COLLISION);
 	// 初期化処理
@@ -179,7 +184,12 @@ std::unique_ptr<CRectCollision> CRectCollision::Create_Self(
 	pRectCollision->SetObjectID(obj);
 	pRectCollision->SetOwnScene(pOwner);
 	pRectCollision->SetParent(pParent);
-	pRectCollision->m_pRectShape->m_pmove = pOwner->Scene_GetPMove();
+	// 親シーン情報NULLチェック
+	if (pOwner != NULL)
+	{
+		// 移動情報を代入
+		pRectCollision->m_pRectShape->m_pmove = pOwner->Scene_GetPMove();
+	}
 	// 初期化処理
 	pRectCollision->Init();
 	return pRectCollision;

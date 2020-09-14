@@ -56,12 +56,15 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
-	m_nCntFishApponent = 0;			// 魚出現カウント
 	m_nMP = 0;						// MP
 	m_bMPMax = false;				// MPが最大かどうか
 	m_bResetMP = false;				// MPをリセット
 	m_nRank = -1;					// ランキングの初期化
 	m_pFramework = NULL;			// フレームワーク情報
+	for (int nCntFishApponent = 0; nCntFishApponent < MAX_FISHAPPONENT; nCntFishApponent++)
+	{
+		m_nCntFishApponent[nCntFishApponent] = 0;			// 魚出現カウント
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -806,20 +809,23 @@ void CPlayer::OtherAction(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 魚出現処理
+// 魚が出現
+//	nFishApponent	: 魚の出現番号
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CPlayer::FishApponent(void)
+void CPlayer::FishApponent(
+	int const &nFishApponent	// 魚の出現番号
+)
 {
 	// 出現カウント
-	if (m_nCntFishApponent == FISH_APPONENTTIME)
+	if (m_nCntFishApponent[nFishApponent] == FISH_APPONENTTIME)
 	{
 		// 魚生成
 		CCharacter_Fish::Create(CCharacter::GetPos());
 		// 魚出現カウント初期化処理
-		m_nCntFishApponent = 0;
+		m_nCntFishApponent[nFishApponent] = 0;
 	}
 	// 魚出現カウントアップ
-	m_nCntFishApponent++;
+	m_nCntFishApponent[nFishApponent]++;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1191,10 +1197,20 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	{
 		Die();
 	}
-	// オブジェクトタイプが出現魚なら
-	else if (nObjType == CCollision::OBJTYPE_APPEFISH)
+	// オブジェクトタイプが出現魚1なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH1)
 	{
-		FishApponent();
+		FishApponent(0);
+	}
+	// オブジェクトタイプが出現魚2なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH2)
+	{
+		FishApponent(1);
+	}
+	// オブジェクトタイプが出現魚3なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH3)
+	{
+		FishApponent(2);
 	}
 }
 
@@ -1253,6 +1269,41 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		// 死亡処理
 		BalloonNone();
 	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 自分から当たらなかった後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::Scene_NoMyCollision(int const & nObjType, CScene * pScene)
+{
+	// オブジェクトタイプが出現魚1なら
+	if (nObjType == CCollision::OBJTYPE_APPEFISH1)
+	{
+		m_nCntFishApponent[0] = 0;
+	}
+	// オブジェクトタイプが出現魚2なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH2)
+	{
+		m_nCntFishApponent[1] = 0;
+	}
+	// オブジェクトタイプが出現魚3なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH3)
+	{
+		m_nCntFishApponent[2] = 0;
+	}
+
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 相手に当てられなかった後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::Scene_NoOpponentCollision(int const & nObjType, CScene * pScene)
+{
+
 }
 
 #ifdef _DEBUG

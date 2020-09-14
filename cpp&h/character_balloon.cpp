@@ -87,7 +87,6 @@ void CCharacter_Balloon::Init(void)
 			CCharacter::GetMatrix(-1),
 			CCharacter::GetStatus(CCharacter::GetCharacter()).nMaxPopBalloon,
 			objtype,
-
 			this
 		);
 		// ステータスの反映 //

@@ -45,7 +45,7 @@ public:
 	static void Create_Rect(
 		D3DXVECTOR3 * pos,
 		D3DXVECTOR3 const &size
-	);	
+	);
 	static void Create_Sphere(
 		D3DXVECTOR3 * pos,
 		float const fRadius
