@@ -334,8 +334,8 @@ bool CCalculation::Collision_Circle(
 	float fRange;		// ”ÍˆÍ
 	float fDistance;	// ‹——£
 
-						// ”ÍˆÍ‚ÌŒvZ
-						//fRange = fMeSize * fMeSize + fOppSize * fOppSize;
+	// ”ÍˆÍ‚ÌŒvZ
+	//fRange = fMeSize * fMeSize + fOppSize * fOppSize;
 	fRange = (fMeSize + fOppSize) * (fMeSize + fOppSize);
 	// ÀÛ‚Ì‹——£‚ÌŒvZ
 	fDistance =

@@ -855,6 +855,7 @@ bool CCharacter::GetFloorHeight(void)
 		pFloor = (CFloor*)CScene::GetScene( CScene::LAYER_3DOBJECT, nCntLayer,CFloor());	// è∞
 		if (pFloor != NULL)
 		{
+			if(pFloor)
 			// è∞ÇÃçÇÇ≥Çë„ì¸
 			if (m_pos.y < pFloor->GetHeight(m_pos))
 			{
