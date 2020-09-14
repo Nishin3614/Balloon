@@ -46,22 +46,9 @@ public:
 	static void Unload(void);													// アンロード
 
 private:
-	static LPDIRECT3DTEXTURE9 m_pTex;					// テクスチャ
-	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;			// 頂点バッファへのポインタ
-	VERTEX_3D *m_pVtx;									// 頂点情報へのポインタ
-	D3DXMATRIX m_mtxWorld;								// ワールドマトリックス
-
-	static CThunder *m_pThunder;
-
 	CMeshdome *m_pMeshDome;								// メッシュドームへのポインタ
 
-	D3DXVECTOR3	m_vtxMin;								// 最小値
-	D3DXVECTOR3	m_vtxMax;								// 最大値
-	D3DXVECTOR3 m_pos;									// 位置
-	D3DXVECTOR3 m_posOld;								// 前回の位置
-	D3DXVECTOR3 m_rot;									// 回転
 	D3DXVECTOR3 m_move;									// 移動量
-	D3DXCOLOR m_col;									// 色
 
 	int	m_nCounterAnim;									// アニメーションカウンター
 	int m_nPatternAnim;									// アニメーションパターン

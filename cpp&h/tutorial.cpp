@@ -19,6 +19,7 @@
 #include "solider.h"
 #include "network.h"
 #include "ui.h"
+#include "thunder.h"
 
 //=============================================================================
 //

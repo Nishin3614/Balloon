@@ -59,9 +59,9 @@ SCRIPT
 	END_COLLISIONSET
 		# ----------[3]---------- #
 	COLLISIONSET
-		POS = -643.0 -110.0 -481.0
+		POS = -643.0 50.0 -481.0
 		TYPE = 11
-		// ‰~’Œ
+		// ‹éŒ`
 		RECT
 			SIZE = 100.0 100.0 100.0
 			ROT = 0.0 0.0 0.0

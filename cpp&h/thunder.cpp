@@ -31,8 +31,6 @@
 // ==========================================================
 // 静的メンバー変数の初期化
 // ==========================================================
-CThunder *CThunder::m_pThunder = NULL;
-LPDIRECT3DTEXTURE9 CThunder::m_pTex = NULL;
 
 // ==========================================================
 //
@@ -84,17 +82,17 @@ void CThunder::Init(void)
 	m_nCntDraw = 0;
 	// 雷の状態を初期化
 	m_bThunder = true;
-	// ポジション取得
-	m_pos = m_pThunder->GetPos();
 	// メッシュドームの生成
 	m_pMeshDome = CMeshdome::Create(
-		D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z),
+		D3DXVECTOR3(CScene_THREE::GetPos().x, 0.0f, CScene_THREE::GetPos().z),
 		D3DXVECTOR3(MAX_DISTANCE, MAX_DISTANCE_Y, MAX_DISTANCE),
 		10,
 		10,
 		CMeshdome::TYPE_NORMAL,
 		D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		false,
+		LAYER_DOME);
 
 	// メッシュドームの使用状態
 	m_pMeshDome->SetUse(true);
@@ -133,7 +131,7 @@ void CThunder::Update(void)
 	{
 		if (m_nCntThunder % 50 == 0)
 		{
-			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 41 - 20),200.0f, 0.0f),
+			CThunderMulti *pThunderMulti = CThunderMulti::Create(CScene_THREE::GetPos() + D3DXVECTOR3(float(rand() % 41 - 20),200.0f, 0.0f),
 				D3DXVECTOR3(100.0f, 1000.0f, 0.0f));
 			// 雷音1
 			CManager::GetSound()->PlaySound(CSound::LABEL_SE_THUNDER1);
@@ -141,7 +139,7 @@ void CThunder::Update(void)
 
 		if (m_nCntThunder % 20 == 0)
 		{
-			CThunderMulti *pThunderMulti = CThunderMulti::Create(m_pos + D3DXVECTOR3(float(rand() % 41 - 20), 0.0f, 0.0f),
+			CThunderMulti *pThunderMulti = CThunderMulti::Create(CScene_THREE::GetPos() + D3DXVECTOR3(float(rand() % 41 - 20), 0.0f, 0.0f),
 				D3DXVECTOR3(100.0f, 1000.0f, 0.0f));
 			// 雷音2
 			CManager::GetSound()->PlaySound(CSound::LABEL_SE_THUNDER2);
@@ -169,15 +167,11 @@ void CThunder::Update(void)
 			{
 				// キャラクターのポジション取得
 				D3DXVECTOR3 charaPos = pCharacter->GetPos();
-
-				// 前回のポジション設定
-				m_posOld = m_pos;
-
 				// 敵とプレイヤーのⅩ座標差分
-				fX_Difference = m_pos.x - charaPos.x;
+				fX_Difference = CScene_THREE::GetPos().x - charaPos.x;
 
 				// 敵とプレイヤーのZ座標差分
-				fZ_Difference = m_pos.z - charaPos.z;
+				fZ_Difference = CScene_THREE::GetPos().z - charaPos.z;
 
 				// 敵とプレイヤーの一定距離
 				fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
@@ -201,8 +195,14 @@ void CThunder::Update(void)
 
 	if (m_nCntDraw >= RELEASE_DRAW)
 	{
-		// メッシュドームの使用状態
-		m_pMeshDome->SetUse(false);
+		// メッシュドームのNULLチェック
+		if (m_pMeshDome != NULL)
+		{
+			// メッシュドームの使用状態
+			m_pMeshDome->SetUse(false);
+			m_pMeshDome->Release();
+			m_pMeshDome = NULL;
+		}
 		Release();
 	}
 }
@@ -221,20 +221,6 @@ void CThunder::Draw(void)
 	{
 		// 描画
 		CScene_THREE::Draw();
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&m_mtxWorld);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-		// 移動を反映
-		D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 	}
 }
 
@@ -244,21 +230,21 @@ void CThunder::Draw(void)
 CThunder *CThunder::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// シーン動的に確保
-	m_pThunder = new CThunder();
+	CThunder * pThunder = new CThunder();
 
 	// 位置設定
-	m_pThunder->SetPos(pos);
+	pThunder->SetPos(pos);
 
 	// サイズ設定
-	m_pThunder->SetSize(size);
+	pThunder->SetSize(size);
 
 	// シーン初期化
-	m_pThunder->Init();
+	pThunder->Init();
 
-	m_pThunder->ManageSetting(LAYER_3DOBJECT2);
+	pThunder->ManageSetting(LAYER_3DOBJECT2);
 
 	// 値を返す
-	return m_pThunder;
+	return pThunder;
 }
 
 // ==========================================================
@@ -266,10 +252,4 @@ CThunder *CThunder::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 // ==========================================================
 void CThunder::Unload(void)
 {
-	// テクスチャ解放
-	if (m_pTex != NULL)
-	{
-		m_pTex->Release();
-		m_pTex = NULL;
-	}
 }
