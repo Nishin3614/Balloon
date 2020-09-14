@@ -170,6 +170,7 @@ public:
 	);
 
 	float GetHeight(D3DXVECTOR3 pos);								// ‚‚³æ“¾
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }
 protected:
 private:
 	/* ŠÖ” */

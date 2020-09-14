@@ -200,6 +200,7 @@ HRESULT C3DMap::Load(void)
 	ManagerLoad();
 	// スクリプト読み込み
 	ScriptLoad();
+
 	return S_OK;
 }
 
