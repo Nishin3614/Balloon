@@ -1068,6 +1068,9 @@ void CPlayer::OtherDie(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 {
+
+	printf("えぐいて");
+
 	// キャラクター情報取得
 	CCharacter::CHARACTER character = CCharacter::GetCharacter();
 	// 変数宣言
@@ -1226,6 +1229,9 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 
 	// バルーンキャラクターの相手に当てられた後の処理
 	CCharacter_Balloon::Scene_OpponentCollision(nObjType, pScene);
+
+	printf("えぐいて");
+
 	// シーン情報がNULLなら
 	// ->関数を抜ける
 	if (pScene == NULL) return;

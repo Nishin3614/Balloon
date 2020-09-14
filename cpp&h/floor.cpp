@@ -23,9 +23,10 @@
 // マクロ定義
 //
 // ----------------------------------------
-#define FLOOR_ROTMOVE (0.01f)		// 角度の移動量
-#define FLOOR_SIZE (100.0f)			// サイズ
-#define FLOOR_ANGLE (1.0f)	// 湾曲の角度
+#define FLOOR_ROTMOVE (0.01f)						// 角度の移動量
+#define FLOOR_SIZE (100.0f)							// サイズ
+#define FLOOR_ANGLE (1.0f)							// 湾曲の角度
+#define TEXTURE_MASK ("data/TEXTURE/mask.jpg")		// マスクテクスチャアドレス
 
 // ----------------------------------------
 //
@@ -99,7 +100,7 @@ void CFloor::Init(void)
 	// テクスチャー生成
 	D3DXCreateTextureFromFile(
 		CManager::GetRenderer()->GetDevice(),
-		"data/TEXTURE/mask.jpg",
+		TEXTURE_MASK,
 		&m_pMaskTex);
 
 	// ブロック描画の原点の初期設定
