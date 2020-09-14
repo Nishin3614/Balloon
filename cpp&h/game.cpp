@@ -99,10 +99,10 @@ void CGame::Init(void)
 	C3DEffect::Create();
 	// ãÖÇÃê›íË
 	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
-		10000.0f);
+		100000.0f);
 	// 3DÉ}ÉbÉvê∂ê¨
 	CLake::Create(D3DXVECTOR3(0.0f, -50.0f, 0.0f), D3DXVECTOR3(2500.0f, 2500.0f, 0.0f));
-	C3DMap::LoadScript("data/LOAD/MAPPING/rand.csv");
+	C3DMap::LoadScript("data/LOAD/MAPPING/rand.txt");
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_1);
 	//CFloor::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(50.0f, 50.0f, 50.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 50.0f, 50.0f, 7);
 

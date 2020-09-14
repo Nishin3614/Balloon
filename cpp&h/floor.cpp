@@ -61,6 +61,7 @@ CFloor::CFloor() : CScene()
 	m_nBlock_Width = 1;
 	m_nBlock_Depth = 1;
 	m_nTexType = 0;
+	m_bCalculation = false;
 }
 
 // ----------------------------------------
@@ -292,16 +293,19 @@ void CFloor::Draw(void)
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 
-	// シェーダー処理
-	if (m_pEffect != NULL)
+	if (m_bCalculation)
 	{
-		m_pEffect->SetTechnique("tecLambert");
-		D3DXMATRIX mAll = m_mtxWorld * mtxView * mtxProj;
-		m_pEffect->SetMatrix("WVP", &mAll);
-		// 分割数の設定 (枚数ごとに決める)
-		m_pEffect->SetFloat("fDivision", 1.0f / 50);
-		m_pEffect->Begin(NULL, 0);
-		m_pEffect->BeginPass(0);
+		// シェーダー処理
+		if (m_pEffect != NULL)
+		{
+			m_pEffect->SetTechnique("tecLambert");
+			D3DXMATRIX mAll = m_mtxWorld * mtxView * mtxProj;
+			m_pEffect->SetMatrix("WVP", &mAll);
+			// 分割数の設定 (枚数ごとに決める)
+			m_pEffect->SetFloat("fDivision", 1.0f / 50);
+			m_pEffect->Begin(NULL, 0);
+			m_pEffect->BeginPass(0);
+		}
 	}
 
 	// インデックスバッファをデータストリームを設定
@@ -357,11 +361,14 @@ void CFloor::Draw(void)
 		0,
 		m_nNumPolygon);
 
-	// シェーダー終了
-	if (m_pEffect != NULL)
+	if (m_bCalculation)
 	{
-		m_pEffect->EndPass();
-		m_pEffect->End();
+		// シェーダー終了
+		if (m_pEffect != NULL)
+		{
+			m_pEffect->EndPass();
+			m_pEffect->End();
+		}
 	}
 }
 

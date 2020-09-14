@@ -95,6 +95,8 @@ public:
 		int const & nTexType
 	);
 	float GetHeight(D3DXVECTOR3 &pos);								// 高さ取得
+	void SetCalculation(bool bValue) { m_bCalculation = bValue; }	// 高さ計算フラグの設定
+	bool GetCalculation(void) { return m_bCalculation; }			// 高さ計算フラグの取得
 
 protected:
 
@@ -119,6 +121,7 @@ private:
 	int m_nBlock_Depth;									// 縦ブロック数
 	int m_nBlock_Width;									// 横ブロック数
 	int m_nTexType;										// テクスチャータイプ
+	bool m_bCalculation;									// 床の起伏計算フラグ
 	static LPD3DXEFFECT		m_pEffect;
 };
 #endif
