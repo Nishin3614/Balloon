@@ -100,6 +100,11 @@ void CPointCircle::Init(void)
 // ==========================================================
 void CPointCircle::Uninit(void)
 {
+	if (m_pMeshDome != NULL)
+	{
+		m_pMeshDome->Release();
+		m_pMeshDome = NULL;
+	}
 	CScene_THREE::Uninit();
 }
 
@@ -173,8 +178,13 @@ void CPointCircle::Update(void)
 
 	if (m_nCntDraw >= RELEASE_DRAW)
 	{
-		// メッシュドームの使用状態
-		m_pMeshDome->SetUse(false);
+		if (m_pMeshDome != NULL)
+		{
+			// メッシュドームの使用状態
+			m_pMeshDome->SetUse(false);
+			m_pMeshDome->Release();
+			m_pMeshDome = NULL;
+		}
 		Release();
 	}
 }

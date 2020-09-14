@@ -98,6 +98,15 @@ private:
 		EFFECT *pEffect = NULL,		// エフェクト情報
 		const int *nIndex = NULL	// 番号情報
 	);
+	// 頂点テクスチャー座標設定
+	//	pVtx	: 2D頂点情報
+	//	pEffect	: エフェクト情報
+	//	nIndex	: 番号情報
+	static void SetVartexTexSize(
+		VERTEX_2D *pVtx,			// 2D頂点情報
+		EFFECT *pEffect = NULL,		// エフェクト情報
+		const int *nIndex = NULL	// 番号情報
+	);
 	// 位置上限処理
 	//	pEffect	: エフェクト情報
 	static void Pos_Limit(

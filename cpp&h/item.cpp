@@ -152,7 +152,7 @@ CItem *CItem::Create(const int nId, D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// ƒV[ƒ“‰Šú‰»
 	m_pItem->Init();
 
-	m_pItem->ManageSetting(LAYER_3DOBJECT2);
+	m_pItem->ManageSetting(LAYER_3DOBJECT);
 
 	// ID‚ÌÝ’è
 	m_pItem->m_nId = nId;

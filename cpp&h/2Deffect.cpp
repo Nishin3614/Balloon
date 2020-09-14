@@ -103,6 +103,31 @@ void C2DEffect::Update(void)
 		SetVartexSize(pVtx, pEffect);
 		// 頂点カラーの設定
 		SetVetexColor(pVtx, pEffect);
+		// テクスチャーが風船なら
+		if (pEffect->nTexType == 55)
+		{
+			// カウントアニメアップ
+			pEffect->nCntAnim++;
+			if (pEffect->nCntAnim % pEffect->nMaxCntAnim == 0)
+			{
+				// 水平アニメーションカウントアップ
+				pEffect->nHorizonAnim++;
+				if (pEffect->nHorizonAnim >= pEffect->nMaxHorizonAnim)
+				{
+					// 水平アニメーションカウント初期化
+					pEffect->nHorizonAnim = 0;
+					// 垂直アニメーションカウントアップ
+					pEffect->nVirticalAnim++;
+					if (pEffect->nVirticalAnim >= pEffect->nMaxVirticalAnim)
+					{
+						// 垂直アニメーションカウント初期化
+						pEffect->nVirticalAnim = 0;
+					}
+				}
+				// テクスチャー座標設定
+				SetVartexTexSize(pVtx, pEffect);
+			}
+		}
 	}
 	// 頂点データをアンロックする
 	m_pVtxBuff->Unlock();
@@ -194,6 +219,8 @@ HRESULT C2DEffect::MakeVertex(
 		pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
 		pVtx[3].tex = D3DXVECTOR2(1.0f, 1.0f);
 	}
+	// テクスチャー座標設定
+	SetVartexTexSize(pVtx);
 	// 頂点データをアンロックする
 	m_pVtxBuff->Unlock();
 
@@ -285,6 +312,61 @@ void C2DEffect::SetVetexColor(
 			pVtx[1].col =
 			pVtx[2].col =
 			pVtx[3].col = pEffect->col;
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 頂点テクスチャー座標設定
+//	pVtx	: 2D頂点情報
+//	pEffect	: エフェクト情報
+//	nIndex	: 番号情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void C2DEffect::SetVartexTexSize(
+	VERTEX_2D *pVtx,	// 2D頂点情報
+	EFFECT *pEffect,	// エフェクト情報
+	const int *nIndex	// 番号情報
+)
+{
+	// 変数宣言
+	D3DXVECTOR2 FirstSize;
+	D3DXVECTOR2 EndSize;
+	// 番号情報のNULLチェック
+	if (nIndex != NULL)
+	{
+		// 変数宣言
+		C2DEffect::EFFECT *pLocalEffect;					// エフェクトのポインタ
+		pLocalEffect = &C2DEffect::m_aEffect[*nIndex];		// ポインタの初期化
+		FirstSize = D3DXVECTOR2(
+			pLocalEffect->nHorizonAnim * (1.0f / pLocalEffect->nMaxHorizonAnim),
+			pLocalEffect->nVirticalAnim * (1.0f / pLocalEffect->nMaxVirticalAnim)
+		);
+		EndSize = D3DXVECTOR2(
+			pLocalEffect->nHorizonAnim * (1.0f / pLocalEffect->nMaxHorizonAnim) + (1.0f / pLocalEffect->nMaxHorizonAnim),
+			pLocalEffect->nVirticalAnim * (1.0f / pLocalEffect->nMaxVirticalAnim) + (1.0f / pLocalEffect->nMaxVirticalAnim)
+		);
+
+		// 頂点の設定
+		pVtx[0].tex = D3DXVECTOR2(FirstSize.x, FirstSize.y);
+		pVtx[1].tex = D3DXVECTOR2(EndSize.x, FirstSize.y);
+		pVtx[2].tex = D3DXVECTOR2(FirstSize.x, EndSize.y);
+		pVtx[3].tex = D3DXVECTOR2(EndSize.x, EndSize.y);
+	}
+	// エフェクト情報のNULLチェック
+	else if (pEffect != NULL)
+	{
+		FirstSize = D3DXVECTOR2(
+			pEffect->nHorizonAnim * (1.0f / pEffect->nMaxHorizonAnim),
+			pEffect->nVirticalAnim * (1.0f / pEffect->nMaxVirticalAnim)
+		);
+		EndSize = D3DXVECTOR2(
+			pEffect->nHorizonAnim * (1.0f / pEffect->nMaxHorizonAnim) + (1.0f / pEffect->nMaxHorizonAnim),
+			pEffect->nVirticalAnim * (1.0f / pEffect->nMaxVirticalAnim) + (1.0f / pEffect->nMaxVirticalAnim)
+		);
+		// 頂点の設定
+		pVtx[0].tex = D3DXVECTOR2(FirstSize.x, FirstSize.y);
+		pVtx[1].tex = D3DXVECTOR2(EndSize.x, FirstSize.y);
+		pVtx[2].tex = D3DXVECTOR2(FirstSize.x, EndSize.y);
+		pVtx[3].tex = D3DXVECTOR2(EndSize.x, EndSize.y);
 	}
 }
 
@@ -395,6 +477,15 @@ void C2DEffect::Set2DEffect(
 			pEffect->fAlphaValue = fAlphaValue;
 			// サイズ変化値の設定
 			pEffect->sizeValue = sizeValue;
+			// テクスチャーが風船なら
+			if (pEffect->nTexType == 55)
+			{
+				pEffect->nMaxCntAnim = 5;
+				pEffect->nMaxHorizonAnim = 6;
+			}
+			// テクスチャー座標設定
+			SetVartexTexSize(pVtx, pEffect);
+
 			//頂点データをアンロック
 			m_pVtxBuff->Unlock();
 			break;

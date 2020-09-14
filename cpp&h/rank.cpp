@@ -79,7 +79,7 @@ CRank *CRank::Create(void)
 		pRank->SetSize(D3DXVECTOR3(50.0f, 50.0f, 0.0f));
 		pRank->SetPos(D3DXVECTOR3(0.0f, 500.0f, 0.0f));
 		pRank->Init();
-		pRank->ManageSetting(LAYER_UI);
+		pRank->ManageSetting(LAYER_RANK);
 	}
 
 	return pRank;

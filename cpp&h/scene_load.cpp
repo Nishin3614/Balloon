@@ -179,4 +179,6 @@ void CScene_load::UnLoadAll(void)
 	CMeshwall::UnLoad();
 	// フェード
 	CFade::UnLoad();
+	// 3Dマップ
+	C3DMap::UnLoad();
 }

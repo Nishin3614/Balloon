@@ -180,19 +180,25 @@ void CEffect::InitValues(
 	// エフェクトループ
 	for (int nCount = 0; nCount < EFFECT_MAX; nCount++, pEffect++)
 	{
-		pEffect->pos			= D3DVECTOR3_ZERO;					// 位置
-		pEffect->rot			= D3DVECTOR3_ZERO;					// 回転量
-		pEffect->move			= D3DVECTOR3_ZERO;					// 移動量
-		pEffect->col			= D3DXCOLOR_INI;					// 色
-		pEffect->size			= D3DVECTOR2_ZERO;					// サイズ
-		pEffect->sizeValue		= D3DVECTOR2_ZERO;					// 半径の変化値
-		pEffect->fAngle			= 0.0f;								// 角度
-		pEffect->fAlphaValue	= 0.0f;								// アルファ値の変化値
-		pEffect->nLife			= 0;								// 持ち時間
-		pEffect->nTexType		= 0;								// テクスチャータイプ
-		pEffect->bUse			= false;							// 使用しているかどうか
-		pEffect->BlendType		= CRenderer::BLEND_ADD_TRANSLUCENT;	// ブレンドタイプ
-		pEffect->EffectType		= CEffect::EFFECT_TYPE_NONE;		// エフェクトの種類
+		pEffect->pos				= D3DVECTOR3_ZERO;					// 位置
+		pEffect->rot				= D3DVECTOR3_ZERO;					// 回転量
+		pEffect->move				= D3DVECTOR3_ZERO;					// 移動量
+		pEffect->col				= D3DXCOLOR_INI;					// 色
+		pEffect->size				= D3DVECTOR2_ZERO;					// サイズ
+		pEffect->sizeValue			= D3DVECTOR2_ZERO;					// 半径の変化値
+		pEffect->fAngle				= 0.0f;								// 角度
+		pEffect->fAlphaValue		= 0.0f;								// アルファ値の変化値
+		pEffect->nLife				= 0;								// 持ち時間
+		pEffect->nTexType			= 0;								// テクスチャータイプ
+		pEffect->nCntAnim			= 0;								// カウントアニメ
+		pEffect->nMaxCntAnim		= 1;								// 最大カウントアニメ
+		pEffect->nHorizonAnim		= 0;								// 水平のアニメーション
+		pEffect->nVirticalAnim		= 0;								// 垂直のアニメーション
+		pEffect->nMaxHorizonAnim	= 1;								// 最大水平アニメーション
+		pEffect->nMaxVirticalAnim	= 1;								// 最大垂直アニメーション
+		pEffect->bUse				= false;							// 使用しているかどうか
+		pEffect->BlendType			= CRenderer::BLEND_ADD_TRANSLUCENT;	// ブレンドタイプ
+		pEffect->EffectType			= CEffect::EFFECT_TYPE_NONE;		// エフェクトの種類
 	}
 }
 
@@ -214,6 +220,12 @@ void CEffect::Init_OneValues(
 	pEffect->fAlphaValue = 0.0f;							// アルファ値の変化値
 	pEffect->nLife = 0;										// 持ち時間
 	pEffect->nTexType = 0;									// テクスチャータイプ
+	pEffect->nCntAnim = 0;									// カウントアニメ
+	pEffect->nMaxCntAnim = 1;								// 最大カウントアニメ
+	pEffect->nHorizonAnim = 0;								// 水平のアニメーション
+	pEffect->nVirticalAnim = 0;								// 垂直のアニメーション
+	pEffect->nMaxHorizonAnim = 1;							// 最大水平アニメーション
+	pEffect->nMaxVirticalAnim = 1;							// 最大垂直アニメーション
 	pEffect->bUse = false;									// 使用しているかどうか
 	pEffect->BlendType = CRenderer::BLEND_ADD_TRANSLUCENT;	// ブレンドタイプ
 	pEffect->EffectType = CEffect::EFFECT_TYPE_NONE;		// エフェクトの種類

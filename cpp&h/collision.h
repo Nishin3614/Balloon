@@ -67,6 +67,10 @@ public:
 		OBJTYPE_ENEMY_BALLOON,
 		OBJTYPE_ATTACK,
 		OBJTYPE_ITEM,
+		OBJTYPE_APPEFISH1,
+		OBJTYPE_APPEFISH2,
+		OBJTYPE_APPEFISH3,
+		OBJTYPE_HATENA,
 		OBJTYPE_MAX
 	} OBJTYPE;
 	/* 関数 */
@@ -98,6 +102,20 @@ public:
 		CScene * pScene = NULL		// 相手のシーン情報
 	)
 	{};
+	// 自分から当たらなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	void Scene_NoMyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
+	// 相手に当てられなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	void Scene_NoOpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
 	// ポインター位置情報を取得
 	virtual D3DXVECTOR3 * Scene_GetPPos(void) = 0;
 	// ポインター過去の位置情報を取得
@@ -120,10 +138,6 @@ public:
 	bool SelectShape(CShape * const shape);
 	// 当たり判定同士の判定(指定)
 	bool CollisionDetection(CCollision * collision);
-	// 当たり判定同士の判定(押し出し処理)
-	bool CollisionDetection(
-		CCollision * collision,
-		D3DXVECTOR3 * pPos);
 	// 当たり判定同士の判定(指定オブジェクト)
 	bool CollisionDetection(OBJTYPE const &obj);
 	// 当たり判定同士の判定(全体)

@@ -50,6 +50,7 @@ public:
 		PARTICLE_ID_BALLOON,			// 風船
 		PARTICLE_ID_BALLOONBREAK,		// 風船割れた時
 		PARTICLE_ID_PLAYERDIE,			// プレイヤーが死んだ時
+		PARTICLE_ID_WATER,				// 水滴
 		PARTICLE_ID_MAX,
 	} PARTICLE_ID;
 	/* 構造体 */
@@ -158,6 +159,20 @@ public:
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
 	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
+	// 自分から当たらなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoMyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
+	// 相手に当てられなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoOpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};

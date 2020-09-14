@@ -7,8 +7,6 @@
 #ifndef _CHARACTER_H_
 #define _CHARACTER_H_
 
-#define _CRT_SECURE_NO_WARNINGS
-
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // インクルードファイル
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -125,6 +123,20 @@ public:
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
+	// 自分から当たらなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoMyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) = 0;
+	// 相手に当てられなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoOpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) = 0;
 	// ポインター位置情報を取得
 	D3DXVECTOR3 * Scene_GetPPos(void) { return &m_pos; };
 	// ポインター過去の位置情報を取得
@@ -145,6 +157,8 @@ public:
 	void SetbLanding(bool const &bLanding)					{ m_bLanding = bLanding; };
 	// 移動状態設定
 	void SetbMove(bool const &bMove)						{ m_bMove = bMove; };
+	// 方向ベクトル設定
+	void SetDirectionVec(D3DXVECTOR3 const &direct)			{ m_Directvector = direct; };
 	// 取得 //
 	// 位置
 	D3DXVECTOR3 &GetPos(void)								{ return m_pos; };
@@ -171,6 +185,8 @@ public:
 	bool GetbLanding(void)									{ return m_bLanding; };
 	// 移動状態取得
 	bool GetbMove(void)										{ return m_bMove; };
+	// 前方方向ベクトル取得
+	D3DXVECTOR3 GetDirectionVec(void)						{ return m_Directvector; };
 	// 床の高さ
 	bool GetFloorHeight(void);
 	// モーションのフレーム情報取得処理
@@ -279,6 +295,7 @@ private:
 	bool							m_bMotionCamera;						// モーションカメラの切り替えON・OFF
 	bool							m_bLanding;								// 着地状態
 	bool							m_bMove;								// 移動状態
+	D3DXVECTOR3						m_Directvector;							// 方向のベクトル
 	CCollision						*m_pCharacterCollision;					// キャラクターの当たり判定
 	std::vector<std::unique_ptr<CCollision>>	m_vec_AttackCollision;		// 攻撃当たり判定
 	std::vector<std::unique_ptr<CMeshobit>>	m_vec_pMeshObit;				// 奇跡

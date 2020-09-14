@@ -46,7 +46,7 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #ifdef _DEBUG
-
+class CMeshdome;
 #endif // _DEBUG
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -59,13 +59,20 @@ class CColumnCollision : public CCollision
 public:
 	/* 列挙型 */
 	/* 関数 */
+	// コンストラクタ
 	CColumnCollision();
+	// デストラクタ
 	virtual ~CColumnCollision() {};
+	// 初期化処理
 	virtual void Init(void) {};
+	// 終了処理
 	virtual void Uninit(void);
+	// 更新処理
 	virtual void Update(void);
+	// 描画処理
 	virtual void Draw(void) {};
 #ifdef _DEBUG
+	// デバッグ処理
 	virtual void Debug(void);
 	// あたり判定可視カの設定
 	virtual void Collision_Visible_Set(void);
@@ -135,7 +142,7 @@ private:
 	std::unique_ptr<CColumnShape> m_pColumnShape;	// 矩形
 #ifdef _DEBUG
 	// あたり判定可視化の変数
-
+	CMeshdome * m_pDebugdome;
 #endif // _DEBUG
 
 };

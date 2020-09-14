@@ -564,7 +564,7 @@ OFFSET
 	# 一度に出せる個数情報
 	NUMBER = 13
 	# テクスチャータイプ情報
-	TEXTYPE = 29
+	TEXTYPE = 55
 	# エフェクトタイプ情報
 	EFFECTTYPE = 4
 	# パーティクルタイプ情報
@@ -674,6 +674,53 @@ OFFSET
 	TEXTYPE = 29
 	# エフェクトタイプ情報
 	EFFECTTYPE = 4
+	# パーティクルタイプ情報
+	PARTICLETYPE = 0
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [16] Water
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 40 -20
+		POSY = 30 0
+		POSZ = 40 -20
+	ENDSET_POSRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 10 30
+		SIZEY = 10 30
+	ENDSET_SIZERAND
+	# 角度ランダム
+	SET_ANGLERAND
+		MAX = 90
+		MIN = 0
+	ENDSET_ANGLERAND
+
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 0.0 1.0 1.0 1.0
+	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
+	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 1.0
+	# ライフ情報
+	LIFE = 50
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 5
+	# テクスチャータイプ情報
+	TEXTYPE = 29
+	# エフェクトタイプ情報
+	EFFECTTYPE = 2
 	# パーティクルタイプ情報
 	PARTICLETYPE = 0
 	# ブレンドタイプ情報

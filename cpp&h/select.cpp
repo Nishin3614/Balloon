@@ -100,7 +100,7 @@ void CSelect::Update(void)
 		if (!m_bReady)
 		{// €”õ’†‚¾‚Á‚½‚Æ‚«
 
-			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_1))
+			/*if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_1))
 			{
 				CBalloonNum::Create(0);
 			}
@@ -115,7 +115,7 @@ void CSelect::Update(void)
 			else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_4))
 			{
 				CBalloonNum::Create(3);
-			}
+			}*/
 			// ‘I‘ð‰æ–Ê‚Ö‘JˆÚ
 			if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 			{

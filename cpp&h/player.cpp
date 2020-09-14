@@ -27,6 +27,7 @@
 #include "item.h"
 #include "thundercloud.h"
 #include "PointCircle.h"
+#include "3Dparticle.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -55,12 +56,15 @@ CPlayer::CPlayer(CHARACTER const &character) : CCharacter_Balloon::CCharacter_Ba
 	m_posold = D3DVECTOR3_ZERO;		// 前の位置
 	m_nCntState = 0;				// ステートカウント
 	m_All++;						// 総数
-	m_nCntFishApponent = 0;			// 魚出現カウント
 	m_nMP = 0;						// MP
 	m_bMPMax = false;				// MPが最大かどうか
 	m_bResetMP = false;				// MPをリセット
 	m_nRank = -1;					// ランキングの初期化
 	m_pFramework = NULL;			// フレームワーク情報
+	for (int nCntFishApponent = 0; nCntFishApponent < MAX_FISHAPPONENT; nCntFishApponent++)
+	{
+		m_nCntFishApponent[nCntFishApponent] = 0;			// 魚出現カウント
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -94,6 +98,26 @@ void CPlayer::Init(void)
 		CCharacter::GetPos() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f),
 		CCharacter::GetRot() + D3DXVECTOR3(0.0f, D3DX_PI, 0.0f)
 	);
+	// ドームのNULLチェック
+	if (m_pMeshDome == NULL)
+	{
+		// メッシュドームの生成
+		m_pMeshDome = CMeshdome::Create(
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(1300, 2000, 1300),
+			10,
+			10,
+			CMeshdome::TYPE_WARNING,
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+		if (m_pMeshDome != NULL)
+		{
+			// メッシュドームの使用状態
+			m_pMeshDome->SetUse(false);
+			m_pMeshDome->SetDrawBack(true);
+		}
+	}
 	// モードがゲームなら
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
@@ -129,25 +153,6 @@ void CPlayer::Init(void)
 		m_bDie[m_nPlayerID] = false;
 		CCharacter_Balloon::GetBalloon()->SetID(m_nPlayerID);
 
-		if (m_pMeshDome == NULL)
-		{
-			// メッシュドームの生成
-			m_pMeshDome = CMeshdome::Create(
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				D3DXVECTOR3(1200, 500, 1200),
-				10,
-				10,
-				CMeshdome::TYPE_WARNING,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
-				D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-			if (m_pMeshDome != NULL)
-			{
-				// メッシュドームの使用状態
-				m_pMeshDome->SetUse(false);
-				m_pMeshDome->SetDrawBack(true);
-			}
-		}
 	}
 	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
 	{
@@ -167,7 +172,6 @@ void CPlayer::Init(void)
 			D3DXCOLOR(0.0f, 0.7f, 0.3f, 1.0f));
 		// フレームワークの生成
 		m_pFramework = CFramework::Create();
-
 	}
 }
 
@@ -193,6 +197,11 @@ void CPlayer::Uninit(void)
 	{
 		m_pFramework = NULL;
 	}
+	// メッシュドームの開放
+	if (m_pMeshDome != NULL)
+	{
+		m_pMeshDome = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -203,7 +212,8 @@ void CPlayer::Update(void)
 	CNetwork *pNetwork = CManager::GetNetwork();
 	const int nId = pNetwork->GetId();
 
-	CDebugproc::Print("[%d]回転量 : %f\n", m_nPlayerID, GetRot().y);
+	//CDebugproc::Print("[%d]回転量 : %f\n", m_nPlayerID, GetRot().y);
+	CDebugproc::Print("[%d]位置 : %f\n", m_nPlayerID, m_pos.y);
 
 	// 選択画面以外なら
 	if (CManager::GetMode() == CManager::MODE_GAME)
@@ -314,14 +324,20 @@ void CPlayer::Update(void)
 		}
 
 	}
+
+	if (m_pos.y <= -60.0f)
+	{
+		// 風船割れた時のパーティクル生成
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_WATER, m_pos);
+	}
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_8))
 	{
 		CCharacter_Balloon::Thunder_BreakBalloon();
 	}
 #endif // _DEBUG
-	// 魚出現処理
-	FishApponent();
+	//// 魚出現処理
+	//FishApponent();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -332,12 +348,12 @@ void CPlayer::MyAction(const int &nId)
 	// 自キャラの移動処理
 	MyMove();
 
-	// 風船を膨らませる
-	if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
-	{
-		// 風船を生成する処理
-		CCharacter_Balloon::BalloonCreate();
-	}
+	//// 風船を膨らませる
+	//if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_BALLOONCREATE))
+	//{
+	//	// 風船を生成する処理
+	//	CCharacter_Balloon::BalloonCreate();
+	//}
 	// MP上げ処理(マイフレーム)
 	MpUp(CCharacter::GetStatus().nMaxMpUp_Every);
 	// カメラの更新
@@ -394,12 +410,14 @@ void CPlayer::MyMove(void)
 {
 	// 変数宣言
 	D3DXVECTOR3 move, rot;			// 移動量、回転
+	D3DXVECTOR3 vec;				// ベクトル
 	float fRot;						// 回転
 
 	// 情報取得
 	rot = CCharacter::GetRotDest();								// 目的回転量
 	move = CCharacter::GetMove();								// 移動量
 	fRot = CManager::GetRenderer()->GetCamera()->GetRot().y;	// カメラ回転
+	vec = CCharacter::GetDirectionVec();						// ベクトル
 	CKeyboard *pKeyboard = CManager::GetKeyboard();
 	CJoypad *pJoypad = CManager::GetJoy();
 
@@ -414,51 +432,54 @@ void CPlayer::MyMove(void)
 		if (pKeyboard->GetKeyboardPress(DIK_W))
 		{
 			rot.y = -D3DX_PI * 0.25f + fRot;
+			vec = D3DXVECTOR3(sinf(D3DX_PI * 0.75f + fRot), 0.0f, cosf(D3DX_PI * 0.75f + fRot));
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
-				move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-				move.z += cosf(D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = -D3DX_PI * 0.75f + fRot;
+			vec = D3DXVECTOR3(sinf(D3DX_PI * 0.25f + fRot), 0.0f, cosf(D3DX_PI * 0.25f + fRot));
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
-				move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-				move.z += cosf(D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 左
 		else
 		{
 			rot.y = -D3DX_PI * 0.5f + fRot;
+			vec = D3DXVECTOR3(sinf(D3DX_PI * 0.5f + fRot), 0.0f, cosf(D3DX_PI * 0.5f + fRot));
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
-				move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-				move.z += cosf(D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 	}
@@ -472,52 +493,57 @@ void CPlayer::MyMove(void)
 		if (pKeyboard->GetKeyboardPress(DIK_W))
 		{
 			rot.y = D3DX_PI * 0.25f + fRot;
+			vec = D3DXVECTOR3(sinf(-D3DX_PI * 0.75f + fRot), 0.0f, cosf(-D3DX_PI * 0.75f + fRot));
 
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
-				move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
-				move.z += cosf(-D3DX_PI * 0.75f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 手前
 		else if (pKeyboard->GetKeyboardPress(DIK_S))
 		{
 			rot.y = D3DX_PI * 0.75f + fRot;
+			vec = D3DXVECTOR3(sinf(-D3DX_PI * 0.25f + fRot), 0.0f, cosf(-D3DX_PI * 0.25f + fRot));
+
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
-				move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
-				move.z += cosf(-D3DX_PI * 0.25f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 		// 右
 		else
 		{
 			rot.y = D3DX_PI * 0.5f + fRot;
+			vec = D3DXVECTOR3(sinf(-D3DX_PI * 0.5f + fRot), 0.0f, cosf(-D3DX_PI * 0.5f + fRot));
+
 			// 着地状態ではないなら
 			if (!CCharacter::GetbLanding())
 			{
-				move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
-				move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveAdd;
+				move.x += vec.x * m_fMoveAdd;
+				move.z += vec.z * m_fMoveAdd;
 			}
 			// 着地状態なら
 			else
 			{
-				move.x += sinf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
-				move.z += cosf(-D3DX_PI * 0.5f + fRot) * m_fMoveNow;
+				move.x += vec.x * m_fMoveNow;
+				move.z += vec.z * m_fMoveNow;
 			}
 		}
 	}
@@ -527,17 +553,18 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 0.0f + fRot;
+		vec = D3DXVECTOR3(sinf(-D3DX_PI * 1.0f + fRot), 0.0f, cosf(-D3DX_PI * 1.0f + fRot));
 		// 着地状態ではないなら
 		if (!CCharacter::GetbLanding())
 		{
-			move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveAdd;
-			move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveAdd;
+			move.x += vec.x * m_fMoveAdd;
+			move.z += vec.z * m_fMoveAdd;
 		}
 		// 着地状態なら
 		else
 		{
-			move.x += sinf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
-			move.z += cosf(-D3DX_PI * 1.0f + fRot) * m_fMoveNow;
+			move.x += vec.x * m_fMoveNow;
+			move.z += vec.z * m_fMoveNow;
 		}
 	}
 	// 手前に行く
@@ -546,22 +573,19 @@ void CPlayer::MyMove(void)
 		// 移動状態on
 		CCharacter::SetbMove(true);
 		rot.y = D3DX_PI * 1.0f + fRot;
+		vec = D3DXVECTOR3(sinf(D3DX_PI * 0.0f + fRot), 0.0f, cosf(D3DX_PI * 0.0f + fRot));
 		// 着地状態ではないなら
 		if (!CCharacter::GetbLanding())
 		{
-			move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveAdd;
-			move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveAdd;
+			move.x += vec.x * m_fMoveAdd;
+			move.z += vec.z * m_fMoveAdd;
 		}
 		// 着地状態なら
 		else
 		{
-			move.x += sinf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
-			move.z += cosf(D3DX_PI * 0.0f + fRot) * m_fMoveNow;
+			move.x += vec.x * m_fMoveNow;
+			move.z += vec.z * m_fMoveNow;
 		}
-	}
-	else if (pKeyboard->GetKeyboardTrigger(DIK_K))
-	{
-		CPointCircle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	}
 	// それ以外
 	else
@@ -570,6 +594,15 @@ void CPlayer::MyMove(void)
 		CCharacter::SetbMove(false);
 	}
 
+	if (vec.x < 0)
+	{
+		vec.x *= -1;
+	}
+	if (vec.z < 0)
+	{
+		vec.z *= -1;
+	}
+	CCharacter::SetDirectionVec(vec);
 	/* ジョイパッド */
 	// パッド用 //
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
@@ -664,10 +697,10 @@ void CPlayer::MyMove(void)
 	CCharacter::AddGravity(PLAYER_GRAVITY);
 	CCharacter::SetRotDest(rot);
 
-	if (pKeyboard->GetKeyboardTrigger(DIK_C))
-	{
-		CGame::GetPlayer(1)->SetRotDest(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f));
-	}
+	//if (pKeyboard->GetKeyboardTrigger(DIK_C))
+	//{
+	//	CGame::GetPlayer(1)->SetRotDest(D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f));
+	//}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -776,30 +809,23 @@ void CPlayer::OtherAction(void)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 魚出現処理
+// 魚が出現
+//	nFishApponent	: 魚の出現番号
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CPlayer::FishApponent(void)
+void CPlayer::FishApponent(
+	int const &nFishApponent	// 魚の出現番号
+)
 {
-	// プレイヤーの位置が指定した位置以下なら
-	if (CCharacter::GetPos().y <= FISH_APPONENTPOS)
+	// 出現カウント
+	if (m_nCntFishApponent[nFishApponent] == FISH_APPONENTTIME)
 	{
-		// 出現カウント
-		if (m_nCntFishApponent == FISH_APPONENTTIME)
-		{
-			// 魚生成
-			CCharacter_Fish::Create(CCharacter::GetPos());
-			// 魚出現カウント初期化処理
-			m_nCntFishApponent = 0;
-		}
-		// 魚出現カウントアップ
-		m_nCntFishApponent++;
-	}
-	// それ以外
-	else
-	{
+		// 魚生成
+		CCharacter_Fish::Create(CCharacter::GetPos());
 		// 魚出現カウント初期化処理
-		m_nCntFishApponent = 0;
+		m_nCntFishApponent[nFishApponent] = 0;
 	}
+	// 魚出現カウントアップ
+	m_nCntFishApponent[nFishApponent]++;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1052,11 +1078,8 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報
 	// バルーンキャラクターの当たった後の処理
 	CCharacter_Balloon::Scene_MyCollision(nObjType, pScene);
-	// シーン情報がNULLなら
-	// ->関数を抜ける
-	if (pScene == NULL) return;
 	// オブジェクトタイプがアイテムなら
-	else if (nObjType == CCollision::OBJTYPE_ITEM)
+	if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
 		if (CManager::GetMode() == CManager::MODE_GAME)
 		{
@@ -1177,6 +1200,21 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	{
 		Die();
 	}
+	// オブジェクトタイプが出現魚1なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH1)
+	{
+		FishApponent(0);
+	}
+	// オブジェクトタイプが出現魚2なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH2)
+	{
+		FishApponent(1);
+	}
+	// オブジェクトタイプが出現魚3なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH3)
+	{
+		FishApponent(2);
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1237,6 +1275,41 @@ void CPlayer::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		// 死亡処理
 		BalloonNone();
 	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 自分から当たらなかった後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::Scene_NoMyCollision(int const & nObjType, CScene * pScene)
+{
+	// オブジェクトタイプが出現魚1なら
+	if (nObjType == CCollision::OBJTYPE_APPEFISH1)
+	{
+		m_nCntFishApponent[0] = 0;
+	}
+	// オブジェクトタイプが出現魚2なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH2)
+	{
+		m_nCntFishApponent[1] = 0;
+	}
+	// オブジェクトタイプが出現魚3なら
+	else if (nObjType == CCollision::OBJTYPE_APPEFISH3)
+	{
+		m_nCntFishApponent[2] = 0;
+	}
+
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 相手に当てられなかった後の処理
+//	nObjType	: オブジェクトタイプ
+//	pScene		: 相手のシーン情報
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::Scene_NoOpponentCollision(int const & nObjType, CScene * pScene)
+{
+
 }
 
 #ifdef _DEBUG

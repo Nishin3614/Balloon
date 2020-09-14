@@ -40,14 +40,15 @@ public:
 		LAYER_3DSHADOW,
 		LAYER_SELECTCHARACTER,
 		LAYER_CHARACTER,
+		LAYER_DEBUGCOLLISION,
 		LAYER_3DPARTICLE,
 		LAYER_3DOBJECT2,
 		LAYER_DOME,
-		LAYER_COLLISION,
 		LAYER_UI,
+		LAYER_COLLISION,
 		LAYER_PARTICLE,
-		LAYER_DEBUGCOLLISION,
 		LAYER_FADE,
+		LAYER_RANK,
 		LAYER_MAX
 	} LAYER;
 	/* 関数 */
@@ -71,6 +72,20 @@ public:
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
 	virtual void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) = 0;
+	// 自分から当たらなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoMyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) = 0;
+	// 相手に当てられなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	virtual void Scene_NoOpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) = 0;

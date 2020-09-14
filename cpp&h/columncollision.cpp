@@ -11,7 +11,7 @@
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "ColumnCollision.h"
-
+#include "meshdome.h"
 #ifdef _DEBUG
 
 #endif // _DEBUG
@@ -50,7 +50,13 @@ void CColumnCollision::Uninit(void)
 	// 円柱情報の開放
 	m_pColumnShape.reset();
 #ifdef _DEBUG
-
+	// メッシュスフィアが生成されていたら
+	if (m_pDebugdome != NULL)
+	{
+		// あたり判定可視化の開放
+		m_pDebugdome->Release();
+		m_pDebugdome = NULL;
+	}
 #endif // _DEBUG
 }
 
@@ -59,7 +65,14 @@ void CColumnCollision::Uninit(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CColumnCollision::Update(void)
 {
-
+#ifdef _DEBUG
+	// 当たり判定の使用状態がfalse ||
+	// ->関数を抜ける
+	if (!CCollision::GetUse())
+	{
+		return;
+	}
+#endif // _DEBUG
 }
 
 #ifdef _DEBUG
@@ -68,9 +81,16 @@ void CColumnCollision::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CColumnCollision::Debug(void)
 {
-	//CDebugproc::Print("----------円柱の当たり判定情報----------\n");
-	//CDebugproc::Print("半径(%.1f)\n", m_pColumnShape->GetRadius());
-	//CDebugproc::Print("高さ(%.1f)\n", m_pColumnShape->GetVertical());
+	// 最終的な位置
+	m_pColumnShape->Set_DestPos();
+	// メッシュスフィアが生成されていたら
+	if (m_pDebugdome != NULL)
+	{
+		// メッシュスフィアの位置設定
+		m_pDebugdome->SetPos(
+			m_pColumnShape->m_DestPos - D3DXVECTOR3(0.0f, m_pColumnShape->GetVertical() * 0.5f, 0.0f)
+		);
+	}
 	CCollision::Debug();
 }
 
@@ -79,6 +99,19 @@ void CColumnCollision::Debug(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CColumnCollision::Collision_Visible_Set(void)
 {
+	// メッシュスフィア
+	m_pDebugdome = CMeshdome::Create(
+		m_pColumnShape->m_DestPos - D3DXVECTOR3(0.0f, m_pColumnShape->GetVertical() * 0.5f,0.0f),
+		D3DXVECTOR3(m_pColumnShape->GetRadius(),m_pColumnShape->GetVertical(),m_pColumnShape->GetRadius()),
+		10,
+		10,
+		CMeshdome::TYPE_NONE,
+		D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
+		D3DVECTOR3_ZERO,
+		true,
+		CScene::LAYER_DEBUGCOLLISION
+	);
+	m_pDebugdome->SetUse(true);
 }
 
 #endif // _DEBUG
@@ -140,7 +173,12 @@ CColumnCollision *CColumnCollision::Create(
 	pColumnCollision->SetObjectID(obj);												// オブジェクト番号設定
 	pColumnCollision->SetOwnScene(pOwner);
 	pColumnCollision->SetParent(pParent);
-	pColumnCollision->m_pColumnShape->m_pmove = pOwner->Scene_GetPMove();
+
+	// 親の情報
+	if (pOwner != NULL)
+	{
+		pColumnCollision->m_pColumnShape->m_pmove = pOwner->Scene_GetPMove();
+	}
 	// シーン管理設定
 	pColumnCollision->ManageSetting(CScene::LAYER_COLLISION);
 #ifdef _DEBUG

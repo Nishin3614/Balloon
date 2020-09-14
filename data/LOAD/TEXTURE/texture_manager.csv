@@ -9,7 +9,7 @@ data/TEXTURE/00_greenfloor.jpg
 data/TEXTURE/01_greenfloor.jpg
 data/TEXTURE/00_meshobit.png
 data/TEXTURE/cloud.jpg
-data/TEXTURE/UI/TITLE/Title_Balloon.png
+data/TEXTURE/UI/TITLE/Balloon_Title.png
 data/TEXTURE/UI/SELECT/H01.png
 data/TEXTURE/UI/SELECT/H02.png
 data/TEXTURE/UI/SELECT/H03.png
@@ -18,7 +18,7 @@ data/TEXTURE/UI/SELECT/H05.png
 data/TEXTURE/UI/SELECT/H06.png
 data/TEXTURE/UI/SELECT/H07.png
 data/TEXTURE/UI/TUTORIAL/tutorial_tly.png
-data/TEXTURE/UI/bottonpush.png
+data/TEXTURE/UI/PressEnter.png
 data/TEXTURE/coin.png
 data/TEXTURE/thunder.png
 data/TEXTURE/Thunder_02.png
@@ -53,3 +53,7 @@ data/TEXTURE/BalloonCharacter3.png
 data/TEXTURE/BalloonCharacter4.png
 data/TEXTURE/PointCircle.jpg
 data/TEXTURE/UI/BalloonNumber.png
+data/TEXTURE/Ballon.png
+data/TEXTURE/Gauge01.png
+data/TEXTURE/Gauge03.png
+data/TEXTURE/GaugeCover.png

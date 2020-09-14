@@ -36,6 +36,7 @@
 #include "rank.h"
 #include "lake.h"
 
+
 /* É|Å[ÉY */
 #include "pause.h"
 
@@ -392,7 +393,7 @@ void CGame::PlayerCreate(void)
 			break;
 		case CPlayer::CHARATYPE_INVISIBLE:
 			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, pos);
-			break; 
+			break;
 		case CPlayer::CHARATYPE_REVIVAL:
 			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, pos);
 			break;

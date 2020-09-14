@@ -83,6 +83,7 @@ CCharacter::CCharacter(CHARACTER const &character) : CScene::CScene()
 	m_bMotionCamera = false;						// モーションカメラの切り替え
 	m_bLanding = false;								// 着地状態
 	m_bMove = false;								// 移動状態
+	m_Directvector = D3DVECTOR3_ONE;				// 方向ベクトル
 	m_pStencilshadow = NULL;						// ステンシルシャドウ
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -421,101 +422,80 @@ void CCharacter::Move(void)
 			CSpeedUP * pSpeedUp = (CSpeedUP *)this;	// スピードキャラクター情報
 			if (pSpeedUp->GetbSpeedUp())
 			{
+				// 制限を進んでいる方向で変える
+
+
+
+
 				// xの移動量制限
-				if (m_move.x > CCharacter::GetStatus().fMaxSkill)
+				if (m_move.x > CCharacter::GetStatus().fMaxSkill * m_Directvector.x)
 				{
-					m_move.x = CCharacter::GetStatus().fMaxSkill;
+					m_move.x = CCharacter::GetStatus().fMaxSkill * m_Directvector.x;
 				}
-				else if (m_move.x < -CCharacter::GetStatus().fMaxSkill)
+				else if (m_move.x < -CCharacter::GetStatus().fMaxSkill * m_Directvector.x)
 				{
-					m_move.x = -CCharacter::GetStatus().fMaxSkill;
+					m_move.x = -CCharacter::GetStatus().fMaxSkill * m_Directvector.x;
 				}
 				// zの移動量制限
-				if (m_move.z > CCharacter::GetStatus().fMaxSkill)
+				if (m_move.z > CCharacter::GetStatus().fMaxSkill * m_Directvector.z)
 				{
-					m_move.z = CCharacter::GetStatus().fMaxSkill;
+					m_move.z = CCharacter::GetStatus().fMaxSkill * m_Directvector.z;
 				}
-				else if (m_move.z < -CCharacter::GetStatus().fMaxSkill)
+				else if (m_move.z < -CCharacter::GetStatus().fMaxSkill * m_Directvector.z)
 				{
-					m_move.z = -CCharacter::GetStatus().fMaxSkill;
+					m_move.z = -CCharacter::GetStatus().fMaxSkill * m_Directvector.z;
 				}
 			}
 			else
 			{
 				// xの移動量制限
-				if (m_move.x > CCharacter::GetStatus().fMaxMove)
+				if (m_move.x > CCharacter::GetStatus().fMaxMove * m_Directvector.x)
 				{
-					m_move.x = CCharacter::GetStatus().fMaxMove;
+					m_move.x = CCharacter::GetStatus().fMaxMove * m_Directvector.x;
 				}
-				else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
+				else if (m_move.x < -CCharacter::GetStatus().fMaxMove * m_Directvector.x)
 				{
-					m_move.x = -CCharacter::GetStatus().fMaxMove;
+					m_move.x = -CCharacter::GetStatus().fMaxMove * m_Directvector.x;
 				}
 				// zの移動量制限
-				if (m_move.z > CCharacter::GetStatus().fMaxMove)
+				if (m_move.z > CCharacter::GetStatus().fMaxMove * m_Directvector.z)
 				{
-					m_move.z = CCharacter::GetStatus().fMaxMove;
+					m_move.z = CCharacter::GetStatus().fMaxMove * m_Directvector.z;
 				}
-				else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
+				else if (m_move.z < -CCharacter::GetStatus().fMaxMove * m_Directvector.z)
 				{
-					m_move.z = -CCharacter::GetStatus().fMaxMove;
+					m_move.z = -CCharacter::GetStatus().fMaxMove * m_Directvector.z;
 				}
 			}
 		}
 		else
 		{
 			// xの移動量制限
-			if (m_move.x > CCharacter::GetStatus().fMaxMove)
+			if (m_move.x > CCharacter::GetStatus().fMaxMove * m_Directvector.x)
 			{
-				m_move.x = CCharacter::GetStatus().fMaxMove;
+				m_move.x = CCharacter::GetStatus().fMaxMove * m_Directvector.x;
 			}
-			else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
+			else if (m_move.x < -CCharacter::GetStatus().fMaxMove * m_Directvector.x)
 			{
-				m_move.x = -CCharacter::GetStatus().fMaxMove;
+				m_move.x = -CCharacter::GetStatus().fMaxMove * m_Directvector.x;
 			}
 			// zの移動量制限
-			if (m_move.z > CCharacter::GetStatus().fMaxMove)
+			if (m_move.z > CCharacter::GetStatus().fMaxMove * m_Directvector.z)
 			{
-				m_move.z = CCharacter::GetStatus().fMaxMove;
+				m_move.z = CCharacter::GetStatus().fMaxMove * m_Directvector.z;
 			}
-			else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
+			else if (m_move.z < -CCharacter::GetStatus().fMaxMove * m_Directvector.z)
 			{
-				m_move.z = -CCharacter::GetStatus().fMaxMove;
+				m_move.z = -CCharacter::GetStatus().fMaxMove * m_Directvector.z;
 			}
 		}
 	}
 	// 着地状態なら
 	else
 	{
-		// 移動状態ではないなら
-		if (!m_bMove)
-		{
-			// 抵抗力
-			m_move.x *= m_sStatus[m_character].fMaxInertia;
-			m_move.z *= m_sStatus[m_character].fMaxInertia;
-		}
-		// 移動状態なら
-		else
-		{
-			// xの移動量制限
-			if (m_move.x > CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.x = CCharacter::GetStatus().fMaxMove;
-			}
-			else if (m_move.x < -CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.x = -CCharacter::GetStatus().fMaxMove;
-			}
-			// zの移動量制限
-			if (m_move.z > CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.z = CCharacter::GetStatus().fMaxMove;
-			}
-			else if (m_move.z < -CCharacter::GetStatus().fMaxMove)
-			{
-				m_move.z = -CCharacter::GetStatus().fMaxMove;
-			}
-		}
+		// 抵抗力
+		m_move.x *= m_sStatus[m_character].fMaxInertia;
+		m_move.z *= m_sStatus[m_character].fMaxInertia;
 	}
 	// 上限処理
 	Limit();
