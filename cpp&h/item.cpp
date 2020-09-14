@@ -72,6 +72,7 @@ void CItem::Init(void)
 	// ビルボード
 	CScene_THREE::SetBillboard(true);
 	CScene_THREE::SetLighting(true);		// ライティング
+	CScene_THREE::SetAlphaBlend(true);
 	// テクスチャータイプ設定
 	CScene_THREE::SetTexType(21);	// テクスチャー渡し
 	m_pos = m_pItem->GetPos();

@@ -109,7 +109,9 @@ void CPlayer::Init(void)
 			10,
 			CMeshdome::TYPE_WARNING,
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			false,
+			LAYER_BGDOME);
 
 		if (m_pMeshDome != NULL)
 		{
@@ -816,6 +818,15 @@ void CPlayer::FishApponent(
 	int const &nFishApponent	// 魚の出現番号
 )
 {
+	// 変数宣言
+	CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報取得
+	const int nId = pNetwork->GetId();				// 自分のクライアント番号
+	// 自キャラ以外なら
+	// 関数を抜ける
+	if (m_nPlayerID != nId)
+	{
+		return;
+	}
 	// 出現カウント
 	if (m_nCntFishApponent[nFishApponent] == FISH_APPONENTTIME)
 	{
