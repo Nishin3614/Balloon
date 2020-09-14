@@ -591,5 +591,8 @@
     <FxCompile Include="MaskShader.fx">
       <Filter>shader</Filter>
     </FxCompile>
+    <FxCompile Include="data\LOAD\MAPPING\Ocean.fx">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
