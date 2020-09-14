@@ -40,6 +40,10 @@ CNetwork::CNetwork()
 	m_selectBalloon.nId = -1;
 	m_selectBalloon.nType = -1;
 
+	// ¶¬ƒtƒ‰ƒO‚Ì‰Šú‰»
+	m_thunderEvent.bCreate = false;
+	m_pointcircleEvent.bCreate = false;
+
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
 		m_selectState[nCount].bReady = false;

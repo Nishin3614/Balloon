@@ -855,21 +855,23 @@ bool CCharacter::GetFloorHeight(void)
 		pFloor = (CFloor*)CScene::GetScene( CScene::LAYER_3DOBJECT, nCntLayer,CFloor());	// 床
 		if (pFloor != NULL)
 		{
-			if(pFloor)
-			// 床の高さを代入
-			if (m_pos.y < pFloor->GetHeight(m_pos))
+			if (pFloor->GetCalculation())
 			{
-				m_pos.y = pFloor->GetHeight(m_pos);
-				m_move.y = 0;
-				// 着地状態をtrueに
-				m_bLanding = true;
-				return true;
-			}
-			// それ以外
-			else
-			{
-				// 着地状態をfalseに
-				m_bLanding = false;
+				// 床の高さを代入
+				if (m_pos.y < pFloor->GetHeight(m_pos))
+				{
+					m_pos.y = pFloor->GetHeight(m_pos);
+					m_move.y = 0;
+					// 着地状態をtrueに
+					m_bLanding = true;
+					return true;
+				}
+				// それ以外
+				else
+				{
+					// 着地状態をfalseに
+					m_bLanding = false;
+				}
 			}
 		}
 	}
