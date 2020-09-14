@@ -325,7 +325,7 @@ void CCamera::Set(void)
 		D3DXToRadian(45.0f),						// 視野角(画角)
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,	// アスペクト比
 		10.0f,										// MearZ値(近いビュー平面のZ値)
-		15000.0f);									// FarZ値(遠いビュー平面のZ値)初期値は1000
+		1500000.0f);								// FarZ値(遠いビュー平面のZ値)初期値は1000
 
 	// プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
