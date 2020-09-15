@@ -66,7 +66,7 @@ public:
 	virtual ~CRectCollision() {};
 	virtual void Init(void);
 	virtual void Uninit(void);
-	virtual void Update(void) {};
+	virtual void Update(void);
 	virtual void Draw(void) {};
 #ifdef _DEBUG
 	virtual void Debug(void);

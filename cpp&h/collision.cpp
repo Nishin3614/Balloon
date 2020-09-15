@@ -611,13 +611,14 @@ bool CCollision::RectAndSphere(
 
 	// ある座標の最も近い、ボックス上の座標
 	ClosestPoint = pRectShapeA->GetClosestpoint(*pos_B + pSphereShapeB->GetOffset());
+	float a = CCalculation::DiffPointSquare(*pos_B + pSphereShapeB->GetOffset(), ClosestPoint);
 	// 当たり判定処理
-	bCollision = CCalculation::DiffPointSquare(*pos_B, ClosestPoint) <
+	bCollision = CCalculation::DiffPointSquare(*pos_B + pSphereShapeB->GetOffset(), ClosestPoint) <
 		pSphereShapeB->GetRadius() * pSphereShapeB->GetRadius();
 	// 当たっていたら &&
 	// 矩形Aの押し出し処理がtrueなら &&
 	// 球Bの相手に対する押し出し処理がtrueなら
-	// ->球Aが押し出される
+	// ->矩形Aが押し出される
 	if (bCollision &&
 		pRectShapeA->m_bPush &&
 		pSphereShapeB->m_bOpponentPush
@@ -625,13 +626,20 @@ bool CCollision::RectAndSphere(
 	{
 
 	}
+	// 当たっていたら &&
+	// 矩形Bの押し出し処理がtrueなら &&
+	// 矩形Aの相手に対する押し出し処理がtrueなら
+	// ->球Bが押し出される
 	else if (bCollision &&
 		pRectShapeA->m_bOpponentPush &&
 		pSphereShapeB->m_bPush
 		)
 	{
-		//D3DXVECTOR3
-			//*pos_B = ClosestPoint + pSphereShapeB->GetRadius();
+		// 変数宣言
+		D3DXVECTOR3 A_To_BVec;	// AからBのベクトル
+		A_To_BVec = *pos_B + pSphereShapeB->GetOffset() - ClosestPoint;
+		D3DXVec3Normalize(&A_To_BVec, &A_To_BVec);
+		*pos_B = ClosestPoint + A_To_BVec * pSphereShapeB->GetRadius() - pSphereShapeB->GetOffset();
 	}
 	// 距離が半径より短い場合true,それ以外falseを返す
 	return bCollision;
