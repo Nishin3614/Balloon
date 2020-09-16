@@ -171,6 +171,7 @@
     <ClCompile Include="cpp&amp;h\charRanking.cpp" />
     <ClCompile Include="cpp&amp;h\effect.cpp" />
     <ClCompile Include="cpp&amp;h\framework.cpp" />
+    <ClCompile Include="cpp&amp;h\gaugeFrame.cpp" />
     <ClCompile Include="cpp&amp;h\PointCircle.cpp" />
     <ClCompile Include="cpp&amp;h\scoreUP.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
@@ -264,6 +265,7 @@
     <ClInclude Include="cpp&amp;h\charRanking.h" />
     <ClInclude Include="cpp&amp;h\effect.h" />
     <ClInclude Include="cpp&amp;h\framework.h" />
+    <ClInclude Include="cpp&amp;h\gaugeFrame.h" />
     <ClInclude Include="cpp&amp;h\PointCircle.h" />
     <ClInclude Include="cpp&amp;h\scoreUP.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />

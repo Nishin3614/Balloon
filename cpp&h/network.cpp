@@ -551,12 +551,12 @@ bool CNetwork::CheckCharacterReady(int nIndex)
 void CNetwork::Create(void)
 {
 	if (m_thunderEvent.bCreate)
-	{
+	{// 雷サークル作成処理
 		CThunder::Create(m_thunderEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 		m_thunderEvent.bCreate = false;
 	}
 	if (m_pointcircleEvent.bCreate)
-	{
+	{// ポイントサークル作成処理
 		CPointCircle::Create(m_pointcircleEvent.pos, D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 		m_pointcircleEvent.bCreate = false;
 	}
@@ -693,7 +693,8 @@ bool CNetwork::UpdateUDP(void)
 
 			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
 			{
-				m_aKeyState[nCount][nCntKey] = fData[nCntKey];
+				//m_aKeyState[nCount][nCntKey] = fData[nCntKey];
+				m_aKeyState[nCount][nCntKey] = (fData[nCntKey] == 0) ? true : false;
 			}
 
 			for (int nCntKey = 0; nCntKey < NUM_KEY_M; nCntKey++)
