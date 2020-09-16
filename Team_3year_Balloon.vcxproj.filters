@@ -294,7 +294,7 @@
     <ClCompile Include="cpp&amp;h\BalloonNum.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="gaugeFrame.cpp">
+    <ClCompile Include="cpp&amp;h\gaugeFrame.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -584,8 +584,8 @@
     <ClInclude Include="cpp&amp;h\BalloonNum.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="gaugeFrame.h">
-      <Filter>ソース ファイル</Filter>
+    <ClInclude Include="cpp&amp;h\gaugeFrame.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
