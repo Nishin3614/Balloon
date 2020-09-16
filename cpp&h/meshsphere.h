@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 // マクロ定義
 //-----------------------------------------------------------------------------
-#define RADIUS_SIZE		(45.0f)
+#define RADIUS_SIZE		(450.0f)
 #define SEPARATE		(15)
 
 //-----------------------------------------------------------------------------
@@ -155,6 +155,8 @@ public:
 
 	static HRESULT Load(void);	// 読み込み
 	static void Unload(void);	// 破棄
+	// 取得 //
+	bool const &GetUse(void) { return m_MeshSphere.bUse; };
 	// 設定 //
 	// 位置設定
 	void SetPosition(D3DXVECTOR3 const &pos);

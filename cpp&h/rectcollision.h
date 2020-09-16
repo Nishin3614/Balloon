@@ -66,7 +66,7 @@ public:
 	virtual ~CRectCollision() {};
 	virtual void Init(void);
 	virtual void Uninit(void);
-	virtual void Update(void) {};
+	virtual void Update(void);
 	virtual void Draw(void) {};
 #ifdef _DEBUG
 	virtual void Debug(void);
@@ -100,8 +100,6 @@ public:
 	CRectShape * const GetRectShape(void) { return m_pRectShape.get(); };
 	// 矩形クラスの当たり判定比較
 	bool Judg(CRectShape * const RectShape);
-	// 矩形クラスの当たり判定比較(押し出し処理)
-	bool Judg(CRectShape * const RectShape, D3DXVECTOR3 * pPos);
 	// 球クラスの当たり判定比較
 	bool Judg(CSphereShape * const SphereShape);
 	// 円柱クラスの当たり判定比較

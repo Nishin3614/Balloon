@@ -109,7 +109,9 @@ void CPlayer::Init(void)
 			10,
 			CMeshdome::TYPE_WARNING,
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			false,
+			LAYER_BGDOME);
 
 		if (m_pMeshDome != NULL)
 		{
@@ -816,16 +818,43 @@ void CPlayer::FishApponent(
 	int const &nFishApponent	// 魚の出現番号
 )
 {
-	// 出現カウント
-	if (m_nCntFishApponent[nFishApponent] == FISH_APPONENTTIME)
+	// モードがチュートリアルなら
+	if (CManager::GetMode() == CManager::MODE_TUTORIAL)
 	{
-		// 魚生成
-		CCharacter_Fish::Create(CCharacter::GetPos());
-		// 魚出現カウント初期化処理
-		m_nCntFishApponent[nFishApponent] = 0;
+		// 出現カウント
+		if (m_nCntFishApponent[nFishApponent] == FISH_APPONENTTIME)
+		{
+			// 魚生成
+			CCharacter_Fish::Create(CCharacter::GetPos());
+			// 魚出現カウント初期化処理
+			m_nCntFishApponent[nFishApponent] = 0;
+		}
+		// 魚出現カウントアップ
+		m_nCntFishApponent[nFishApponent]++;
 	}
-	// 魚出現カウントアップ
-	m_nCntFishApponent[nFishApponent]++;
+	// それ以外なら
+	else
+	{
+		// 変数宣言
+		CNetwork *pNetwork = CManager::GetNetwork();	// ネットワーク情報取得
+		const int nId = pNetwork->GetId();				// 自分のクライアント番号
+		// 自キャラ以外なら
+		// 関数を抜ける
+		if (m_nPlayerID != nId)
+		{
+			return;
+		}
+		// 出現カウント
+		if (m_nCntFishApponent[nFishApponent] == FISH_APPONENTTIME)
+		{
+			// 魚生成
+			CCharacter_Fish::Create(CCharacter::GetPos());
+			// 魚出現カウント初期化処理
+			m_nCntFishApponent[nFishApponent] = 0;
+		}
+		// 魚出現カウントアップ
+		m_nCntFishApponent[nFishApponent]++;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

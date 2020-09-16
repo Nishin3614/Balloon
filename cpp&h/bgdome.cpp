@@ -66,7 +66,12 @@ void CBgdome::Init(void)
 			m_pos,
 			D3DXVECTOR3(500.0f, 500.0f, 500.0f),
 			10,
-			10
+			10,
+			CMeshdome::TYPE_NORMAL,
+			D3DXCOLOR_INI,
+			D3DVECTOR3_ZERO,
+			false,
+			LAYER_BGDOME
 		);
 	}
 }
@@ -182,8 +187,8 @@ void CBgdome::SetRot(D3DXVECTOR3 const & rot)
 // ê›íËèàóù
 // ----------------------------------------
 void CBgdome::Set(
-	D3DXVECTOR3 const & pos, 
-	D3DXVECTOR3 const & rot, 
+	D3DXVECTOR3 const & pos,
+	D3DXVECTOR3 const & rot,
 	int const & nFrame
 )
 {

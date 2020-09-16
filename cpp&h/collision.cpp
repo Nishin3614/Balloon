@@ -97,7 +97,9 @@ void CCollision::Debug(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 形クラスの選択
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::SelectShape(CShape * const shape)
+bool CCollision::SelectShape(
+	CShape * const shape
+)
 {
 	// クラス型比較 //
 	// 矩形クラス
@@ -116,7 +118,9 @@ bool CCollision::SelectShape(CShape * const shape)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 当たり判定(指定)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::CollisionDetection(CCollision * pCollision)
+bool CCollision::CollisionDetection(
+	CCollision * pCollision
+)
 {
 	// 引数の当たり判定情報がNULLの場合 ||
 	// 引数の当たり判定が自分のあたり判定なら
@@ -387,8 +391,8 @@ void CCollision::CompulsionScene(void)
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 矩形と矩形の判定
-// pRectShapeA:矩形A
-// pRectShapeB:矩形B
+//	pRectShapeA	: 矩形A
+//	pRectShapeB	: 矩形B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::RectAndRect(
 	CRectShape * const pRectShapeA,	// 矩形A
@@ -570,128 +574,9 @@ bool CCollision::RectAndRect(
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 矩形と矩形の当たり判定
-// pRectShapeA:矩形A
-// pRectShapeB:矩形B
-// pPos:位置ポインター(親元の位置)
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::RectAndRect(
-	CRectShape * pRectShapeA,		// 矩形A
-	CRectShape * const pRectShapeB,	// 矩形B
-	D3DXVECTOR3 * pPos				// 位置ポインター
-)
-{
-	// 変数宣言
-	bool bCollision = false;
-	/*
-	D3DXVECTOR3 const &min_A = pRectShapeA->GetMin();
-	D3DXVECTOR3 const &min_B = pRectShapeB->GetMin();
-	D3DXVECTOR3 const &max_A = pRectShapeA->GetMax();
-	D3DXVECTOR3 const &max_B = pRectShapeB->GetMax();
-	// 接触していないときはfalseを返す
-	if (max_A.y > min_B.y &&
-		min_A.y < max_B.y)
-	{
-		// 素材のZ範囲
-		if (max_A.z > min_B.z&&
-			min_A.z < max_B.z)
-		{
-			// 素材のZ範囲
-			if (max_A.x > min_B.x&&
-				min_A.x < max_B.x)
-			{
-				// 当たり判定(左)
-				if (max_A.x > min_B.x)
-				{
-					// 素材状の左に
-					pPos->x = min_B.x - pRectShapeA->GetSize().x * 0.6f;
-					// 接触しているときはtrueを返す
-					bCollision = true;
-				}
-
-				// 当たり判定(右)
-				else if (min_A.x < max_B.x)
-				{
-					// 素材状の左に
-					pPos->x = max_B.x + pRectShapeA->GetSize().x * 0.6f;
-					// 接触しているときはtrueを返す
-					bCollision = true;
-				}
-			}
-		}
-		// 素材のX範囲
-		if (max_A.x > min_B.x&&
-			min_A.x < max_B.x)
-		{
-			// 素材のX範囲
-			if (max_A.z > min_B.z&&
-				min_A.z < max_B.z)
-			{
-
-				// 当たり判定(手前)
-				if (max_A.z > min_B.z)
-				{
-					// 素材状の左に
-					pPos->z = min_B.z - pRectShapeA->GetSize().z * 0.6f;
-					// 接触しているときはtrueを返す
-					bCollision = true;
-				}
-
-				// 当たり判定(奥)
-				else if (min_A.z < max_B.z)
-				{
-					// 素材状の左に
-					pPos->z = max_B.z +
-						pRectShapeA->GetSize().z * 0.6f + 0.1f;
-					// 接触しているときはtrueを返す
-					bCollision = true;
-				}
-			}
-		}
-	}
-	// 素材のZ範囲
-	if (max_A.z > min_B.z&&
-		min_A.z < max_B.z)
-	{
-		// 素材のX範囲
-		if (max_A.x > min_B.x&&
-			min_A.x < max_B.x)
-		{
-			// 素材のX範囲
-			if (max_A.y > min_B.y&&
-				min_A.y < max_B.y)
-			{
-				// 当たり判定(下)
-				if (max_A.y > min_B.y)
-				{
-					// 素材状の左に
-					pPos->y = min_B.y - pRectShapeA->GetSize().y * 0.6f;
-					// 接触しているときはtrueを返す
-					bCollision = true;
-				}
-
-				// 当たり判定(上)
-				else if (min_A.y < max_B.y)
-				{
-					// 素材状の左に
-					pPos->y = max_B.y + pRectShapeA->GetSize().y * 0.6f;
-					// 接触しているときはtrueを返す
-					bCollision = true;
-				}
-			}
-		}
-	}
-	// 当たり判定の更新
-	pRectShapeA->PassPos(*pPos);
-	*/
-
-
-	// 接触していないときはfalseを返す
-	return bCollision;
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 矩形と球
+// 矩形と球の当たり判定
+//	pRectShapeA		: 矩形A
+//	pSphereShapeB	: 球B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::RectAndSphere(
 	CRectShape * const pRectShapeA,
@@ -700,74 +585,83 @@ bool CCollision::RectAndSphere(
 {
 	// 変数宣言
 	D3DXVECTOR3 ClosestPoint;	// ある座標の最も近い、ボックス上の座標
-	D3DXVECTOR3 Pos_B;			// 位置
-	// ポインター位置情報がある場合
-	if (pSphereShapeB->Get_PPos() != NULL)
+	D3DXVECTOR3 *pos_A;			//
+	D3DXVECTOR3 *pos_B;			//
+	bool bCollision = false;	// 当たっているかどうか
+	// 矩形Aのポイント位置情報がNULLではない場合
+	// 位置情報代入
+	if (pRectShapeA->Get_PPos() != NULL)
 	{
-		// 位置情報代入
-		Pos_B = *pSphereShapeB->Get_PPos();
-		// ある座標の最も近い、ボックス上の座標
-		ClosestPoint = pRectShapeA->GetClosestpoint(Pos_B);
+		pos_A = pRectShapeA->Get_PPos();
 	}
-	// ない場合
 	else
 	{
-		// 位置情報代入
-		Pos_B = pSphereShapeB->Get_Pos();
-		// ある座標の最も近い、ボックス上の座標
-		ClosestPoint = pRectShapeA->GetClosestpoint(Pos_B);
+		pos_A = &pRectShapeA->Get_Pos();
 	}
-	if (CCalculation::DiffPointSquare(Pos_B, ClosestPoint) <
-		pSphereShapeB->GetRadius() * pSphereShapeB->GetRadius())
+	// スフィアBのポイント位置情報がNULLではない場合
+	// 位置情報代入
+	if (pSphereShapeB->Get_PPos() != NULL)
 	{
-		bool b = true;
+		pos_B = pSphereShapeB->Get_PPos();
+	}
+	else
+	{
+		pos_B = &pSphereShapeB->Get_Pos();
+	}
+
+	// ある座標の最も近い、ボックス上の座標
+	ClosestPoint = pRectShapeA->GetClosestpoint(*pos_B + pSphereShapeB->GetOffset());
+	float a = CCalculation::DiffPointSquare(*pos_B + pSphereShapeB->GetOffset(), ClosestPoint);
+	// 当たり判定処理
+	bCollision = CCalculation::DiffPointSquare(*pos_B + pSphereShapeB->GetOffset(), ClosestPoint) <
+		pSphereShapeB->GetRadius() * pSphereShapeB->GetRadius();
+	// 当たっていたら &&
+	// 矩形Aの押し出し処理がtrueなら &&
+	// 球Bの相手に対する押し出し処理がtrueなら
+	// ->矩形Aが押し出される
+	if (bCollision &&
+		pRectShapeA->m_bPush &&
+		pSphereShapeB->m_bOpponentPush
+		)
+	{
+
+	}
+	// 当たっていたら &&
+	// 矩形Bの押し出し処理がtrueなら &&
+	// 矩形Aの相手に対する押し出し処理がtrueなら
+	// ->球Bが押し出される
+	else if (bCollision &&
+		pRectShapeA->m_bOpponentPush &&
+		pSphereShapeB->m_bPush
+		)
+	{
+		// 変数宣言
+		D3DXVECTOR3 A_To_BVec;	// AからBのベクトル
+		A_To_BVec = *pos_B + pSphereShapeB->GetOffset() - ClosestPoint;
+		D3DXVec3Normalize(&A_To_BVec, &A_To_BVec);
+		*pos_B = ClosestPoint + A_To_BVec * pSphereShapeB->GetRadius() - pSphereShapeB->GetOffset();
 	}
 	// 距離が半径より短い場合true,それ以外falseを返す
-	return
-		CCalculation::DiffPointSquare(Pos_B,ClosestPoint) <
-		pSphereShapeB->GetRadius() * pSphereShapeB->GetRadius();
+	return bCollision;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 矩形と球
+// 矩形と円柱の当たり判定
+//	pRectShapeA		: 矩形A
+//	pColumnShapeB	: 円柱B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::RectAndSphere(CRectShape * const pRectShapeA, CSphereShape * const pSphereShapeB, D3DXVECTOR3 * pPos)
-{
-	// 変数宣言
-	D3DXVECTOR3 ClosestPoint;	// ある座標の最も近い、ボックス上の座標
-	D3DXVECTOR3 Pos_B;			// 位置
-								// ポインター位置情報がある場合
-	if (pSphereShapeB->Get_PPos() != NULL)
-	{
-		// 位置情報代入
-		Pos_B = *pSphereShapeB->Get_PPos();
-		// ある座標の最も近い、ボックス上の座標
-		ClosestPoint = pRectShapeA->GetClosestpoint(Pos_B);
-	}
-	// ない場合
-	else
-	{
-		// 位置情報代入
-		Pos_B = pSphereShapeB->Get_Pos();
-		// ある座標の最も近い、ボックス上の座標
-		ClosestPoint = pRectShapeA->GetClosestpoint(Pos_B);
-	}
-	// 距離が半径より短い場合true,それ以外falseを返す
-	return
-		CCalculation::DiffPointSquare(Pos_B, ClosestPoint) <
-		pSphereShapeB->GetRadius() * pSphereShapeB->GetRadius();
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 矩形と円柱
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::RectAndColumn(CRectShape * const pRectShapeA, CColumnShape * const pColumnShapeB)
+bool CCollision::RectAndColumn(
+	CRectShape * const pRectShapeA,
+	CColumnShape * const pColumnShapeB
+)
 {
 	return false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 球と円柱
+// 球と円柱の当たり判定
+//	pSphereShapeA	: 球A
+//	pColumnShapeB	: 円柱B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::SphereAndColumn(
 	CSphereShape * const pSphereShapeA,
@@ -832,7 +726,9 @@ bool CCollision::SphereAndColumn(
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 球と球
+// 球と球の当たり判定
+//	pSphereShapeA	: 球A
+//	pSphereShapeB	: 球B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bool CCollision::SphereAndSphere(
 	CSphereShape * const pSphereShapeA,
@@ -896,46 +792,14 @@ bool CCollision::SphereAndSphere(
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 球と球
+// 円柱と円柱の当たり判定
+//	pColumnShapeA	: 円柱A
+//	pColumnShapeB	: 円柱B
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::SphereAndSphere(CSphereShape * const pSphereShapeA, CSphereShape * const pSphereShapeB, D3DXVECTOR3 * pPos)
-{
-	// 変数宣言
-	D3DXVECTOR3 pos_A;
-	D3DXVECTOR3 pos_B;
-	// スフィアAのポイント位置情報がNULLではない場合
-	// 位置情報代入
-	if (pSphereShapeA->Get_PPos() != NULL)
-	{
-		pos_A = *pSphereShapeA->Get_PPos();
-	}
-	else
-	{
-		pos_A = pSphereShapeA->Get_Pos();
-	}
-	// スフィアBのポイント位置情報がNULLではない場合
-	// 位置情報代入
-	if (pSphereShapeA->Get_PPos() != NULL)
-	{
-		pos_B = *pSphereShapeB->Get_PPos();
-	}
-	else
-	{
-		pos_B = pSphereShapeB->Get_Pos();
-	}
-
-	return CCalculation::Collision_Sphere(
-		pos_A + pSphereShapeA->GetOffset(),
-		pSphereShapeA->GetRadius(),
-		pos_B + pSphereShapeB->GetOffset(),
-		pSphereShapeB->GetRadius()
-	);
-}
-
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 円柱と円柱
-// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-bool CCollision::ColumnAndColumn(CColumnShape * const pColumnShapeA, CColumnShape * const pColumnShapeB)
+bool CCollision::ColumnAndColumn(
+	CColumnShape * const pColumnShapeA,
+	CColumnShape * const pColumnShapeB
+)
 {
 	return false;
 }

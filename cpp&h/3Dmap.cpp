@@ -204,49 +204,83 @@ HRESULT C3DMap::LoadCreate(MAP const &map)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // スクリプト読み込み
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void C3DMap::LoadScript(char* Add)
+void C3DMap::LoadScript(char *add)
 {
 	FILE *pFile = NULL;																	// ファイル
 	char cReadText[128];															// 文字
 	char cHeadText[128];															// 比較
-	CFloor *pFloor = NULL;
+	char cDie[128];
 
-	pFile = fopen(Add, "r");				// ファイルを開くまたは作る
+	pFile = fopen(add, "r");				// ファイルを開くまたは作る
 
 	if (pFile != NULL)						//ファイルが読み込めた場合
 	{
-		while (strcmp(cHeadText, "End") != 0)
+		//スクリプトが来るまでループ
+		while (strcmp(cHeadText, "SCRIPT") != 0)
 		{
-			fgets(cReadText, sizeof(cReadText), pFile);									//最初の行を飛ばす
+			fgets(cReadText, sizeof(cReadText), pFile);
 			sscanf(cReadText, "%s", &cHeadText);
-
-			if (strcmp(cHeadText, "pos") == 0)
-			{
-				fgets(cReadText, sizeof(cReadText), pFile);								//最初の行を飛ばす
-				sscanf(cReadText, "%s", &cHeadText);
-
-				std::string Data = cReadText;
-				std::vector<std::string> vsvec_Contens;		// テキストデータ格納用
-
-				vsvec_Contens = CCalculation::split(Data, ',');
-
-				fgets(cReadText, sizeof(cReadText), pFile);								//行を飛ばす
-
-				// 床の作成
-				pFloor = CFloor::Create(D3DXVECTOR3((float)atof(vsvec_Contens[0].c_str()), (float)atof(vsvec_Contens[1].c_str()), (float)atof(vsvec_Contens[2].c_str())),
-					D3DXVECTOR3(50.0f, 50.0f, 50.0f),
-					D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-					50,
-					50,
-					7);
-
-				pFloor->vertexMove(pFile);										// 頂点情報の作成(ファイルから)
-			}
-
-			pFloor = NULL;
 		}
 
-		fclose(pFile);																// ファイルを閉じる
+		//スクリプトだったら
+		if (strcmp(cHeadText, "SCRIPT") == 0)
+		{
+			//エンドスクリプトが来るまで
+			while (strcmp(cHeadText, "END_SCRIPT") != 0)
+			{
+				fgets(cReadText, sizeof(cReadText), pFile);
+				sscanf(cReadText, "%s", &cHeadText);
+
+				//改行
+				if (strcmp(cReadText, "\n") != 0)
+				{
+					if (strcmp(cHeadText, "FIELDSET") == 0)
+					{//キャラクターの初期情報のとき
+						CFloor *pField;
+						pField = CFloor::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+							D3DXVECTOR3(50.0f, 50.0f, 50.0f),
+							D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+							50,
+							50,
+							7);
+
+						if (pField != NULL)
+						{
+							//エンドキャラクターセットが来るまでループ
+							while (strcmp(cHeadText, "END_FIELDSET") != 0)
+							{
+								fgets(cReadText, sizeof(cReadText), pFile);
+								sscanf(cReadText, "%s", &cHeadText);
+
+								if (strcmp(cHeadText, "POS") == 0)
+								{//パーツ総数のとき
+									D3DXVECTOR3 pos;
+									sscanf(cReadText, "%s %s %f %f %f", &cDie, &cDie,
+										&pos.x,
+										&pos.y,
+										&pos.z);
+
+									// 位置の設定
+									pField->Scene_SetPos(pos);
+								}
+								else if (strcmp(cHeadText, "CHECK_HEIGHT") == 0)
+								{// 計算する必要のあるメッシュかどうか
+								 //int nCal;
+								 //sscanf(cReadText, "%s %s %d", &cDie, &cDie, &nCal);
+								 //pField->SetCalculation((nCal == 0) ? true : false);
+									pField->SetCalculation(true);
+								}
+								else if (strcmp(cHeadText, "VERTEXINFO") == 0)
+								{//パーツ総数のとき
+									pField->vertexMove(pFile);			// 頂点情報の作成(ファイルから)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		fclose(pFile);				// ファイルを閉じる
 	}
 	else
 	{

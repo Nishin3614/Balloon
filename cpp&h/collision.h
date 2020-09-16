@@ -59,26 +59,32 @@ public:
 	// オブジェクトカテゴリー
 	typedef enum
 	{
-		OBJTYPE_ACTOR = 0,
-		OBJTYPE_PLAYER,
-		OBJTYPE_ENEMY,
-		OBJTYPE_FISH,
-		OBJTYPE_PLAYER_BALLOON,
-		OBJTYPE_ENEMY_BALLOON,
-		OBJTYPE_ATTACK,
-		OBJTYPE_ITEM,
-		OBJTYPE_APPEFISH1,
-		OBJTYPE_APPEFISH2,
-		OBJTYPE_APPEFISH3,
-		OBJTYPE_HATENA,
-		OBJTYPE_MAX
+		OBJTYPE_ACTOR = 0,			// オブジェクト_ACTOR
+		OBJTYPE_PLAYER,				// オブジェクト_プレイヤー
+		OBJTYPE_ENEMY,				// オブジェクト_敵
+		OBJTYPE_FISH,				// オブジェクト_魚
+		OBJTYPE_PLAYER_BALLOON,		// オブジェクト_プレイヤーバルーン
+		OBJTYPE_ENEMY_BALLOON,		// オブジェクト_敵バルーン
+		OBJTYPE_ATTACK,				// オブジェクト_攻撃
+		OBJTYPE_ITEM,				// オブジェクト_アイテム
+		OBJTYPE_APPEFISH1,			// オブジェクト_魚出現ポイント1
+		OBJTYPE_APPEFISH2,			// オブジェクト_魚出現ポイント2
+		OBJTYPE_APPEFISH3,			// オブジェクト_魚出現ポイント3
+		OBJTYPE_HATENA,				// オブジェクト_まだ決まっていない
+		OBJTYPE_MAX					// オブジェクト_
 	} OBJTYPE;
 	/* 関数 */
+	// コンストラクタ
 	CCollision();
+	// デストラクタ
 	virtual ~CCollision() {};
+	// 初期化処理
 	virtual void Init(void) = 0;
+	// 終了処理
 	virtual void Uninit(void) = 0;
+	// 更新処理
 	virtual void Update(void) = 0;
+	// 描画処理
 	virtual void Draw(void) = 0;
 #ifdef _DEBUG
 	// デバッグ処理
@@ -86,17 +92,17 @@ public:
 	// あたり判定可視カの設定
 	virtual void Collision_Visible_Set(void) = 0;
 #endif // _DEBUG
-	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
+	// 自分から当たった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
 	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	)
 	{};
-	// 当たった後の処理
-	// 引数1:オブジェクトタイプ
-	// 引数2:相手のシーン情報
+	// 相手から当てられた後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
 	virtual void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
@@ -125,8 +131,6 @@ public:
 	// 判定の有無
 	// 矩形クラスの当たり判定比較
 	virtual bool Judg(CRectShape * const RectShape) = 0;
-	// 矩形クラスの当たり判定比較(押し出し処理)
-	virtual bool Judg(CRectShape * const RectShape,D3DXVECTOR3 * pPos) = 0;
 	// 球クラスの当たり判定比較
 	virtual bool Judg(CSphereShape * const SphereShape) = 0;
 	// 円柱クラスの当たり判定比較
@@ -166,54 +170,43 @@ public:
 	// あたり判定を所有しているシーン情報を強制NULL代入
 	void CompulsionScene(void);
 	// 矩形と矩形の当たり判定
-	// pRectShapeA:矩形A
-	// pRectShapeB:矩形B
+	//	pRectShapeA	: 矩形A
+	//	pRectShapeB	: 矩形B
 	static bool RectAndRect(
-		CRectShape * const pRectShapeA,	// 矩形A
-		CRectShape * const pRectShapeB	// 矩形B
-	);
-	// 矩形と矩形の当たり判定
-	// pRectShapeA:矩形A
-	// pRectShapeB:矩形B
-	// pPos:位置ポインター(親元の位置)
-	static bool RectAndRect(
-		CRectShape * pRectShapeA,		// 矩形A
-		CRectShape * const pRectShapeB,	// 矩形B
-		D3DXVECTOR3 * pPos				// 位置ポインター
+		CRectShape * const pRectShapeA,		// 矩形A
+		CRectShape * const pRectShapeB		// 矩形B
 	);
 	// 矩形と球の当たり判定
+	//	pRectShapeA		: 矩形A
+	//	pSphereShapeB	: 球B
 	static bool RectAndSphere(
 		CRectShape * const pRectShapeA,		// 矩形A
 		CSphereShape * const pSphereShapeB	// 球B
 	);
-	// 矩形と球の当たり判定
-	static bool RectAndSphere(
-		CRectShape * const pRectShapeA,		// 矩形A
-		CSphereShape * const pSphereShapeB,	// 球B
-		D3DXVECTOR3 * pPos					// 位置
-	);
 	// 矩形と円柱の当たり判定
+	//	pRectShapeA		: 矩形A
+	//	pColumnShapeB	: 円柱B
 	static bool RectAndColumn(
 		CRectShape * const pRectShapeA,		// 矩形A
 		CColumnShape * const pColumnShapeB	// 円柱B
 	);
 	// 球と円柱の当たり判定
+	//	pSphereShapeA	: 球A
+	//	pColumnShapeB	: 円柱B
 	static bool SphereAndColumn(
 		CSphereShape * const pSphereShapeA,	// 球A
 		CColumnShape * const pColumnShapeB	// 円柱B
 	);
 	// 球と球の当たり判定
+	//	pSphereShapeA	: 球A
+	//	pSphereShapeB	: 球B
 	static bool SphereAndSphere(
 		CSphereShape * const pSphereShapeA,	// 球A
 		CSphereShape * const pSphereShapeB	// 球B
 	);
-	// 球と球の当たり判定
-	static bool SphereAndSphere(
-		CSphereShape * const pSphereShapeA,	// 球A
-		CSphereShape * const pSphereShapeB,	// 球B
-		D3DXVECTOR3 * pPos					// 位置
-	);
 	// 円柱と円柱の当たり判定
+	//	pColumnShapeA	: 円柱A
+	//	pColumnShapeB	: 円柱B
 	static bool ColumnAndColumn(
 		CColumnShape * const pColumnShapeA,	// 円柱A
 		CColumnShape * const pColumnShapeB	// 円柱B

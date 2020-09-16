@@ -89,7 +89,9 @@ void CPointCircle::Init(void)
 		10,
 		CMeshdome::TYPE_POINTCIRCLE,
 		D3DXCOLOR(0.0f, 1.0f, 0.0f, 0.5f),
-		D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+		false,
+		LAYER_DOME);
 
 	// メッシュドームの使用状態
 	m_pMeshDome->SetUse(true);
