@@ -75,10 +75,13 @@ void CSphereCollision::Update(void)
 #ifdef _DEBUG
 	// 当たり判定の使用状態がfalse ||
 	// ->関数を抜ける
-	if (!CCollision::GetUse())
+	if (CCollision::GetUse())
 	{
+		m_pDebugSphere->SetUse(true);
 		return;
 	}
+	// 不使用状態に
+	m_pDebugSphere->SetUse(false);
 #endif // _DEBUG
 }
 

@@ -155,6 +155,8 @@ public:
 
 	static HRESULT Load(void);	// “Ç‚İ‚İ
 	static void Unload(void);	// ”jŠü
+	// æ“¾ //
+	bool const &GetUse(void) { return m_MeshSphere.bUse; };
 	// İ’è //
 	// ˆÊ’uİ’è
 	void SetPosition(D3DXVECTOR3 const &pos);
