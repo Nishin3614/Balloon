@@ -35,6 +35,7 @@ int CItem::m_nAllItem = 0;
 CItem::CItem() :CScene_THREE()
 {
 	m_pCollision = NULL;
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nAllItem++;
 }
 
@@ -104,6 +105,21 @@ void CItem::Update(void)
 		m_pCollision->GetShape()->PassPos(D3DVECTOR3_ZERO);
 	}
 
+	static int nCntAnim;
+	static int nCntAnimHeight;
+	static int nCntFunc;
+
+	nCntFunc++;
+	if (nCntFunc % 2 == 0)
+	{
+		nCntAnim++;
+		if (nCntAnim % 5 == 0)
+		{
+			nCntAnimHeight++;
+		}
+		SetAnimation(1.0f / 5, 0.0f + (nCntAnimHeight * 1.0f / 4), 1.0f / 4 + (nCntAnimHeight * 1.0f / 4), nCntAnim);
+	}
+
 	CScene_THREE::Update();
 }
 
@@ -170,7 +186,7 @@ HRESULT CItem::Load(void)
 	// デバイス取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();	// デバイスの取得
 	// テクスチャの読み込み
-	D3DXCreateTextureFromFile(pDevice, TEXTURE_BULLET, &m_pTex);
+	D3DXCreateTextureFromFile(pDevice, TEXTURE_COIN, &m_pTex);
 	// ステータス読み込み
 	LoadStatus();
 	return S_OK;
