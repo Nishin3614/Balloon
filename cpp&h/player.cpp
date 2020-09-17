@@ -131,7 +131,8 @@ void CPlayer::Init(void)
 			m_p2DMPGauge = C2DGauge::Create(
 				PLAYER_UI_MP_POS,
 				D3DXVECTOR2(500.0f, 25.0f),
-				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+				GetCharacter()
 			);
 			// MPƒQ[ƒW‚Ì•Ï‰»’è”‚ðÝ’è
 			m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
@@ -162,7 +163,8 @@ void CPlayer::Init(void)
 		m_p2DMPGauge = C2DGauge::Create(
 			PLAYER_UI_MP_POS,
 			D3DXVECTOR2(500.0f, 25.0f),
-			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)
+			D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+			GetCharacter()
 		);
 		// MPƒQ[ƒW‚Ì•Ï‰»’è”‚ðÝ’è
 		m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
