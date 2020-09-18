@@ -110,7 +110,7 @@ private:
 	static CMouse * m_mouse;				// マウス
 	static CKeyConfig * m_keyconfig;		// キー詳細
 
-											// 画面
+	// 画面
 	static CFade * m_fade;					// 画面遷移
 	static CTitle * m_title;				// タイトル
 	static CTutorial * m_tutorial;			// チュートリアル

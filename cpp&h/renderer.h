@@ -91,6 +91,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	// ƒ[ƒh’†‚Ì•`‰æˆ—
+	void LoadDraw(void);
 #ifdef _DEBUG
 	void CleanupDeviceD3D();
 	void ResetDevice();

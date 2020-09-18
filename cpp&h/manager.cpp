@@ -17,6 +17,7 @@
 #include "result.h"
 #include "ranking.h"
 #include "network.h"
+#include "scene_two.h"
 
 // ----------------------------------------------------------------------------------------------------
 //

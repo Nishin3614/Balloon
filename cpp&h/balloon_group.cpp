@@ -28,6 +28,7 @@
 #define BALLOON_GROUP_RADIUS		(30.0f)								// 半径
 #define BALLOON_OFFSET_POS			(D3DXVECTOR3(0.0f,100.0f,0.0f))		// オフセット位置
 #define BALLOON_COLLISION_RADIUS	(35.0f)								// あたり判定の半径
+#define BALLOON_INVINCIBLE			(DERAY_TIME(3))						// 無敵カウント
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -50,6 +51,7 @@ CBalloon_group::CBalloon_group() : CScene::CScene()
 	m_pCollision = NULL;
 	m_pMtx = NULL;
 	m_nActorId = -1;
+	m_nCntInvincible = BALLOON_INVINCIBLE;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -103,9 +105,34 @@ void CBalloon_group::Update(void)
 		// 風船のNULLチェック
 		// ->ループスキップ
 		if (m_apBalloon[nCntBalloon_group] == NULL) continue;
+		// 無敵カウントが規定数ごとに点滅
+		if (m_nCntInvincible >= BALLOON_INVINCIBLE)
+		{
+			m_apBalloon[nCntBalloon_group]->SetModelAlpha(1.0f);
+		}
+		else if (m_nCntInvincible % 10 == 0)
+		{
+			m_apBalloon[nCntBalloon_group]->SetModelAlpha(1.0f);
+		}
+		else if (m_nCntInvincible % 5 == 0)
+		{
+			m_apBalloon[nCntBalloon_group]->SetModelAlpha(0.0f);
+		}
 		// 更新
 		m_apBalloon[nCntBalloon_group]->Update();
 	}
+	/*
+	// プレイヤー情報
+	for (int nCntPlayer = 0; nCntPlayer < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCntPlayer++)
+	{
+		CPlayer * pPlayer = (CPlayer *)CScene::GetScene(CScene::LAYER_CHARACTER, nCntPlayer);
+		if (pPlayer == NULL) continue;
+		else if (pPlayer->GetPlayerID == CManager::GetNetwork()->GetId())
+		{
+
+		}
+	}
+	*/
 	// 当たり判定がNULLではないなら
 	// 更新
 	if (m_pCollision != NULL)
@@ -114,6 +141,11 @@ void CBalloon_group::Update(void)
 		m_pCollision->GetShape()->PassMatrix(*m_pMtx);
 		// 更新
 		m_pCollision->Update();
+		if (m_nCntInvincible >= BALLOON_INVINCIBLE)
+		{
+			// 無敵カウントアップ
+			m_nCntInvincible++;
+		}
 		return;
 	}
 }
@@ -185,9 +217,14 @@ void CBalloon_group::Scene_OpponentCollision(
 	{
 		if (m_nActorId == CManager::GetNetwork()->GetId())
 		{
+			// 無敵カウントが規定カウントを越していなかったら
+			// ->関数を抜ける
+ 			if (m_nCntInvincible < BALLOON_INVINCIBLE) return;
 			// 風船割れる処理
 			CrackBalloon();
 			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));
+			// 無敵カウント初期化
+			m_nCntInvincible = 0;
 		}
 	}
 }

@@ -160,6 +160,7 @@ private:
 	int m_nMaxPopBalloon_group;						// 最大出現数の個数
 	float m_fAngleBalloon_group;					// 風船グループの出現する角度(円周率 * 2 / 最大出現数)
 	int m_nActorId;									// ID
+	int m_nCntInvincible;							// 無敵カウント
 };
 
 #endif
