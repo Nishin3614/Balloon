@@ -1067,6 +1067,13 @@ void CPlayer::Die(void)
 			m_pRank = NULL;
 		}
 
+		// フレームワーク情報のNULLチェック
+		if (m_pFramework != NULL)
+		{
+			// フレームワーク情報の使用状態設定
+			m_pFramework->SetUse(false);
+		}
+
 		// 死亡処理
 		CCharacter_Balloon::Die();
 		// コントロールする自キャラの場合
