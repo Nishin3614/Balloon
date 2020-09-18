@@ -276,6 +276,32 @@ typedef struct CHARFILE
 		[64];		// モデルのファイル名
 } CHARFILE;
 
+// アニメーション
+typedef struct ANIMATION
+{
+	ANIMATION()
+	{
+		nCntAnim = 0;			// アニメカウント
+		nMaxCntAnim = 0;		// 最大アニメカウント
+		nHorizonAnim = 0;		// 水平のアニメーションパターン
+		nVirticalAnim = 0;		// 垂直のアニメーションパターン
+		nMaxHorizonAnim = 1;	// 最大水平アニメーションパターン数
+		nMaxVirticalAnim = 1;	// 最大垂直のアニメーションパターン数
+		fHorizonSize = 1.0f;	// 水平のアニメーション1つのサイズ
+		fVirticalSize = 1.0f;	// 垂直のアニメーション1つのサイズ
+		bLoop = true;			// ループ状態
+	}
+	int					nCntAnim;			// アニメカウント
+	int					nMaxCntAnim;		// 最大アニメカウント
+	int					nHorizonAnim;		// 水平のアニメーションパターン
+	int					nVirticalAnim;		// 垂直のアニメーションパターン
+	int					nMaxHorizonAnim;	// 最大水平アニメーションパターン数
+	int					nMaxVirticalAnim;	// 最大垂直のアニメーションパターン数
+	float				fHorizonSize;		// 水平のアニメーション1つのサイズ
+	float				fVirticalSize;		// 垂直のアニメーション1つのサイズ
+	bool				bLoop;				// ループ状態
+} ANIMATION, *PANIMATION;
+
 // ----------------------------------------------------------------------------------------------------
 //
 // マクロ定義
