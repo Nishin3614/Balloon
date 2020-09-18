@@ -21,7 +21,7 @@ data/TEXTURE/UI/TUTORIAL/tutorial_tly.png
 data/TEXTURE/UI/PressEnter.png
 data/TEXTURE/coin_anim.png
 data/TEXTURE/thunder.png
-data/TEXTURE/Thunder_01.png
+data/TEXTURE/pipo-mapeffect001.png
 data/TEXTURE/keepout.png
 data/TEXTURE/keepout2.png
 data/TEXTURE/rank.png
@@ -57,3 +57,10 @@ data/TEXTURE/Ballon.png
 data/TEXTURE/Gauge01.png
 data/TEXTURE/Gauge03.png
 data/TEXTURE/GaugeCover.png
+data/TEXTURE/pipo-gwspinitem002.png
+data/TEXTURE/congratulations.png
+data/TEXTURE/frameeffects002m.png
+data/TEXTURE/frameeffects004m.png
+data/TEXTURE/frameeffects006m.png
+data/TEXTURE/kamifubuki64.png
+data/TEXTURE/pipo-mapeffect001.png

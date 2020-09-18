@@ -181,7 +181,7 @@ void CGame::Update(void)
 		// ƒ|[ƒY‚Ö
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_POUSE))
 		{
-			PauseState();
+			//PauseState();
 		}
 	}
 

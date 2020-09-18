@@ -34,6 +34,7 @@ CScene_TWO::CScene_TWO() : CScene::CScene()
 	m_fLengh = 0;
 	m_fAngle = 0;
 	m_offsetType = OFFSET_TYPE_CENTER;
+	m_unipAnim = NULL;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -91,6 +92,11 @@ void CScene_TWO::Init(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CScene_TWO::Uninit(void)
 {
+	// アニメーション情報の開放
+	if (m_unipAnim != NULL)
+	{
+		m_unipAnim.reset();
+	}
 	// 頂点バッファの開放
 	if (m_pVtxBuff != NULL)
 	{
@@ -104,6 +110,8 @@ void CScene_TWO::Uninit(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CScene_TWO::Update(void)
 {
+	// アニメーション更新処理
+	Updata_Animation();
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -224,6 +232,51 @@ std::unique_ptr<CScene_TWO> CScene_TWO::Creat_Unique(
 	pScene_Two->Init();
 	// 生成したオブジェクトを返す
 	return pScene_Two;
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// アニメーション更新処理
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_TWO::Updata_Animation(void)
+{
+	// アニメーション情報がNULLなら
+	// ->関数を抜ける
+	if (m_unipAnim == NULL) return;
+
+	// カウントアニメアップ
+	m_unipAnim->nCntAnim++;
+	if (m_unipAnim->nCntAnim % m_unipAnim->nMaxCntAnim == 0)
+	{
+		// 変数宣言
+		D3DXVECTOR2 FirstPos;
+		D3DXVECTOR2 EndPos;
+		// 水平アニメーションカウントアップ
+		m_unipAnim->nHorizonAnim++;
+		if (m_unipAnim->nHorizonAnim >= m_unipAnim->nMaxHorizonAnim)
+		{
+			// 水平アニメーションカウント初期化
+			m_unipAnim->nHorizonAnim = 0;
+			// 垂直アニメーションカウントアップ
+			m_unipAnim->nVirticalAnim++;
+			if (m_unipAnim->nVirticalAnim >= m_unipAnim->nMaxVirticalAnim)
+			{
+				// 垂直アニメーションカウント初期化
+				m_unipAnim->nVirticalAnim = 0;
+			}
+		}
+		// 始点位置
+		FirstPos = D3DXVECTOR2(
+			m_unipAnim->nHorizonAnim * m_unipAnim->fHorizonSize,
+			m_unipAnim->nVirticalAnim * m_unipAnim->fVirticalSize
+		);
+		// 終点位置
+		EndPos = D3DXVECTOR2(
+			m_unipAnim->nHorizonAnim * m_unipAnim->fHorizonSize + m_unipAnim->fHorizonSize,
+			m_unipAnim->nVirticalAnim * m_unipAnim->fVirticalSize + m_unipAnim->fVirticalSize
+		);
+		// テクスチャー座標設定
+		SetTex(FirstPos, EndPos);
+	}
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -421,6 +474,46 @@ void CScene_TWO::SetTex(
 	pVtx[3].tex = D3DXVECTOR2(last.x, last.y);
 	// アンロック
 	m_pVtxBuff->Unlock();
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// テクスチャーアニメーションの設定
+//	nMaxCntAnim			: 最大アニメーションカウント
+//	nMaxHorizonAnim		: 最大水平アニメーションカウント
+//	nMaxVirticalAnim	: 最大垂直アニメーションカウント
+//	bLoop				: ループ状態
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_TWO::SetTexAnim(
+	int	const &nMaxCntAnim,			// 最大アニメーションカウント
+	int	const &nMaxHorizonAnim,		// 最大水平アニメーションカウント
+	int	const &nMaxVirticalAnim,	// 最大垂直アニメーションカウント
+	bool const &bLoop				// ループ状態
+)
+{
+	// 変数宣言
+	D3DXVECTOR2 FirstPos;
+	D3DXVECTOR2 EndPos;
+	// アニメーション情報のメモリ確保
+	m_unipAnim.reset(new ANIMATION);
+	// 各項目の設定
+	m_unipAnim->nMaxCntAnim = nMaxCntAnim;					// 最大アニメーションカウント
+	m_unipAnim->nMaxHorizonAnim = nMaxHorizonAnim;			// 最大水平アニメーションカウント
+	m_unipAnim->nMaxVirticalAnim = nMaxVirticalAnim;		// 最大垂直アニメーションカウント
+	m_unipAnim->fHorizonSize = 1.0f / nMaxHorizonAnim;		// 垂直アニメーションの1つのサイズ
+	m_unipAnim->fVirticalSize = 1.0f / nMaxVirticalAnim;	// 垂直アニメーションの1つのサイズ
+	m_unipAnim->bLoop = bLoop;								// ループ状態
+															// 始点位置
+	FirstPos = D3DXVECTOR2(
+		m_unipAnim->nHorizonAnim * m_unipAnim->fHorizonSize,
+		m_unipAnim->nVirticalAnim * m_unipAnim->fVirticalSize
+	);
+	// 終点位置
+	EndPos = D3DXVECTOR2(
+		m_unipAnim->nHorizonAnim * m_unipAnim->fHorizonSize + m_unipAnim->fHorizonSize,
+		m_unipAnim->nVirticalAnim * m_unipAnim->fVirticalSize + m_unipAnim->fVirticalSize
+	);
+	// テクスチャー座標設定
+	SetTex(FirstPos, EndPos);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

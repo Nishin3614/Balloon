@@ -40,6 +40,11 @@ CFramework::~CFramework()
 void CFramework::Init(void)
 {
 	CScene_TWO::Init();
+	CScene_TWO::SetTexAnim(
+		10,
+		2,
+		5
+	);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -99,8 +104,8 @@ CFramework * CFramework::Create(void)
 	pFramework->ManageSetting(CScene::LAYER_UI);
 	pFramework->SetPosition(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f));
 	pFramework->SetSize(D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));			// サイズ
-	pFramework->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));			// カラー
-	pFramework->BindTexture(CTexture_manager::GetTexture(44));
+	pFramework->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));			// カラー
+	pFramework->BindTexture(CTexture_manager::GetTexture(63));
 	// 初期化処理
 	pFramework->Init();
 	// 生成したオブジェクトを返す
