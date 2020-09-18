@@ -13,7 +13,7 @@
 #define MAX_BULLET_TEX (4)
 #define MAX_BULLET (200)								// アイテムの最大数
 #define BULLET_SIZE (100.0f)								// アイテムのサイズ
-#define	TEXTURE_BULLET	"data/TEXTURE/coin.png"			// 読み込むテクスチャファイル名
+#define	TEXTURE_COIN	"data/TEXTURE/coin_anim.png"			// 読み込むテクスチャファイル名
 
 // ==========================================================
 //

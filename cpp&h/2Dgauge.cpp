@@ -47,6 +47,7 @@ C2DGauge::C2DGauge() : CScene::CScene()
 	m_fSizeDiff = 0;						// サイズの差分
 	m_fConstance = 0;						// サイズが変わる定数
 	m_pos = D3DVECTOR3_ZERO;				// 位置情報
+	m_type = CCharacter::CHARACTER_BALLOON1;			// キャラクタータイプ
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -61,6 +62,10 @@ C2DGauge::~C2DGauge()
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void C2DGauge::Init(void)
 {
+	// 変数宣言
+	LPDIRECT3DDEVICE9 pDevice =					// デバイスの取得
+		CManager::GetRenderer()->GetDevice();
+
 	// メイン・サブ・背景色のゲージ生成
 	for (int nCnt = 0; nCnt < GAUGE_MAX; nCnt++)
 	{
@@ -72,8 +77,45 @@ void C2DGauge::Init(void)
 			0.0f,
 			m_col[nCnt]
 		);
+
 		// テクスチャー設定
 		m_aScene_Two[nCnt]->BindTexture(NULL);
+	}
+
+	CScene_TWO *pFream = NULL;
+	LPDIRECT3DTEXTURE9 gaugeTex;
+
+	switch (m_type)
+	{
+	case CCharacter::CHARACTER_BALLOON1:
+		pFream = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_LEFT, D3DXVECTOR3(m_pos.x - 103, m_pos.y - 5.5f, m_pos.z), D3DXVECTOR2(680.0f, 250.0f));
+		if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Gauge01.png", &gaugeTex)))
+		{
+			MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
+			break;
+		}
+		break;
+	case CCharacter::CHARACTER_BALLOON3:
+		pFream = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_LEFT, D3DXVECTOR3(m_pos.x - 55, m_pos.y - 5.5f, m_pos.z), D3DXVECTOR2(640.0f, 240.0f));
+		if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Gauge03.png", &gaugeTex)))
+		{
+			MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
+			break;
+		}
+		break;
+	default:
+		pFream = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_LEFT, D3DXVECTOR3(m_pos.x - 30, m_pos.y - 5.0f, m_pos.z), D3DXVECTOR2(600.0f, 35.0f));
+		if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/GaugeCover.png", &gaugeTex)))
+		{
+			MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
+			break;
+		}
+		break;
+	}
+
+	if (pFream != NULL)
+	{
+		pFream->BindTexture(gaugeTex);
 	}
 }
 
@@ -146,7 +188,10 @@ void C2DGauge::Draw(void)
 		// ->描画
 		if (m_aScene_Two[nCnt] != NULL)
 		{
-			m_aScene_Two[nCnt]->Draw();
+			if (nCnt >= GAUGE_MAINLINE)
+			{
+				m_aScene_Two[nCnt]->Draw();
+			}
 		}
 	}
 }
@@ -187,6 +232,7 @@ C2DGauge * C2DGauge::Create(
 	D3DXVECTOR3 const &pos,			// 位置
 	D3DXVECTOR2 const &size,		// サイズ
 	D3DXCOLOR	const &Maincol,		// メインカラー
+	CCharacter::CHARACTER	const &type,		// キャラクタータイプ
 	D3DXCOLOR	const &Undercol,	// サブカラー
 	D3DXCOLOR	const &Blockcol		// 背景色
 )
@@ -205,6 +251,7 @@ C2DGauge * C2DGauge::Create(
 		p2DGauge->m_size[nCntGauge] = size;			// サイズ
 	}
 	p2DGauge->m_fSizeLast = size.x;					// サイズの目標値
+	p2DGauge->m_type = type;						// タイプ設定
 	// 初期化処理
 	p2DGauge->Init();
 	// 生成したオブジェクトを返す

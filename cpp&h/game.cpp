@@ -181,7 +181,7 @@ void CGame::Update(void)
 		// ƒ|[ƒY‚Ö
 		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_POUSE))
 		{
-			PauseState();
+			//PauseState();
 		}
 	}
 
@@ -366,16 +366,16 @@ void CGame::PlayerCreate(void)
 
 		switch (aData[nCntPlayer])
 		{
-		case CPlayer::CHARATYPE_SPEED_UP:
+		case CHARATYPE_SPEED_UP:
 			m_pPlayer[nCntPlayer] = CSpeedUP::Create(nCntPlayer, pos);
 			break;
-		case CPlayer::CHARATYPE_SCORE_UP:
+		case CHARATYPE_SCORE_UP:
 			m_pPlayer[nCntPlayer] = CScoreUP::Create(nCntPlayer, pos);
 			break;
-		case CPlayer::CHARATYPE_INVISIBLE:
+		case CHARATYPE_INVISIBLE:
 			m_pPlayer[nCntPlayer] = CInvisible::Create(nCntPlayer, pos);
 			break;
-		case CPlayer::CHARATYPE_REVIVAL:
+		case CHARATYPE_REVIVAL:
 			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, pos);
 			break;
 		}

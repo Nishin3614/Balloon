@@ -114,6 +114,18 @@ public:
 		D3DXVECTOR2 const &first = D3DXVECTOR2(0.0f,0.0f),			// 初期の配置
 		D3DXVECTOR2 const &last = D3DXVECTOR2(1.0f, 1.0f)			// 最後の配置
 	);
+	// アニメーション設定
+	//	nMaxCntAnim			: 最大アニメーションカウント
+	//	nMaxHorizonAnim		: 最大水平アニメーションカウント
+	//	nMaxVirticalAnim	: 最大垂直アニメーションカウント
+	//	bLoop				: ループ状態
+	void SetTexAnim(
+		int	const &nMaxCntAnim,			// 最大アニメーションカウント
+		int	const &nMaxHorizonAnim,		// 最大水平アニメーションカウント
+		int	const &nMaxVirticalAnim,	// 最大垂直アニメーションカウント
+		bool const &bLoop = true		// ループ状態
+	);
+
 	void SetAnimation(float fTexX, float fTexY, float fTexY2, int nPatternAnim);					// アニメーションの設定
 																									// テクスチャー設定
 	void BindTexture(LPDIRECT3DTEXTURE9 const &p_Tex) { m_pTexture = p_Tex; };
@@ -160,7 +172,10 @@ private:
 	/* 列挙型 */
 
 	/* 構造体 */
+
 	/* 関数 */
+	// アニメーション更新処理
+	void Updata_Animation(void);
 	void Offset_Center(VERTEX_2D *pVtx);	// オフセットがセンター
 	void Offset_Left(VERTEX_2D *pVtx);		// オフセットが左
 
@@ -171,6 +186,7 @@ private:
 	D3DXVECTOR2 m_size;						// サイズ
 	D3DXCOLOR	m_col;						// カラー
 	OFFSET_TYPE	m_offsetType;				// オフセットタイプ
+	std::unique_ptr<ANIMATION> m_unipAnim;	// アニメーション情報
 	float m_rot;							// 角度
 	float m_fLengh;							// 長さ
 	float m_fAngle;							// 角度
