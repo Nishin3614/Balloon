@@ -141,7 +141,7 @@ void CBalloon_group::Update(void)
 		m_pCollision->GetShape()->PassMatrix(*m_pMtx);
 		// 更新
 		m_pCollision->Update();
-		if (m_nCntInvincible >= BALLOON_INVINCIBLE)
+		if (m_nCntInvincible <= BALLOON_INVINCIBLE)
 		{
 			// 無敵カウントアップ
 			m_nCntInvincible++;
