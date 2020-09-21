@@ -18,6 +18,7 @@
 #include "ranking.h"
 #include "network.h"
 #include "scene_two.h"
+#include "loadscreen.h"
 
 // ----------------------------------------------------------------------------------------------------
 //
@@ -43,6 +44,7 @@ CTitle * CManager::m_title = NULL;						// タイトル
 CTutorial * CManager::m_tutorial = NULL;				// チュートリアル
 CSelect * CManager::m_select = NULL;					// 選択画面
 CGame * CManager::m_game = NULL;						// ゲーム
+CLoadScreen * CManager::m_pLoadScreen = NULL;			// 読み込み画面
 CResult * CManager::m_result = NULL;					// リザルト
 CRanking * CManager::m_ranking = NULL;					// ランキング
 CManager::MODE CManager::m_mode = STARTMODE;			// モード
@@ -158,6 +160,9 @@ HRESULT CManager::Init(HWND hWnd, BOOL bWindow, HINSTANCE hInstance)
 	// どのプレイヤー番号を追尾するか
 	// ゲームのカメラのアップデートでそれを指定するかも
 
+	// 読み込み画面の生成
+	m_pLoadScreen = CLoadScreen::Create();
+
 	// 画面遷移
 	m_fade = CFade::Create(STARTMODE);
 
@@ -248,6 +253,13 @@ void CManager::Uninit(void)
 		m_game->Uninit();
 		delete m_game;
 		m_game = NULL;
+	}
+	// 読み込み画面
+	if (m_pLoadScreen != NULL)
+	{
+		m_pLoadScreen->Uninit();
+		delete m_pLoadScreen;
+		m_pLoadScreen = NULL;
 	}
 	// リザルト
 	if (m_result != NULL)

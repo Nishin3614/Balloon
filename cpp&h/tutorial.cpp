@@ -47,6 +47,8 @@ CTutorial::~CTutorial()
 //=============================================================================
 HRESULT CTutorial::Init()
 {
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CCharacter::InitStatic();
 
 	CLake::Create(D3DXVECTOR3(0.0f, -50.0f, 0.0f), D3DXVECTOR3(25000.0f, 25000.0f, 0.0f));

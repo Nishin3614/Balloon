@@ -12,7 +12,7 @@
 #include "debugproc.h"
 #include "camera.h"
 #include "light.h"
-
+#include "loadscreen.h"
 // テスト
 #include "3Dmap.h"
 
@@ -329,7 +329,7 @@ void CRenderer::LoadDraw(void)
 	// Direct3Dによる描画開始
 	if (SUCCEEDED(m_pDevice->BeginScene()))
 	{
-		CManager::GetFade()->Draw();
+		CManager::GetLoadScreen()->Draw();
 
 		// Direct3Dによる描画終了
 		m_pDevice->EndScene();

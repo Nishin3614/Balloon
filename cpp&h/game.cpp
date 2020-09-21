@@ -35,6 +35,7 @@
 #include "scoreUP.h"
 #include "rank.h"
 #include "lake.h"
+#include "loadscreen.h"
 
 
 /* ポーズ */
@@ -85,6 +86,8 @@ CGame::~CGame()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Init(void)
 {
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	CNetwork *pNetwork = CManager::GetNetwork();
 
 	// カメラのタイプ設定
