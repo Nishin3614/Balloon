@@ -14,6 +14,7 @@
 #include "2Deffect.h"
 #include "3Dparticle.h"
 #include "framework.h"
+#include "title_select.h"
 
 //=============================================================================
 //
@@ -74,7 +75,8 @@ HRESULT CTitle::Init()
 		//D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f),
 		D3DVECTOR3_ZERO,
 		true);
-
+	// タイトル選択生成
+	CTitle_select::Create();
 	// 初期化
 	return S_OK;
 }
@@ -114,7 +116,7 @@ void CTitle::Update(void)
 		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
 		{
 			// チュートリアルへ
-			pFade->SetFade(CManager::MODE_TUTORIAL);
+			//pFade->SetFade(CManager::MODE_TUTORIAL);
 		}
 #ifdef _DEBUG
 #endif // _DEBUG

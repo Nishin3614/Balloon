@@ -249,6 +249,7 @@
     <ClCompile Include="cpp&amp;h\thundercloud.cpp" />
     <ClCompile Include="cpp&amp;h\thunderMulti.cpp" />
     <ClCompile Include="cpp&amp;h\title.cpp" />
+    <ClCompile Include="cpp&amp;h\title_select.cpp" />
     <ClCompile Include="cpp&amp;h\tutorial.cpp" />
     <ClCompile Include="cpp&amp;h\ui.cpp" />
     <ClCompile Include="cpp&amp;h\ui_group.cpp" />
@@ -347,6 +348,7 @@
     <ClInclude Include="cpp&amp;h\thundercloud.h" />
     <ClInclude Include="cpp&amp;h\thunderMulti.h" />
     <ClInclude Include="cpp&amp;h\title.h" />
+    <ClInclude Include="cpp&amp;h\title_select.h" />
     <ClInclude Include="cpp&amp;h\tutorial.h" />
     <ClInclude Include="cpp&amp;h\ui.h" />
     <ClInclude Include="cpp&amp;h\ui_group.h" />

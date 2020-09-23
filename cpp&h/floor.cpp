@@ -235,7 +235,14 @@ void CFloor::Uninit(void)
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
-
+	/*
+	// インデックス情報の開放
+	if (m_pIndex != NULL)
+	{
+		m_pIndex->Release();
+		m_pIndex = NULL;
+	}
+	*/
 	// シェーダーの開放
 	if (m_pEffect != NULL)
 	{

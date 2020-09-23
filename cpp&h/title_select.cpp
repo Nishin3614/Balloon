@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// UIグループ処理の説明[ui_group.cpp]
-// Author : Koki Nishiyama
+// ポーズ用ui処理の説明[title_select.cpp]
+// Author : Nishiyama Koki
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -11,11 +11,11 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 /* 描画 */
-#include "ui_group.h"
+#include "title_select.h"
 #include "fade.h"
-#include "game.h"
+#include "ui.h"
+#include "cameraconfig.h"
 #include "camera.h"
-#include "time.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -34,95 +34,264 @@
 // 静的変数宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 選択
+int CTitle_select::m_nSelect = 0;
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CUi_group::CUi_group()
+CTitle_select::CTitle_select()
 {
+	m_nSelect = 0;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // デストラクタ処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CUi_group::~CUi_group()
+CTitle_select::~CTitle_select()
 {
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 初期化処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Init(void)
+void CTitle_select::Init(void)
 {
+	// 背景の生成
+	m_BgUi = std::move(CUi::LoadCreate_Self(CUi::UITYPE_TITLEUI_SELECT_BG));
+	// 選択UIの生成
+	m_uni_SelectUi = std::move(C2DPresents::Create_Unique(
+		CScene_TWO::OFFSET_TYPE_CENTER,
+		D3DVECTOR3_ZERO,
+		{360.0f,100.0f},
+		0.0f,
+		{ 1.0f,0.0f,0.0f,1.0f }
+	));
+	// テクスチャー設定
+	m_uni_SelectUi->BindTexture(CTexture_manager::GetTexture(67));
+	// フェードインの色指定設定
+	m_uni_SelectUi->SetFadeIn(
+	{ 1.0f,1.0f,1.0f,0.0f },
+	{ 1.0f,1.0f,1.0f,1.0f },
+		0);
+	// アニメーション開始時間
+	m_uni_SelectUi->SetFadeIn_StarAnim(30);
+	// アニメーション開始時間
+	m_uni_SelectUi->Start_FadeIn();
 	// UIの生成
 	m_Ui = std::move(CUi::LoadCreate_Self(
-		m_Uitype
+		CUi::UITYPE_TITLEUI_SELECT
 	));
-	switch (m_Uitype)
+	// カメラ設定の生成
+	m_uni_CameraConfig = std::move(CCameraconfig::Create_Self());
+	// 選択UIがNULLではないなら
+	// ->選択UIの位置更新
+	if (m_uni_SelectUi != NULL)
 	{
-	case CUi::UITYPE_FINISH:
-		Init_GameFinish();
-		break;
-	default:
-		break;
+		m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+		m_uni_SelectUi->Set_Vtx_Pos();
 	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 終了処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Uninit(void)
+void CTitle_select::Uninit(void)
 {
+	// 背景の終了処理
+	for (int nCntUi = 0; nCntUi < (signed)m_BgUi.size(); nCntUi++)
+	{
+		m_BgUi[nCntUi]->Uninit();
+	}
+	// 選択UIの終了処理
+	if (m_uni_SelectUi != NULL)
+	{
+		m_uni_SelectUi->Uninit();
+	}
 	// PauseUIの終了処理
 	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
 	{
 		m_Ui[nCntUi]->Uninit();
+	}
+	// カメラ設定の終了処理
+	if (m_uni_CameraConfig != NULL)
+	{
+		m_uni_CameraConfig->Uninit();
 	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 更新処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Update(void)
+void CTitle_select::Update(void)
 {
-	switch (m_Uitype)
+	// カメラ設定状態がfalseなら
+	if (CCameraconfig::GetConfig() == false)
 	{
-	case CUi::UITYPE_DIE:
-		Update_GameOver();
-		break;
-	case CUi::UITYPE_GAMESTART:
-		Update_GameStart();
-		break;
-	case CUi::UITYPE_FINISH:
-		Update_Finish();
-		break;
-	default:
-		break;
+		/* ジョイパッド */
+		if (CManager::GetJoy() != NULL)
+		{
+			// スティックの下方向に傾けたとき |
+			// 下矢印が押されたとき |
+			// ->次の項目へ
+			if (CManager::GetJoy()->GetBoolStickLeft(0, CJoypad::DIRECTION_DOWN) ||
+				CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_DOWN))
+			{
+				m_nSelect++;
+				// 上限超えたら
+				if (m_nSelect >= TITLE_SELECT_MAX)
+				{
+					m_nSelect = TITLE_SELECT_CHARACTERSELECT;
+				}
+				// 選択UIの位置更新
+				m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+				m_uni_SelectUi->Set_Vtx_Pos();
+				// カーソル音
+				//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+			}
+			// スティックの上方向に傾けたとき |
+			// 上矢印が押されたとき |
+			// ->前の項目へ
+			else if (CManager::GetJoy()->GetBoolStickLeft(0, CJoypad::DIRECTION_UP) ||
+				CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_UP))
+			{
+				m_nSelect--;
+				// 下限超えたら
+				if (m_nSelect < TITLE_SELECT_CHARACTERSELECT)
+				{
+					m_nSelect = TITLE_SELECT_MAX - 1;
+				}
+				// 選択UIの位置更新
+				m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+				m_uni_SelectUi->Set_Vtx_Pos();
+
+				// カーソル音
+				//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+			}
+			// Bボタンを押したら |
+			// ->選択している項目の処理
+			if (CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_B))
+			{
+				Select();
+			}
+		}
+		/* キーボード */
+		// 下矢印を押したら |
+		// Sボタンを押したら |
+		// ->次の項目へ
+		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_DOWN) ||
+			CManager::GetKeyboard()->GetKeyboardTrigger(DIK_S))
+		{
+			m_nSelect++;
+			// 上限超えたら
+			if (m_nSelect >= TITLE_SELECT_MAX)
+			{
+				m_nSelect = TITLE_SELECT_CHARACTERSELECT;
+			}
+			// 選択UIの位置更新
+			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+			m_uni_SelectUi->Set_Vtx_Pos();
+			// カーソル音
+			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+		}
+		// 上矢印を押したら |
+		// Wボタンを押したら |
+		// ->前の項目へ
+		else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_UP) ||
+			CManager::GetKeyboard()->GetKeyboardTrigger(DIK_W))
+		{
+			m_nSelect--;
+			// 下限超えたら
+			if (m_nSelect < TITLE_SELECT_CHARACTERSELECT)
+			{
+				m_nSelect = TITLE_SELECT_MAX - 1;
+			}
+			// 選択UIの位置更新
+			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+			m_uni_SelectUi->Set_Vtx_Pos();
+			// カーソル音
+			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+		}
+		// エンター押したら |
+		// ->選択している項目の処理
+		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
+		{
+			Select();
+		}
+
+		/* 各UIの更新処理 */
+		// 背景の更新処理
+		for (int nCntUi = 0; nCntUi < (signed)m_BgUi.size(); nCntUi++)
+		{
+			m_BgUi[nCntUi]->Update();
+		}
+		// 選択UIの更新処理
+		if (m_uni_SelectUi != NULL)
+		{
+			m_uni_SelectUi->Update();
+		}
+		// UIの更新処理
+		for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
+		{
+			m_Ui[nCntUi]->Update();
+		}
 	}
-	// UIの更新処理
-	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
+	// カメラ設定状態がtrueなら
+	else
 	{
-		m_Ui[nCntUi]->Update();
+		// カメラ設定の終了処理
+		if (m_uni_CameraConfig != NULL)
+		{
+			m_uni_CameraConfig->Update();
+		}
 	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 描画処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Draw(void)
+void CTitle_select::Draw(void)
 {
+	// 背景の更新処理
+	for (int nCntUi = 0; nCntUi < (signed)m_BgUi.size(); nCntUi++)
+	{
+		m_BgUi[nCntUi]->Draw();
+	}
+	// 選択UIの描画処理
+	if (m_uni_SelectUi != NULL)
+	{
+		m_uni_SelectUi->Draw();
+	}
 	// UIの描画処理
 	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
 	{
 		m_Ui[nCntUi]->Draw();
 	}
+	// カメラ設定状態がtrueなら
+	if (CCameraconfig::GetConfig() == true)
+	{
+		// カメラ設定の終了処理
+		if (m_uni_CameraConfig != NULL)
+		{
+			m_uni_CameraConfig->Draw();
+		}
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 全体の初期化
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CTitle_select::SelfInit(void)
+{
+	// 選択初期化
+	m_nSelect = 0;
 }
 
 #ifdef _DEBUG
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // デバッグ表示
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Debug(void)
+void CTitle_select::Debug(void)
 {
 }
 #endif // _DEBUG
@@ -130,7 +299,7 @@ void CUi_group::Debug(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 読み込み処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-HRESULT CUi_group::Load(void)
+HRESULT CTitle_select::Load(void)
 {
 	return S_OK;
 }
@@ -138,181 +307,75 @@ HRESULT CUi_group::Load(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 読み込んだ情報を破棄
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::UnLoad(void)
+void CTitle_select::UnLoad(void)
 {
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(個人管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-std::unique_ptr<CUi_group> CUi_group::Create_Self(CUi::UITYPE const &uitype)
+std::unique_ptr<CTitle_select> CTitle_select::Create_Self(void)
 {
 	// 変数宣言
-	std::unique_ptr<CUi_group> pUi_group(new CUi_group);
-	// UITypeの設定
-	pUi_group->m_Uitype = uitype;
+	std::unique_ptr<CTitle_select> pTitle_select(new CTitle_select);
 	// 初期化処理
-	pUi_group->Init();
+	pTitle_select->Init();
 	// 生成したオブジェクトを返す
-	return pUi_group;
+	return pTitle_select;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成処理(シーン管理)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-CUi_group * CUi_group::Create(CUi::UITYPE const &uitype)
+CTitle_select * CTitle_select::Create(void)
 {
 	// 変数宣言
-	CUi_group * pUi_group = new CUi_group;
-	// UITypeの設定
-	pUi_group->m_Uitype = uitype;
+	CTitle_select * pTitle_select = new CTitle_select;
 	// 初期化処理
-	pUi_group->Init();
+	pTitle_select->Init();
 	// シーン管理
-	pUi_group->ManageSetting(CScene::LAYER_UI);
+	pTitle_select->ManageSetting(CScene::LAYER_UI);
 	// 生成したオブジェクトを返す
-	return pUi_group;
+	return pTitle_select;
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// UI全体の状態情報取得
+// 選択処理
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-int CUi_group::GetUiGroup_FadeType(void)
+void CTitle_select::Select(void)
 {
-	C2DPresents::FADETYPE FadeType = C2DPresents::FADETYPE_NONE;
-	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
+	// ゲームを始める
+	if (m_nSelect == TITLE_SELECT_CHARACTERSELECT)
 	{
-		// フェードタイプがNONEなら
-		// ->必ずFadeTypeが代入される
-		if (FadeType == C2DPresents::FADETYPE_NONE)
+		// 画面遷移の状態が遷移していない状態だったら
+		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
-			// プレゼン情報があれば
-			// ->そのまま代入
-			if (m_Ui[nCntUi]->GetPresents() != NULL)
-			{
-				FadeType = m_Ui[nCntUi]->GetPresents()->GetFadetype();
-			}
-			// なければ
-			// ->FADETYPE_ENDを代入
-			else
-			{
-				FadeType = C2DPresents::FADETYPE_END;
-			}
-		}
-		// それ以外なら
-		else
-		{
-			// プレゼン情報があれば
-			if (m_Ui[nCntUi]->GetPresents() != NULL)
-			{
-				// フェードタイプがUIのフェードタイプの情報より超過だと
-				// ->UIのフェードタイプの情報を代入する
-				if (FadeType > m_Ui[nCntUi]->GetPresents()->GetFadetype())
-				{
-					FadeType = m_Ui[nCntUi]->GetPresents()->GetFadetype();
-				}
-			}
-		}
-
-	}
-	return (int)FadeType;
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// フェードアウトを開始する
-// 引数なし:UI全部
-// 引数あり:UIの番号だけ
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Start_FadeOut(int const & ID)
-{
-	// -1の場合
-	// ->UI全部のフェードアウトを開始する
-	if (ID == -1)
-	{
-		for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
-		{
-			if (m_Ui[nCntUi]->GetPresents() == NULL)
-			{
-				continue;
-			}
-			// フェードアウト開始
-			m_Ui[nCntUi]->GetPresents()->Start_FadeOut();
+			// エンター音
+			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+			// フェード設定
+			CManager::GetFade()->SetFade(CManager::MODE_SELECT);
+			// 選択を初期化
+			m_nSelect = 0;
 		}
 	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// フェードイン開始する
-// 引数なし:UI全部
-// 引数あり:UIの番号だけ
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Start_FadeIn(int const & ID)
-{
-	// -1の場合
-	// ->UI全部のフェードアウトを開始する
-	if (ID == -1)
+	// チュートリアルを始める
+	else if (m_nSelect == TITLE_SELECT_TUTORIAL)
 	{
-		for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
+		// 画面遷移の状態が遷移していない状態だったら
+		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
-			if (m_Ui[nCntUi]->GetPresents() == NULL)
-			{
-				continue;
-			}
-			// フェードアウト開始
-			m_Ui[nCntUi]->GetPresents()->Start_FadeIn();
+			// エンター音
+			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
+			// フェード設定
+			CManager::GetFade()->SetFade(CManager::MODE_TUTORIAL);
+			// 選択を初期化
+			m_nSelect = 0;
 		}
 	}
-}
 
-void CUi_group::Init_GameFinish(void)
-{
-	m_vec_nNumber.push_back(0);
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ゲームオーバーUI用更新処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Update_GameOver(void)
-{
-	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
+	// ゲーム終了
+	else if (m_nSelect == TITLE_SELECT_GAMEEND)
 	{
-		Start_FadeOut();
-	}
-	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_END)
-	{
-		CManager::GetGame()->FocusPlayer();		// 生きているプレイヤーにフォーカスを変える
-		Release();
-	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// ゲームスタートUI用更新処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Update_GameStart(void)
-{
-	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
-	{
-		Start_FadeOut();
-	}
-	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_END)
-	{
-		Release();
-	}
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-// 最後の生き残りUI用更新処理
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-void CUi_group::Update_Finish(void)
-{
-	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_COOPERATION)
-	{
-		int &nCntEnd = m_vec_nNumber[0];
-		if (nCntEnd == 60)
-		{
-			CManager::GetFade()->SetFade(CManager::MODE_RESULT);
-			Release();
-		}
-		nCntEnd++;
+		SetDestWind(true);
 	}
 }

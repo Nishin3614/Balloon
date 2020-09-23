@@ -1,18 +1,18 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
-// UIグループ処理の説明[ui_group.h]
-// Author : Koki Nishiyama
+// タイトル選択処理の説明[title_select.h]
+// Author : Nishiyama Koki
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#ifndef _UI_GROUP_H_
-#define _UI_GROUP_H_	 // ファイル名を基準を決める
+#ifndef _TITLE_SELECT_H_
+#define _TITLE_SELECT_H_	 // ファイル名を基準を決める
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // インクルードファイル
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#include "ui.h"
+#include "scene.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -25,22 +25,26 @@
 // 前方宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+class CUi;
+class CCameraconfig;
+class C2DPresents;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // クラス
 //
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CUi_group : public CScene
+class CTitle_select : public CScene
 {
 public:
 	/* 関数 */
-	CUi_group();
-	~CUi_group();
+	CTitle_select();
+	~CTitle_select();
 	void Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void SelfInit(void);
 #ifdef _DEBUG
 	void Debug(void);
 #endif // _DEBUG
@@ -83,41 +87,30 @@ public:
 	static HRESULT Load(void);		// 読み込み
 	static void UnLoad(void);		// UnLoadする
 	// 作成(個人管理)
-	static std::unique_ptr<CUi_group> Create_Self(CUi::UITYPE const &uitype);
+	static std::unique_ptr<CTitle_select> Create_Self(void);
 	// 作成(シーン管理)
-	static CUi_group * Create(CUi::UITYPE const &uitype);
-	// UI全体の状態情報取得
-	int GetUiGroup_FadeType(void);
-	// フェードアウトスタート
-	// 引数なし:UI全部
-	// 引数あり:UIの番号だけ
-	void Start_FadeOut(int const &ID = -1);
-	// フェードインスタート
-	// 引数なし:UI全部
-	// 引数あり:UIの番号だけ
-	void Start_FadeIn(int const & ID);
-
+	static CTitle_select * Create(void);
 protected:
 
 private:
+	/* 列挙型 */
+	typedef enum
+	{
+		// 選択
+		TITLE_SELECT_CHARACTERSELECT = 0,
+		TITLE_SELECT_TUTORIAL,
+		TITLE_SELECT_GAMEEND,
+		TITLE_SELECT_MAX
+	} TITLE_SELECT;
 	/* 関数 */
-	void Init_GameFinish(void);
-	// ゲームオーバー
-	void Update_GameOver(void);
-	// ゲームスタート
-	void Update_GameStart(void);
-	// 最後の生き残り
-	void Update_Finish(void);
+	void Select(void);								// 選択
 	/* 変数 */
-	CUi::UITYPE m_Uitype;
+	static int m_nSelect;							// 選択
 	/* 各UIクラス */
-	CUi::VEC_UNI_UI m_Ui;							// UI情報
-	// 処理に必要な変数
-	// int型
-	std::vector<int> m_vec_nNumber;							// int情報
-	// bool型
-	std::vector<bool> m_vec_Bool;							// bool情報
-
+	std::vector<std::unique_ptr<CUi>> m_BgUi;					// 背景用UI
+	std::unique_ptr<C2DPresents> m_uni_SelectUi;			// 選択UI
+	std::vector<std::unique_ptr<CUi>> m_Ui;					// UI情報
+	std::unique_ptr<CCameraconfig> m_uni_CameraConfig;	// カメラ設定
 };
 
 #endif
