@@ -20,6 +20,7 @@
 #include "network.h"
 #include "ui.h"
 #include "thunder.h"
+#include "tutorial_explan.h"
 
 //=============================================================================
 //
@@ -54,7 +55,7 @@ HRESULT CTutorial::Init()
 	CLake::Create(D3DXVECTOR3(0.0f, -50.0f, 0.0f), D3DXVECTOR3(25000.0f, 25000.0f, 0.0f));
 	/* 作成 */
 	C3DMap::LoadScript("data/LOAD/MAPPING/rand.txt");
-	C3DMap::LoadCreate(C3DMap::MAP_STAGE_1);
+	C3DMap::LoadCreate(C3DMap::MAP_STAGE_TUTORIAL);
 
 	// 3Dエフェクトの生成
 	C3DEffect::Create();
@@ -62,11 +63,16 @@ HRESULT CTutorial::Init()
 	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
 		100000.0f);
 	// 3Dマップ生成
-	CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
-	CSpeedUP::Create(0, D3DVECTOR3_ZERO);
-	CItem::Create(0, D3DXVECTOR3(300.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
-	CPointCircle::Create(D3DXVECTOR3(-300.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f));
+	//CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
+	CSpeedUP::Create(0, D3DVECTOR3_ZERO,D3DXVECTOR3(0.0f,D3DX_PI,0.0f));
+	CItem::Create(0, D3DXVECTOR3(600.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	CPointCircle::Create(D3DXVECTOR3(-200.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f));
+	CThunder::Create(D3DXVECTOR3(-800.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+	CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 400.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_MOVE);
+	CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 200.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_STOP);
 	CUi::LoadCreate(CUi::UITYPE_TUTORIALUI);
+	// チュートリアル説明文の生成処理
+	Create_Tutorial_Explan();
 	// 初期化
 	return S_OK;
 }
@@ -171,7 +177,7 @@ void CTutorial::PopEvent(void)
 	{
 		if (nCntPop % 120 == 0)
 		{
-			CItem::Create(0, D3DXVECTOR3(300.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+			CItem::Create(0, D3DXVECTOR3(600.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 		}
 		nCntPop++;
 	}
@@ -179,20 +185,49 @@ void CTutorial::PopEvent(void)
 	{
 		if (nCntPop % 120 == 0)
 		{
-			CPointCircle::Create(D3DXVECTOR3(-300.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f));
+			CPointCircle::Create(D3DXVECTOR3(-200.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f));
 		}
 		nCntPop++;
 	}
-	if (CEnemy::GetAllEnemy() == 0)
+	if (CThunder::GetAllThunder() == 0)
 	{
 		if (nCntPop % 120 == 0)
 		{
-			CSolider::Create(D3DXVECTOR3(0.0f, 50.0f, 200.0f));
+			CThunder::Create(D3DXVECTOR3(-800.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+		}
+		nCntPop++;
+	}
+	if (CEnemy::GetAllEnemy(CEnemy::TYPE_MOVE) == 0)
+	{
+		if (nCntPop % 120 == 0)
+		{
+			CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 400.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_MOVE);
+		}
+		nCntPop++;
+	}
+	if (CEnemy::GetAllEnemy(CEnemy::TYPE_STOP) == 0)
+	{
+		if (nCntPop % 120 == 0)
+		{
+			CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 200.0f),D3DVECTOR3_ZERO, CEnemy::TYPE_STOP);
 		}
 		nCntPop++;
 	}
 	if (CSpeedUP::GetAll() == 0)
 	{
 		CSpeedUP::Create(0, D3DXVECTOR3(0.0f, 50.0f, 0.0f));
+	}
+}
+
+//=============================================================================
+//
+// チュートリアル説明文の生成処理
+//
+//=============================================================================
+void CTutorial::Create_Tutorial_Explan(void)
+{
+	for (int nCntExplan = 0; nCntExplan < CTutorial_Explan::EXPLAN_MAX; nCntExplan++)
+	{
+		CTutorial_Explan::Create(nCntExplan);
 	}
 }

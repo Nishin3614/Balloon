@@ -23,12 +23,20 @@ class CEnemy : public CCharacter_Balloon
 {
 public:
 	/* 列挙型 */
+	// AI行動
 	typedef enum
 	{
 		AIACTION_STAND = 0,		// 立っている状態(他に何もしていない)
 		AIACTION_JUMP,			// ジャンプしている状態
 		AIACTION_BALLOON_NONE	// 出現している風船がすべて割られている状態
 	} AIACTION;
+	// 種類
+	typedef enum
+	{
+		TYPE_MOVE = 0,	// 動いているタイプ
+		TYPE_STOP,		// 止まっているタイプ
+		TYPE_MAX		// タイプの最大数
+	} TYPE;
 
 	/* 構造体 */
 	// ジャンプ変数
@@ -91,9 +99,12 @@ public:
 	static HRESULT Load(void);								// 読み込み
 	static void UnLoad(void);								// UnLoadする
 	// 敵の総数取得
-	static int &GetAllEnemy(void) { return m_nAllEnemy; };	// 敵の総数取得
+	static int &GetAllEnemy(int const &nType) { return m_nAllEnemy[nType]; };	// 敵の総数取得
 protected:
 	/* 列挙型 */
+	/* 関数 */
+	// タイプ設定
+	void SetType(TYPE const &type) { m_Type = type; };
 	/* 変数 */
 	// 行動
 private:
@@ -105,8 +116,9 @@ private:
 	// 移動距離制限処理
 	void MoveRestriction(void);
 	/* 変数 */
-	static int		m_nAllEnemy;	// 敵の総数
-	JUMP_VARIABLE	m_Jump;			// ジャンプ用変数
-	AIACTION		m_AI;			// AI状態
+	static int		m_nAllEnemy[TYPE_MAX];	// 敵の総数
+	TYPE			m_Type;					// タイプ
+	JUMP_VARIABLE	m_Jump;					// ジャンプ用変数
+	AIACTION		m_AI;					// AI状態
 };
 #endif

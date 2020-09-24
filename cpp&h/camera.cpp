@@ -26,7 +26,7 @@ CCamera::LOAD	CCamera::m_load[TYPE_MAX] = {};	// èÓïÒï€ë∂
 CCamera::CCamera()
 {
 	// ÉJÉÅÉâÇÃèâä˙âª
-	m_posV = D3DXVECTOR3(1.0f, 100.0f, 100.0f);
+	m_posV = D3DXVECTOR3(1.0f, 100.0f, -100.0f);
 	m_posVDest = m_posV;
 	m_posVDiff = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_posR = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
@@ -34,7 +34,7 @@ CCamera::CCamera()
 	m_posRDiff = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_posU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	m_move = D3DXVECTOR3(1.0f, 3.0f, 3.0f);
-	m_rot = D3DXVECTOR3(-0.1f, 0.0f, 0.0f);
+	m_rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
 	m_rotDest = m_rot;
 	m_rotDiff = D3DVECTOR3_ZERO;
 	m_rotOrigin = D3DVECTOR3_ZERO;

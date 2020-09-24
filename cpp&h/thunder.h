@@ -40,11 +40,12 @@ public:
 	void Uninit(void);										// 終了
 	void Update(void);										// 更新
 	void Draw(void);										// 描画
-
+	static int &GetAllThunder(void) { return m_nAllThunder; };			// ポイントサークルの総数取得
 	static CThunder *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 生成
 	static void Unload(void);													// アンロード
 
 private:
+	static int m_nAllThunder;						// ポイントサークルの総数
 	CMeshdome *m_pMeshDome;								// メッシュドームへのポインタ
 
 	D3DXVECTOR3 m_move;									// 移動量

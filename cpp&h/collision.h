@@ -70,8 +70,7 @@ public:
 		OBJTYPE_APPEFISH1,			// オブジェクト_魚出現ポイント1
 		OBJTYPE_APPEFISH2,			// オブジェクト_魚出現ポイント2
 		OBJTYPE_APPEFISH3,			// オブジェクト_魚出現ポイント3
-		OBJTYPE_HATENA,				// オブジェクト_まだ決まっていない
-		OBJTYPE_MAX					// オブジェクト_
+		OBJTYPE_MAX					// オブジェクト_最大数
 	} OBJTYPE;
 	/* 関数 */
 	// コンストラクタ
@@ -98,30 +97,28 @@ public:
 	virtual void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	);
 	// 相手から当てられた後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
 	virtual void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	)
-	{};
+	);
 	// 自分から当たらなかった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
 	void Scene_NoMyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	) {};
+	);
 	// 相手に当てられなかった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
 	void Scene_NoOpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
-	) {};
+	);
 	// ポインター位置情報を取得
 	virtual D3DXVECTOR3 * Scene_GetPPos(void) = 0;
 	// ポインター過去の位置情報を取得

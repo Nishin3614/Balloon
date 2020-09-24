@@ -118,7 +118,8 @@ void CSolider::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CSolider * CSolider::Create(
 	D3DXVECTOR3 const & pos,	// 位置
-	D3DXVECTOR3 const & rot		// 回転
+	D3DXVECTOR3 const & rot,	// 回転
+	CEnemy::TYPE const & nType	// タイプ
 )
 {
 	// 変数宣言
@@ -131,6 +132,8 @@ CSolider * CSolider::Create(
 	pSolider->SetPos(pos);
 	// 回転設定
 	pSolider->SetRot(rot);
+	// タイプの設定
+	pSolider->SetType(nType);
 	// 初期化処理
 	pSolider->Init();
 	// 生成したオブジェクトを返す
