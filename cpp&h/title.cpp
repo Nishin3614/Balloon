@@ -111,15 +111,7 @@ void CTitle::Update(void)
 		{
 			m_pCloudBack->SetTex(D3DXVECTOR2(0.0f, 0.0f + m_fScroll), D3DXVECTOR2(1.0f, 1.0f + m_fScroll));
 		}
-
-		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
-		{
-			// チュートリアルへ
-			//pFade->SetFade(CManager::MODE_TUTORIAL);
-		}
 #ifdef _DEBUG
-#endif // _DEBUG
 		// リザルト画面遷移
 		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_9))
 		{
@@ -132,6 +124,7 @@ void CTitle::Update(void)
 				pFade->SetFade(CManager::MODE_TUTORIAL);
 			}
 		}
+#endif // _DEBUG
 	}
 }
 
