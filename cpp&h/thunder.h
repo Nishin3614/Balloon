@@ -76,6 +76,12 @@ public:
 	static void Unload(void);													// アンロード
 
 private:
+	/* 関数 */
+	// チュートリアルの更新処理
+	void Update_Tutorial(void);
+	// ゲームの更新処理
+	void Update_Game(void);
+	/* 変数 */
 	static int m_nAllThunder;						// ポイントサークルの総数
 	CMeshdome *m_pMeshDome;								// メッシュドームへのポインタ
 

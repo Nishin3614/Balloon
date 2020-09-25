@@ -42,8 +42,10 @@ public:
 		EXPLAN_COIN = 0,	// 説明文_コイン
 		EXPLAN_CIRCLE,		// 説明文_ポイントサークル
 		EXPLAN_THUNDER,		// 説明文_雷
-		EXPLAN_POND,		// 説明文_池
 		EXPLAN_ENEMY,		// 説明文_敵
+		EXPLAN_POND1,		// 説明文_池1
+		EXPLAN_POND2,		// 説明文_池2
+		EXPLAN_POND3,		// 説明文_池3
 		EXPLAN_MAX			// 説明文_最大数
 	} EXPLAN;
 

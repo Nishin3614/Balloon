@@ -178,6 +178,9 @@ void CPointCircle::Update(void)
 		}
 	}
 
+	// チュートリアルなら
+	// ->関数を抜ける
+	if (CManager::GetMode() == CManager::MODE_TUTORIAL) return;
 	if (m_nCntDraw >= RELEASE_DRAW)
 	{
 		if (m_pMeshDome != NULL)

@@ -20,7 +20,6 @@
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define TUTORIAL_EXPLAN_POS (D3DXVECTOR3(200.0f,500.0f,0.0f))				// 説明文の位置
 #define TUTORIAL_EXPLAN_SIZE (D3DXVECTOR2(300.0f,200.0f))					// 説明文のサイズ
-#define TUTORIAL_EXPLAN_COLLISIONSIZE (D3DXVECTOR3(300.0f,300.0f,300.0f))	// 説明文の当たり判定のサイズ
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -30,22 +29,26 @@
 D3DXVECTOR3 CTutorial_Explan::m_aCollisionpos[EXPLAN_MAX] =	// 当たり判定の位置
 {
 	D3DXVECTOR3(600.0f, 50.0f, 200.0f),
-	D3DXVECTOR3(-200.0f, 50.0f, 200.0f),
-	D3DXVECTOR3(-800.0f, 0.0f, 200.0f),
-	D3DXVECTOR3(-700.0f, 0.0f, 500.0f),
-	D3DXVECTOR3(200.0f, 50.0f, 300.0f)
+	D3DXVECTOR3(-200.0f, 500.0f, 200.0f),
+	D3DXVECTOR3(-800.0f, 500.0f, 200.0f),
+	D3DXVECTOR3(200.0f, 50.0f, 200.0f),
+	D3DXVECTOR3(761.0f, 0.0f, -482.0f),
+	D3DXVECTOR3(390.0f, 0.0f, 770.0f),
+	D3DXVECTOR3(-643.0f, 0.0f, -481.0f)
 };
 D3DXVECTOR3 CTutorial_Explan::m_aCollisionSize[EXPLAN_MAX] = // 当たり判定のサイズ
 {
 	D3DXVECTOR3(200.0f, 200.0f, 200.0f),
-	D3DXVECTOR3(250.0f, 500.0f, 250.0f),
-	D3DXVECTOR3(250.0f, 500.0f, 250.0f),
-	D3DXVECTOR3(200.0f, 500.0f, 200.0f),
-	D3DXVECTOR3(200.0f, 500.0f, 500.0f)
+	D3DXVECTOR3(400.0f, 1000.0f, 400.0f),
+	D3DXVECTOR3(400.0f, 1000.0f, 400.0f),
+	D3DXVECTOR3(200.0f, 1000.0f, 300.0f),
+	D3DXVECTOR3(600.0f, 500.0f, 600.0f),
+	D3DXVECTOR3(600.0f, 500.0f, 600.0f),
+	D3DXVECTOR3(600.0f, 500.0f, 600.0f)
 };
-int CTutorial_Explan::m_nTexType[EXPLAN_MAX] =						// テクスチャータイプ
+int CTutorial_Explan::m_nTexType[EXPLAN_MAX] =				// テクスチャータイプ
 {
-	72,73,74,75,76
+	72,73,74,76,75,75,75
 };
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,7 +82,7 @@ void CTutorial_Explan::Init(void)
 	CScene_TWO::Init();
 	// あたり判定生成
 	CRectCollision::Create(
-		TUTORIAL_EXPLAN_COLLISIONSIZE,
+		m_aCollisionSize[m_Explan],
 		D3DVECTOR3_ZERO,
 		CCollision::OBJTYPE_ACTOR,
 		this,
