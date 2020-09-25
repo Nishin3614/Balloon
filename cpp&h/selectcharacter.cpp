@@ -93,7 +93,7 @@ void CSelectCharacter::Init(void)
 			D3DXVECTOR2(CHARACTER_ICON_SIZE, CHARACTER_ICON_SIZE));
 		// テクスチャー未設定
 		//
-		m_pSelectIcon[nCntCharacter]->BindTexture(CTexture_manager::GetTexture(18));
+		m_pSelectIcon[nCntCharacter]->BindTexture(CTexture_manager::GetTexture(78 + nCntCharacter));
 		//
 		// テクスチャー未設定
 	}
