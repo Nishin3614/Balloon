@@ -46,7 +46,7 @@ public:
 	void Update(void);
 	void Draw(void);
 #ifdef _DEBUG
-	void Debug(void);
+	void Debug(void) {};
 #endif // _DEBUG
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ
