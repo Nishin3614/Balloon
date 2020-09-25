@@ -38,13 +38,13 @@ public:
 	} OFFSET_TYPE;
 	/* 関数 */
 	CScene_TWO();
-	~CScene_TWO();
-	void Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	virtual ~CScene_TWO();
+	virtual void Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 #ifdef _DEBUG
-	void Debug(void);
+	virtual void Debug(void);
 #endif // _DEBUG
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ
@@ -63,14 +63,14 @@ public:
 	// 自分から当たらなかった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	void Scene_NoMyCollision(
+	virtual void Scene_NoMyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
 	// 相手に当てられなかった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	void Scene_NoOpponentCollision(
+	virtual void Scene_NoOpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
