@@ -78,14 +78,28 @@ public:
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	virtual void Scene_MyCollision(
+	void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
 	// 相手に当てられた後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	virtual void Scene_OpponentCollision(
+	void Scene_OpponentCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
+	// 自分から当たらなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	void Scene_NoMyCollision(
+		int const &nObjType = 0,	// オブジェクトタイプ
+		CScene * pScene = NULL		// 相手のシーン情報
+	) {};
+	// 相手に当てられなかった後の処理
+	//	nObjType	: オブジェクトタイプ
+	//	pScene		: 相手のシーン情報
+	void Scene_NoOpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
