@@ -171,6 +171,7 @@
     <ClCompile Include="cpp&amp;h\charRanking.cpp" />
     <ClCompile Include="cpp&amp;h\effect.cpp" />
     <ClCompile Include="cpp&amp;h\framework.cpp" />
+    <ClCompile Include="cpp&amp;h\loadscreen.cpp" />
     <ClCompile Include="cpp&amp;h\PointCircle.cpp" />
     <ClCompile Include="cpp&amp;h\scoreUP.cpp" />
     <ClCompile Include="cpp&amp;h\balloon.cpp" />
@@ -248,7 +249,9 @@
     <ClCompile Include="cpp&amp;h\thundercloud.cpp" />
     <ClCompile Include="cpp&amp;h\thunderMulti.cpp" />
     <ClCompile Include="cpp&amp;h\title.cpp" />
+    <ClCompile Include="cpp&amp;h\title_select.cpp" />
     <ClCompile Include="cpp&amp;h\tutorial.cpp" />
+    <ClCompile Include="cpp&amp;h\tutorial_explan.cpp" />
     <ClCompile Include="cpp&amp;h\ui.cpp" />
     <ClCompile Include="cpp&amp;h\ui_group.cpp" />
   </ItemGroup>
@@ -264,6 +267,7 @@
     <ClInclude Include="cpp&amp;h\charRanking.h" />
     <ClInclude Include="cpp&amp;h\effect.h" />
     <ClInclude Include="cpp&amp;h\framework.h" />
+    <ClInclude Include="cpp&amp;h\loadscreen.h" />
     <ClInclude Include="cpp&amp;h\PointCircle.h" />
     <ClInclude Include="cpp&amp;h\scoreUP.h" />
     <ClInclude Include="cpp&amp;h\balloon.h" />
@@ -345,7 +349,9 @@
     <ClInclude Include="cpp&amp;h\thundercloud.h" />
     <ClInclude Include="cpp&amp;h\thunderMulti.h" />
     <ClInclude Include="cpp&amp;h\title.h" />
+    <ClInclude Include="cpp&amp;h\title_select.h" />
     <ClInclude Include="cpp&amp;h\tutorial.h" />
+    <ClInclude Include="cpp&amp;h\tutorial_explan.h" />
     <ClInclude Include="cpp&amp;h\ui.h" />
     <ClInclude Include="cpp&amp;h\ui_group.h" />
   </ItemGroup>

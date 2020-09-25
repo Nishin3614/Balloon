@@ -42,33 +42,31 @@ public:
 	// 当たった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	virtual void Scene_MyCollision(
+	void Scene_MyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
 	// 相手に当てられた後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	virtual void Scene_OpponentCollision(
+	void Scene_OpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
 	// 自分から当たらなかった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	virtual void Scene_NoMyCollision(
+	void Scene_NoMyCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
 	// 相手に当てられなかった後の処理
 	//	nObjType	: オブジェクトタイプ
 	//	pScene		: 相手のシーン情報
-	virtual void Scene_NoOpponentCollision(
+	void Scene_NoOpponentCollision(
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
-
-
 	// 作成(シーン継承あり)
 	static CCircleshadow * Create(
 		D3DXVECTOR3 const &pos,							// 位置

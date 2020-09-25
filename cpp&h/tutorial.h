@@ -46,6 +46,8 @@ public:
 
 private:
 	void PopEvent(void);
+	// チュートリアル説明文の生成処理
+	void Create_Tutorial_Explan(void);
 	int nCntPop;
 };
 #endif

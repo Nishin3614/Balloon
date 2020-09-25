@@ -14,6 +14,7 @@
 #include "2Deffect.h"
 #include "3Dparticle.h"
 #include "framework.h"
+#include "title_select.h"
 
 //=============================================================================
 //
@@ -74,7 +75,8 @@ HRESULT CTitle::Init()
 		//D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f),
 		D3DVECTOR3_ZERO,
 		true);
-
+	// タイトル選択生成
+	CTitle_select::Create();
 	// 初期化
 	return S_OK;
 }
@@ -109,15 +111,7 @@ void CTitle::Update(void)
 		{
 			m_pCloudBack->SetTex(D3DXVECTOR2(0.0f, 0.0f + m_fScroll), D3DXVECTOR2(1.0f, 1.0f + m_fScroll));
 		}
-
-		// ゲームへ遷移
-		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
-		{
-			// チュートリアルへ
-			pFade->SetFade(CManager::MODE_TUTORIAL);
-		}
 #ifdef _DEBUG
-#endif // _DEBUG
 		// リザルト画面遷移
 		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_9))
 		{
@@ -130,6 +124,7 @@ void CTitle::Update(void)
 				pFade->SetFade(CManager::MODE_TUTORIAL);
 			}
 		}
+#endif // _DEBUG
 	}
 }
 

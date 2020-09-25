@@ -55,12 +55,11 @@ public:
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	);
-	// 倒した数カウント
-	void EnemyDie(void);
 	// 作成
 	static CSolider * Create(
-		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,			// 位置
-		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO
+		D3DXVECTOR3 const & pos = D3DVECTOR3_ZERO,		// 位置
+		D3DXVECTOR3 const & rot = D3DVECTOR3_ZERO,		// 回転情報
+		CEnemy::TYPE const & nType = CEnemy::TYPE_MOVE	// タイプ
 	);
 	static HRESULT LoadCreate(void);
 	static HRESULT Load(void);		// 読み込み

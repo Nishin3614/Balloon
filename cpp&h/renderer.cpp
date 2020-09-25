@@ -12,7 +12,7 @@
 #include "debugproc.h"
 #include "camera.h"
 #include "light.h"
-
+#include "loadscreen.h"
 // テスト
 #include "3Dmap.h"
 
@@ -215,7 +215,6 @@ void CRenderer::Update(void)
 	ImGui::NewFrame();
 	ImGui::Begin("SideWindow");
 #endif // _DEBUG
-
 	// カメラの更新
 	m_pCamera->Update();
 	// ライトの更新
@@ -316,6 +315,28 @@ void CRenderer::Draw(void)
 		ResetDevice();
 #endif
 
+}
+
+// -----------------------
+// 描画処理
+// --------------------------
+void CRenderer::LoadDraw(void)
+{
+	// バックバッファとZバッファのクリア
+	m_pDevice->Clear(0, NULL, (D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(1, 100, 155, 255), 1.0f, 0);
+
+	// Direct3Dによる描画開始
+	if (SUCCEEDED(m_pDevice->BeginScene()))
+	{
+		CManager::GetLoadScreen()->Draw();
+
+		// Direct3Dによる描画終了
+		m_pDevice->EndScene();
+	}
+
+	// バックバッファとフロートバッファの入れ替え
+	HRESULT result = m_pDevice->Present(NULL, NULL, NULL, NULL);
 }
 
 // ------------------------------------------

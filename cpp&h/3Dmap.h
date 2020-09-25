@@ -33,6 +33,7 @@ public:
 	{
 		MAP_STAGE_1 = 0,
 		MAP_STAGE_2,
+		MAP_STAGE_TUTORIAL,
 		MAP_MAX
 	} MAP;
 	/* —ñ‹“Œ^ */

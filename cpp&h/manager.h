@@ -54,6 +54,7 @@ class CResult;		// ƒŠƒUƒ‹ƒg
 class CRanking;		// ƒ‰ƒ“ƒLƒ“ƒO
 class CNetwork;		// ƒlƒbƒgƒ[ƒN
 class CSelect;		// ‘I‘ğ‰æ–Ê
+class CLoadScreen;	// “Ç‚İ‚İ‰æ–Ê
 
 // ------------------------------------------
 //
@@ -91,6 +92,7 @@ public:
 	static CSound * GetSound(void) { return m_sound; };				// ƒTƒEƒ“ƒh‚ÌûØ€
 	static CFade * GetFade(void) { return m_fade; };				// ‰æ–Ê‘JˆÚ‚ÌûØ€
 	static CGame * GetGame(void) { return m_game; };				// ƒQ[ƒ€‚ÌûØ€
+	static CLoadScreen * GetLoadScreen(void) { return m_pLoadScreen; };	// “Ç‚İ‚İ‰æ–Êæ“¾
 	static MODE GetMode(void) { return m_mode; };					// ƒ‚[ƒh‚ÌûØ€
 	static CNetwork * GetNetwork(void) { return m_pNetwork; }		// ƒlƒbƒgƒ[ƒN‚ÌûØ€
 	static CSelect * GetSelect(void) { return m_select; };			// ‘I‘ğ‰æ–Ê‚ÌûØ€
@@ -110,12 +112,13 @@ private:
 	static CMouse * m_mouse;				// ƒ}ƒEƒX
 	static CKeyConfig * m_keyconfig;		// ƒL[Ú×
 
-											// ‰æ–Ê
+	// ‰æ–Ê
 	static CFade * m_fade;					// ‰æ–Ê‘JˆÚ
 	static CTitle * m_title;				// ƒ^ƒCƒgƒ‹
 	static CTutorial * m_tutorial;			// ƒ`ƒ…[ƒgƒŠƒAƒ‹
 	static CGame * m_game;					// ƒQ[ƒ€
 	static CSelect * m_select;				// ‘I‘ğ‰æ–Ê
+	static CLoadScreen * m_pLoadScreen;		// “Ç‚İ‚İ‰æ–Ê
 	static CResult * m_result;				// ƒŠƒUƒ‹ƒg
 	static CRanking * m_ranking;			// ƒ‰ƒ“ƒLƒ“ƒO
 	static CNetwork * m_pNetwork;			// ƒlƒbƒgƒ[ƒN

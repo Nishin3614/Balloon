@@ -115,7 +115,7 @@ private:
 	// ˆ—‚É•K—v‚È•Ï”
 	// intŒ^
 	std::vector<int> m_vec_nNumber;							// intî•ñ
-														// boolŒ^
+	// boolŒ^
 	std::vector<bool> m_vec_Bool;							// boolî•ñ
 
 };

@@ -189,21 +189,25 @@ void CPlayer::Uninit(void)
 	// MPゲージの開放
 	if (m_p2DMPGauge != NULL)
 	{
+		m_p2DMPGauge->Release();
 		m_p2DMPGauge = NULL;
 	}
 	// ランク情報の開放
 	if (m_pRank != NULL)
 	{
+		m_pRank->Release();
 		m_pRank = NULL;
 	}
 	// フレームワーク情報の開放
 	if (m_pFramework != NULL)
 	{
+		m_pFramework->Release();
 		m_pFramework = NULL;
 	}
 	// メッシュドームの開放
 	if (m_pMeshDome != NULL)
 	{
+		m_pMeshDome->Release();
 		m_pMeshDome = NULL;
 	}
 }
@@ -363,8 +367,10 @@ void CPlayer::MyAction(const int &nId)
 	// カメラの更新
 	Camera();
 	// MPゲージの変化定数を設定
-	m_p2DMPGauge->ChangeGauge((float)m_nMP);
-
+	if (m_p2DMPGauge != NULL)
+	{
+		m_p2DMPGauge->ChangeGauge((float)m_nMP);
+	}
 	D3DXVECTOR3 pos = GetPos();
 	float fDifference = sqrtf(pos.x * pos.x + pos.z * pos.z);
 
@@ -1061,10 +1067,30 @@ void CPlayer::Die(void)
 		sprintf(aDie, "DIE %d", pNetwork->GetId());
 		pNetwork->SendTCP(aDie, sizeof(aDie));
 
+		// MPゲージの開放
+		if (m_p2DMPGauge != NULL)
+		{
+			m_p2DMPGauge->Release();
+			m_p2DMPGauge = NULL;
+		}
+		// ランク情報の開放
 		if (m_pRank != NULL)
 		{
 			m_pRank->Release();
 			m_pRank = NULL;
+		}
+		// フレームワーク情報の開放
+		if (m_pFramework != NULL)
+		{
+			m_pFramework->SetUse(false);
+			m_pFramework->Release();
+			m_pFramework = NULL;
+		}
+		// メッシュドームの開放
+		if (m_pMeshDome != NULL)
+		{
+			m_pMeshDome->Release();
+			m_pMeshDome = NULL;
 		}
 
 		// 死亡処理
@@ -1080,6 +1106,31 @@ void CPlayer::Die(void)
 	{
 		// 死亡処理
 		CCharacter_Balloon::Die();
+		// MPゲージの開放
+		if (m_p2DMPGauge != NULL)
+		{
+			m_p2DMPGauge->Release();
+			m_p2DMPGauge = NULL;
+		}
+		// ランク情報の開放
+		if (m_pRank != NULL)
+		{
+			m_pRank->Release();
+			m_pRank = NULL;
+		}
+		// フレームワーク情報の開放
+		if (m_pFramework != NULL)
+		{
+			m_pFramework->SetUse(false);
+			m_pFramework->Release();
+			m_pFramework = NULL;
+		}
+		// メッシュドームの開放
+		if (m_pMeshDome != NULL)
+		{
+			m_pMeshDome->Release();
+			m_pMeshDome = NULL;
+		}
 	}
 }
 

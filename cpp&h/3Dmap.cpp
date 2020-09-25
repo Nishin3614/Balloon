@@ -367,7 +367,7 @@ HRESULT C3DMap::ScriptLoad(void)
 		nCntPoly = 0;
 		nCntFloor = 0;
 		nCntWall = 0;
-
+		nCntCollision = 0;
 		// ファイルが開かれていなかったら
 		if ((pFile = fopen(m_vec_String[nCntScript].c_str(), "r")) == NULL)
 		{// メッセージの表示
