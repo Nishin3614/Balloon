@@ -35,6 +35,8 @@
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #define PLAYER_GRAVITY (0.1f)
+#define PLAYER_UPMOVELIMIT		(10.0f)	// プレイヤーの上昇移動量制限
+#define PLAYER_UNDERMOVELIMIT	(5.0f)	// プレイヤーの下降移動量制限
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -667,11 +669,6 @@ void CPlayer::MyMove(void)
 			// 宙に浮く
 			if (pKeyboard->GetKeyboardTrigger(DIK_SPACE))
 			{
-				// 移動量yが0未満なら
-				if (move.y < 0.0f)
-				{
-					move.y = 0.0f;
-				}
 				move.y += CCharacter::GetStatus().fMaxJump;
 			}
 			else
@@ -681,11 +678,6 @@ void CPlayer::MyMove(void)
 					// 宙に浮く
 					if (pJoypad->GetTrigger(0, CJoypad::KEY_RIGHT_1))
 					{
-						// 移動量yが0未満なら
-						if (move.y < 0.0f)
-						{
-							move.y = 0.0f;
-						}
 						move.y += CCharacter::GetStatus().fMaxJump;
 					}
 				}
@@ -693,13 +685,13 @@ void CPlayer::MyMove(void)
 		}
 	}
 	// yの上限設定
-	if (move.y > 10.0f)
+	if (move.y > PLAYER_UPMOVELIMIT)
 	{
-		move.y = 10.0f;
+		move.y = PLAYER_UPMOVELIMIT;
 	}
-	if (move.y < -5.0f)
+	if (move.y < -PLAYER_UNDERMOVELIMIT)
 	{
-		move.y = -5.0f;
+		move.y = -PLAYER_UNDERMOVELIMIT;
 	}
 	CCharacter::SetMove(move);
 

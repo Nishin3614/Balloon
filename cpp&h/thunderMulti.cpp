@@ -21,7 +21,6 @@
 // ==========================================================
 // 静的メンバー変数の初期化
 // ==========================================================
-CThunderMulti *CThunderMulti::m_pThunderMulti = NULL;
 int CThunderMulti::m_ThunderCnt = 0;							// 雷のカウント
 
 // ==========================================================
@@ -66,10 +65,6 @@ void CThunderMulti::Init(void)
 	m_nCounterAnim = 0;
 	// アニメーションパターン初期化
 	m_nPatternAnim = 0;
-	// 雷の状態を初期化
-	m_bThunder = true;
-	// ポジション取得
-	m_pos = m_pThunderMulti->GetPos();
 }
 
 // ==========================================================
@@ -102,7 +97,6 @@ void CThunderMulti::Update(void)
 
 	if (m_nPatternAnim == 5)
 	{
-		m_bThunder = false;
 		Release();
 	}
 }
@@ -117,25 +111,8 @@ void CThunderMulti::Draw(void)
 		CManager::GetRenderer()->GetDevice();
 
 	D3DXMATRIX mtxRot, mtxTrans;
-	if (m_bThunder == true)
-	{
-		// 描画
-		CScene_THREE::Draw();
-
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&m_mtxWorld);
-
-		// 回転を反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-		// 移動を反映
-		D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
-	}
+	// 描画
+	CScene_THREE::Draw();
 }
 
 // ==========================================================
@@ -143,20 +120,19 @@ void CThunderMulti::Draw(void)
 // ==========================================================
 CThunderMulti *CThunderMulti::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// シーン動的に確保
-	m_pThunderMulti = new CThunderMulti();
+	CThunderMulti * pThunder = new CThunderMulti();
 
 	// 位置設定
-	m_pThunderMulti->SetPos(pos);
+	pThunder->SetPos(pos);
 
 	// サイズ設定
-	m_pThunderMulti->SetSize(size);
+	pThunder->SetSize(size);
 
 	// シーン初期化
-	m_pThunderMulti->Init();
+	pThunder->Init();
 
-	m_pThunderMulti->ManageSetting(LAYER_3DOBJECT2);
+	pThunder->ManageSetting(LAYER_3DOBJECT2);
 
 	// 値を返す
-	return m_pThunderMulti;
+	return pThunder;
 }
