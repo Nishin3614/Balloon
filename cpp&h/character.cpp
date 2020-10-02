@@ -423,10 +423,6 @@ void CCharacter::Move(void)
 			if (pSpeedUp->GetbSpeedUp())
 			{
 				// §ŒÀ‚ði‚ñ‚Å‚¢‚é•ûŒü‚Å•Ï‚¦‚é
-
-
-
-
 				// x‚ÌˆÚ“®—Ê§ŒÀ
 				if (m_move.x > CCharacter::GetStatus().fMaxSkill * m_Directvector.x)
 				{

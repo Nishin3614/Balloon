@@ -85,13 +85,11 @@ private:
 	static int m_nAllThunder;						// ポイントサークルの総数
 	CMeshdome *m_pMeshDome;								// メッシュドームへのポインタ
 
-	D3DXVECTOR3 m_move;									// 移動量
 
 	int	m_nCounterAnim;									// アニメーションカウンター
 	int m_nPatternAnim;									// アニメーションパターン
 	int m_nCntThunder;									// 雷のカウント
 	int m_nCntDraw;										// 雷の描画カウント
 	float m_fDistance;									// 距離
-	bool m_bThunder;									// 雷の状態
 };
 #endif

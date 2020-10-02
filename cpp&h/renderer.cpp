@@ -329,6 +329,7 @@ void CRenderer::LoadDraw(void)
 	// Direct3D‚É‚æ‚é•`‰æŠJn
 	if (SUCCEEDED(m_pDevice->BeginScene()))
 	{
+		CManager::GetLoadScreen()->Update();
 		CManager::GetLoadScreen()->Draw();
 
 		// Direct3D‚É‚æ‚é•`‰æI—¹

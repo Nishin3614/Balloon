@@ -168,7 +168,11 @@ public:
 		CScene * pParent = NULL,
 		D3DXVECTOR3 const &offset_pos = D3DVECTOR3_ZERO
 	);									// 当たり判定設定
-
+	// モデルカラー情報の設定
+	//	col	: カラー
+	void SetModelColor(
+		D3DXCOLOR const &col	// カラー
+	);
 	// 取得
 	CScene_X::MODEL_LOAD * GetModel(int const & nModelId);						// モデル情報取得
 	D3DXVECTOR3 &GetPos(void) { return m_pos; };								// 位置
@@ -195,6 +199,7 @@ private:
 	bool			m_bShadowMap;						// シャドウマッピングにするかしないか
 	float			m_fShadowAlpha;						// 影のα値
 	float			m_fModelAlpha;						// モデルのアルファ値
+	D3DXCOLOR *		m_pModelCol;						// モデルカラー情報
 	CScene_THREE *	m_pShadow;							// まる影
 	CExtrusion		*m_pExtrusion;						// 押し出し
 	CCollision		*m_Collision;						// 当たり判定

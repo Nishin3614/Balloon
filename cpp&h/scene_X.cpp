@@ -54,6 +54,7 @@ CScene_X::CScene_X() : CScene::CScene()
 	m_pParentMtx = NULL;		// 親マトリックス
 	m_pShadow = NULL;			// シャドウ
 	m_Collision = NULL;			// 当たり判定
+	m_pModelCol = NULL;			// モデルカラー情報
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 }
@@ -118,6 +119,13 @@ void CScene_X::Uninit(void)
 		m_Collision->CompulsionScene();
 		m_Collision->Release();
 		m_Collision = NULL;
+	}
+	// モデルカラー情報がNULLなら
+	if (m_pModelCol != NULL)
+	{
+		// モデルカラー情報のメモリ確保
+		delete m_pModelCol;
+		m_pModelCol = NULL;
 	}
 }
 
@@ -226,6 +234,12 @@ void CScene_X::Draw(void)
 	// カウントマテリアル
 	for (int nCntMat = 0; nCntMat < (int)m_pModelLoad[m_nModelId]->nNumMat; nCntMat++, pMat++)
 	{
+		// モデルカラー情報のNULLチェック
+		if (m_pModelCol != NULL)
+		{
+			// モデルカラーの設定
+			pMat->MatD3D.Diffuse = *m_pModelCol;
+		}
 		// プレイヤー(雷)の透明度
 		pMat->MatD3D.Diffuse.a = m_fModelAlpha;
 
@@ -599,6 +613,24 @@ void CScene_X::SetCollision(
 	default:
 		break;
 	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// モデルカラー情報の設定
+//	col	: カラー
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CScene_X::SetModelColor(
+	D3DXCOLOR const &col
+)
+{
+	// モデルカラー情報がNULLなら
+	if (m_pModelCol == NULL)
+	{
+		// モデルカラー情報のメモリ確保
+		m_pModelCol = new D3DXCOLOR;
+	}
+	// カラーの代入
+	*m_pModelCol = col;
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

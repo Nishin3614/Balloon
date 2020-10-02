@@ -106,6 +106,11 @@ void CEnemy::Ai_Action(void)
 		{
 			m_AI = AIACTION_STAND;
 		}
+		// ’…’nó‘Ô‚È‚ç
+		else if (CCharacter::GetbLanding())
+		{
+			m_AI = AIACTION_JUMP;
+		}
 		// ˆÊ’uy‚ª10–¢–‚È‚ç
 		else if (CCharacter::GetPos().y < ENEMY_AIJUMPSTATEPOS)
 		{

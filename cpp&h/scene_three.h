@@ -110,30 +110,23 @@ public:
 	{
 		m_nTexType = nTexType;
 	};
-	void SetAnimation(float fTexX, float fTexY, float fTexY2, int nPatternAnim);					// アニメーションの設定
+	// アニメーション設定
+	void SetAnimation(
+		float fTexX,
+		float fTexY,
+		float fTexY2,
+		int nPatternAnim
+	);
 	// ビルボード状態
-	void SetBillboard(bool const &bBillboard)
-		{ m_bBillboard = bBillboard; };
+	void SetBillboard(bool const &bBillboard) { m_bBillboard = bBillboard; };
 	// Z軸状態
-	void SetZEneble(bool const &bEneble)
-	{
-		m_bZEneble = bEneble;
-	};
+	void SetZEneble(bool const &bEneble) { m_bZEneble = bEneble; };
 	// ライティング状態
-	void SetLighting(bool const &bLight)
-	{
-		m_bLighting = bLight;
-	};
+	void SetLighting(bool const &bLight) { m_bLighting = bLight; };
 	// αブレンド状態
-	void SetAlphaBlend(bool const &bAlpha)
-	{
-		m_bAlpha = bAlpha;
-	};
+	void SetAlphaBlend(bool const &bAlpha) { m_bAlpha = bAlpha; };
 	// オフセットタイプ
-	void SetOffsetType(OFFSET_TYPE const &type)
-	{
-		m_offsetType = type;
-	};
+	void SetOffsetType(OFFSET_TYPE const &type) { m_offsetType = type; };
 	// 取得
 	// サイズ
 	D3DXVECTOR3 GetSize(void) const { return m_size; };

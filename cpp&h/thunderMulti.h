@@ -59,27 +59,13 @@ public:
 		int const &nObjType = 0,	// オブジェクトタイプ
 		CScene * pScene = NULL		// 相手のシーン情報
 	) {};
+	// 生成
 	static CThunderMulti *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);			// 生成
-
 private:
-	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;			// 頂点バッファへのポインタ
-	VERTEX_3D *m_pVtx;									// 頂点情報へのポインタ
-	D3DXMATRIX m_mtxWorld;								// ワールドマトリックス
-
-	static CThunderMulti *m_pThunderMulti;
 	static int m_ThunderCnt;							// 雷のカウント
-
-	D3DXVECTOR3	m_vtxMin;								// 最小値
-	D3DXVECTOR3	m_vtxMax;								// 最大値
-	D3DXVECTOR3 m_pos;									// 位置
-	D3DXVECTOR3 m_posOld;								// 前回の位置
-	D3DXVECTOR3 m_rot;									// 回転
-	D3DXVECTOR3 m_move;									// 移動量
-	D3DXCOLOR m_col;									// 色
 
 	int	m_nCounterAnim;									// アニメーションカウンター
 	int m_nPatternAnim;									// アニメーションパターン
 	float m_fDistance;									// 距離
-	bool m_bThunder;									// 雷の状態
 };
 #endif

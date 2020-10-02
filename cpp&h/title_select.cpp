@@ -351,9 +351,9 @@ void CTitle_select::Select(void)
 		// ‰æ–Ê‘JˆÚ‚Ìó‘Ô‚ª‘JˆÚ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚¾‚Á‚½‚ç
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
+			CNetwork *pNetwork = CManager::GetNetwork();
 			// ƒGƒ“ƒ^[‰¹
 			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
-
 			CNetwork *pNetwork = CManager::GetNetwork();
 			if (pNetwork != NULL)
 			{

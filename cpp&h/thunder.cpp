@@ -81,8 +81,6 @@ void CThunder::Init(void)
 	m_nCntThunder = 0;
 	// 雷の描画カウント初期化
 	m_nCntDraw = 0;
-	// 雷の状態を初期化
-	m_bThunder = true;
 	// メッシュドームの生成
 	m_pMeshDome = CMeshdome::Create(
 		D3DXVECTOR3(CScene_THREE::GetPos().x, 0.0f, CScene_THREE::GetPos().z),
@@ -134,16 +132,8 @@ void CThunder::Update(void)
 // ==========================================================
 void CThunder::Draw(void)
 {
-	// 変数宣言
-	LPDIRECT3DDEVICE9 pDevice =					// デバイスの取得
-		CManager::GetRenderer()->GetDevice();
-
-	D3DXMATRIX mtxRot, mtxTrans;
-	if (m_bThunder == false)
-	{
-		// 描画
-		CScene_THREE::Draw();
-	}
+	// 描画
+	CScene_THREE::Draw();
 }
 
 // ==========================================================
@@ -220,11 +210,6 @@ void CThunder::Update_Tutorial(void)
 		//		CScene_THREE::SetAnimation(ANIM_TEX, 1.0f, 0.0f, m_nPatternAnim);
 		//}
 		//
-		//if (m_nPatternAnim == 5)
-		//{
-		//	m_bThunder = false;
-		//
-		//}
 		for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
 		{
 			// キャラクターへのポインタ
@@ -303,12 +288,6 @@ void CThunder::Update_Game(void)
 		//	m_nPatternAnim = (m_nPatternAnim + 1) % 6;
 
 		//		CScene_THREE::SetAnimation(ANIM_TEX, 1.0f, 0.0f, m_nPatternAnim);
-		//}
-		//
-		//if (m_nPatternAnim == 5)
-		//{
-		//	m_bThunder = false;
-		//
 		//}
 		for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
 		{
