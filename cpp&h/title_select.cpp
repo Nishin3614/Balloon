@@ -64,7 +64,7 @@ void CTitle_select::Init(void)
 	m_uni_SelectUi = std::move(C2DPresents::Create_Unique(
 		CScene_TWO::OFFSET_TYPE_CENTER,
 		D3DVECTOR3_ZERO,
-		{360.0f,100.0f},
+		{ 360.0f,100.0f },
 		0.0f,
 		{ 1.0f,0.0f,0.0f,1.0f }
 	));
@@ -354,13 +354,17 @@ void CTitle_select::Select(void)
 			CNetwork *pNetwork = CManager::GetNetwork();
 			// エンター音
 			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
-			if (pNetwork->Connect() == S_OK)
+			CNetwork *pNetwork = CManager::GetNetwork();
+			if (pNetwork != NULL)
 			{
-				// フェード設定
-				CManager::GetFade()->SetFade(CManager::MODE_SELECT);
+				if (pNetwork->Connect() == S_OK)
+				{
+					// フェード設定
+					CManager::GetFade()->SetFade(CManager::MODE_SELECT);
+					// 選択を初期化
+					m_nSelect = 0;
+				}
 			}
-			// 選択を初期化
-			m_nSelect = 0;
 		}
 	}
 	// チュートリアルを始める

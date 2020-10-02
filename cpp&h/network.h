@@ -139,6 +139,7 @@ public:
 	void Create(void);
 
 	void ResetCoin(void);
+	void UpdateCharacterState(void);
 
 private:
 	SOCKET createServerSocket(unsigned short port);

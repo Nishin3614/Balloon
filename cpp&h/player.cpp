@@ -1071,10 +1071,7 @@ void CPlayer::Die(void)
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
 		CNetwork *pNetwork = CManager::GetNetwork();
-
-		char aDie[64];
-		sprintf(aDie, "DIE %d", pNetwork->GetId());
-		pNetwork->SendTCP(aDie, sizeof(aDie));
+		pNetwork->SendTCP("DIE", sizeof("DIE"));
 
 		// MPƒQ[ƒW‚ÌŠJ•ú
 		if (m_p2DMPGauge != NULL)

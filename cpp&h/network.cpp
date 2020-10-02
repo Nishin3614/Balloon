@@ -610,6 +610,51 @@ void CNetwork::ResetCoin(void)
 }
 
 //=============================================================================
+// キャラクター選択状態の更新
+//=============================================================================
+void CNetwork::UpdateCharacterState(void)
+{
+	CNetwork *pNetwork = CManager::GetNetwork();
+	char aData[256], aDie[64];
+	int nType[MAX_PLAYER];
+	memset(&aData, 0, sizeof(aData));
+
+	if (pNetwork != NULL)
+	{
+		pNetwork->SendTCP("CHARACTERSELECT_STATE", sizeof("CHARACTERSELECT_STATE"));
+		if (!pNetwork->DataRecv(SOCKETTYPE_CLIENT, aData, sizeof(aData)))
+		{
+			return;
+		}
+
+		sscanf(aData, "%s %d %d %d %d", &aDie , &nType[0], &nType[1], &nType[2], &nType[3]);
+
+		for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+		{
+			if (nType[nCount] == -1)
+			{
+				continue;
+			}
+
+			m_selectState[nCount].bReady = true;
+			m_selectState[nCount].nType = nType[nCount];
+
+			if (m_selectState[nCount].pBalloonNum == NULL)
+			{// 選択中プレイヤー表示UIが存在していないとき
+			 // UIの作成
+				m_selectState[nCount].pBalloonNum = CBalloonNum::Create(nCount);
+
+				if (m_selectState[nCount].pBalloonNum != NULL)
+				{
+					m_selectState[nCount].pBalloonNum->SetPosition(m_samplePos[nType[nCount]]);
+					m_selectState[nCount].pBalloonNum->Init();
+				}
+			}
+		}
+	}
+}
+
+//=============================================================================
 // サーバーソケットを作成する
 //=============================================================================
 SOCKET CNetwork::createServerSocket(unsigned short port)
@@ -776,6 +821,8 @@ bool CNetwork::UpdateTCP(void)
 		{
 			pPlayer->Die();
 		}
+
+		m_bDie[nDeath] = true;
 
 		if (m_nId == nKill)
 		{// 自分がキラーだったとき

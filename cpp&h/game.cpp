@@ -37,7 +37,6 @@
 #include "lake.h"
 #include "loadscreen.h"
 
-
 /* ポーズ */
 #include "pause.h"
 
@@ -306,17 +305,22 @@ void CGame::Draw(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::FocusPlayer(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (pNetwork == NULL) return;
+
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
 		m_nWatchingId++;
 
-		if (m_nWatchingId >= MAX_PLAYER)
+		if (m_nWatchingId == MAX_PLAYER)
 		{
 			m_nWatchingId = 0;
 		}
 
-		if (!CPlayer::GetDie(m_nWatchingId))
+		if (!pNetwork->GetDie(m_nWatchingId))
 		{
+			OutputDebugString("ふぁっきゅー");
 			break;
 		}
 	}
