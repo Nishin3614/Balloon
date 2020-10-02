@@ -49,7 +49,8 @@ public:
 #endif // _DEBUG
 	// 作成(シーン継承あり)
 	static CLoadScreen * Create(void);
-
+	// アニメーション更新
+	void Animation(void);
 protected:
 	// 設定 //
 private:
