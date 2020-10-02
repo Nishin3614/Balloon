@@ -49,8 +49,16 @@ void CLoadScreen::Init(void)
 			D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f),
 			D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)
 		);
-		m_paScene_two[nCntScene]->BindTexture(CTexture_manager::GetTexture(66));
 	}
+	// 背景の設定
+	m_paScene_two[0]->BindTexture(CTexture_manager::GetTexture(-1));
+	m_paScene_two[0]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+	m_paScene_two[0]->SetSize(D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
+	m_paScene_two[0]->Set_Vtx_Col();
+	m_paScene_two[0]->Set_Vtx_Pos();
+	// イラストの設定
+	m_paScene_two[1]->BindTexture(CTexture_manager::GetTexture(66));
+	m_paScene_two[1]->SetTexAnim(1, 2, 1);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -114,6 +122,10 @@ CLoadScreen * CLoadScreen::Create(void)
 	pLoadScreen->Init();
 	// 生成したオブジェクトを返す
 	return pLoadScreen;
+}
+
+void CLoadScreen::Animation(void)
+{
 }
 /*
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

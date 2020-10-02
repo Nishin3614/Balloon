@@ -51,28 +51,55 @@ HRESULT CTutorial::Init()
 	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
 	CManager::GetRenderer()->LoadDraw();
 	CCharacter::InitStatic();
-
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CLake::Create(D3DXVECTOR3(0.0f, -50.0f, 0.0f), D3DXVECTOR3(25000.0f, 25000.0f, 0.0f));
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	/* ì¬ */
 	C3DMap::LoadScript("data/LOAD/MAPPING/rand.txt");
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_TUTORIAL);
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 
 	// 3DƒGƒtƒFƒNƒg‚Ì¶¬
 	C3DEffect::Create();
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	// ‹…‚ÌÝ’è
 	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
 		100000.0f);
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	// 3Dƒ}ƒbƒv¶¬
 	//CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
 	CSpeedUP::Create(0, D3DVECTOR3_ZERO,D3DXVECTOR3(0.0f,D3DX_PI,0.0f));
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CItem::Create(0, D3DXVECTOR3(600.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CPointCircle::Create(D3DXVECTOR3(-200.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f));
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CThunder::Create(D3DXVECTOR3(-800.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 400.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_MOVE);
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 200.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_STOP);
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	CUi::LoadCreate(CUi::UITYPE_TUTORIALUI);
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	// ƒ`ƒ…[ƒgƒŠƒAƒ‹à–¾•¶‚Ì¶¬ˆ—
 	Create_Tutorial_Explan();
+	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
+	CManager::GetRenderer()->LoadDraw();
 	// ‰Šú‰»
 	return S_OK;
 }
@@ -113,7 +140,6 @@ void CTutorial::Update(void)
 			{
 				if (pNetwork->Connect() == S_OK)
 				{
-
 					if (pFade->GetFade() == CFade::FADE_NONE)
 					{
 						// ‘I‘ð‰æ–Ê‚Ö

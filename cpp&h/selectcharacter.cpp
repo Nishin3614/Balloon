@@ -44,6 +44,7 @@ CSelectCharacter::CSelectCharacter() : CScene::CScene()
 	m_CharacterType = 0;
 	m_PlayerID = 0;
 	m_bReady = false;
+	m_pSelectUi = NULL;
 	for (int nCntCharacter = 0; nCntCharacter < CCharacter::CHARACTER_PLAYERMAX; nCntCharacter++)
 	{
 		m_pSelectIcon[nCntCharacter] = NULL;
@@ -104,6 +105,38 @@ void CSelectCharacter::Init(void)
 		// 選択UIの位置設定
 		m_pSelectUi->SetPosition(m_pSelectIcon[m_CharacterType]->GetPosition());
 		m_pSelectUi->Set_Vtx_Pos();
+	}
+
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	// 現在選択されているキャラクターを取得
+	pNetwork->UpdateCharacterState();
+
+	while (!pNetwork->CheckCharacterReady(m_CharacterType))
+	{
+		m_CharacterType++;
+
+		// 範囲設定
+		if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
+		{
+			m_CharacterType = 0;
+			// 選択キャラクターUIのNULLチェック
+			// ->テクスチャータイプ変更
+			if (m_pSelectCharatUi != NULL)
+			{
+				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+			}
+		}
+		else if (m_CharacterType < 0)
+		{
+			m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
+			// 選択キャラクターUIのNULLチェック
+			// ->テクスチャータイプ変更
+			if (m_pSelectCharatUi != NULL)
+			{
+				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
+			}
+		}
 	}
 }
 
@@ -175,6 +208,11 @@ void CSelectCharacter::Update(void)
 			{
 				m_CharacterType++;
 
+				if (m_CharacterType >= MAX_PLAYER)
+				{
+					m_CharacterType = 0;
+				}
+
 				while (!pNetwork->CheckCharacterReady(m_CharacterType))
 				{
 					m_CharacterType++;
@@ -214,13 +252,18 @@ void CSelectCharacter::Update(void)
 		}
 		// 左が入力されたら
 		// ->キャラクター番号が減算
-		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
+		else if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_LEFT))
 		{
 			CNetwork *pNetwork = CManager::GetNetwork();
 
 			if (pNetwork != NULL)
 			{
 				m_CharacterType--;
+
+				if (m_CharacterType < 0)
+				{
+					m_CharacterType = MAX_PLAYER - 1;
+				}
 
 				while (!pNetwork->CheckCharacterReady(m_CharacterType))
 				{
@@ -257,27 +300,6 @@ void CSelectCharacter::Update(void)
 				}
 				// 選択音1
 				CManager::GetSound()->PlaySound(CSound::LABEL_SE_SELECTEDSOUND3);
-			}
-		}
-		// 範囲設定
-		if (m_CharacterType >= CPlayer::CHARACTER_PLAYERMAX)
-		{
-			m_CharacterType = 0;
-			// 選択キャラクターUIのNULLチェック
-			// ->テクスチャータイプ変更
-			if (m_pSelectCharatUi != NULL)
-			{
-				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
-			}
-		}
-		else if (m_CharacterType < 0)
-		{
-			m_CharacterType = CPlayer::CHARACTER_PLAYERMAX - 1;
-			// 選択キャラクターUIのNULLチェック
-			// ->テクスチャータイプ変更
-			if (m_pSelectCharatUi != NULL)
-			{
-				m_pSelectCharatUi->BindTexture(CTexture_manager::GetTexture(38 + m_CharacterType));
 			}
 		}
 	}

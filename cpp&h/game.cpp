@@ -37,7 +37,6 @@
 #include "lake.h"
 #include "loadscreen.h"
 
-
 /* ポーズ */
 #include "pause.h"
 
@@ -85,40 +84,67 @@ void CGame::Init(void)
 
 	// カメラのタイプ設定
 	CManager::GetRenderer()->GetCamera()->SetType(CCamera::TYPE_FOLLOW);
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	/* 初期化 */
 	// 状態
 	m_state = STATE_NORMAL;
 	// キャラクターの総人数
 	CCharacter::InitStatic();
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	/* 作成 */
 	// 3Dエフェクトの生成
 	C3DEffect::Create();
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	// 球の設定
 	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
 		100000.0f);
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	// 3Dマップ生成
 	CLake::Create(D3DXVECTOR3(0.0f, -50.0f, 0.0f), D3DXVECTOR3(25000.0f, 25000.0f, 0.0f));
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
+
 	C3DMap::LoadScript("data/LOAD/MAPPING/rand.txt");
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_1);
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	// プレイヤー生成
 	PlayerCreate();
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 
 	// スコア生成
 	m_pScore = CScore::Create();
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	// ポーズの生成
 	m_pause = new CPause();
 	// ポーズの初期化
 	m_pause->Init();
-
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 	if (pNetwork != NULL)
 	{
 		pNetwork->ResetCoin();				// コインのデータベースをリセット
 	}
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 
 	CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
 
 	// スタートコール
 	CUi_group::Create(CUi::UITYPE_GAMESTART);
+	// 読み込み画面描画
+	CManager::GetRenderer()->LoadDraw();
+
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -279,17 +305,22 @@ void CGame::Draw(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::FocusPlayer(void)
 {
+	CNetwork *pNetwork = CManager::GetNetwork();
+
+	if (pNetwork == NULL) return;
+
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
 		m_nWatchingId++;
 
-		if (m_nWatchingId >= MAX_PLAYER)
+		if (m_nWatchingId == MAX_PLAYER)
 		{
 			m_nWatchingId = 0;
 		}
 
-		if (!CPlayer::GetDie(m_nWatchingId))
+		if (!pNetwork->GetDie(m_nWatchingId))
 		{
+			OutputDebugString("ふぁっきゅー");
 			break;
 		}
 	}
