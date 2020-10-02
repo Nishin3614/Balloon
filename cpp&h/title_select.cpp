@@ -16,6 +16,7 @@
 #include "ui.h"
 #include "cameraconfig.h"
 #include "camera.h"
+#include "network.h"
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -350,10 +351,14 @@ void CTitle_select::Select(void)
 		// 画面遷移の状態が遷移していない状態だったら
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{
+			CNetwork *pNetwork = CManager::GetNetwork();
 			// エンター音
 			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_ENTER);
-			// フェード設定
-			CManager::GetFade()->SetFade(CManager::MODE_SELECT);
+			if (pNetwork->Connect() == S_OK)
+			{
+				// フェード設定
+				CManager::GetFade()->SetFade(CManager::MODE_SELECT);
+			}
 			// 選択を初期化
 			m_nSelect = 0;
 		}
