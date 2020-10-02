@@ -113,7 +113,6 @@ void CTutorial::Update(void)
 			{
 				if (pNetwork->Connect() == S_OK)
 				{
-
 					if (pFade->GetFade() == CFade::FADE_NONE)
 					{
 						// ‘I‘ð‰æ–Ê‚Ö
