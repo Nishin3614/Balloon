@@ -606,15 +606,6 @@ void CPlayer::MyMove(void)
 		CCharacter::SetbMove(false);
 	}
 
-	if (vec.x < 0)
-	{
-		vec.x *= -1;
-	}
-	if (vec.z < 0)
-	{
-		vec.z *= -1;
-	}
-	CCharacter::SetDirectionVec(vec);
 	/* ジョイパッド */
 	// パッド用 //
 	int nValueH, nValueV;	// ゲームパッドのスティック情報の取得用
@@ -642,17 +633,34 @@ void CPlayer::MyMove(void)
 			{
 				fAngle += D3DX_PI * 2;
 			}
-			// 速度の計算
-			if (abs(nValueH) > abs(nValueV))
+			// 着地状態ではないなら
+			if (!CCharacter::GetbLanding())
 			{
-				fMove = (abs(nValueH) * m_fMoveAdd) / 1024.0f;
+				// 速度の計算
+				if (abs(nValueH) > abs(nValueV))
+				{
+					fMove = (abs(nValueH) * m_fMoveAdd) / 1024.0f;
+				}
+				else
+				{
+					fMove = (abs(nValueV) * m_fMoveAdd) / 1024.0f;
+				}
 			}
+			// 着地状態なら
 			else
 			{
-				fMove = (abs(nValueV) * m_fMoveAdd) / 1024.0f;
+				// 速度の計算
+				if (abs(nValueH) > abs(nValueV))
+				{
+					fMove = (abs(nValueH) * m_fMoveNow) / 1024.0f;
+				}
+				else
+				{
+					fMove = (abs(nValueV) * m_fMoveNow) / 1024.0f;
+				}
 			}
 			rot.y = fAngle + fRot;
-
+			vec = D3DXVECTOR3(sinf(fAngle + fRot), 0.0f, cosf(fAngle + fRot));
 			// スティックの角度によってプレイヤー移動
 			move.x -= sinf(fAngle + fRot) * (fMove);
 			move.z -= cosf(fAngle + fRot) * (fMove);
@@ -660,6 +668,15 @@ void CPlayer::MyMove(void)
 			CCharacter::SetbMove(true);
 		}
 	}
+	if (vec.x < 0)
+	{
+		vec.x *= -1;
+	}
+	if (vec.z < 0)
+	{
+		vec.z *= -1;
+	}
+	CCharacter::SetDirectionVec(vec);
 	// 風船がNULLではないなら
 	if (CCharacter_Balloon::GetBalloon() != NULL)
 	{
