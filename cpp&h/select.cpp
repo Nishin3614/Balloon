@@ -66,14 +66,13 @@ void CSelect::Init(void)
 		10000.0f);
 	// 3Dマップ生成
 	C3DMap::LoadCreate(C3DMap::MAP_STAGE_2);
+
 	// 選択キャラクターの生成
 	// もし、キャラ選択決定した後に全プレイヤーの
 	m_pSelectCharacter = CSelectCharacter::Create(
 		CManager::GetPlayerID(),			// プレイヤー番号
 		D3DXVECTOR3(200.0f, 0.0f, 200.0f)	// 位置
 	);
-
-	CManager::GetNetwork()->UpdateCharacterState();
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
