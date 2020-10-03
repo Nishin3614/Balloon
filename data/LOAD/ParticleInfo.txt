@@ -7,7 +7,7 @@
 SCRIPT
 
 #==============================================================================
-# [13] Balloon
+# [0] Balloon
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -41,6 +41,8 @@ OFFSET
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -59,7 +61,7 @@ OFFSET
 	BLEND = 1
 END_OFFSET
 #==============================================================================
-# [14] BalloonBreak
+# [1] BalloonBreak
 #==============================================================================
 OFFSET
 	# サイズランダム
@@ -111,7 +113,7 @@ OFFSET
 	BLEND = 3
 END_OFFSET
 #==============================================================================
-# [15] PlayerDie
+# [2] PlayerDie
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -150,6 +152,8 @@ OFFSET
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -168,7 +172,7 @@ OFFSET
 	BLEND = 3
 END_OFFSET
 #==============================================================================
-# [16] Water
+# [3] Water
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -187,7 +191,6 @@ OFFSET
 		MAX = 90
 		MIN = 0
 	ENDSET_ANGLERAND
-	ENDSET_SPEEDRAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
 	# 色情報
@@ -197,6 +200,8 @@ OFFSET
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 1.0
 	# ライフ情報
@@ -214,9 +219,140 @@ OFFSET
 	# ブレンドタイプ情報
 	BLEND = 1
 END_OFFSET
-
 #==============================================================================
-# [17] GetCoin
+# [4] GetCoin
+#==============================================================================
+OFFSET
+	# 位置情報
+	POS = 0.0 50.0 0.0
+	# 色情報
+	COL = 1.0 1.0 0.0 1.0
+	# サイズ情報
+	SIZE = 50.0 50.0
+	SIZE_DESCREASE	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 1.0 0.0
+	# スピード情報
+	SPEED = 10.0
+	# ライフ情報
+	LIFE = 60
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 1
+	# テクスチャータイプ情報
+	TEXTYPE = 83
+	# エフェクトタイプ情報
+	EFFECTTYPE = 0
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 1
+END_OFFSET
+#==============================================================================
+# [5] PointCircle
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 20 -10
+		POSY = 0 0
+		POSZ = 20 -10
+	ENDSET_POSRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 10 10
+		SIZEY = 10 10
+	ENDSET_SIZERAND
+	# スピードランダム
+	SET_SPEEDRAND
+		MAX = 5
+		MIN = 10
+	ENDSET_SPEEDRAND
+	# 位置情報
+	POS = 0.0 30.0 0.0
+	# 色情報
+	COL = 0.7 0.7 0.3 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_DESCREASE	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 1.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 20
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 1
+	# テクスチャータイプ情報
+	TEXTYPE = 0
+	# エフェクトタイプ情報
+	EFFECTTYPE = 5
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [6] Balloon1Skill
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 10 10
+		POSY = 10 10
+		POSZ = 10 10
+	ENDSET_POSRAND
+	# 色ランダム
+	SET_COLRAND
+		RED
+		GREEN
+		BLUE
+	ENDSET_COLRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 20 20
+		SIZEY = 20 20
+	ENDSET_SIZERAND
+	# 角度ランダム
+	SET_ANGLERAND
+		MAX = 628
+		MIN = -314
+	ENDSET_ANGLERAND
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 1.0 1.0 1.0 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_CHANGE = 0.0
+	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 20
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 3
+	# テクスチャータイプ情報
+	TEXTYPE = 0
+	# エフェクトタイプ情報
+	EFFECTTYPE = 3
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [7] Balloon2Skill
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -248,6 +384,8 @@ OFFSET
 	SIZE = 0.0 0.0
 	SIZE_DESCREASE	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -266,7 +404,7 @@ OFFSET
 	BLEND = 3
 END_OFFSET
 #==============================================================================
-# [17] PointCircle
+# [8] Balloon3Skill
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -298,6 +436,8 @@ OFFSET
 	SIZE = 0.0 0.0
 	SIZE_DESCREASE	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -316,7 +456,7 @@ OFFSET
 	BLEND = 3
 END_OFFSET
 #==============================================================================
-# [17] Balloon1Skill
+# [9] Balloon4Skill
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -348,6 +488,8 @@ OFFSET
 	SIZE = 0.0 0.0
 	SIZE_DESCREASE	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -365,155 +507,4 @@ OFFSET
 	# ブレンドタイプ情報
 	BLEND = 3
 END_OFFSET
-#==============================================================================
-# [17] Balloon2Skill
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 10 10
-		POSY = 10 10
-		POSZ = 10 10
-	ENDSET_POSRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 5 5
-		SIZEY = 5 5
-	ENDSET_SIZERAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
-	ENDSET_ANGLERAND
-	# スピードランダム
-	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
-	ENDSET_SPEEDRAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.1 0.0 1.0
-	COL_DESCREASE	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_DESCREASE	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 30
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 20
-	# テクスチャータイプ情報
-	TEXTYPE = 83
-	# エフェクトタイプ情報
-	EFFECTTYPE = 5
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [17] Balloon3Skill
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 10 10
-		POSY = 10 10
-		POSZ = 10 10
-	ENDSET_POSRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 5 5
-		SIZEY = 5 5
-	ENDSET_SIZERAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
-	ENDSET_ANGLERAND
-	# スピードランダム
-	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
-	ENDSET_SPEEDRAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.1 0.0 1.0
-	COL_DESCREASE	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_DESCREASE	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 30
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 20
-	# テクスチャータイプ情報
-	TEXTYPE = 83
-	# エフェクトタイプ情報
-	EFFECTTYPE = 5
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [17] Balloon4Skill
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 10 10
-		POSY = 10 10
-		POSZ = 10 10
-	ENDSET_POSRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 5 5
-		SIZEY = 5 5
-	ENDSET_SIZERAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
-	ENDSET_ANGLERAND
-	# スピードランダム
-	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
-	ENDSET_SPEEDRAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.1 0.0 1.0
-	COL_DESCREASE	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_DESCREASE	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 30
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 20
-	# テクスチャータイプ情報
-	TEXTYPE = 83
-	# エフェクトタイプ情報
-	EFFECTTYPE = 5
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-
 END_SCRIPT

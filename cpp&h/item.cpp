@@ -13,6 +13,7 @@
 #include "sound.h"
 #include "character.h"
 #include "spherecollision.h"
+#include "3Dparticle.h"
 
 #define ITME_STATUS_FILE	("data/LOAD/STATUS/status_manager_Item.csv")	// アイテムステータスパス
 // ==========================================================
@@ -76,6 +77,7 @@ void CItem::Init(void)
 	CScene_THREE::SetAlphaBlend(true);
 	// テクスチャータイプ設定
 	CScene_THREE::SetTexType(21);	// テクスチャー渡し
+	SetAnimation(1.0f / 5, 0.0f + (0 * 1.0f / 4), 1.0f / 4 + (0 * 1.0f / 4), 0);
 	m_pos = m_pItem->GetPos();
 }
 
@@ -266,6 +268,8 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		{
 			Release();
 		}
+		// コインパーティクル
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_COIN, this->GetPos());
 	}
 }
 
@@ -296,6 +300,8 @@ void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		{
 			Release();
 		}
+		// コインパーティクル
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_COIN, this->GetPos());
 	}
 }
 

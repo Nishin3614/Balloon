@@ -117,80 +117,17 @@ void CPointCircle::Update(void)
 {
 	CScene_THREE::Update();
 
-
-	// 距離計算用
-	float fX_Difference;
-	float fZ_Difference;
-	float fDifference;
-	// テクスチャ分割
-	//CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
-
-	// カウンター加算
-	m_nCounterAnim++;
-	m_nCntDraw++;
-
-	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	// モードがゲームなら
+	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		// キャラクターへのポインタ
-		CPlayer *pPlayer = CGame::GetPlayer(nCount);
-
-		if (pPlayer != NULL)
-		{
-			// キャラクターのポジション取得
-			D3DXVECTOR3 charaPos = pPlayer->GetPos();
-
-			// 前回のポジション設定
-			m_posOld = m_pos;
-
-			// 敵とプレイヤーのⅩ座標差分
-			fX_Difference = m_pos.x - charaPos.x;
-
-			// 敵とプレイヤーのZ座標差分
-			fZ_Difference = m_pos.z - charaPos.z;
-
-			// 敵とプレイヤーの一定距離
-			fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
-
-			// プレイヤーが一定距離に近づいたら
-			if (fDifference < m_fDistance)
-			{
-				// パーティクル生成
-				C3DParticle::Create(
-					C3DParticle::PARTICLE_ID_PLAYERDIE,
-					charaPos
-				);
-
-				if (nCount == CManager::GetNetwork()->GetId())
-				{
-					if (m_nCntPoint > 60)
-					{
-						m_bPoint = true;
-						//CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
-						m_nCntPoint = 0;
-					}
-					else
-					{
-						m_bPoint = false;
-						m_nCntPoint++;
-					}
-				}
-			}
-		}
+		// ゲームの更新処理
+		Update_Game();
 	}
-
-	// チュートリアルなら
-	// ->関数を抜ける
-	if (CManager::GetMode() == CManager::MODE_TUTORIAL) return;
-	if (m_nCntDraw >= RELEASE_DRAW)
+	// モードがチュートリアルなら
+	else if (CManager::GetMode() == CManager::MODE_TUTORIAL)
 	{
-		if (m_pMeshDome != NULL)
-		{
-			// メッシュドームの使用状態
-			m_pMeshDome->SetUse(false);
-			m_pMeshDome->Release();
-			m_pMeshDome = NULL;
-		}
-		Release();
+		// チュートリアルの更新処理
+		Update_Tutorial();
 	}
 }
 
@@ -256,4 +193,133 @@ CPointCircle *CPointCircle::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 // ==========================================================
 void CPointCircle::Unload(void)
 {
+}
+
+// ==========================================================
+// ゲームの更新処理
+// ==========================================================
+void CPointCircle::Update_Game(void)
+{
+	// 距離計算用
+	float fX_Difference;
+	float fZ_Difference;
+	float fDifference;
+	// テクスチャ分割
+	//CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
+
+	// カウンター加算
+	m_nCounterAnim++;
+	m_nCntDraw++;
+
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		// キャラクターへのポインタ
+		CPlayer *pPlayer = CGame::GetPlayer(nCount);
+
+		if (pPlayer != NULL)
+		{
+			// キャラクターのポジション取得
+			D3DXVECTOR3 charaPos = pPlayer->GetPos();
+
+			// 前回のポジション設定
+			m_posOld = m_pos;
+
+			// 敵とプレイヤーのⅩ座標差分
+			fX_Difference = m_pos.x - charaPos.x;
+
+			// 敵とプレイヤーのZ座標差分
+			fZ_Difference = m_pos.z - charaPos.z;
+
+			// 敵とプレイヤーの一定距離
+			fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
+
+			// プレイヤーが一定距離に近づいたら
+			if (fDifference < m_fDistance)
+			{
+				// パーティクル生成
+				C3DParticle::Create(
+					C3DParticle::PARTICLE_ID_POINTCIRCLE,
+					charaPos
+				);
+
+				if (nCount == CManager::GetNetwork()->GetId())
+				{
+					if (m_nCntPoint > 60)
+					{
+						m_bPoint = true;
+						//CManager::GetGame()->GetScore()->AddScore(CItem::GetStatus().nScorePoint);
+						m_nCntPoint = 0;
+					}
+					else
+					{
+						m_bPoint = false;
+						m_nCntPoint++;
+					}
+				}
+			}
+		}
+	}
+	if (m_nCntDraw >= RELEASE_DRAW)
+	{
+		if (m_pMeshDome != NULL)
+		{
+			// メッシュドームの使用状態
+			m_pMeshDome->SetUse(false);
+			m_pMeshDome->Release();
+			m_pMeshDome = NULL;
+		}
+		Release();
+	}
+}
+
+// ==========================================================
+// チュートリアルの更新処理
+// ==========================================================
+void CPointCircle::Update_Tutorial(void)
+{
+	// 距離計算用
+	float fX_Difference;
+	float fZ_Difference;
+	float fDifference;
+	// テクスチャ分割
+	//CScene_THREE::SetTex(D3DXVECTOR2(1.0f / 6.0f * 5, 0.0f), D3DXVECTOR2(1.0f / 6.0f + 1.0f / 6.0f * 5, 1.0f));
+
+	// カウンター加算
+	m_nCounterAnim++;
+	m_nCntDraw++;
+
+	for (int nCnt = 0; nCnt < CScene::GetMaxLayer(CScene::LAYER_CHARACTER); nCnt++)
+	{
+		// キャラクターへのポインタ
+		CCharacter *pCharacter = (CCharacter*)CScene::GetScene(CScene::LAYER_CHARACTER, nCnt);
+
+		if (pCharacter != NULL)
+		{
+			// キャラクターのポジション取得
+			D3DXVECTOR3 charaPos = pCharacter->GetPos();
+
+			// 前回のポジション設定
+			m_posOld = m_pos;
+
+			// 敵とプレイヤーのⅩ座標差分
+			fX_Difference = m_pos.x - charaPos.x;
+
+			// 敵とプレイヤーのZ座標差分
+			fZ_Difference = m_pos.z - charaPos.z;
+
+			// 敵とプレイヤーの一定距離
+			fDifference = sqrtf(fX_Difference * fX_Difference + fZ_Difference * fZ_Difference);
+
+			// プレイヤーが一定距離に近づいたら
+			if (fDifference < m_fDistance)
+			{
+				// パーティクル生成
+				C3DParticle::Create(
+					C3DParticle::PARTICLE_ID_POINTCIRCLE,
+					charaPos
+				);
+
+			}
+		}
+	}
 }
