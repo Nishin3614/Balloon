@@ -313,15 +313,19 @@ void CGame::FocusPlayer(void)
 	{
 		m_nWatchingId++;
 
-		if (m_nWatchingId == MAX_PLAYER)
+		if (m_nWatchingId >= MAX_PLAYER)
 		{
 			m_nWatchingId = 0;
 		}
 
-		if (!pNetwork->GetDie(m_nWatchingId))
+		if (pNetwork->GetId() != m_nWatchingId)
 		{
-			OutputDebugString("‚Ó‚Ÿ‚Á‚«‚ã[");
-			break;
+			bool bAns = pNetwork->GetDie(m_nWatchingId);
+			if (!bAns)
+			{
+				OutputDebugString("‚Ó‚Ÿ‚Á‚«‚ã[");
+				break;
+			}
 		}
 	}
 }

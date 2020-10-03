@@ -1070,8 +1070,12 @@ void CPlayer::Die(void)
 {
 	if (CManager::GetMode() == CManager::MODE_GAME)
 	{
-		CNetwork *pNetwork = CManager::GetNetwork();
-		pNetwork->SendTCP("DIE", sizeof("DIE"));
+		if (m_nPlayerID == CManager::GetNetwork()->GetId())
+		{
+			CNetwork *pNetwork = CManager::GetNetwork();
+			pNetwork->SendTCP("DIE", sizeof("DIE"));
+			OutputDebugString("€–Sé");
+		}
 
 		// MPƒQ[ƒW‚ÌŠJ•ú
 		if (m_p2DMPGauge != NULL)

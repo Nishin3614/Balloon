@@ -765,8 +765,12 @@ bool CNetwork::UpdateUDP(void)
 		if (nCount != m_nId)
 		{
 			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
-			pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
-			pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
+
+			if (pPlayer != NULL)
+			{
+				pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
+				pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
+			}
 		}
 	}
 
@@ -815,21 +819,24 @@ bool CNetwork::UpdateTCP(void)
 
 		sscanf(aFunc, "%s %d %d", &aDie, &nDeath, &nKill);
 
-		CPlayer *pPlayer = CGame::GetPlayer(nDeath);
-
-		if (pPlayer != NULL)
+		if (!m_bDie[nDeath])
 		{
-			pPlayer->Die();
-		}
+			CPlayer *pPlayer = CGame::GetPlayer(nDeath);
 
-		m_bDie[nDeath] = true;
-
-		if (m_nId == nKill)
-		{// 自分がキラーだったとき
-			pPlayer = CGame::GetPlayer(m_nId);
 			if (pPlayer != NULL)
 			{
-				pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
+				pPlayer->Die();
+			}
+
+			m_bDie[nDeath] = true;
+
+			if (m_nId == nKill)
+			{// 自分がキラーだったとき
+				pPlayer = CGame::GetPlayer(m_nId);
+				if (pPlayer != NULL)
+				{
+					pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
+				}
 			}
 		}
 	}
