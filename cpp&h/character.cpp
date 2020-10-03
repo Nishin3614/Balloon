@@ -787,7 +787,7 @@ void CCharacter::Die(void)
 	}
 	// パーティクル生成
 	C3DParticle::Create(
-		C3DParticle::PARTICLE_ID_CROSSLINE,
+		C3DParticle::PARTICLE_ID_PLAYERDIE,
 		m_pos
 	);
 	// 死ぬ音
