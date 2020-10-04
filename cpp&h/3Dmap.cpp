@@ -330,6 +330,14 @@ HRESULT C3DMap::ManagerLoad(void)
 			}
 		}
 	}
+	// ファイルの中身情報の開放
+	for (int nCntLine = 0; nCntLine < (signed)vsvec_Contens.size(); nCntLine++)
+	{
+		vsvec_Contens[nCntLine].clear();
+		vsvec_Contens[nCntLine].shrink_to_fit();
+	}
+	vsvec_Contens.clear();
+	vsvec_Contens.shrink_to_fit();
 	return S_OK;
 }
 
@@ -922,7 +930,9 @@ void C3DMap::UnLoad(void)
 	// 当たり判定情報の開放
 	m_vec_Collision.clear();
 	m_vec_Collision.shrink_to_fit();
-
+	// マネージャーマップの情報の開放
+	m_vec_String.clear();
+	m_vec_String.shrink_to_fit();
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

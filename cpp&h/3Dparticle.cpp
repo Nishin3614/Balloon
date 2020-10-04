@@ -80,6 +80,7 @@ void C3DParticle::Update(void)
 		D3DXVECTOR2 sizeValue	= D3DVECTOR2_ZERO;	// サイズ変化値
 		D3DXCOLOR	col			= D3DXCOLOR_INI;	// 色
 		D3DXVECTOR3	posRand		= D3DVECTOR3_ZERO;	// 位置ランダム
+		D3DXVECTOR3 vector = D3DVECTOR3_ZERO;		// ベクトル
 		int			nLife		= 0;				// ライフ
 		int			nColRand	= 0;				// 色のランダム
 		int			nRand = 0;						// ランダム値
@@ -227,13 +228,39 @@ void C3DParticle::Update(void)
 				posRand.z + m_ParticleOffset[m_offsetID]->Pos.z
 			};
 
-			/* 移動量設定 */
-			move =
+			// パーティクルタイプ
+			if (m_ParticleOffset[m_offsetID]->nParticleType == TYPE_ANGLE_TO_VECTOR)
 			{
-				sinf(fAngle[1])*sinf(fAngle[2])*fSpeed,
-				cosf(fAngle[0])*cosf(fAngle[2])*fSpeed,
-				cosf(fAngle[0])*sinf(fAngle[1])*fSpeed
-			};
+				// 位置によって移動量
+				/* 移動量設定 */
+				move =
+				{
+					sinf(fAngle[1])*sinf(fAngle[2])*fSpeed,
+					cosf(fAngle[0])*cosf(fAngle[2])*fSpeed,
+					cosf(fAngle[0])*sinf(fAngle[1])*fSpeed
+				};
+			}
+			else if (m_ParticleOffset[m_offsetID]->nParticleType == TYPE_ANGLE_AND_VECTOR)
+			{
+				/* 方向設定 */
+				vector = m_ParticleOffset[m_offsetID]->Vector;
+				// ランダムの方向設定
+				if (m_ParticleOffset[m_offsetID]->VectorXRand.nMax > 0)
+				{
+					vector.x += (float)(rand() % m_ParticleOffset[m_offsetID]->VectorXRand.nMax + m_ParticleOffset[m_offsetID]->VectorXRand.nMin);
+				}
+				if (m_ParticleOffset[m_offsetID]->VectorYRand.nMax > 0)
+				{
+					vector.y += (float)(rand() % m_ParticleOffset[m_offsetID]->VectorYRand.nMax + m_ParticleOffset[m_offsetID]->VectorYRand.nMin);
+				}
+				if (m_ParticleOffset[m_offsetID]->VectorZRand.nMax > 0)
+				{
+					vector.z += (float)(rand() % m_ParticleOffset[m_offsetID]->VectorZRand.nMax + m_ParticleOffset[m_offsetID]->VectorZRand.nMin);
+				}
+				D3DXVec3Normalize(&vector, &vector);
+				/* 移動量設定 */
+				move = vector * fSpeed;
+			}
 			// 2D描画状態なら
 			if (m_b2D)
 			{
@@ -530,6 +557,49 @@ HRESULT C3DParticle::Load(void)
 						}
 					}
 				}
+				// セット方向が来たら
+				// ->入る
+				if (strcmp(cComp, "SET_VECTORRAND") == 0)
+				{
+					// エンドセット方向がくるまで
+					// ->ループ
+					while (strcmp(cComp, "ENDSET_VECTORRAND") != 0)
+					{
+						// 文字列の初期化
+						cComp[0] = '\0';
+						// 1行読み込む
+						fgets(cRead, sizeof(cRead), pFile);
+						// 読み込んど文字列代入
+						sscanf(cRead, "%s", &cComp);
+						// 方向xが読み込まれたら
+						if (strcmp(cComp, "VECTORX") == 0)
+						{
+							// 方向xの最大値と最小値を代入
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->VectorXRand.nMax,
+								&m_ParticleOffset[nCntOffset]->VectorXRand.nMin
+							);
+						}
+						// 方向yが読み込まれたら
+						else if (strcmp(cComp, "VECTORY") == 0)
+						{
+							// 方向yの最大値と最小値を代入
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->VectorYRand.nMax,
+								&m_ParticleOffset[nCntOffset]->VectorYRand.nMin
+							);
+						}
+						// 方向zが読み込まれたら
+						else if (strcmp(cComp, "VECTORZ") == 0)
+						{
+							// 方向zの最大値と最小値を代入
+							sscanf(cRead, "%s %s %d %d", &cEmpty, &cEmpty,
+								&m_ParticleOffset[nCntOffset]->VectorZRand.nMax,
+								&m_ParticleOffset[nCntOffset]->VectorZRand.nMin
+							);
+						}
+					}
+				}
 				// セットスピードが来たら
 				// ->入る
 				else if (strcmp(cComp, "SET_SPEEDRAND") == 0)
@@ -667,6 +737,17 @@ HRESULT C3DParticle::Load(void)
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}
+				// 方向が読み込まれたら
+				else if (strcmp(cComp, "VECTOR") == 0)
+				{
+					// 方向情報の代入
+					sscanf(cRead, "%s %s %f %f %f", &cEmpty, &cEmpty,
+						&m_ParticleOffset[nCntOffset]->Vector.x,
+						&m_ParticleOffset[nCntOffset]->Vector.y,
+						&m_ParticleOffset[nCntOffset]->Vector.z);
+					// 文字列の初期化
+					cComp[0] = '\0';
+				}
 				// スピードが読み込まれたら
 				else if (strcmp(cComp, "SPEED") == 0)
 				{
@@ -726,7 +807,7 @@ HRESULT C3DParticle::Load(void)
 				{
 					// パーティクルタイプの代入
 					sscanf(cRead, "%s %s %d", &cEmpty, &cEmpty,
-						&m_ParticleOffset[nCntOffset]->type);
+						&m_ParticleOffset[nCntOffset]->nParticleType);
 					// 文字列の初期化
 					cComp[0] = '\0';
 				}

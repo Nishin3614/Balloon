@@ -15,6 +15,14 @@
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
+// インクルードファイル
+//
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#define LOADSCREEN_ANIM		(0.2f)	// ロードスクリーンアニメーション値
+#define LOADSCREEN_SIZE_X	(62.5f)	// xのサイズ
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
 // 静的変数宣言
 //
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,10 +32,12 @@
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CLoadScreen::CLoadScreen()
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	// 変数の初期化
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene] = NULL;
 	}
+	m_nCntLoad = 0;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -42,7 +52,7 @@ CLoadScreen::~CLoadScreen()
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Init(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene] = CScene_TWO::Create_Self(
 			CScene_TWO::OFFSET_TYPE_CENTER,
@@ -51,14 +61,22 @@ void CLoadScreen::Init(void)
 		);
 	}
 	// 背景の設定
-	m_paScene_two[0]->BindTexture(CTexture_manager::GetTexture(-1));
-	m_paScene_two[0]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
-	m_paScene_two[0]->SetSize(D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
-	m_paScene_two[0]->Set_Vtx_Col();
-	m_paScene_two[0]->Set_Vtx_Pos();
-	// イラストの設定
-	m_paScene_two[1]->BindTexture(CTexture_manager::GetTexture(66));
-	m_paScene_two[1]->SetTexAnim(1, 2, 1);
+	m_paScene_two[UITYPE_BG]->BindTexture(CTexture_manager::GetTexture(-1));
+	m_paScene_two[UITYPE_BG]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+	m_paScene_two[UITYPE_BG]->SetSize(D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
+	m_paScene_two[UITYPE_BG]->Set_Vtx_Col();
+	m_paScene_two[UITYPE_BG]->Set_Vtx_Pos();
+	// ナウローディングの設定
+	m_paScene_two[UITYPE_LOADING]->BindTexture(CTexture_manager::GetTexture(85));
+	m_paScene_two[UITYPE_LOADING]->SetSize(D3DXVECTOR2(700.0f,200.0f));
+	m_paScene_two[UITYPE_LOADING]->Set_Vtx_Pos();
+	// 風船の設定
+	m_paScene_two[UITYPE_BALLOON]->BindTexture(CTexture_manager::GetTexture(84));
+	m_paScene_two[UITYPE_BALLOON]->SetPosition(D3DXVECTOR3(300.0f, 500.0f,0.0f));
+	m_paScene_two[UITYPE_BALLOON]->SetSize(D3DXVECTOR2(LOADSCREEN_SIZE_X * m_nCntLoad + LOADSCREEN_SIZE_X, 100.0f));
+	m_paScene_two[UITYPE_BALLOON]->SetTex(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(m_nCntLoad * LOADSCREEN_ANIM + LOADSCREEN_ANIM, 1.0f));
+	m_paScene_two[UITYPE_BALLOON]->SetOffset(CScene_TWO::OFFSET_TYPE_LEFT);
+	m_paScene_two[UITYPE_BALLOON]->Set_Vtx_Pos(CScene_TWO::OFFSET_TYPE_LEFT);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,7 +84,7 @@ void CLoadScreen::Init(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Uninit(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Uninit();
 		delete m_paScene_two[nCntScene];
@@ -79,10 +97,15 @@ void CLoadScreen::Uninit(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Update(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Update();
 	}
+	m_paScene_two[UITYPE_BALLOON]->SetSize(D3DXVECTOR2(LOADSCREEN_SIZE_X * m_nCntLoad + LOADSCREEN_SIZE_X, 100.0f));
+	m_paScene_two[UITYPE_BALLOON]->SetTex(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(m_nCntLoad * LOADSCREEN_ANIM + LOADSCREEN_ANIM, 1.0f));
+	m_paScene_two[UITYPE_BALLOON]->Set_Vtx_Pos(CScene_TWO::OFFSET_TYPE_LEFT);
+	// カウントロードアップ
+	m_nCntLoad++;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -90,7 +113,7 @@ void CLoadScreen::Update(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Draw(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Draw();
 	}
@@ -102,7 +125,7 @@ void CLoadScreen::Draw(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Debug(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Debug();
 	}
@@ -124,9 +147,14 @@ CLoadScreen * CLoadScreen::Create(void)
 	return pLoadScreen;
 }
 
-void CLoadScreen::Animation(void)
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 変数初期化処理
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CLoadScreen::VariableInit(void)
 {
+	m_nCntLoad = 0;
 }
+
 /*
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 作成(シーン継承なし、std::unique_ptr)処理

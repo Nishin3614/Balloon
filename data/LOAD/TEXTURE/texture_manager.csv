@@ -3,8 +3,8 @@ data/TEXTURE/Effect/Effect001.jpg
 data/TEXTURE/Effect/Slasing.png
 data/TEXTURE/Effect/Smook.png
 data/TEXTURE/UI/Number_1.png
-data/TEXTURE/UI/Number_2.png
-data/TEXTURE/UI/Number_3.png
+data/TEXTURE/UI/Number_1.png
+data/TEXTURE/UI/Number_1.png
 data/TEXTURE/00_greenfloor.jpg
 data/TEXTURE/01_greenfloor.jpg
 data/TEXTURE/00_meshobit.png
@@ -56,7 +56,7 @@ data/TEXTURE/UI/BalloonNumber.png
 data/TEXTURE/Ballon.png
 data/TEXTURE/Gauge01.png
 data/TEXTURE/Gauge03.png
-data/TEXTURE/GaugeCover.png
+data/TEXTURE/Gauge04.png
 data/TEXTURE/pipo-gwspinitem002.png
 data/TEXTURE/congratulations.png
 data/TEXTURE/frameeffects002m.png
@@ -80,3 +80,8 @@ data/TEXTURE/CharaIcon1.png
 data/TEXTURE/CharaIcon2.png
 data/TEXTURE/CharaIcon3.png
 data/TEXTURE/CharaIcon4.png
+data/TEXTURE/bubble.png
+data/TEXTURE/coin.png
+data/TEXTURE/UI/BRL00.png
+data/TEXTURE/UI/Now.png
+data/TEXTURE/Gauge02.png

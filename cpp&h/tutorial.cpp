@@ -21,6 +21,7 @@
 #include "ui.h"
 #include "thunder.h"
 #include "tutorial_explan.h"
+#include "loadscreen.h"
 
 //=============================================================================
 //
@@ -48,8 +49,8 @@ CTutorial::~CTutorial()
 //=============================================================================
 HRESULT CTutorial::Init()
 {
-	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
-	CManager::GetRenderer()->LoadDraw();
+	// ƒ[ƒhƒXƒNƒŠ[ƒ“‚Ì•Ï”‰Šú‰»ˆ—
+	CManager::GetLoadScreen()->VariableInit();
 	CCharacter::InitStatic();
 	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
 	CManager::GetRenderer()->LoadDraw();
@@ -71,25 +72,20 @@ HRESULT CTutorial::Init()
 	// ‹…‚ÌÝ’è
 	CMeshsphere::Create(D3DXVECTOR3(0.0f, 0.0f, 3000.0f),
 		100000.0f);
-	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
-	CManager::GetRenderer()->LoadDraw();
 	// 3Dƒ}ƒbƒv¶¬
 	//CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
-	CSpeedUP::Create(0, D3DVECTOR3_ZERO,D3DXVECTOR3(0.0f,D3DX_PI,0.0f));
 	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
 	CManager::GetRenderer()->LoadDraw();
+
+	CSpeedUP::Create(0, D3DVECTOR3_ZERO,D3DXVECTOR3(0.0f,D3DX_PI,0.0f));
 	CItem::Create(0, D3DXVECTOR3(600.0f, 50.0f, 200.0f), D3DXVECTOR3(100.0f, 100.0f, 0.0f));
 	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
 	CManager::GetRenderer()->LoadDraw();
 	CPointCircle::Create(D3DXVECTOR3(-200.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f));
-	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
-	CManager::GetRenderer()->LoadDraw();
 	CThunder::Create(D3DXVECTOR3(-800.0f, 0.0f, 200.0f), D3DXVECTOR3(100.0f, 500.0f, 0.0f));
 	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
 	CManager::GetRenderer()->LoadDraw();
 	CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 400.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_MOVE);
-	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
-	CManager::GetRenderer()->LoadDraw();
 	CSolider::Create(D3DXVECTOR3(200.0f, 50.0f, 200.0f), D3DVECTOR3_ZERO, CEnemy::TYPE_STOP);
 	// “Ç‚Ýž‚Ý‰æ–Ê•`‰æ
 	CManager::GetRenderer()->LoadDraw();

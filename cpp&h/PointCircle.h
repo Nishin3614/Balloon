@@ -79,6 +79,12 @@ public:
 	static bool GetPoint(void) { return m_bPoint; }								// ポイント状態取得
 
 private:
+	/* 関数 */
+	// ゲームの更新処理
+	void Update_Game(void);
+	// チュートリアルの更新処理
+	void Update_Tutorial(void);
+	/* 変数 */
 	static int m_nAllPointCircle;						// ポイントサークルの総数
 	LPDIRECT3DVERTEXBUFFER9	m_pVtxBuff = NULL;			// 頂点バッファへのポインタ
 	VERTEX_3D *m_pVtx;									// 頂点情報へのポインタ

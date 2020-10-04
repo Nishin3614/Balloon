@@ -787,7 +787,7 @@ void CCharacter::Die(void)
 	}
 	// パーティクル生成
 	C3DParticle::Create(
-		C3DParticle::PARTICLE_ID_CROSSLINE,
+		C3DParticle::PARTICLE_ID_PLAYERDIE,
 		m_pos
 	);
 	// 死ぬ音
@@ -1170,6 +1170,8 @@ void CCharacter::UnLoad(void)
 	for (int nCntCharacter = 0; nCntCharacter < CHARACTER_MAX; nCntCharacter++)
 	{
 		CModel_info::TextUnload(m_modelAll[nCntCharacter]);
+		m_modelId[nCntCharacter].clear();
+		m_modelId[nCntCharacter].shrink_to_fit();
 	}
 }
 
