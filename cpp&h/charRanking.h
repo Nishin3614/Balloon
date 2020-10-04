@@ -69,11 +69,14 @@ public:
 	D3DXVECTOR3 * Scene_GetPMove(void) { return NULL; };
 	static CCharRanking *GetCharRanking(void);
 	static CCharRanking *Create(void);
+	static	void		SetRank(int *nValue);					// èáà ÇÃï€ë∂
 
 protected:
 
 private:
 	CScene_TWO * m_aCharaPhoto[MAX_PLAYER];
 	static int m_st_nCharTex[MAX_PLAYER];
+
+	static int m_nRank[MAX_PLAYER];
 };
 #endif

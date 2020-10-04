@@ -17,6 +17,8 @@ int CCharRanking::m_st_nCharTex[MAX_PLAYER] =	// テクスチャータイプ
 	51,
 	52
 };
+int CCharRanking::m_nRank[MAX_PLAYER] = {};
+
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // コンストラクタ
@@ -52,25 +54,25 @@ void CCharRanking::Init(void)
 		D3DXVECTOR3(370.0f, 260.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[0]->BindTexture(CTexture_manager::GetTexture(49));
+	m_aCharaPhoto[0]->BindTexture(CTexture_manager::GetTexture(m_st_nCharTex[m_nRank[0]]));
 	m_aCharaPhoto[1] = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
 		D3DXVECTOR3(950.0f, 260.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[1]->BindTexture(CTexture_manager::GetTexture(50));
+	m_aCharaPhoto[1]->BindTexture(CTexture_manager::GetTexture(m_st_nCharTex[m_nRank[1]]));
 	m_aCharaPhoto[2] = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
 		D3DXVECTOR3(370.0f, 550.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[2]->BindTexture(CTexture_manager::GetTexture(51));
+	m_aCharaPhoto[2]->BindTexture(CTexture_manager::GetTexture(m_st_nCharTex[m_nRank[2]]));
 	m_aCharaPhoto[3] = CScene_TWO::Create(
 		CScene_TWO::OFFSET_TYPE_CENTER,
 		D3DXVECTOR3(950.0f, 550.0f, 0.0f),
 		D3DXVECTOR2(500.0f, 250.0f)
 	);
-	m_aCharaPhoto[3]->BindTexture(CTexture_manager::GetTexture(52));
+	m_aCharaPhoto[3]->BindTexture(CTexture_manager::GetTexture(m_st_nCharTex[m_nRank[3]]));
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -113,4 +115,17 @@ CCharRanking *CCharRanking::Create(void)
 	pCharRanking->Init();
 
 	return pCharRanking;
+}
+
+//=============================================================================
+//
+// 最終順位の設定
+//
+//=============================================================================
+void CCharRanking::SetRank(int *nValue)
+{
+	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
+	{
+		m_nRank[nCount] = nValue[nCount];
+	}
 }
