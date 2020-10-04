@@ -21,6 +21,7 @@
 #include "PointCircle.h"
 #include "select.h"
 #include "BalloonNum.h"
+#include "charRanking.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -842,9 +843,15 @@ bool CNetwork::UpdateTCP(void)
 	}
 	else if (strcmp(cHeadText, "GAME_END") == 0)
 	{
+		char aDie[64];
+		int nRank[MAX_PLAYER] = {};
+
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
+			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
+
 			// チュートリアルへ
+			CCharRanking::SetRank(nRank);
 			CManager::GetFade()->SetFade(CManager::MODE_RESULT);
 		}
 	}
