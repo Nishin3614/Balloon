@@ -171,13 +171,14 @@ private:
 	/* 関数 */
 
 	/* 変数 */
-	D3DXVECTOR2	m_size[GAUGE_MAX];					// サイズ情報
-	float		m_fSizeLast;						// サイズの目標値
-	float		m_fSizeDiff;						// サイズの差分
-	float		m_fConstance;						// サイズが変わる定数
-	D3DXCOLOR	m_col[GAUGE_MAX];					// カラー情報
-	D3DXVECTOR3	m_pos;								// 位置情報
-	CScene_TWO *m_aScene_Two[GAUGE_MAX];			// 2Dゲージ2D
-	CCharacter::CHARACTER m_type;					// キャラクタータイプ
+	D3DXVECTOR2	m_size[GAUGE_MAX];							// サイズ情報
+	float		m_fSizeLast;								// サイズの目標値
+	float		m_fSizeDiff;								// サイズの差分
+	float		m_fConstance;								// サイズが変わる定数
+	D3DXCOLOR	m_col[GAUGE_MAX];							// カラー情報
+	D3DXVECTOR3	m_pos;										// 位置情報
+	CScene_TWO *m_aScene_Two[GAUGE_MAX];					// 2Dゲージ2D
+	CCharacter::CHARACTER m_type;							// キャラクタータイプ
+	static int	m_TexType[CCharacter::CHARACTER_PLAYERMAX];	// テクスチャータイプ
 };
 #endif

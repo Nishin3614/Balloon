@@ -30,6 +30,10 @@
 // 静的変数宣言
 //
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+int	C2DGauge::m_TexType[CCharacter::CHARACTER_PLAYERMAX]
+{
+	56,86,57,58
+};	// テクスチャータイプ
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // コンストラクタ処理
@@ -83,39 +87,49 @@ void C2DGauge::Init(void)
 	}
 
 	CScene_TWO *pFream = NULL;
-	LPDIRECT3DTEXTURE9 gaugeTex;
 
 	switch (m_type)
 	{
 	case CCharacter::CHARACTER_BALLOON1:
-		pFream = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_LEFT, D3DXVECTOR3(m_pos.x - 103, m_pos.y - 5.5f, m_pos.z), D3DXVECTOR2(680.0f, 250.0f));
-		if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Gauge01.png", &gaugeTex)))
-		{
-			MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
-			break;
-		}
+		pFream = CScene_TWO::Create(
+			CScene_TWO::OFFSET_TYPE_LEFT,
+			D3DXVECTOR3(m_pos.x - 103, m_pos.y - 5.5f, m_pos.z),
+			D3DXVECTOR2(680.0f, 250.0f),
+			0.0f,
+			D3DXCOLOR(1.0f,0.0f,0.0f,1.0f));
+		break;
+	case CCharacter::CHARACTER_BALLOON2:
+		pFream = CScene_TWO::Create(
+			CScene_TWO::OFFSET_TYPE_LEFT,
+			D3DXVECTOR3(m_pos.x - 90, m_pos.y - 5.5f, m_pos.z),
+			D3DXVECTOR2(640.0f, 240.0f),
+			0.0f,
+			D3DXCOLOR(0.0f, 0.5f, 1.0f, 1.0f));
 		break;
 	case CCharacter::CHARACTER_BALLOON3:
-		pFream = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_LEFT, D3DXVECTOR3(m_pos.x - 55, m_pos.y - 5.5f, m_pos.z), D3DXVECTOR2(640.0f, 240.0f));
-		if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/Gauge03.png", &gaugeTex)))
-		{
-			MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
-			break;
-		}
+		pFream = CScene_TWO::Create(
+			CScene_TWO::OFFSET_TYPE_LEFT,
+			D3DXVECTOR3(m_pos.x - 55, m_pos.y - 5.5f, m_pos.z),
+			D3DXVECTOR2(640.0f, 240.0f),
+			0.0f,
+			D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+		break;
+	case CCharacter::CHARACTER_BALLOON4:
+		pFream = CScene_TWO::Create(
+			CScene_TWO::OFFSET_TYPE_LEFT,
+			D3DXVECTOR3(m_pos.x - 98, m_pos.y - 5.5f, m_pos.z),
+			D3DXVECTOR2(640.0f, 240.0f),
+			0.0f,
+			D3DXCOLOR(0.9f, 0.56f, 0.6f, 1.0f));
 		break;
 	default:
 		pFream = CScene_TWO::Create(CScene_TWO::OFFSET_TYPE_LEFT, D3DXVECTOR3(m_pos.x - 30, m_pos.y - 5.0f, m_pos.z), D3DXVECTOR2(600.0f, 35.0f));
-		if (FAILED(D3DXCreateTextureFromFile(pDevice, "data/TEXTURE/GaugeCover.png", &gaugeTex)))
-		{
-			MessageBox(NULL, "テクスチャの読み込みに失敗しました", NULL, MB_OK);
-			break;
-		}
 		break;
 	}
 
 	if (pFream != NULL)
 	{
-		pFream->BindTexture(gaugeTex);
+		pFream->BindTexture(CTexture_manager::GetTexture(m_TexType[m_type]));
 	}
 }
 

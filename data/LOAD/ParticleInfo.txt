@@ -329,7 +329,7 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	COL_DESCREASE	# サイズ情報
 	SIZE = 0.0 0.0
-	SIZE_CHANGE = 0.0
+	SIZE_CHANGE = 1.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# 方向情報
@@ -361,45 +361,30 @@ OFFSET
 		POSY = 10 10
 		POSZ = 10 10
 	ENDSET_POSRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 5 5
-		SIZEY = 5 5
-	ENDSET_SIZERAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
-	ENDSET_ANGLERAND
-	# スピードランダム
-	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
-	ENDSET_SPEEDRAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
 	# 色情報
-	COL = 1.0 0.1 0.0 1.0
+	COL = 1.0 1.0 0.0 1.0
 	COL_DESCREASE	# サイズ情報
-	SIZE = 0.0 0.0
+	SIZE = 20.0 20.0
 	SIZE_DESCREASE	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# 方向情報
 	VECTOR = 0.0 0.0 0.0
 	# スピード情報
-	SPEED = 0.0
+	SPEED = 1.0
 	# ライフ情報
 	LIFE = 30
 	# フレーム情報
 	FRAME = 1
 	# 一度に出せる個数情報
-	NUMBER = 20
+	NUMBER = 1
 	# テクスチャータイプ情報
-	TEXTYPE = 83
+	TEXTYPE = 0
 	# エフェクトタイプ情報
 	EFFECTTYPE = 5
 	# パーティクルタイプ情報
-	PARTICLETYPE = 0
+	PARTICLETYPE = 1
 	# ブレンドタイプ情報
 	BLEND = 3
 END_OFFSET
@@ -409,9 +394,9 @@ END_OFFSET
 OFFSET
 	# 位置ランダム
 	SET_POSRAND
-		POSX = 10 10
-		POSY = 10 10
-		POSZ = 10 10
+		POSX = 50 -25
+		POSY = 50 -25
+		POSZ = 50 -25
 	ENDSET_POSRAND
 	# サイズランダム
 	SET_SIZERAND
@@ -420,21 +405,28 @@ OFFSET
 	ENDSET_SIZERAND
 	# 角度ランダム
 	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
+		MAX = 50
+		MIN = -25
 	ENDSET_ANGLERAND
+	# 方向ランダム
+	SET_VECTORRAND
+		VECTORX = 4 -2
+		VECTORY = 10 1
+		VECTORZ = 4 -2
+	ENDSET_VECTORRAND
 	# スピードランダム
 	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
+		MAX = 4
+		MIN = 2
 	ENDSET_SPEEDRAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
 	# 色情報
-	COL = 1.0 0.1 0.0 1.0
+	COL = 1.0 1.0 1.0 1.0
 	COL_DESCREASE	# サイズ情報
 	SIZE = 0.0 0.0
-	SIZE_DESCREASE	# 回転情報
+	SIZE_CHANGE = 2.0
+	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# 方向情報
 	VECTOR = 0.0 0.0 0.0
@@ -445,13 +437,13 @@ OFFSET
 	# フレーム情報
 	FRAME = 1
 	# 一度に出せる個数情報
-	NUMBER = 20
+	NUMBER = 15
 	# テクスチャータイプ情報
-	TEXTYPE = 83
+	TEXTYPE = 3
 	# エフェクトタイプ情報
-	EFFECTTYPE = 5
+	EFFECTTYPE = 2
 	# パーティクルタイプ情報
-	PARTICLETYPE = 0
+	PARTICLETYPE = 1
 	# ブレンドタイプ情報
 	BLEND = 3
 END_OFFSET
@@ -459,12 +451,6 @@ END_OFFSET
 # [9] Balloon4Skill
 #==============================================================================
 OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 10 10
-		POSY = 10 10
-		POSZ = 10 10
-	ENDSET_POSRAND
 	# サイズランダム
 	SET_SIZERAND
 		SIZEX = 5 5
@@ -477,19 +463,20 @@ OFFSET
 	ENDSET_ANGLERAND
 	# スピードランダム
 	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
+		MAX = 2
+		MIN = 2
 	ENDSET_SPEEDRAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
 	# 色情報
-	COL = 1.0 0.1 0.0 1.0
+	COL = 1.0 1.0 1.0 1.0
 	COL_DESCREASE	# サイズ情報
 	SIZE = 0.0 0.0
-	SIZE_DESCREASE	# 回転情報
+	SIZE_CHANGE = 1.5
+	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# 方向情報
-	VECTOR = 0.0 0.0 0.0
+	VECTOR = 0.0 1.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -497,13 +484,13 @@ OFFSET
 	# フレーム情報
 	FRAME = 1
 	# 一度に出せる個数情報
-	NUMBER = 20
+	NUMBER = 10
 	# テクスチャータイプ情報
-	TEXTYPE = 83
+	TEXTYPE = 3
 	# エフェクトタイプ情報
-	EFFECTTYPE = 5
+	EFFECTTYPE = 2
 	# パーティクルタイプ情報
-	PARTICLETYPE = 0
+	PARTICLETYPE = 1
 	# ブレンドタイプ情報
 	BLEND = 3
 END_OFFSET

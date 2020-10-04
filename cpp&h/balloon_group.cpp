@@ -293,12 +293,16 @@ void CBalloon_group::CreateBalloon_group(
 		// 風船のNULLチェック
 		// ->ループスキップ
 		if (m_apBalloon[nCntBalloon_group] != NULL) continue;
+		// 変数宣言
+		D3DXVECTOR3 offsetpos;	// オフセット位置
+		// オフセット位置の設定
+		offsetpos = D3DXVECTOR3(
+			sinf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS,
+			BALLOON_GROUP_Y,
+			cosf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS);
 		// 風船生成
 		m_apBalloon[nCntBalloon_group] = CBalloon::Create_Self(
-			D3DXVECTOR3(
-				sinf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS,
-				BALLOON_GROUP_Y,
-				cosf(m_fAngleBalloon_group * (nCntBalloon_group + 1)) * BALLOON_GROUP_RADIUS),
+			offsetpos,
 			m_pPos,
 			D3DVECTOR3_ZERO,
 			0
@@ -310,7 +314,8 @@ void CBalloon_group::CreateBalloon_group(
 		// エフェクトを用意するならここ
 		// 当たり判定の使用状態をtrueに
 		m_pCollision->SetUse(true);
-
+		// バルーン復活のパーティクル生成
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_BALLOON4SKILL, offsetpos + *m_pPos);
 		// 生成処理が終了したら
 		// ->関数を抜ける
 		break;
