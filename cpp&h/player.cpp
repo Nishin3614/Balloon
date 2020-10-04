@@ -337,7 +337,7 @@ void CPlayer::Update(void)
 
 	if (m_pos.y <= -60.0f)
 	{
-		// 風船割れた時のパーティクル生成
+		// パーティクル生成
 		C3DParticle::Create(C3DParticle::PARTICLE_ID_WATER, m_pos);
 	}
 #ifdef _DEBUG
@@ -1169,7 +1169,7 @@ void CPlayer::Scene_MyCollision(int const & nObjType, CScene * pScene)
 	// オブジェクトタイプがアイテムなら
 	if (nObjType == CCollision::OBJTYPE_ITEM)
 	{
-		if (CManager::GetMode() == CManager::MODE_GAME)
+		if (CManager::GetMode() == CManager::MODE_GAME || CManager::GetMode() == CManager::MODE_TUTORIAL)
 		{
 			// プレイヤーのスコア加算追加
 			if (m_nPlayerID == pNetwork->GetId())
