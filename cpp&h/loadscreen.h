@@ -63,8 +63,8 @@ public:
 #endif // _DEBUG
 	// 作成(シーン継承あり)
 	static CLoadScreen * Create(void);
-	// アニメーション更新
-	void Animation(void);
+	// 変数の初期化処理
+	void VariableInit(void);
 protected:
 	// 設定 //
 private:
@@ -76,6 +76,7 @@ private:
 
 	/* 変数 */
 	CScene_TWO * m_paScene_two[UITYPE_MAX];	// シーン2D情報
+	int m_nCntLoad;							// ロードカウント
 };
 
 #endif
