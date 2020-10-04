@@ -1170,6 +1170,8 @@ void CCharacter::UnLoad(void)
 	for (int nCntCharacter = 0; nCntCharacter < CHARACTER_MAX; nCntCharacter++)
 	{
 		CModel_info::TextUnload(m_modelAll[nCntCharacter]);
+		m_modelId[nCntCharacter].clear();
+		m_modelId[nCntCharacter].shrink_to_fit();
 	}
 }
 
