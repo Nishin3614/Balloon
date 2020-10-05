@@ -1007,8 +1007,7 @@ bool CNetwork::UpdateTCP(void)
 
 		if (m_apItem[nCoinId] != NULL)
 		{
-			m_apItem[nCoinId]->SetPos(D3DXVECTOR3(0.0f, 1000.0f, 0.0f));
-			//m_apItem[nCoinId]->GetCollision()->;
+			m_apItem[nCoinId]->SetPos(D3DXVECTOR3(0.0f, -1000.0f, 0.0f));
 			m_apItem[nCoinId]->SetDrawState(false);
 		}
 	}
