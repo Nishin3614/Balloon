@@ -188,9 +188,9 @@ HRESULT CCamera::Load(void)
 
 	// 変数宣言
 	int	nCntObj = 0;		// シャドウマッピングカウント
-	char cRaedText[128];	// 文字として読み取り用
-	char cHeadText[128];	// 比較するよう
-	char cDie[128];			// 不必要な文字
+	char cRaedText[128] = {};	// 文字として読み取り用
+	char cHeadText[128] = {};	// 比較するよう
+	char cDie[128] = {};			// 不必要な文字
 
 	// ファイル開
 	pFile = fopen(CAMERA_FILE, "r");

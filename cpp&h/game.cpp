@@ -36,17 +36,16 @@
 #include "rank.h"
 #include "lake.h"
 #include "loadscreen.h"
-
-/* ポーズ */
-#include "pause.h"
+#include "solider.h"
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // マクロ定義
 //
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#define ITEM_SPACE	(100)			// アイテム同士の間隔
-#define CIRCLE_SIZE (300)			// 円の大きさ
+#define ITEM_SPACE		(100)		// アイテム同士の間隔
+#define CIRCLE_SIZE		(300)		// 円の大きさ
+#define ENEMY_CREATEMAX	(10)			// 敵の生成の最大数
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -119,10 +118,6 @@ void CGame::Init(void)
 
 	// スコア生成
 	m_pScore = CScore::Create();
-	// ポーズの生成
-	m_pause = new CPause();
-	// ポーズの初期化
-	m_pause->Init();
 	// 読み込み画面描画
 	CManager::GetRenderer()->LoadDraw();
 	if (pNetwork != NULL)
@@ -133,6 +128,8 @@ void CGame::Init(void)
 	CManager::GetRenderer()->LoadDraw();
 
 	CScene_X::LoadScrept("data/LOAD/MAPPING/object.csv");
+	// 敵の生成処理
+	EnemyCreate();
 	// 読み込み画面描画
 	CManager::GetRenderer()->LoadDraw();
 
@@ -140,7 +137,6 @@ void CGame::Init(void)
 	CUi_group::Create(CUi::UITYPE_GAMESTART);
 	// 読み込み画面描画
 	CManager::GetRenderer()->LoadDraw();
-
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -156,13 +152,6 @@ void CGame::Uninit(void)
 		pNetwork->CloseTCP();				// サーバーとの窓口を閉める
 	}
 
-	// ポーズ
-	if (m_pause != NULL)
-	{
-		m_pause->Uninit();
-		delete m_pause;
-		m_pause = NULL;
-	}
 	// スコア
 	if (m_pScore != NULL)
 	{
@@ -185,24 +174,6 @@ void CGame::Update(void)
 {
 	// 当たり判定処理
 	CCollision::CollisionDetection();
-	// ポーズ状態ならば
-	if (m_state == STATE_PAUSE)
-	{
-		if (m_pause != NULL)
-		{
-			m_pause->Update();
-		}
-	}
-	// ポーズ状態ではないとき
-	else
-	{
-		// ポーズへ
-		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_POUSE))
-		{
-			//PauseState();
-		}
-	}
-
 	if (CPlayer::GetDie(CManager::GetNetwork()->GetId()))
 	{
 		CKeyboard *pKeyboard = CManager::GetKeyboard();
@@ -220,7 +191,8 @@ void CGame::Update(void)
 			m_pPlayer[m_nWatchingId]->Camera();
 		}
 	}
-
+	// 敵のイベント処理
+	EnemyEvent();
 #ifdef _DEBUG
 	// 情報取得
 	CFade *pFade = CManager::GetFade();	// フェード情報
@@ -283,13 +255,6 @@ void CGame::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Draw(void)
 {
-	if (m_state == STATE_PAUSE)
-	{
-		if (m_pause != NULL)
-		{
-			m_pause->Draw();
-		}
-	}
 	if (m_pScore != NULL)
 	{
 		m_pScore->Draw();
@@ -414,5 +379,55 @@ void CGame::PlayerCreate(void)
 			m_pPlayer[nCntPlayer] = CRevival::Create(nCntPlayer, pos);
 			break;
 		}
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 敵のイベント処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CGame::EnemyEvent(void)
+{
+	// 敵の総数が5未満なら
+	if (CSolider::GetAllNum() < ENEMY_CREATEMAX)
+	{
+		// 変数宣言
+		INTEGER2 nXRand;	// Xランダム
+		INTEGER2 nYRand;	// Yランダム
+		INTEGER2 nZRand;	// Zランダム
+							// 最小値の設定
+		nXRand.nMin = -1000;	// Xランダム
+		nYRand.nMin = 0;	// Yランダム
+		nZRand.nMin = -1000;	// Zランダム
+							// 最大値の設定
+		nXRand.nMax = rand() % 2000;	// Xランダム
+		nYRand.nMax = rand() % 500;	// Yランダム
+		nZRand.nMax = rand() % 2000;	// Zランダム
+		CSolider::Create(
+			D3DXVECTOR3(float(nXRand.nMin + nXRand.nMax), float(nYRand.nMin + nYRand.nMax), float(nZRand.nMin + nZRand.nMax)));
+	}
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// 敵の生成処理
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CGame::EnemyCreate(void)
+{
+	// 変数宣言
+	INTEGER2 nXRand;	// Xランダム
+	INTEGER2 nYRand;	// Yランダム
+	INTEGER2 nZRand;	// Zランダム
+	// 最小値の設定
+	nXRand.nMin = -1000;	// Xランダム
+	nYRand.nMin = 0;		// Yランダム
+	nZRand.nMin = -1000;	// Zランダム
+	// 敵の生成
+	for (int nCntEnemy = 0; nCntEnemy < ENEMY_CREATEMAX; nCntEnemy++)
+	{
+		// 最大値の設定
+		nXRand.nMax = rand() % 2000;	// Xランダム
+		nYRand.nMax = rand() % 500;		// Yランダム
+		nZRand.nMax = rand() % 2000;	// Zランダム
+		CSolider::Create(
+			D3DXVECTOR3(float(nXRand.nMin + nXRand.nMax), float(nYRand.nMin + nYRand.nMax), float(nZRand.nMin + nZRand.nMax)));
 	}
 }

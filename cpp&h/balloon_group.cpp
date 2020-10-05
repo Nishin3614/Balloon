@@ -194,9 +194,25 @@ void CBalloon_group::Scene_MyCollision(
 	{
 		if (m_nActorId == CManager::GetNetwork()->GetId())
 		{
+			// 無敵カウントが規定カウントを越していなかったら
+			// ->関数を抜ける
+			if (m_nCntInvincible < BALLOON_INVINCIBLE) return;
 			// 風船割れる処理
 			CrackBalloon();
 			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));
+			// 無敵カウント初期化
+			m_nCntInvincible = 0;
+		}
+		else if (m_nActorId == -1)
+		{
+			// 無敵カウントが規定カウントを越していなかったら
+			// ->関数を抜ける
+			if (m_nCntInvincible < BALLOON_INVINCIBLE) return;
+			// 風船割れる処理
+			CrackBalloon();
+			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));
+			// 無敵カウント初期化
+			m_nCntInvincible = 0;
 		}
 	}
 }
@@ -220,6 +236,17 @@ void CBalloon_group::Scene_OpponentCollision(
 			// 無敵カウントが規定カウントを越していなかったら
 			// ->関数を抜ける
  			if (m_nCntInvincible < BALLOON_INVINCIBLE) return;
+			// 風船割れる処理
+			CrackBalloon();
+			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));
+			// 無敵カウント初期化
+			m_nCntInvincible = 0;
+		}
+		else if (m_nActorId == -1)
+		{
+			// 無敵カウントが規定カウントを越していなかったら
+			// ->関数を抜ける
+			if (m_nCntInvincible < BALLOON_INVINCIBLE) return;
 			// 風船割れる処理
 			CrackBalloon();
 			CManager::GetNetwork()->SendTCP("HIT", sizeof("HIT"));

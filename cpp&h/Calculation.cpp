@@ -1047,8 +1047,8 @@ void CCalculation::KeyString(
 bool CCalculation::Existenceofscript(FILE * pFile)
 {
 	// 変数宣言
-	char cRead[128];	// 読み込み用
-	char cComp[128];	// 比較用
+	char cRead[128] = {};	// 読み込み用
+	char cComp[128] = {};	// 比較用
 	int nCntError = 0;	// エラー用
 	while (strcmp(cComp, "SCRIPT") != 0)
 	{

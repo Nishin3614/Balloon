@@ -17,7 +17,6 @@
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // 前方宣言
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-class CCamera_info_bg;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -77,16 +76,16 @@ public:
 	void Set(void);
 	// 目的注視点の設定
 	void SetPosDestR(
-		D3DXVECTOR3 const & pos,	// 位置情報 
-		D3DXVECTOR3 const & rot		// 回転情報 
+		D3DXVECTOR3 const & pos,	// 位置情報
+		D3DXVECTOR3 const & rot		// 回転情報
 	);
 	void SetPosDestRPlayer(
 		D3DXVECTOR3 const & pos,
 		D3DXVECTOR3 const & rot);
 	// 注視点の設定
 	void SetPosR(
-		D3DXVECTOR3 const & pos,	// 位置情報 
-		D3DXVECTOR3 const & rot		// 回転情報 
+		D3DXVECTOR3 const & pos,	// 位置情報
+		D3DXVECTOR3 const & rot		// 回転情報
 	);
 	// カメラ情報設定の使用状態設定
 	void SetCamera_InfoSet(bool const &bSet) { m_bSet = bSet; };
@@ -136,8 +135,8 @@ private:
 	D3DXVECTOR3		m_posRDest;					// 目標注視点
 	D3DXVECTOR3		m_posRDiff;					// 目的注視点から注視点
 	D3DXVECTOR3		m_posU;						// 上方向ベクトル
-	D3DXVECTOR3		m_between;					// プレイヤーとの距離 
-	D3DXVECTOR3		m_last;						// 
+	D3DXVECTOR3		m_between;					// プレイヤーとの距離
+	D3DXVECTOR3		m_last;						//
 	D3DXVECTOR3		m_move;						// 移動量
 	D3DXVECTOR3		m_rot;						// 視点の回転量
 	D3DXVECTOR3		m_rotDest;					// 視点の目的回転地点

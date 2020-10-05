@@ -13,7 +13,6 @@
 #include "scene_load.h"
 /* 描画 */
 #include "number.h"
-#include "pause_ui.h"
 #include "3Deffect.h"
 #include "3Dparticle.h"
 #include "floor.h"
@@ -67,11 +66,6 @@ void CScene_load::LoadAll(void)
 	if (!CUi::Load() == S_OK)
 	{
 		CCalculation::Messanger("UI読み取り失敗");
-	}
-	// ポーズUI
-	if (!CPause_ui::Load() == S_OK)
-	{
-		CCalculation::Messanger("ポーズUI読み取り失敗");
 	}
 	// フェード
 	if (!CFade::Load() == S_OK)
@@ -159,8 +153,6 @@ void CScene_load::UnLoadAll(void)
 	CNumber::UnLoad();
 	// UI
 	CUi::UnLoad();
-	// ポーズUI
-	CPause_ui::UnLoad();
 	// 床
 	CFloor::UnLoad();
 	// キャラクター
@@ -181,4 +173,6 @@ void CScene_load::UnLoadAll(void)
 	CFade::UnLoad();
 	// 3Dマップ
 	C3DMap::UnLoad();
+	// シーンX
+	CScene_X::UnLoadModel();
 }

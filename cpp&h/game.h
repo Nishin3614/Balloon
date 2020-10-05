@@ -73,17 +73,20 @@ public:
 protected:
 private:
 	/* 関数 */
-	void DebugStatus(void);				// デバッグステータス
-	void PauseState(void);				// ポーズの状態
-	void PlayerCreate(void);			// プレイヤー生成
+	void DebugStatus(void);					// デバッグステータス
+	void PauseState(void);					// ポーズの状態
+	void PlayerCreate(void);				// プレイヤー生成
+	// 敵のイベント処理
+	void EnemyEvent(void);
+	// 敵の生成処理
+	void EnemyCreate(void);
 	/* 変数 */
-	static STATE m_state;				// 状態
+	static STATE m_state;					// 状態
 
-	CPause * m_pause;					// ポーズ
-	CScore * m_pScore;					// スコア
+	CPause * m_pause;						// ポーズ
+	CScore * m_pScore;						// スコア
 	static CPlayer * m_pPlayer[MAX_PLAYER];
-	int m_nWatchingId;					// 観戦するプレイヤーID
+	int m_nWatchingId;						// 観戦するプレイヤーID
 
-	std::thread th;
 };
 #endif

@@ -350,9 +350,9 @@ HRESULT C3DMap::ScriptLoad(void)
 	FILE *pFile;
 
 	// 変数宣言
-	char cRaedText[128];	// 文字として読み取り用
-	char cHeadText[128];	// 比較するよう
-	char cDie[128];			// 不必要な文字
+	char cRaedText[128] = {};	// 文字として読み取り用
+	char cHeadText[128] = {};	// 比較するよう
+	char cDie[128] = {};			// 不必要な文字
 	int nCntError = 0;		// エラーカウント
 	int nCntObj,			// オブジェカウント
 		nCntChar,			// キャラクターカウント
