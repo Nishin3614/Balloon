@@ -347,10 +347,10 @@ HRESULT C3DParticle::Load(void)
 {
 	// 変数宣言
 	FILE *pFile = NULL;				// ファイルのポインタ
-	char cRead[128];				// 読み込み用
-	char cComp[128];				// 比較用
-	char cEmpty[128];				// 要らないもの用
-	char cName[64];					// パーティクル名
+	char cRead[128] = {};				// 読み込み用
+	char cComp[128] = {};				// 比較用
+	char cEmpty[128] = {};				// 要らないもの用
+	char cName[64] = {};					// パーティクル名
 	int nCntError = 0;				// エラー用
 	int nCntOffset = 0;				// オフセットのカウント
 	int nId = 0;					// パーティクル番号
