@@ -38,9 +38,6 @@
 #include "loadscreen.h"
 #include "solider.h"
 
-/* ポーズ */
-#include "pause.h"
-
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 // マクロ定義
@@ -121,10 +118,6 @@ void CGame::Init(void)
 
 	// スコア生成
 	m_pScore = CScore::Create();
-	// ポーズの生成
-	m_pause = new CPause();
-	// ポーズの初期化
-	m_pause->Init();
 	// 読み込み画面描画
 	CManager::GetRenderer()->LoadDraw();
 	if (pNetwork != NULL)
@@ -159,13 +152,6 @@ void CGame::Uninit(void)
 		pNetwork->CloseTCP();				// サーバーとの窓口を閉める
 	}
 
-	// ポーズ
-	if (m_pause != NULL)
-	{
-		m_pause->Uninit();
-		delete m_pause;
-		m_pause = NULL;
-	}
 	// スコア
 	if (m_pScore != NULL)
 	{
@@ -188,24 +174,6 @@ void CGame::Update(void)
 {
 	// 当たり判定処理
 	CCollision::CollisionDetection();
-	// ポーズ状態ならば
-	if (m_state == STATE_PAUSE)
-	{
-		if (m_pause != NULL)
-		{
-			m_pause->Update();
-		}
-	}
-	// ポーズ状態ではないとき
-	else
-	{
-		// ポーズへ
-		if (CManager::GetKeyConfig()->GetKeyConfigTrigger(CKeyConfig::CONFIG_POUSE))
-		{
-			//PauseState();
-		}
-	}
-
 	if (CPlayer::GetDie(CManager::GetNetwork()->GetId()))
 	{
 		CKeyboard *pKeyboard = CManager::GetKeyboard();
@@ -287,13 +255,6 @@ void CGame::Update(void)
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Draw(void)
 {
-	if (m_state == STATE_PAUSE)
-	{
-		if (m_pause != NULL)
-		{
-			m_pause->Draw();
-		}
-	}
 	if (m_pScore != NULL)
 	{
 		m_pScore->Draw();
@@ -449,14 +410,14 @@ void CGame::EnemyCreate(void)
 	INTEGER2 nZRand;	// Zランダム
 	// 最小値の設定
 	nXRand.nMin = -1000;	// Xランダム
-	nYRand.nMin = 0;	// Yランダム
+	nYRand.nMin = 0;		// Yランダム
 	nZRand.nMin = -1000;	// Zランダム
 	// 敵の生成
 	for (int nCntEnemy = 0; nCntEnemy < ENEMY_CREATEMAX; nCntEnemy++)
 	{
 		// 最大値の設定
 		nXRand.nMax = rand() % 2000;	// Xランダム
-		nYRand.nMax = rand() % 500;	// Yランダム
+		nYRand.nMax = rand() % 500;		// Yランダム
 		nZRand.nMax = rand() % 2000;	// Zランダム
 		CSolider::Create(
 			D3DXVECTOR3(float(nXRand.nMin + nXRand.nMax), float(nYRand.nMin + nYRand.nMax), float(nZRand.nMin + nZRand.nMax)));

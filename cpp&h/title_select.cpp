@@ -14,7 +14,6 @@
 #include "title_select.h"
 #include "fade.h"
 #include "ui.h"
-#include "cameraconfig.h"
 #include "camera.h"
 #include "network.h"
 
@@ -83,8 +82,6 @@ void CTitle_select::Init(void)
 	m_Ui = std::move(CUi::LoadCreate_Self(
 		CUi::UITYPE_TITLEUI_SELECT
 	));
-	// カメラ設定の生成
-	m_uni_CameraConfig = std::move(CCameraconfig::Create_Self());
 	// 選択UIがNULLではないなら
 	// ->選択UIの位置更新
 	if (m_uni_SelectUi != NULL)
@@ -114,11 +111,6 @@ void CTitle_select::Uninit(void)
 	{
 		m_Ui[nCntUi]->Uninit();
 	}
-	// カメラ設定の終了処理
-	if (m_uni_CameraConfig != NULL)
-	{
-		m_uni_CameraConfig->Uninit();
-	}
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -126,62 +118,14 @@ void CTitle_select::Uninit(void)
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CTitle_select::Update(void)
 {
-	// カメラ設定状態がfalseなら
-	if (CCameraconfig::GetConfig() == false)
+	/* ジョイパッド */
+	if (CManager::GetJoy() != NULL)
 	{
-		/* ジョイパッド */
-		if (CManager::GetJoy() != NULL)
-		{
-			// スティックの下方向に傾けたとき |
-			// 下矢印が押されたとき |
-			// ->次の項目へ
-			if (CManager::GetJoy()->GetBoolStickLeft(0, CJoypad::DIRECTION_DOWN) ||
-				CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_DOWN))
-			{
-				m_nSelect++;
-				// 上限超えたら
-				if (m_nSelect >= TITLE_SELECT_MAX)
-				{
-					m_nSelect = TITLE_SELECT_CHARACTERSELECT;
-				}
-				// 選択UIの位置更新
-				m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
-				m_uni_SelectUi->Set_Vtx_Pos();
-				// カーソル音
-				//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
-			}
-			// スティックの上方向に傾けたとき |
-			// 上矢印が押されたとき |
-			// ->前の項目へ
-			else if (CManager::GetJoy()->GetBoolStickLeft(0, CJoypad::DIRECTION_UP) ||
-				CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_UP))
-			{
-				m_nSelect--;
-				// 下限超えたら
-				if (m_nSelect < TITLE_SELECT_CHARACTERSELECT)
-				{
-					m_nSelect = TITLE_SELECT_MAX - 1;
-				}
-				// 選択UIの位置更新
-				m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
-				m_uni_SelectUi->Set_Vtx_Pos();
-
-				// カーソル音
-				//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
-			}
-			// Bボタンを押したら |
-			// ->選択している項目の処理
-			if (CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_B))
-			{
-				Select();
-			}
-		}
-		/* キーボード */
-		// 下矢印を押したら |
-		// Sボタンを押したら |
+		// スティックの下方向に傾けたとき |
+		// 下矢印が押されたとき |
 		// ->次の項目へ
-		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_DOWN) ||
-			CManager::GetKeyboard()->GetKeyboardTrigger(DIK_S))
+		if (CManager::GetJoy()->GetBoolStickLeft(0, CJoypad::DIRECTION_DOWN) ||
+			CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_DOWN))
 		{
 			m_nSelect++;
 			// 上限超えたら
@@ -195,11 +139,11 @@ void CTitle_select::Update(void)
 			// カーソル音
 			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
 		}
-		// 上矢印を押したら |
-		// Wボタンを押したら |
+		// スティックの上方向に傾けたとき |
+		// 上矢印が押されたとき |
 		// ->前の項目へ
-		else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_UP) ||
-			CManager::GetKeyboard()->GetKeyboardTrigger(DIK_W))
+		else if (CManager::GetJoy()->GetBoolStickLeft(0, CJoypad::DIRECTION_UP) ||
+			CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_UP))
 		{
 			m_nSelect--;
 			// 下限超えたら
@@ -210,41 +154,76 @@ void CTitle_select::Update(void)
 			// 選択UIの位置更新
 			m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
 			m_uni_SelectUi->Set_Vtx_Pos();
+
 			// カーソル音
 			//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
 		}
-		// エンター押したら |
+		// Bボタンを押したら |
 		// ->選択している項目の処理
-		if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
+		if (CManager::GetJoy()->GetTrigger(0, CJoypad::KEY_B))
 		{
 			Select();
 		}
-
-		/* 各UIの更新処理 */
-		// 背景の更新処理
-		for (int nCntUi = 0; nCntUi < (signed)m_BgUi.size(); nCntUi++)
-		{
-			m_BgUi[nCntUi]->Update();
-		}
-		// 選択UIの更新処理
-		if (m_uni_SelectUi != NULL)
-		{
-			m_uni_SelectUi->Update();
-		}
-		// UIの更新処理
-		for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
-		{
-			m_Ui[nCntUi]->Update();
-		}
 	}
-	// カメラ設定状態がtrueなら
-	else
+	/* キーボード */
+	// 下矢印を押したら |
+	// Sボタンを押したら |
+	// ->次の項目へ
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_DOWN) ||
+		CManager::GetKeyboard()->GetKeyboardTrigger(DIK_S))
 	{
-		// カメラ設定の終了処理
-		if (m_uni_CameraConfig != NULL)
+		m_nSelect++;
+		// 上限超えたら
+		if (m_nSelect >= TITLE_SELECT_MAX)
 		{
-			m_uni_CameraConfig->Update();
+			m_nSelect = TITLE_SELECT_CHARACTERSELECT;
 		}
+		// 選択UIの位置更新
+		m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+		m_uni_SelectUi->Set_Vtx_Pos();
+		// カーソル音
+		//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+	}
+	// 上矢印を押したら |
+	// Wボタンを押したら |
+	// ->前の項目へ
+	else if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_UP) ||
+		CManager::GetKeyboard()->GetKeyboardTrigger(DIK_W))
+	{
+		m_nSelect--;
+		// 下限超えたら
+		if (m_nSelect < TITLE_SELECT_CHARACTERSELECT)
+		{
+			m_nSelect = TITLE_SELECT_MAX - 1;
+		}
+		// 選択UIの位置更新
+		m_uni_SelectUi->SetPosition(m_Ui[m_nSelect]->GetScene_Two()->GetPosition());
+		m_uni_SelectUi->Set_Vtx_Pos();
+		// カーソル音
+		//CManager::GetSound()->PlaySound(CSound::LABEL_SE_CURSOL);
+	}
+	// エンター押したら |
+	// ->選択している項目の処理
+	if (CManager::GetKeyboard()->GetKeyboardTrigger(DIK_RETURN))
+	{
+		Select();
+	}
+
+	/* 各UIの更新処理 */
+	// 背景の更新処理
+	for (int nCntUi = 0; nCntUi < (signed)m_BgUi.size(); nCntUi++)
+	{
+		m_BgUi[nCntUi]->Update();
+	}
+	// 選択UIの更新処理
+	if (m_uni_SelectUi != NULL)
+	{
+		m_uni_SelectUi->Update();
+	}
+	// UIの更新処理
+	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
+	{
+		m_Ui[nCntUi]->Update();
 	}
 }
 
@@ -267,15 +246,6 @@ void CTitle_select::Draw(void)
 	for (int nCntUi = 0; nCntUi < (signed)m_Ui.size(); nCntUi++)
 	{
 		m_Ui[nCntUi]->Draw();
-	}
-	// カメラ設定状態がtrueなら
-	if (CCameraconfig::GetConfig() == true)
-	{
-		// カメラ設定の終了処理
-		if (m_uni_CameraConfig != NULL)
-		{
-			m_uni_CameraConfig->Draw();
-		}
 	}
 }
 
