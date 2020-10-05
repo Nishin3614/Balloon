@@ -55,6 +55,7 @@ public:
 		UITYPE_DIE,
 		UITYPE_GAMESTART,
 		UITYPE_FINISH,
+		UITYPE_WATCHING,
 		UITYPE_MAX
 	} UITYPE;
 	// UIÇÃèÓïÒäiî[ópå^ñº

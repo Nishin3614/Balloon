@@ -21,6 +21,7 @@
 #include "PointCircle.h"
 #include "select.h"
 #include "BalloonNum.h"
+#include "charRanking.h"
 
 //=============================================================================
 // 静的メンバ変数
@@ -765,8 +766,12 @@ bool CNetwork::UpdateUDP(void)
 		if (nCount != m_nId)
 		{
 			CPlayer *pPlayer = CGame::GetPlayer(nCount);		// プレイヤーの取得
-			pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
-			pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
+
+			if (pPlayer != NULL)
+			{
+				pPlayer->SetPos(m_playerPos[nCount]);				// 位置の取得
+				pPlayer->SetRotDest(D3DXVECTOR3(0.0f, m_fRot[nCount], 0.0f));
+			}
 		}
 	}
 
@@ -815,29 +820,38 @@ bool CNetwork::UpdateTCP(void)
 
 		sscanf(aFunc, "%s %d %d", &aDie, &nDeath, &nKill);
 
-		CPlayer *pPlayer = CGame::GetPlayer(nDeath);
-
-		if (pPlayer != NULL)
+		if (!m_bDie[nDeath])
 		{
-			pPlayer->Die();
-		}
+			CPlayer *pPlayer = CGame::GetPlayer(nDeath);
 
-		m_bDie[nDeath] = true;
-
-		if (m_nId == nKill)
-		{// 自分がキラーだったとき
-			pPlayer = CGame::GetPlayer(m_nId);
 			if (pPlayer != NULL)
 			{
-				pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
+				pPlayer->Die();
+			}
+
+			m_bDie[nDeath] = true;
+
+			if (m_nId == nKill)
+			{// 自分がキラーだったとき
+				pPlayer = CGame::GetPlayer(m_nId);
+				if (pPlayer != NULL)
+				{
+					pPlayer->MpUp(CCharacter::GetStatus(pPlayer->GetCharacter()).nMaxMpUp_KnockDown);
+				}
 			}
 		}
 	}
 	else if (strcmp(cHeadText, "GAME_END") == 0)
 	{
+		char aDie[64];
+		int nRank[MAX_PLAYER] = {};
+
 		if (CManager::GetFade()->GetFade() == CFade::FADE_NONE)
 		{// フェードしていないとき
+			sscanf(aFunc, "%s %d %d %d %d", &aDie, &nRank[0], &nRank[1], &nRank[2], &nRank[3]);
+
 			// チュートリアルへ
+			CCharRanking::SetRank(nRank);
 			CManager::GetFade()->SetFade(CManager::MODE_RESULT);
 		}
 	}

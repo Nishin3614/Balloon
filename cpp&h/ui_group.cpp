@@ -281,6 +281,7 @@ void CUi_group::Update_GameOver(void)
 	if (GetUiGroup_FadeType() == C2DPresents::FADETYPE_END)
 	{
 		CManager::GetGame()->FocusPlayer();		// 生きているプレイヤーにフォーカスを変える
+		CUi_group::Create(CUi::UITYPE_WATCHING);
 		Release();
 	}
 }

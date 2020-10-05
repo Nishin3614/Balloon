@@ -78,8 +78,8 @@ CGame::~CGame()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CGame::Init(void)
 {
-	// 読み込み画面描画
-	CManager::GetRenderer()->LoadDraw();
+	// ロードスクリーンの変数初期化処理
+	CManager::GetLoadScreen()->VariableInit();
 	CNetwork *pNetwork = CManager::GetNetwork();
 
 	// カメラのタイプ設定
@@ -91,8 +91,6 @@ void CGame::Init(void)
 	m_state = STATE_NORMAL;
 	// キャラクターの総人数
 	CCharacter::InitStatic();
-	// 読み込み画面描画
-	CManager::GetRenderer()->LoadDraw();
 	/* 作成 */
 	// 3Dエフェクトの生成
 	C3DEffect::Create();
@@ -121,8 +119,6 @@ void CGame::Init(void)
 
 	// スコア生成
 	m_pScore = CScore::Create();
-	// 読み込み画面描画
-	CManager::GetRenderer()->LoadDraw();
 	// ポーズの生成
 	m_pause = new CPause();
 	// ポーズの初期化
@@ -313,15 +309,19 @@ void CGame::FocusPlayer(void)
 	{
 		m_nWatchingId++;
 
-		if (m_nWatchingId == MAX_PLAYER)
+		if (m_nWatchingId >= MAX_PLAYER)
 		{
 			m_nWatchingId = 0;
 		}
 
-		if (!pNetwork->GetDie(m_nWatchingId))
+		if (pNetwork->GetId() != m_nWatchingId)
 		{
-			OutputDebugString("ふぁっきゅー");
-			break;
+			bool bAns = pNetwork->GetDie(m_nWatchingId);
+			if (!bAns)
+			{
+				OutputDebugString("ふぁっきゅー");
+				break;
+			}
 		}
 	}
 }
