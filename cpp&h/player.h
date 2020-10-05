@@ -136,6 +136,8 @@ private:
 	void MyMove(void);
 	// 自キャラ行動処理
 	void MyAction(const int &nId);
+	// スキルによるパーティクル処理
+	void Skill_Particle(void);
 	// 他キャラ移動処理
 	void OtherMove(void);
 	// 他キャラ行動処理

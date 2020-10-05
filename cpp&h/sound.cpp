@@ -148,6 +148,13 @@ void CSound::Uninit(void)
 		m_pXAudio2->Release();
 		m_pXAudio2 = NULL;
 	}
+	// ファイル名の開放
+	m_vec_Filename.clear();
+	m_vec_Filename.shrink_to_fit();
+	m_vec_nLoop.clear();
+	m_vec_nLoop.shrink_to_fit();
+	m_vec_SoundType.clear();
+	m_vec_SoundType.shrink_to_fit();
 
 	// COMライブラリの終了処理
 	CoUninitialize();

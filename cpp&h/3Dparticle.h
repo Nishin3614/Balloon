@@ -26,32 +26,24 @@ public:
 	// エフェクトタイプ
 	typedef enum
 	{
-		TYPE_NORMAL = 0,
-		TYPE_CHARGE,
+		TYPE_ANGLE_TO_VECTOR = 0,	// 角度はVECTORに等しい
+		TYPE_ANGLE_AND_VECTOR,		// 角度とVECTORは別である
 		TYPE_MAX,
 	} TYPE;
 	// パーティクル番号
 	typedef enum
 	{
 		PARTICLE_ID_NONE = -1,
-		PARTICLE_ID_FIRE,				// 炎
-		PARTICLE_ID_TRICK_BEFORE_SHOCK,	// 秘奥義前の波動
-		PARTICLE_ID_TRICK1_FIRE,		// 技①のエフェクト
-		PARTICLE_ID_SHOCK_SMOKE,		// 吹っ飛びけむり
-		PARTICLE_ID_ARROW_SMOKE,		// 弓けむり
-		PARTICLE_ID_SHOCKWAVE,			// 衝撃波
-		PARTICLE_ID_GET,				// アイテムゲット
-		PARTICLE_ID_CROSSLINE,			// クロスライン
-		PARTICLE_ID_WEAVELINE,			// 編み物ライン
-		PARTICLE_ID_RANDAMLINE,			// ランダムライン
-		PARTICLE_ID_CENTERRANDAMLINE,	// 中心ランダムライン
-		PARTICLE_ID_ONELINE,			// 一つライン
-		PARTICLE_ID_CONCENTLINE,		// コネクトライン
 		PARTICLE_ID_BALLOON,			// 風船
 		PARTICLE_ID_BALLOONBREAK,		// 風船割れた時
 		PARTICLE_ID_PLAYERDIE,			// プレイヤーが死んだ時
 		PARTICLE_ID_WATER,				// 水滴
 		PARTICLE_ID_COIN,				// コイン
+		PARTICLE_ID_POINTCIRCLE,		// ポイントサークル
+		PARTICLE_ID_BALLOON1SKILL,		// バルーン1スキル
+		PARTICLE_ID_BALLOON2SKILL,		// バルーン2スキル
+		PARTICLE_ID_BALLOON3SKILL,		// バルーン3スキル
+		PARTICLE_ID_BALLOON4SKILL,		// バルーン4スキル
 		PARTICLE_ID_MAX,
 	} PARTICLE_ID;
 	/* 構造体 */
@@ -64,7 +56,6 @@ public:
 			nNumber			= 0;				// 出現個数
 			nEffectTexType	= 0;				// エフェクトのテクスチャの種類
 			nEffectType		= 0;				// エフェクトの種類
-			type = TYPE_NORMAL;					// 種類(主に移動の)
 			/* 位置情報 */
 			Pos				= D3DVECTOR3_ZERO;	// 位置
 			PosXRand		= INTEGER2(0,0);	// 位置X座標ランダム用
@@ -86,6 +77,11 @@ public:
 			/* 角度情報 */
 			Rot				= D3DVECTOR3_ZERO;	// 回転ー
 			nAngleRand		= INTEGER2(0, 0);	// 角度のランダム用
+			/* ベクトル情報 */
+			Vector = D3DVECTOR3_ZERO;				// ベクトル
+			VectorXRand = INTEGER2(0, 0);			// ベクトルXランダム用
+			VectorYRand = INTEGER2(0, 0);			// ベクトルYランダム用
+			VectorZRand = INTEGER2(0, 0);			// ベクトルYランダム用
 			/* 速度情報 */
 			fSpeed			= 0.0f;				// 速度
 			nSpeedRand		= INTEGER2(0, 0);	// 速度のランダム用
@@ -100,7 +96,6 @@ public:
 		int					nNumber;		// 出現個数
 		int					nEffectTexType;	// エフェクトのテクスチャの種類
 		int					nEffectType;	// エフェクトの種類
-		C3DParticle::TYPE	type;			// 種類(主に移動の)
 		/* 位置情報 */
 		D3DXVECTOR3			Pos;			// 位置
 		INTEGER2			PosXRand;		// 位置X座標ランダム用
@@ -119,12 +114,19 @@ public:
 		INTEGER2			SizeYRand;		// サイズyランダム用
 		float				fSizeChange;	// サイズ変化値
 		bool				bSizeDecrease;	// サイズの減少状態
+		/* ベクトル情報 */
+		D3DXVECTOR3			Vector;			// ベクトル
+		INTEGER2			VectorXRand;	// ベクトルXランダム用
+		INTEGER2			VectorYRand;	// ベクトルYランダム用
+		INTEGER2			VectorZRand;	// ベクトルYランダム用
 		/* 角度情報 */
 		D3DXVECTOR3			Rot;			// 回転ー
 		INTEGER2			nAngleRand;		// 角度のランダム用
 		/* 速度情報 */
 		float				fSpeed;			// 速度
 		INTEGER2			nSpeedRand;		// 速度のランダム用
+		/* タイプ */
+		int					nParticleType;	// パーティクルタイプ
 		/* ライフ情報 */
 		int					nLife;			// ライフ
 		INTEGER2			nLifeRand;		// ライフのランダム用

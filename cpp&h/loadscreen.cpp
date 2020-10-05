@@ -24,7 +24,7 @@
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 CLoadScreen::CLoadScreen()
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene] = NULL;
 	}
@@ -42,7 +42,7 @@ CLoadScreen::~CLoadScreen()
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Init(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene] = CScene_TWO::Create_Self(
 			CScene_TWO::OFFSET_TYPE_CENTER,
@@ -51,14 +51,21 @@ void CLoadScreen::Init(void)
 		);
 	}
 	// 背景の設定
-	m_paScene_two[0]->BindTexture(CTexture_manager::GetTexture(-1));
-	m_paScene_two[0]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
-	m_paScene_two[0]->SetSize(D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
-	m_paScene_two[0]->Set_Vtx_Col();
-	m_paScene_two[0]->Set_Vtx_Pos();
-	// イラストの設定
-	m_paScene_two[1]->BindTexture(CTexture_manager::GetTexture(66));
-	m_paScene_two[1]->SetTexAnim(1, 2, 1);
+	m_paScene_two[UITYPE_BG]->BindTexture(CTexture_manager::GetTexture(-1));
+	m_paScene_two[UITYPE_BG]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+	m_paScene_two[UITYPE_BG]->SetSize(D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT));
+	m_paScene_two[UITYPE_BG]->Set_Vtx_Col();
+	m_paScene_two[UITYPE_BG]->Set_Vtx_Pos();
+	// ナウローディングの設定
+	m_paScene_two[UITYPE_LOADING]->BindTexture(CTexture_manager::GetTexture(85));
+	m_paScene_two[UITYPE_LOADING]->SetSize(D3DXVECTOR2(700.0f,200.0f));
+	m_paScene_two[UITYPE_LOADING]->Set_Vtx_Pos();
+	// 風船の設定
+	m_paScene_two[UITYPE_BALLOON]->BindTexture(CTexture_manager::GetTexture(84));
+	m_paScene_two[UITYPE_BALLOON]->SetPosition(D3DXVECTOR3(980.0f, 300.0f,0.0f));
+	m_paScene_two[UITYPE_BALLOON]->SetSize(D3DXVECTOR2(90.0f, 100.0f));
+	m_paScene_two[UITYPE_BALLOON]->Set_Vtx_Pos();
+	m_paScene_two[UITYPE_BALLOON]->SetTexAnim(1, 5, 1);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -66,7 +73,7 @@ void CLoadScreen::Init(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Uninit(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Uninit();
 		delete m_paScene_two[nCntScene];
@@ -79,7 +86,7 @@ void CLoadScreen::Uninit(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Update(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Update();
 	}
@@ -90,7 +97,7 @@ void CLoadScreen::Update(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Draw(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Draw();
 	}
@@ -102,7 +109,7 @@ void CLoadScreen::Draw(void)
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 void CLoadScreen::Debug(void)
 {
-	for (int nCntScene = 0; nCntScene < 2; nCntScene++)
+	for (int nCntScene = 0; nCntScene < UITYPE_MAX; nCntScene++)
 	{
 		m_paScene_two[nCntScene]->Debug();
 	}

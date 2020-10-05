@@ -129,13 +129,39 @@ void CPlayer::Init(void)
 		// ->ゲージ生成
 		if (m_nPlayerID == nId)
 		{
-			// MPゲージの生成
-			m_p2DMPGauge = C2DGauge::Create(
-				PLAYER_UI_MP_POS,
-				D3DXVECTOR2(500.0f, 25.0f),
-				D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
-				GetCharacter()
-			);
+			// キャラクター2
+			if (GetCharacter() == CHARACTER_BALLOON2)
+			{
+				// MPゲージの生成
+				m_p2DMPGauge = C2DGauge::Create(
+					PLAYER_UI_MP_POS,
+					D3DXVECTOR2(480.0f, 25.0f),
+					D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+					GetCharacter()
+				);
+
+			}
+			// キャラクター4
+			else if (GetCharacter() == CHARACTER_BALLOON4)
+			{
+				// MPゲージの生成
+				m_p2DMPGauge = C2DGauge::Create(
+					PLAYER_UI_MP_POS,
+					D3DXVECTOR2(470.0f, 25.0f),
+					D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+					GetCharacter()
+				);
+			}
+			else
+			{
+				// MPゲージの生成
+				m_p2DMPGauge = C2DGauge::Create(
+					PLAYER_UI_MP_POS,
+					D3DXVECTOR2(500.0f, 25.0f),
+					D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f),
+					GetCharacter()
+				);
+			}
 			// MPゲージの変化定数を設定
 			m_p2DMPGauge->SetConstance((float)CCharacter::GetStatus().nMaxMp);
 			// MPゲージの変化定数を設定
@@ -234,6 +260,7 @@ void CPlayer::Update(void)
 		{
 			// 自キャラの行動処理
 			MyAction(m_nPlayerID);
+			Skill_Particle();
 		}
 		// それ以外のキャラクターの処理
 		else
@@ -246,6 +273,7 @@ void CPlayer::Update(void)
 	{
 		// 自キャラの行動処理
 		MyAction(m_nPlayerID);
+		Skill_Particle();
 	}
 	// モーション設定処理
 	StatusMotion();
@@ -412,6 +440,30 @@ void CPlayer::MyAction(const int &nId)
 
 		// 食い込んだ分だけ戻す
 		SetPos(pos);
+	}
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// スキルによるパーティクル処理
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void CPlayer::Skill_Particle(void)
+{
+	// MPがマックス状態ではないとき
+	// ->関数を抜ける
+	if (!m_bMPMax) return;
+	// キャラクターによるパーティクル処理
+	switch (CCharacter::GetCharacter())
+	{
+		// キャラクターバルーン1
+	case CCharacter::CHARACTER_BALLOON1:
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_BALLOON1SKILL, CCharacter::GetPos());
+		break;
+		// キャラクターバルーン2
+	case CCharacter::CHARACTER_BALLOON2:
+		C3DParticle::Create(C3DParticle::PARTICLE_ID_BALLOON2SKILL, CCharacter::GetPos());
+		break;
+	default:
+		break;
 	}
 }
 
@@ -771,6 +823,14 @@ void CPlayer::MpUp(
 			{
 				// フレームワーク情報の使用状態設定
 				m_pFramework->SetUse(true);
+			}
+			// キャラクターによるパーティクル処理
+			switch (CCharacter::GetCharacter())
+			{
+				// キャラクターバルーン3
+			case CCharacter::CHARACTER_BALLOON3:
+				C3DParticle::Create(C3DParticle::PARTICLE_ID_BALLOON3SKILL, CCharacter::GetPos());
+				break;
 			}
 		}
 	}

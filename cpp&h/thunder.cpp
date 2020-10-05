@@ -233,7 +233,7 @@ void CThunder::Update_Tutorial(void)
 				{
 					// パーティクル生成
 					C3DParticle::Create(
-						C3DParticle::PARTICLE_ID_CROSSLINE,
+						C3DParticle::PARTICLE_ID_PLAYERDIE,
 						charaPos
 					);
 					// 死ぬ音2
@@ -312,7 +312,7 @@ void CThunder::Update_Game(void)
 				{
 					// パーティクル生成
 					C3DParticle::Create(
-						C3DParticle::PARTICLE_ID_CROSSLINE,
+						C3DParticle::PARTICLE_ID_PLAYERDIE,
 						charaPos
 					);
 					// 死ぬ音2

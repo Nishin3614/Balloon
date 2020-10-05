@@ -36,15 +36,29 @@ class CLoadScreen
 {
 public:
 	/* 列挙型 */
-
+	// UIタイプ
+	typedef enum
+	{
+		UITYPE_BG = 0,	// UIタイプ_背景
+		UITYPE_LOADING,	// UIタイプ_ローディング
+		UITYPE_BALLOON,	// UIタイプ_風船
+		UITYPE_MAX		// UIタイプ_最大数
+	} UITYPE;
 	/* 関数 */
+	// コンストラクタ
 	CLoadScreen();
+	// デストラクタ
 	~CLoadScreen();
+	// 初期化処理
 	void Init(void);
+	// 終了処理
 	void Uninit(void);
+	// 更新処理
 	void Update(void);
+	// 描画処理
 	void Draw(void);
 #ifdef _DEBUG
+	// デバッグ処理
 	void Debug(void);
 #endif // _DEBUG
 	// 作成(シーン継承あり)
@@ -61,7 +75,7 @@ private:
 	/* 関数 */
 
 	/* 変数 */
-	CScene_TWO * m_paScene_two[2];	// シーン2D情報
+	CScene_TWO * m_paScene_two[UITYPE_MAX];	// シーン2D情報
 };
 
 #endif

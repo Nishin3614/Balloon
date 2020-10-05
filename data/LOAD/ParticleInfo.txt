@@ -7,521 +7,7 @@
 SCRIPT
 
 #==============================================================================
-# [0] Fire1
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 40 -20
-		POSY = 30 0
-		POSZ = 40 -20
-	ENDSET_POSRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 10 30
-		SIZEY = 10 30
-	ENDSET_SIZERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.2 0.1 1.0
-	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 1.0
-	# ライフ情報
-	LIFE = 20
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 10
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 2
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [1] Trick_Before_Shock
-#==============================================================================
-OFFSET
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 0.4
-	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 50
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 1
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 1
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [2] Trick1_Fire
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 40 -20
-		POSY = 50 -30
-		POSZ = 40 -20
-	ENDSET_POSRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 10 30
-		SIZEY = 10 30
-	ENDSET_SIZERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.2 0.1 1.0
-	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 3.0
-	# ライフ情報
-	LIFE = 60
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 10
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 2
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [3] Shock_Smoke
-#==============================================================================
-OFFSET
-	# ライフランダム
-	SET_LIFERAND
-		MAX = 15
-		MIN = 5
-	ENDSET_LIFERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 0.6
-	# サイズ情報
-	SIZE = 20.0 20.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 1.0
-	# ライフ情報
-	LIFE = 0
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 1
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 2
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [4] Arrow_Smoke
-#==============================================================================
-OFFSET
-	# ライフランダム
-	SET_LIFERAND
-		MAX = 15
-		MIN = 5
-	ENDSET_LIFERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 0.9 0.1 0.1 0.6
-	# サイズ情報
-	SIZE = 20.0 20.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 1.0
-	# ライフ情報
-	LIFE = 0
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 1
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 2
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [5] Shock_Wave
-#==============================================================================
-OFFSET
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 0.8
-	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 10
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 1
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 1
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [6] ItemGet
-#==============================================================================
-OFFSET
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 150 150
-		SIZEY = 150 150
-	ENDSET_SIZERAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
-	ENDSET_ANGLERAND
-	# スピードランダム
-	SET_SPEEDRAND
-		MAX = 10
-		MIN = 0
-	ENDSET_SPEEDRAND
-	# ライフランダム
-	SET_LIFERAND
-		MAX = 15
-		MIN = 5
-	ENDSET_LIFERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.2 0.2 1.0
-	# サイズ情報
-	SIZE = 0.0 0.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 0
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 20
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 0
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [7] Cross_Line
-#==============================================================================
-OFFSET
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 90
-		MIN = 0
-	ENDSET_ANGLERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 0.2 0.2 1.0
-	# サイズ情報
-	SIZE = 5.0 250.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 1.0
-	# ライフ情報
-	LIFE = 20
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 2
-	# テクスチャータイプ情報
-	TEXTYPE = 1
-	# エフェクトタイプ情報
-	EFFECTTYPE = 3
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [8] Knitting_Line
-#==============================================================================
-OFFSET
-	# 色ランダム
-	SET_COLRAND
-		RED
-		GREEN
-		BLUE
-	ENDSET_COLRAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 90
-		MIN = 0
-	ENDSET_ANGLERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 1.0
-	# サイズ情報
-	SIZE = 5.0 500.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 20
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 20
-	# テクスチャータイプ情報
-	TEXTYPE = 2
-	# エフェクトタイプ情報
-	EFFECTTYPE = 3
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [9] Randam_Line
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 100 0
-		POSY = 100 0
-		POSZ = 100 0
-	ENDSET_POSRAND
-	# 色ランダム
-	SET_COLRAND
-		RED
-		GREEN
-		BLUE
-	ENDSET_COLRAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 360
-		MIN = 0
-	ENDSET_ANGLERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 1.0
-	# サイズ情報
-	SIZE = 5.0 500.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 50
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 50
-	# テクスチャータイプ情報
-	TEXTYPE = 2
-	# エフェクトタイプ情報
-	EFFECTTYPE = 3
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [10] Randam_Line(Center)
-#==============================================================================
-OFFSET
-	# 色ランダム
-	SET_COLRAND
-		RED
-		GREEN
-		BLUE
-	ENDSET_COLRAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 360
-		MIN = 0
-	ENDSET_ANGLERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 1.0
-	# サイズ情報
-	SIZE = 5.0 500.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 50
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 50
-	# テクスチャータイプ情報
-	TEXTYPE = 2
-	# エフェクトタイプ情報
-	EFFECTTYPE = 3
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [11] One_Line
-#==============================================================================
-OFFSET
-	# 色ランダム
-	SET_COLRAND
-		RED
-		GREEN
-		BLUE
-	ENDSET_COLRAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 90
-		MIN = 0
-	ENDSET_ANGLERAND
-	# 位置情報
-	POS = 0.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 1.0
-	# サイズ情報
-	SIZE = 5.0 500.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 30
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 1
-	# テクスチャータイプ情報
-	TEXTYPE = 2
-	# エフェクトタイプ情報
-	EFFECTTYPE = 3
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [12] Concentrated_Line
-#==============================================================================
-OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 0 0
-		POSY = 200 -100
-		POSZ = 0 0
-	ENDSET_POSRAND
-	# 色ランダム
-	SET_COLRAND
-		RED
-		GREEN
-		BLUE
-	ENDSET_COLRAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 100
-		MIN = 100
-	ENDSET_ANGLERAND
-	# 位置情報
-	POS = 100.0 0.0 0.0
-	# 色情報
-	COL = 1.0 1.0 1.0 1.0
-	# サイズ情報
-	SIZE = 5.0 500.0
-	SIZE_CHANGE = 0.0
-	# 回転情報
-	ROT = 0.0 0.0 0.0
-	# スピード情報
-	SPEED = 0.0
-	# ライフ情報
-	LIFE = 30
-	# フレーム情報
-	FRAME = 1
-	# 一度に出せる個数情報
-	NUMBER = 30
-	# テクスチャータイプ情報
-	TEXTYPE = 2
-	# エフェクトタイプ情報
-	EFFECTTYPE = 3
-	# パーティクルタイプ情報
-	PARTICLETYPE = 0
-	# ブレンドタイプ情報
-	BLEND = 3
-END_OFFSET
-#==============================================================================
-# [13] Balloon
+# [0] Balloon
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -555,6 +41,8 @@ OFFSET
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -573,42 +61,44 @@ OFFSET
 	BLEND = 1
 END_OFFSET
 #==============================================================================
-# [14] BalloonBreak
+# [1] BalloonBreak
 #==============================================================================
 OFFSET
-	# 位置ランダム
-	SET_POSRAND
-		POSX = 10 10
-		POSY = 10 10
-		POSZ = 10 10
-	ENDSET_POSRAND
 	# サイズランダム
 	SET_SIZERAND
-		SIZEX = 5 5
-		SIZEY = 5 5
+		SIZEX = 5 10
+		SIZEY = 5 10
 	ENDSET_SIZERAND
-	# 角度ランダム
-	SET_ANGLERAND
-		MAX = 628
-		MIN = -314
-	ENDSET_ANGLERAND
+	# 方向ランダム
+	SET_VECTORRAND
+		VECTORX = 20 -10
+		VECTORY = 9 1
+		VECTORZ = 20 -10
+	ENDSET_VECTORRAND
 	# スピードランダム
 	SET_SPEEDRAND
-		MAX = 5
+		MAX = 2
 		MIN = 5
 	ENDSET_SPEEDRAND
+	# ライフランダム
+	SET_LIFERAND
+		MAX = 20
+		MIN = 20
+	ENDSET_LIFERAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
 	# 色情報
-	COL = 1.0 0.1 0.0 1.0
+	COL = 1.0 0.2 0.0 1.0
 	COL_DESCREASE	# サイズ情報
 	SIZE = 0.0 0.0
 	SIZE_DESCREASE	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
-	LIFE = 30
+	LIFE = 0
 	# フレーム情報
 	FRAME = 1
 	# 一度に出せる個数情報
@@ -618,12 +108,12 @@ OFFSET
 	# エフェクトタイプ情報
 	EFFECTTYPE = 5
 	# パーティクルタイプ情報
-	PARTICLETYPE = 0
+	PARTICLETYPE = 1
 	# ブレンドタイプ情報
 	BLEND = 3
 END_OFFSET
 #==============================================================================
-# [15] PlayerDie
+# [2] PlayerDie
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -662,6 +152,8 @@ OFFSET
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -680,7 +172,7 @@ OFFSET
 	BLEND = 3
 END_OFFSET
 #==============================================================================
-# [16] Water
+# [3] Water
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -699,7 +191,6 @@ OFFSET
 		MAX = 90
 		MIN = 0
 	ENDSET_ANGLERAND
-	ENDSET_SPEEDRAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
 	# 色情報
@@ -709,6 +200,8 @@ OFFSET
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
 	# スピード情報
 	SPEED = 1.0
 	# ライフ情報
@@ -726,9 +219,86 @@ OFFSET
 	# ブレンドタイプ情報
 	BLEND = 1
 END_OFFSET
-
 #==============================================================================
-# [17] GetCoin
+# [4] GetCoin
+#==============================================================================
+OFFSET
+	# 位置情報
+	POS = 0.0 50.0 0.0
+	# 色情報
+	COL = 1.0 1.0 0.0 1.0
+	# サイズ情報
+	SIZE = 50.0 50.0
+	SIZE_DESCREASE	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 1.0 0.0
+	# スピード情報
+	SPEED = 10.0
+	# ライフ情報
+	LIFE = 60
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 1
+	# テクスチャータイプ情報
+	TEXTYPE = 83
+	# エフェクトタイプ情報
+	EFFECTTYPE = 0
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 1
+END_OFFSET
+#==============================================================================
+# [5] PointCircle
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 20 -10
+		POSY = 0 0
+		POSZ = 20 -10
+	ENDSET_POSRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 10 10
+		SIZEY = 10 10
+	ENDSET_SIZERAND
+	# スピードランダム
+	SET_SPEEDRAND
+		MAX = 5
+		MIN = 10
+	ENDSET_SPEEDRAND
+	# 位置情報
+	POS = 0.0 30.0 0.0
+	# 色情報
+	COL = 0.7 0.7 0.3 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_DESCREASE	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 1.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 20
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 1
+	# テクスチャータイプ情報
+	TEXTYPE = 0
+	# エフェクトタイプ情報
+	EFFECTTYPE = 5
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [6] Balloon1Skill
 #==============================================================================
 OFFSET
 	# 位置ランダム
@@ -737,6 +307,150 @@ OFFSET
 		POSY = 10 10
 		POSZ = 10 10
 	ENDSET_POSRAND
+	# 色ランダム
+	SET_COLRAND
+		RED
+		GREEN
+		BLUE
+	ENDSET_COLRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 20 20
+		SIZEY = 20 20
+	ENDSET_SIZERAND
+	# 角度ランダム
+	SET_ANGLERAND
+		MAX = 628
+		MIN = -314
+	ENDSET_ANGLERAND
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 1.0 1.0 1.0 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_CHANGE = 1.0
+	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 20
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 3
+	# テクスチャータイプ情報
+	TEXTYPE = 0
+	# エフェクトタイプ情報
+	EFFECTTYPE = 3
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [7] Balloon2Skill
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 10 10
+		POSY = 10 10
+		POSZ = 10 10
+	ENDSET_POSRAND
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 1.0 1.0 0.0 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 20.0 20.0
+	SIZE_DESCREASE	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 1.0
+	# ライフ情報
+	LIFE = 30
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 1
+	# テクスチャータイプ情報
+	TEXTYPE = 0
+	# エフェクトタイプ情報
+	EFFECTTYPE = 5
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [8] Balloon3Skill
+#==============================================================================
+OFFSET
+	# 位置ランダム
+	SET_POSRAND
+		POSX = 50 -25
+		POSY = 50 -25
+		POSZ = 50 -25
+	ENDSET_POSRAND
+	# サイズランダム
+	SET_SIZERAND
+		SIZEX = 5 5
+		SIZEY = 5 5
+	ENDSET_SIZERAND
+	# 角度ランダム
+	SET_ANGLERAND
+		MAX = 50
+		MIN = -25
+	ENDSET_ANGLERAND
+	# 方向ランダム
+	SET_VECTORRAND
+		VECTORX = 4 -2
+		VECTORY = 10 1
+		VECTORZ = 4 -2
+	ENDSET_VECTORRAND
+	# スピードランダム
+	SET_SPEEDRAND
+		MAX = 4
+		MIN = 2
+	ENDSET_SPEEDRAND
+	# 位置情報
+	POS = 0.0 0.0 0.0
+	# 色情報
+	COL = 1.0 1.0 1.0 1.0
+	COL_DESCREASE	# サイズ情報
+	SIZE = 0.0 0.0
+	SIZE_CHANGE = 2.0
+	# 回転情報
+	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 0.0 0.0
+	# スピード情報
+	SPEED = 0.0
+	# ライフ情報
+	LIFE = 30
+	# フレーム情報
+	FRAME = 1
+	# 一度に出せる個数情報
+	NUMBER = 15
+	# テクスチャータイプ情報
+	TEXTYPE = 3
+	# エフェクトタイプ情報
+	EFFECTTYPE = 2
+	# パーティクルタイプ情報
+	PARTICLETYPE = 1
+	# ブレンドタイプ情報
+	BLEND = 3
+END_OFFSET
+#==============================================================================
+# [9] Balloon4Skill
+#==============================================================================
+OFFSET
 	# サイズランダム
 	SET_SIZERAND
 		SIZEX = 10 20
@@ -749,8 +463,8 @@ OFFSET
 	ENDSET_ANGLERAND
 	# スピードランダム
 	SET_SPEEDRAND
-		MAX = 5
-		MIN = 5
+		MAX = 2
+		MIN = 2
 	ENDSET_SPEEDRAND
 	# 位置情報
 	POS = 0.0 0.0 0.0
@@ -758,8 +472,11 @@ OFFSET
 	COL = 1.0 1.0 1.0 1.0
 	COL_DESCREASE	# サイズ情報
 	SIZE = 0.0 0.0
-	SIZE_DESCREASE	# 回転情報
+	SIZE_CHANGE = 1.5
+	# 回転情報
 	ROT = 0.0 0.0 0.0
+	# 方向情報
+	VECTOR = 0.0 1.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -767,13 +484,13 @@ OFFSET
 	# フレーム情報
 	FRAME = 1
 	# 一度に出せる個数情報
-	NUMBER = 50
+	NUMBER = 10
 	# テクスチャータイプ情報
-	TEXTYPE = 83
+	TEXTYPE = 3
 	# エフェクトタイプ情報
 	EFFECTTYPE = 4
 	# パーティクルタイプ情報
-	PARTICLETYPE = 0
+	PARTICLETYPE = 1
 	# ブレンドタイプ情報
 	BLEND = 1
 END_OFFSET

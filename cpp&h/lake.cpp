@@ -245,7 +245,7 @@ CLake *CLake::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pLake->m_size = size;						// ƒTƒCƒYÝ’è
 		pLake->m_rot = D3DXVECTOR3(D3DX_PI / 2, 0.0, 0.0f);
 		pLake->Init();								// ‰Šú‰»
-		pLake->ManageSetting(LAYER_3DOBJECT2);
+		pLake->ManageSetting(LAYER_3DOBJECT);
 		return pLake;
 	}
 
