@@ -128,11 +128,6 @@ OFFSET
 		GREEN
 		BLUE
 	ENDSET_COLRAND
-	# サイズランダム
-	SET_SIZERAND
-		SIZEX = 30 10
-		SIZEY = 30 10
-	ENDSET_SIZERAND
 	# スピードランダム
 	SET_SPEEDRAND
 		MAX = 5
@@ -148,12 +143,12 @@ OFFSET
 	# 色情報
 	COL = 1.0 1.0 1.0 1.0
 	# サイズ情報
-	SIZE = 0.0 0.0
+	SIZE = 20.0 40.0
 	SIZE_CHANGE = 0.0
 	# 回転情報
 	ROT = 0.0 0.0 0.0
 	# 方向情報
-	VECTOR = 0.0 0.0 0.0
+	VECTOR = 0.0 1.0 0.0
 	# スピード情報
 	SPEED = 0.0
 	# ライフ情報
@@ -165,9 +160,9 @@ OFFSET
 	# テクスチャータイプ情報
 	TEXTYPE = 29
 	# エフェクトタイプ情報
-	EFFECTTYPE = 4
+	EFFECTTYPE = 6
 	# パーティクルタイプ情報
-	PARTICLETYPE = 0
+	PARTICLETYPE = 1
 	# ブレンドタイプ情報
 	BLEND = 3
 END_OFFSET
