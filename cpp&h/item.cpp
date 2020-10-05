@@ -266,6 +266,11 @@ void CItem::Scene_MyCollision(int const & nObjType, CScene * pScene)
 		}
 		else
 		{
+			// パーティクル生成
+			C3DParticle::Create(
+				C3DParticle::PARTICLE_ID_COIN,
+				m_pos
+			);
 			Release();
 		}
 		// コインパーティクル
@@ -298,6 +303,11 @@ void CItem::Scene_OpponentCollision(int const & nObjType, CScene * pScene)
 		}
 		else
 		{
+			// パーティクル生成
+			C3DParticle::Create(
+				C3DParticle::PARTICLE_ID_COIN,
+				m_pos
+			);
 			Release();
 		}
 		// コインパーティクル
