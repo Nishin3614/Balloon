@@ -453,8 +453,8 @@ END_OFFSET
 OFFSET
 	# サイズランダム
 	SET_SIZERAND
-		SIZEX = 5 5
-		SIZEY = 5 5
+		SIZEX = 10 20
+		SIZEY = 10 20
 	ENDSET_SIZERAND
 	# 角度ランダム
 	SET_ANGLERAND
@@ -488,10 +488,10 @@ OFFSET
 	# テクスチャータイプ情報
 	TEXTYPE = 3
 	# エフェクトタイプ情報
-	EFFECTTYPE = 2
+	EFFECTTYPE = 4
 	# パーティクルタイプ情報
 	PARTICLETYPE = 1
 	# ブレンドタイプ情報
-	BLEND = 3
+	BLEND = 1
 END_OFFSET
 END_SCRIPT
