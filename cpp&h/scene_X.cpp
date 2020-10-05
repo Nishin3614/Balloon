@@ -441,10 +441,14 @@ HRESULT CScene_X::UnLoadModel(void)
 				m_pModelLoad[nCntModel]->vec_pTexture[nCntTex]->Release();
 				m_pModelLoad[nCntModel]->vec_pTexture[nCntTex] = NULL;
 			}
+			m_pModelLoad[nCntModel]->vec_pTexture.clear();
+			m_pModelLoad[nCntModel]->vec_pTexture.shrink_to_fit();
 		}
 		// ƒ‚ƒfƒ‹“Ç‚İ‚İ•Ï”‚Ì‰Šú‰»
 		m_pModelLoad[nCntModel].reset();
 	}
+	m_pModelLoad.clear();
+	m_pModelLoad.shrink_to_fit();
 	return S_OK;
 }
 

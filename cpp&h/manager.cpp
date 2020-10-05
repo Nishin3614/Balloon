@@ -275,6 +275,13 @@ void CManager::Uninit(void)
 		delete m_ranking;
 		m_ranking = NULL;
 	}
+	// ネットワーク
+	if (m_pNetwork != NULL)
+	{
+		m_pNetwork->Uninit();
+		delete m_pNetwork;
+		m_pNetwork = NULL;
+	}
 }
 
 // ----------------------------------------------------------------------------------------------------

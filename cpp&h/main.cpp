@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 #if ERROW_ACTION
 	// メモリリーク検索設定
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	_CrtSetBreakAlloc(4078);
+	//_CrtSetBreakAlloc(99);
 #endif
 	// シード値を時間にする
 	srand((unsigned)time(NULL));

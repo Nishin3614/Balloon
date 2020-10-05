@@ -173,4 +173,6 @@ void CScene_load::UnLoadAll(void)
 	CFade::UnLoad();
 	// 3Dマップ
 	C3DMap::UnLoad();
+	// シーンX
+	CScene_X::UnLoadModel();
 }
