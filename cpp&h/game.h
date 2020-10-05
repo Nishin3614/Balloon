@@ -68,6 +68,8 @@ public:
 	CScore *GetScore(void) { return m_pScore; };
 	// ŠÏí—p
 	void FocusPlayer(void);
+	void ReleasePlayer(const int &nId);
+
 protected:
 private:
 	/* ŠÖ” */
