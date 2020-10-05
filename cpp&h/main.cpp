@@ -55,7 +55,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 #if ERROW_ACTION
 	// メモリリーク検索設定
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	_CrtSetBreakAlloc(3255);
+	_CrtSetBreakAlloc(4078);
 #endif
 	// シード値を時間にする
 	srand((unsigned)time(NULL));
@@ -86,11 +86,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		CLASS_NAME,						// ウィンドウクラスの名前
 		LoadIcon(NULL,IDI_APPLICATION)	// 小さいアイコン指定
 	};
-
-
 	// ウィンドウクラスの登録
 	RegisterClassEx(&wcex);
-
 	// 指定したクライアント領域に幅を計算する
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 	// ウィンドウクラス生成

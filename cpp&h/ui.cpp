@@ -322,6 +322,15 @@ HRESULT CUi::UiManagerLoad(void)
 			}
 		}
 	}
+	// ファイルの中身の開放
+	for (int nCntLine = 0; nCntLine < (signed)vsvec_Contens.size(); nCntLine++)
+	{
+		vsvec_Contens[nCntLine].clear();
+		vsvec_Contens[nCntLine].shrink_to_fit();
+	}
+	vsvec_Contens.clear();
+	vsvec_Contens.shrink_to_fit();
+
 	return S_OK;
 }
 
@@ -825,6 +834,8 @@ void CUi::UnLoad(void)
 		// std::vectorの開放
 		std::vector<UI_LOAD>().swap(m_vec_UiLoad[nCntLoad]);
 	}
+	m_vec_String.clear();
+	m_vec_String.shrink_to_fit();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
